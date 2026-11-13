@@ -19,6 +19,7 @@ pub mod discovery;
 pub mod error;
 pub mod generator;
 pub mod handover;
+pub mod http_base;
 pub mod iam;
 pub mod identity;
 pub mod interaction;
