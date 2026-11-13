@@ -24,7 +24,7 @@ hex = "=0.4.3"
 image = { version = "=0.25.10", default-features = false, features = ["jpeg", "png", "webp"] }
 jsonwebtoken = "=9.3.1"
 # SW-9: PDF structure check (every object walked for active-content keys), under a size/time budget.
-lopdf = { version = "=0.46.0", default-features = false }
+lopdf = { version = "=0.47.0", default-features = false }
 metrics = "=0.24.6"
 metrics-exporter-prometheus = { version = "=0.18.3", default-features = false }
 quick-xml = "=0.42.0"
