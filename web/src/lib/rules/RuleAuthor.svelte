@@ -224,16 +224,14 @@
 				class="input"
 				bind:value={form.evaluation.eligible_reason}
 				required
-				maxlength="1000"
-			></textarea></label
+				maxlength="1000"></textarea></label
 		>
 		<label
 			>Ineligible reason<textarea
 				class="input"
 				bind:value={form.evaluation.ineligible_reason}
 				required
-				maxlength="1000"
-			></textarea></label
+				maxlength="1000"></textarea></label
 		>
 		{#if error}<p role="alert">{error}</p>{/if}
 		<div class="row">

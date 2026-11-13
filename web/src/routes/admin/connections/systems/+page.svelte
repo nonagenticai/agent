@@ -531,8 +531,7 @@
 					class="input"
 					rows="3"
 					placeholder={'location_id = gid://shopify/Location/…\nreturn_reason_default = OTHER'}
-					bind:value={form.env_ids}
-				></textarea>
+					bind:value={form.env_ids}></textarea>
 			</div>
 			<div class="field">
 				<label for="sys-rps">max_rps (empty = template default)</label>

@@ -219,8 +219,7 @@
 				? 'Write a note for your team…'
 				: 'Write a reply… ( / for saved replies )'}
 		oninput={onInput}
-		onkeydown={onKey}
-	></textarea>
+		onkeydown={onKey}></textarea>
 	{#if asksKey}<p class="hint" role="note" data-testid="kyc-hint">{KYC_HINT}</p>{/if}
 	{#if chips.length}
 		<ul class="chips" aria-label="Attached files" data-testid="chips">

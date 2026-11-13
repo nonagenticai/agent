@@ -309,8 +309,7 @@
 							value={promptDraft ?? roleRow.system_prompt ?? ''}
 							{...writeAttrs(session, 'job_designer')}
 							disabled={!canWrite || busy}
-							oninput={(e) => (promptDraft = e.currentTarget.value)}
-						></textarea>
+							oninput={(e) => (promptDraft = e.currentTarget.value)}></textarea>
 					</label>
 					{#if promptDraft !== null}
 						<button

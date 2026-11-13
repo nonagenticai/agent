@@ -182,8 +182,7 @@
 							rows="3"
 							data-testid="company-description"
 							bind:value={description}
-							placeholder="What the company does, in a sentence or two"
-						></textarea></label
+							placeholder="What the company does, in a sentence or two"></textarea></label
 					>
 				</fieldset>
 			</Card>
