@@ -24,7 +24,7 @@ hex = "=0.4.3"
 image = { version = "=0.25.10", default-features = false, features = ["jpeg", "png", "webp"] }
 jsonwebtoken = "=9.3.1"
 # SW-9: PDF structure check (every object walked for active-content keys), under a size/time budget.
-lopdf = { version = "=0.46.0", default-features = false }
+lopdf = { version = "=0.47.0", default-features = false }
 metrics = "=0.24.6"
 metrics-exporter-prometheus = { version = "=0.18.3", default-features = false }
 quick-xml = "=0.42.0"
@@ -36,7 +36,7 @@ ring = "=0.17.14"
 rmcp = { version = "=3.9.0", default-features = false, features = ["client", "reqwest", "transport-streamable-http-client-reqwest"] }
 serde = { version = "=1.0.229", features = ["derive"] }
 serde_json = "=1.0.154"
-sha2 = "=0.10.9"
+sha2 = "=0.11.1"
 sqlx = { version = "=0.9.0", default-features = false, features = ["runtime-tokio", "tls-rustls", "postgres", "uuid", "chrono", "migrate", "macros", "json"] }
 thiserror = "=2.0.21"
 tokio = { version = "=1.53.3", features = ["full"] }
