@@ -1,0 +1,32 @@
+# agent-api image (rust-service archetype, image `agent-api`). Build: --build-arg PACKAGE=agent-api
+# ONE image, five entrypoints. The default is agent-api; every other Deployment sets `command:` (B4 T19):
+#   /usr/local/bin/agent-edge    the public channel edge (B11)
+#   /usr/local/bin/orchestrator  B4 runtime: plans cases, no listener
+#   /usr/local/bin/runner        B4 runtime: executes op calls, no listener
+#   /usr/local/bin/interaction   B4 runtime: answers customers, no listener
+# Env per binary: the module doc of crates/agent-api/src/bin/<name>.rs. Building -p agent-api builds every
+# src/bin target; each is copied by name, so a missing binary fails the image build, not the rollout.
+ARG BASE_REGISTRY=docker.io
+FROM ${BASE_REGISTRY}/library/rust:1.99.1-bookworm AS build
+ARG PACKAGE=agent-api
+WORKDIR /src
+COPY Cargo.toml Cargo.lock ./
+COPY crates ./crates
+RUN test -n "$PACKAGE" \
+ && cargo build --release --locked -p "$PACKAGE" \
+ && mkdir /out \
+ && cp "target/release/$PACKAGE" /out/ \
+ && for b in agent-edge orchestrator runner interaction; do cp "target/release/$b" /out/; done
+
+FROM ${BASE_REGISTRY}/library/debian:12-slim
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
+COPY --from=build /out/ /usr/local/bin/
+# B2 T0a: the commit for agent_build_info{commit}. The rust-service archetype passes GIT_SHA=${GITHUB_SHA}; declared
+# here, after the build stage, so a new sha never invalidates the cargo layer. Unset (a local build) = "unknown".
+ARG GIT_SHA=unknown
+ENV AGENT_GIT_SHA=${GIT_SHA}
+USER 65532:65532
+EXPOSE 8098 8099
+ENTRYPOINT ["/usr/local/bin/agent-api"]

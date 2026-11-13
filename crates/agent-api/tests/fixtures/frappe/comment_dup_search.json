@@ -1,0 +1,18 @@
+{
+  "recorded_at": "2026-10-21",
+  "site": "Frappe 15.123.1 + Helpdesk 1.31.0 at http://frappe.example.com:8000",
+  "note": "comment idempotency dup_search",
+  "request": {
+    "method": "GET",
+    "path": "/api/resource/HD Ticket Comment?filters=[[\"reference_ticket\",\"=\",\"0003\"],[\"content\",\"like\",\"%b7t16-1792573982-cm%\"]]&fields=[\"name\"]",
+    "body": null
+  },
+  "status": 200,
+  "body": {
+    "data": [
+      {
+        "name": "5jnkraegns"
+      }
+    ]
+  }
+}

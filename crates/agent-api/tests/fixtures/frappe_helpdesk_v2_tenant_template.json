@@ -1,0 +1,323 @@
+{
+  "auth_kind": "api_key_header",
+  "base": "generic_rest@2",
+  "contract": null,
+  "created_by": "joost-de-wit",
+  "credential_schema": [
+    {
+      "label": "API key (user)",
+      "name": "api_key",
+      "secret": false
+    },
+    {
+      "label": "API secret",
+      "name": "api_secret",
+      "secret": true
+    }
+  ],
+  "description": "Draft: adds handover into the \u201cEscalations\u201d team and a summarised subject line.",
+  "key": "frappe_helpdesk",
+  "kind": "custom",
+  "label": "Frappe Helpdesk (Lumen & Loom)",
+  "ops": [
+    {
+      "field_map": [
+        {
+          "field": "case_id",
+          "path": "$.data.name",
+          "transform": "none"
+        },
+        {
+          "field": "status",
+          "path": "$.data.status",
+          "transform": "enum_map"
+        }
+      ],
+      "idempotency": {
+        "kind": "dup_search",
+        "on": "HD Ticket.custom_agent_key = step key"
+      },
+      "method": "POST",
+      "object": "case",
+      "path": "/api/resource/HD Ticket",
+      "request": "{\"subject\":\"Warranty claim {{canonical.subject_object}}\",\"description\":\"{{canonical.description}}\",\"ticket_type\":\"Warranty\",\"raised_by\":\"{{env.requester_id}}\",\"custom_order_ref\":\"{{canonical.subject_object}}\",\"custom_agent_key\":\"{{step.idempotency_key}}\",\"agent_group\":\"{{env.team}}\"}",
+      "status_map": [
+        {
+          "canonical": "open",
+          "system": "Open"
+        },
+        {
+          "canonical": "pending_customer",
+          "system": "Replied"
+        },
+        {
+          "canonical": "pending_provider",
+          "system": "Paused"
+        },
+        {
+          "canonical": "resolved",
+          "system": "Resolved"
+        },
+        {
+          "canonical": "closed",
+          "system": "Closed"
+        }
+      ],
+      "variant": "warranty_claim",
+      "verb": "create"
+    },
+    {
+      "field_map": [
+        {
+          "field": "case_id",
+          "path": "$.data.name",
+          "transform": "none"
+        },
+        {
+          "field": "status",
+          "path": "$.data.status",
+          "transform": "enum_map"
+        }
+      ],
+      "idempotency": {
+        "kind": "dup_search",
+        "on": "HD Ticket.custom_agent_key = step key"
+      },
+      "method": "POST",
+      "object": "case",
+      "path": "/api/resource/HD Ticket",
+      "request": "{\"subject\":\"{{canonical.subject}}\",\"description\":\"{{canonical.description}}\",\"ticket_type\":\"Complaint\",\"raised_by\":\"{{env.requester_id}}\",\"custom_order_ref\":\"{{canonical.subject_object}}\",\"custom_agent_key\":\"{{step.idempotency_key}}\",\"agent_group\":\"{{env.team}}\"}",
+      "status_map": [
+        {
+          "canonical": "open",
+          "system": "Open"
+        },
+        {
+          "canonical": "pending_customer",
+          "system": "Replied"
+        },
+        {
+          "canonical": "pending_provider",
+          "system": "Paused"
+        },
+        {
+          "canonical": "resolved",
+          "system": "Resolved"
+        },
+        {
+          "canonical": "closed",
+          "system": "Closed"
+        }
+      ],
+      "variant": "complaint",
+      "verb": "create"
+    },
+    {
+      "field_map": [
+        {
+          "field": "case_id",
+          "path": "$.data.name",
+          "transform": "none"
+        },
+        {
+          "field": "status",
+          "path": "$.data.status",
+          "transform": "enum_map"
+        }
+      ],
+      "idempotency": {
+        "kind": "dup_search",
+        "on": "HD Ticket.custom_agent_key = step key"
+      },
+      "method": "POST",
+      "object": "case",
+      "path": "/api/resource/HD Ticket",
+      "request": "{\"subject\":\"Dispute {{canonical.subject_object}}\",\"description\":\"{{canonical.description}}\",\"ticket_type\":\"Billing dispute\",\"raised_by\":\"{{env.requester_id}}\",\"custom_order_ref\":\"{{canonical.subject_object}}\",\"custom_agent_key\":\"{{step.idempotency_key}}\",\"agent_group\":\"{{env.team}}\"}",
+      "status_map": [
+        {
+          "canonical": "open",
+          "system": "Open"
+        },
+        {
+          "canonical": "pending_customer",
+          "system": "Replied"
+        },
+        {
+          "canonical": "pending_provider",
+          "system": "Paused"
+        },
+        {
+          "canonical": "resolved",
+          "system": "Resolved"
+        },
+        {
+          "canonical": "closed",
+          "system": "Closed"
+        }
+      ],
+      "variant": "dispute",
+      "verb": "create"
+    },
+    {
+      "field_map": [
+        {
+          "field": "status",
+          "path": "$.data.status",
+          "transform": "enum_map"
+        },
+        {
+          "field": "case_type",
+          "path": "$.data.ticket_type",
+          "transform": "lowercase"
+        },
+        {
+          "field": "queue",
+          "path": "$.data.agent_group",
+          "transform": "none"
+        }
+      ],
+      "idempotency": {
+        "kind": "nat"
+      },
+      "method": "GET",
+      "object": "case",
+      "path": "/api/resource/HD Ticket/{{canonical.case_id}}",
+      "request": "",
+      "status_map": [
+        {
+          "canonical": "open",
+          "system": "Open"
+        },
+        {
+          "canonical": "pending_customer",
+          "system": "Replied"
+        },
+        {
+          "canonical": "pending_provider",
+          "system": "Paused"
+        },
+        {
+          "canonical": "resolved",
+          "system": "Resolved"
+        },
+        {
+          "canonical": "closed",
+          "system": "Closed"
+        }
+      ],
+      "variant": "*",
+      "verb": "read"
+    },
+    {
+      "field_map": [],
+      "idempotency": {
+        "kind": "dup_search",
+        "on": "HD Ticket Comment.agent_key"
+      },
+      "method": "POST",
+      "object": "case",
+      "path": "/api/method/helpdesk.helpdesk.doctype.hd_ticket.api.reply",
+      "request": "{\"ticket\":\"{{canonical.case_id}}\",\"message\":\"{{canonical.comment}}\",\"agent_key\":\"{{step.idempotency_key}}\"}",
+      "status_map": [],
+      "variant": "*",
+      "verb": "comment"
+    },
+    {
+      "field_map": [
+        {
+          "field": "case_id",
+          "path": "$.data.name",
+          "transform": "none"
+        },
+        {
+          "field": "status",
+          "path": "$.data.status",
+          "transform": "enum_map"
+        }
+      ],
+      "idempotency": {
+        "kind": "dup_search",
+        "on": "HD Ticket.custom_agent_key"
+      },
+      "method": "POST",
+      "object": "delivery",
+      "path": "/api/resource/HD Ticket",
+      "request": "{\"subject\":\"Delivery problem {{canonical.delivery_id}}\",\"description\":\"{{canonical.problem}}\",\"ticket_type\":\"Delivery\",\"custom_delivery_ref\":\"{{canonical.delivery_id}}\",\"custom_agent_key\":\"{{step.idempotency_key}}\"}",
+      "status_map": [
+        {
+          "canonical": "open",
+          "system": "Open"
+        },
+        {
+          "canonical": "pending_customer",
+          "system": "Replied"
+        },
+        {
+          "canonical": "pending_provider",
+          "system": "Paused"
+        },
+        {
+          "canonical": "resolved",
+          "system": "Resolved"
+        },
+        {
+          "canonical": "closed",
+          "system": "Closed"
+        }
+      ],
+      "variant": "*",
+      "verb": "report_problem"
+    },
+    {
+      "field_map": [
+        {
+          "field": "case_id",
+          "path": "$.data.name",
+          "transform": "none"
+        },
+        {
+          "field": "summary",
+          "path": "$.data.subject",
+          "transform": "llm_summarise"
+        }
+      ],
+      "idempotency": {
+        "kind": "none"
+      },
+      "method": "POST",
+      "object": "case",
+      "path": "/api/resource/HD Ticket",
+      "request": "{\"subject\":\"{{canonical.subject}}\",\"agent_group\":\"Escalations\",\"priority\":\"Urgent\",\"custom_agent_key\":\"{{step.idempotency_key}}\",\"custom_token\":\"shpat_9f2c7a1e44b0\"}",
+      "status_map": [
+        {
+          "canonical": "open",
+          "system": "Open"
+        },
+        {
+          "canonical": "pending_customer",
+          "system": "Replied"
+        },
+        {
+          "canonical": "pending_provider",
+          "system": "Paused"
+        },
+        {
+          "canonical": "resolved",
+          "system": "Resolved"
+        },
+        {
+          "canonical": "closed",
+          "system": "Closed"
+        }
+      ],
+      "variant": "handover",
+      "verb": "create"
+    }
+  ],
+  "status": "draft",
+  "tenant_id": "0195f48b-d000-7000-8000-0000000000a1",
+  "transport": "rest",
+  "updated_at": "2026-10-17T16:05:00Z",
+  "validation": null,
+  "version": "2"
+}

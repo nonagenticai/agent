@@ -1,0 +1,3531 @@
+{
+  "note": "web/src/lib/model/logic.ts over the seeded object + operation rows (crates/agent-api/seed/platform/v1/rows.json)",
+  "expected_operations": [
+    {
+      "modality": "request",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key+dup",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "resource",
+        "role",
+        "period"
+      ],
+      "output_fields": [
+        "grant_id",
+        "status"
+      ],
+      "key": "access_grant.create",
+      "object": "access_grant",
+      "verb": "create",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Request access; lands in status requested.",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "duplicate",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "party_id"
+      ],
+      "output_fields": [
+        "grant_id",
+        "resource",
+        "role",
+        "status"
+      ],
+      "key": "access_grant.list",
+      "object": "access_grant",
+      "verb": "list",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "A party's current grants (identity.get_entitlements).",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "ambiguous",
+        "identity_required",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "do",
+      "is_derive": false,
+      "side_effect": "X",
+      "idempotency": "key",
+      "confirm_back": true,
+      "verify_read": "access_grant.list",
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "S",
+      "input_fields": [
+        "grant_id"
+      ],
+      "output_fields": [
+        "status"
+      ],
+      "key": "access_grant.revoke",
+      "object": "access_grant",
+      "verb": "revoke",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Staff-only revoke.",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "invalid_state:requested",
+        "invalid_state:revoked",
+        "invalid_state:expired",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "do",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "slot",
+        "offering_id"
+      ],
+      "output_fields": [
+        "appointment_id",
+        "status",
+        "slot"
+      ],
+      "key": "appointment.book",
+      "object": "appointment",
+      "verb": "book",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Book a held slot.",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "invalid_state:booked",
+        "invalid_state:confirmed",
+        "invalid_state:completed",
+        "invalid_state:no_show",
+        "invalid_state:cancelled",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "do",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "appointment_id"
+      ],
+      "output_fields": [
+        "status"
+      ],
+      "key": "appointment.cancel",
+      "object": "appointment",
+      "verb": "cancel",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Cancel a booking.",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "invalid_state:completed",
+        "invalid_state:no_show",
+        "invalid_state:cancelled",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "do",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "case_id",
+        "comment"
+      ],
+      "output_fields": [
+        "status"
+      ],
+      "key": "case.comment",
+      "object": "case",
+      "verb": "comment",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Add a message to a case.",
+      "retail": "O",
+      "stages": [
+        "Support"
+      ],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "invalid_state:resolved",
+        "invalid_state:closed",
+        "invalid_state:cancelled",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "request",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key+dup",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "case_type",
+        "subject",
+        "subject_object",
+        "description"
+      ],
+      "output_fields": [
+        "case_id",
+        "status",
+        "due_at"
+      ],
+      "key": "case.create",
+      "object": "case",
+      "verb": "create",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Open a case. Default route agent_cases (K49).",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "duplicate",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "request",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key+dup",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "case_type",
+        "subject",
+        "subject_object",
+        "description"
+      ],
+      "output_fields": [
+        "case_id",
+        "status",
+        "due_at"
+      ],
+      "key": "case.create{complaint}",
+      "object": "case",
+      "verb": "create",
+      "variant": "complaint",
+      "discriminator": {
+        "field": "case_type",
+        "value": "complaint"
+      },
+      "overridden": [],
+      "inherited": [
+        "modality",
+        "is_derive",
+        "identity_level",
+        "side_effect",
+        "idempotency",
+        "input_fields",
+        "output_fields",
+        "confirm_back",
+        "verify_read",
+        "builtin",
+        "op_kind",
+        "guard_rules"
+      ],
+      "description": "Complaint intake.",
+      "retail": "R",
+      "stages": [
+        "Support"
+      ],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "duplicate",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "request",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key+dup",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "subject_object",
+        "amount",
+        "description"
+      ],
+      "output_fields": [
+        "case_id",
+        "status",
+        "due_at"
+      ],
+      "key": "case.create{dispute}",
+      "object": "case",
+      "verb": "create",
+      "variant": "dispute",
+      "discriminator": {
+        "field": "case_type",
+        "value": "dispute"
+      },
+      "overridden": [
+        "input_fields"
+      ],
+      "inherited": [
+        "modality",
+        "is_derive",
+        "identity_level",
+        "side_effect",
+        "idempotency",
+        "output_fields",
+        "confirm_back",
+        "verify_read",
+        "builtin",
+        "op_kind",
+        "guard_rules"
+      ],
+      "description": "Dispute a charge.",
+      "retail": "R",
+      "stages": [
+        "Support"
+      ],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "duplicate",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "request",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "1",
+      "input_fields": [
+        "subject",
+        "transcript_ref"
+      ],
+      "output_fields": [
+        "case_id",
+        "status",
+        "due_at"
+      ],
+      "key": "case.create{handover}",
+      "object": "case",
+      "verb": "create",
+      "variant": "handover",
+      "discriminator": {
+        "field": "case_type",
+        "value": "handover"
+      },
+      "overridden": [
+        "identity_level",
+        "idempotency",
+        "input_fields"
+      ],
+      "inherited": [
+        "modality",
+        "is_derive",
+        "side_effect",
+        "output_fields",
+        "confirm_back",
+        "verify_read",
+        "builtin",
+        "op_kind",
+        "guard_rules"
+      ],
+      "description": "Hand over to a person: the record handover leaves behind, in the agent_cases queue.",
+      "retail": "R",
+      "stages": [
+        "Support"
+      ],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "outside_hours",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "request",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key+dup",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "1",
+      "input_fields": [
+        "case_type",
+        "subject",
+        "subject_object",
+        "description"
+      ],
+      "output_fields": [
+        "case_id",
+        "status",
+        "due_at"
+      ],
+      "key": "case.create{incident}",
+      "object": "case",
+      "verb": "create",
+      "variant": "incident",
+      "discriminator": {
+        "field": "case_type",
+        "value": "incident"
+      },
+      "overridden": [
+        "identity_level"
+      ],
+      "inherited": [
+        "modality",
+        "is_derive",
+        "side_effect",
+        "idempotency",
+        "input_fields",
+        "output_fields",
+        "confirm_back",
+        "verify_read",
+        "builtin",
+        "op_kind",
+        "guard_rules"
+      ],
+      "description": "IT incident (ITSD wave).",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "duplicate",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "request",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key+dup",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [
+        "RET-01"
+      ],
+      "identity_level": "2",
+      "input_fields": [
+        "subject_object",
+        "return_lines",
+        "return_method",
+        "refund_type"
+      ],
+      "output_fields": [
+        "case_id",
+        "status",
+        "label",
+        "deadline"
+      ],
+      "key": "case.create{return}",
+      "object": "case",
+      "verb": "create",
+      "variant": "return",
+      "discriminator": {
+        "field": "case_type",
+        "value": "return"
+      },
+      "overridden": [
+        "input_fields",
+        "output_fields",
+        "guard_rules"
+      ],
+      "inherited": [
+        "modality",
+        "is_derive",
+        "identity_level",
+        "side_effect",
+        "idempotency",
+        "confirm_back",
+        "verify_read",
+        "builtin",
+        "op_kind"
+      ],
+      "description": "Return / RMA; label as a Document.",
+      "retail": "R",
+      "stages": [
+        "Support"
+      ],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "duplicate",
+        "ineligible:RET-01",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "request",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key+dup",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "case_type",
+        "subject",
+        "subject_object",
+        "description"
+      ],
+      "output_fields": [
+        "case_id",
+        "status",
+        "due_at"
+      ],
+      "key": "case.create{service_request}",
+      "object": "case",
+      "verb": "create",
+      "variant": "service_request",
+      "discriminator": {
+        "field": "case_type",
+        "value": "service_request"
+      },
+      "overridden": [],
+      "inherited": [
+        "modality",
+        "is_derive",
+        "identity_level",
+        "side_effect",
+        "idempotency",
+        "input_fields",
+        "output_fields",
+        "confirm_back",
+        "verify_read",
+        "builtin",
+        "op_kind",
+        "guard_rules"
+      ],
+      "description": "Fallback request when no operation fits.",
+      "retail": "O",
+      "stages": [
+        "Change",
+        "Exit"
+      ],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "duplicate",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "request",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key+dup",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [
+        "WAR-01"
+      ],
+      "identity_level": "2",
+      "input_fields": [
+        "subject_object",
+        "description",
+        "photo_ref"
+      ],
+      "output_fields": [
+        "case_id",
+        "status",
+        "due_at"
+      ],
+      "key": "case.create{warranty_claim}",
+      "object": "case",
+      "verb": "create",
+      "variant": "warranty_claim",
+      "discriminator": {
+        "field": "case_type",
+        "value": "warranty_claim"
+      },
+      "overridden": [
+        "input_fields",
+        "guard_rules"
+      ],
+      "inherited": [
+        "modality",
+        "is_derive",
+        "identity_level",
+        "side_effect",
+        "idempotency",
+        "output_fields",
+        "confirm_back",
+        "verify_read",
+        "builtin",
+        "op_kind"
+      ],
+      "description": "Warranty claim on an owned unit.",
+      "retail": "R",
+      "stages": [
+        "Support"
+      ],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "duplicate",
+        "ineligible:WAR-01",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "case_id"
+      ],
+      "output_fields": [
+        "status",
+        "case_type",
+        "due_at",
+        "queue"
+      ],
+      "key": "case.read",
+      "object": "case",
+      "verb": "read",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Status of a case. Default route agent_cases (K49).",
+      "retail": "R",
+      "stages": [
+        "Support"
+      ],
+      "error_states": [
+        "not_found",
+        "identity_required",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "do",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "1",
+      "input_fields": [
+        "topic",
+        "channel",
+        "granted"
+      ],
+      "output_fields": [
+        "topic",
+        "granted",
+        "date"
+      ],
+      "key": "consent.update",
+      "object": "consent",
+      "verb": "update",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Opt in or out of marketing, paperless or an alert topic.",
+      "retail": "O",
+      "stages": [
+        "Investigation",
+        "Change",
+        "Exit"
+      ],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "do",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key",
+      "confirm_back": true,
+      "verify_read": "party.read",
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "contact_point_id",
+        "value"
+      ],
+      "output_fields": [
+        "type",
+        "value",
+        "verified"
+      ],
+      "key": "contact_point.update",
+      "object": "contact_point",
+      "verb": "update",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Change an email, phone or address.",
+      "retail": "O",
+      "stages": [
+        "Change"
+      ],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "contract_id"
+      ],
+      "output_fields": [
+        "contract_type",
+        "status",
+        "terms_version",
+        "accepted_at"
+      ],
+      "key": "contract.read",
+      "object": "contract",
+      "verb": "read",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "The governing agreement.",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "not_found",
+        "identity_required",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "order_id"
+      ],
+      "output_fields": [
+        "terms_version",
+        "accepted_at",
+        "url"
+      ],
+      "key": "contract.read{tc}",
+      "object": "contract",
+      "verb": "read",
+      "variant": "tc",
+      "discriminator": {
+        "field": "contract_type",
+        "value": "tc"
+      },
+      "overridden": [
+        "input_fields",
+        "output_fields"
+      ],
+      "inherited": [
+        "modality",
+        "is_derive",
+        "identity_level",
+        "side_effect",
+        "idempotency",
+        "confirm_back",
+        "verify_read",
+        "builtin",
+        "op_kind",
+        "guard_rules"
+      ],
+      "description": "Implicit sale contract: the T&C accepted with the order (D25).",
+      "retail": "O",
+      "stages": [
+        "Purchase"
+      ],
+      "error_states": [
+        "not_found",
+        "identity_required",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "do",
+      "is_derive": false,
+      "side_effect": "X",
+      "idempotency": "key+dup",
+      "confirm_back": true,
+      "verify_read": "party.read",
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "credential_id"
+      ],
+      "output_fields": [
+        "status",
+        "temporary_password_sent"
+      ],
+      "key": "credential.reset",
+      "object": "credential",
+      "verb": "reset",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Password reset (ITSD).",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "duplicate",
+        "locked",
+        "invalid_state:disabled",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "do",
+      "is_derive": false,
+      "side_effect": "X",
+      "idempotency": "key+dup",
+      "confirm_back": true,
+      "verify_read": "party.read",
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "3",
+      "input_fields": [
+        "credential_id"
+      ],
+      "output_fields": [
+        "status"
+      ],
+      "key": "credential.reset_mfa",
+      "object": "credential",
+      "verb": "reset_mfa",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Reset MFA enrolment (ITSD, step-up identity).",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "duplicate",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "do",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "credential_id"
+      ],
+      "output_fields": [
+        "status"
+      ],
+      "key": "credential.unlock",
+      "object": "credential",
+      "verb": "unlock",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Unlock an account (ITSD).",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "invalid_state:active",
+        "invalid_state:expired",
+        "invalid_state:disabled",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": true,
+      "op_kind": "builtin",
+      "guard_rules": [],
+      "identity_level": "1",
+      "input_fields": [
+        "order_id",
+        "email",
+        "postal_code"
+      ],
+      "output_fields": [
+        "identity_level",
+        "matched_factors"
+      ],
+      "key": "credential.verify",
+      "object": "credential",
+      "verb": "verify",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Built-in, runs in agent (K49): compares order no. + email/postcode against an order.read result and raises the case to level 2.",
+      "retail": "R",
+      "stages": [
+        "Purchase",
+        "Delivery",
+        "Change",
+        "Support",
+        "Exit"
+      ],
+      "error_states": [
+        "not_found",
+        "identity_required",
+        "attempts_exceeded"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "order_id"
+      ],
+      "output_fields": [
+        "status",
+        "carrier",
+        "tracking_ref",
+        "tracking_url",
+        "expected_window",
+        "address",
+        "events"
+      ],
+      "key": "delivery.read",
+      "object": "delivery",
+      "verb": "read",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Where is my parcel.",
+      "retail": "R",
+      "stages": [
+        "Delivery"
+      ],
+      "error_states": [
+        "not_found",
+        "identity_required",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "1",
+      "input_fields": [
+        "tracking_ref"
+      ],
+      "output_fields": [
+        "status",
+        "carrier",
+        "expected_window",
+        "events"
+      ],
+      "key": "delivery.read{by_tracking_ref}",
+      "object": "delivery",
+      "verb": "read",
+      "variant": "by_tracking_ref",
+      "discriminator": {
+        "field": "lookup",
+        "value": "by_tracking_ref"
+      },
+      "overridden": [
+        "identity_level",
+        "input_fields",
+        "output_fields"
+      ],
+      "inherited": [
+        "modality",
+        "is_derive",
+        "side_effect",
+        "idempotency",
+        "confirm_back",
+        "verify_read",
+        "builtin",
+        "op_kind",
+        "guard_rules"
+      ],
+      "description": "Tracking ref is a possession factor: level 1, and no address fields come back.",
+      "retail": "R",
+      "stages": [
+        "Delivery"
+      ],
+      "error_states": [
+        "not_found",
+        "identity_required",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "do",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key",
+      "confirm_back": true,
+      "verify_read": "delivery.read",
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "delivery_id",
+        "address"
+      ],
+      "output_fields": [
+        "status",
+        "address"
+      ],
+      "key": "delivery.redirect",
+      "object": "delivery",
+      "verb": "redirect",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Send the parcel elsewhere or to a pickup point.",
+      "retail": "O",
+      "stages": [
+        "Delivery"
+      ],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "invalid_state:pickup_available",
+        "invalid_state:delivered",
+        "invalid_state:problem",
+        "invalid_state:failed",
+        "invalid_state:returned",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "request",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key+dup",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "delivery_id",
+        "problem",
+        "photo_ref"
+      ],
+      "output_fields": [
+        "case_id",
+        "status"
+      ],
+      "key": "delivery.report_problem",
+      "object": "delivery",
+      "verb": "report_problem",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Damaged, missing or late parcel: opens a case at the carrier or helpdesk.",
+      "retail": "O",
+      "stages": [
+        "Delivery"
+      ],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "duplicate",
+        "invalid_state:created",
+        "invalid_state:ready",
+        "invalid_state:returned",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "document_id"
+      ],
+      "output_fields": [
+        "kind",
+        "issue_date",
+        "url"
+      ],
+      "key": "document.read",
+      "object": "document",
+      "verb": "read",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "A signed, expiring link to a document.",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "not_found",
+        "identity_required",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "order_id"
+      ],
+      "output_fields": [
+        "kind",
+        "issue_date",
+        "url"
+      ],
+      "key": "document.read{invoice}",
+      "object": "document",
+      "verb": "read",
+      "variant": "invoice",
+      "discriminator": {
+        "field": "kind",
+        "value": "invoice"
+      },
+      "overridden": [
+        "input_fields"
+      ],
+      "inherited": [
+        "modality",
+        "is_derive",
+        "identity_level",
+        "side_effect",
+        "idempotency",
+        "output_fields",
+        "confirm_back",
+        "verify_read",
+        "builtin",
+        "op_kind",
+        "guard_rules"
+      ],
+      "description": "Invoice of an order (D25).",
+      "retail": "O",
+      "stages": [
+        "Delivery",
+        "Exit"
+      ],
+      "error_states": [
+        "not_found",
+        "identity_required",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "do",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "party_id",
+        "type"
+      ],
+      "output_fields": [
+        "interaction_id"
+      ],
+      "key": "interaction.create",
+      "object": "interaction",
+      "verb": "create",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Record an interaction.",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "do",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "1",
+      "input_fields": [
+        "party_id",
+        "type"
+      ],
+      "output_fields": [
+        "interaction_id"
+      ],
+      "key": "interaction.create{survey}",
+      "object": "interaction",
+      "verb": "create",
+      "variant": "survey",
+      "discriminator": {
+        "field": "type",
+        "value": "survey"
+      },
+      "overridden": [
+        "identity_level"
+      ],
+      "inherited": [
+        "modality",
+        "is_derive",
+        "side_effect",
+        "idempotency",
+        "input_fields",
+        "output_fields",
+        "confirm_back",
+        "verify_read",
+        "builtin",
+        "op_kind",
+        "guard_rules"
+      ],
+      "description": "Post-delivery satisfaction survey.",
+      "retail": "O",
+      "stages": [
+        "Delivery"
+      ],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "do",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "party_id",
+        "channel",
+        "topic",
+        "content_ref"
+      ],
+      "output_fields": [
+        "interaction_id",
+        "delivery_status"
+      ],
+      "key": "interaction.send",
+      "object": "interaction",
+      "verb": "send",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Confirmations and change notices.",
+      "retail": "O",
+      "stages": [
+        "Purchase",
+        "Change"
+      ],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "0",
+      "input_fields": [
+        "question",
+        "kind"
+      ],
+      "output_fields": [
+        "answer",
+        "citations"
+      ],
+      "key": "knowledge.answer",
+      "object": "knowledge",
+      "verb": "answer",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Grounded answer from strata_rag /api/ask; a base op a pure-FAQ job may enable. Not expected by retail customer care.",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "0",
+      "input_fields": [
+        "query",
+        "kind",
+        "store"
+      ],
+      "output_fields": [
+        "passages",
+        "citations"
+      ],
+      "key": "knowledge.search",
+      "object": "knowledge",
+      "verb": "search",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Passages + citations from strata_rag /api/query (K49).",
+      "retail": "R",
+      "stages": [
+        "Orientation",
+        "Investigation",
+        "Purchase",
+        "Delivery",
+        "Change",
+        "Support",
+        "Exit"
+      ],
+      "error_states": [
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "0",
+      "input_fields": [
+        "query",
+        "category"
+      ],
+      "output_fields": [
+        "offering_id",
+        "name",
+        "price",
+        "availability",
+        "stock_level"
+      ],
+      "key": "offering.list",
+      "object": "offering",
+      "verb": "list",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Search the range.",
+      "retail": "O",
+      "stages": [
+        "Orientation"
+      ],
+      "error_states": [
+        "ambiguous",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "0",
+      "input_fields": [
+        "offering_id"
+      ],
+      "output_fields": [
+        "sku",
+        "name",
+        "description",
+        "price",
+        "availability",
+        "stock_level"
+      ],
+      "key": "offering.read",
+      "object": "offering",
+      "verb": "read",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "One offering with stock.",
+      "retail": "O",
+      "stages": [
+        "Orientation",
+        "Investigation"
+      ],
+      "error_states": [
+        "not_found",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "do",
+      "is_derive": false,
+      "side_effect": "X",
+      "idempotency": "key+dup",
+      "confirm_back": true,
+      "verify_read": "order.read",
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "order_id",
+        "reason"
+      ],
+      "output_fields": [
+        "status",
+        "refund_expected"
+      ],
+      "key": "order.cancel",
+      "object": "order",
+      "verb": "cancel",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Cancel an order. Only from quoted / processing / payment_due; every other status is an invalid_state error.",
+      "retail": "O",
+      "stages": [
+        "Change"
+      ],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "duplicate",
+        "invalid_state:in_transit",
+        "invalid_state:pickup_available",
+        "invalid_state:delivered",
+        "invalid_state:problem",
+        "invalid_state:cancelled",
+        "invalid_state:returned",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "party_id"
+      ],
+      "output_fields": [
+        "order_id",
+        "status",
+        "placed_at",
+        "total"
+      ],
+      "key": "order.list",
+      "object": "order",
+      "verb": "list",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "The customer’s orders.",
+      "retail": "R",
+      "stages": [
+        "Purchase",
+        "Delivery"
+      ],
+      "error_states": [
+        "ambiguous",
+        "identity_required",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "do",
+      "is_derive": false,
+      "side_effect": "W",
+      "idempotency": "key",
+      "confirm_back": true,
+      "verify_read": "order.read",
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "order_id",
+        "lines",
+        "delivery_address"
+      ],
+      "output_fields": [
+        "status",
+        "lines",
+        "total"
+      ],
+      "key": "order.modify",
+      "object": "order",
+      "verb": "modify",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Change lines or address before it ships.",
+      "retail": "O",
+      "stages": [
+        "Change"
+      ],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "invalid_state:payment_due",
+        "invalid_state:in_transit",
+        "invalid_state:pickup_available",
+        "invalid_state:delivered",
+        "invalid_state:problem",
+        "invalid_state:cancelled",
+        "invalid_state:returned",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "do",
+      "is_derive": false,
+      "side_effect": "P",
+      "idempotency": "key+dup",
+      "confirm_back": true,
+      "verify_read": "order.read",
+      "builtin": false,
+      "op_kind": "hosted_payment_link",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "order_id"
+      ],
+      "output_fields": [
+        "status",
+        "payment_url"
+      ],
+      "key": "order.place",
+      "object": "order",
+      "verb": "place",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Turn a quote into an order; payment via a hosted link only (D27).",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "duplicate",
+        "invalid_state:processing",
+        "invalid_state:payment_due",
+        "invalid_state:in_transit",
+        "invalid_state:pickup_available",
+        "invalid_state:delivered",
+        "invalid_state:problem",
+        "invalid_state:cancelled",
+        "invalid_state:returned",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "order_id"
+      ],
+      "output_fields": [
+        "status",
+        "lines",
+        "total",
+        "delivery_type",
+        "payment_method_ref"
+      ],
+      "key": "order.read",
+      "object": "order",
+      "verb": "read",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "One order; also the verify_read for modify and cancel.",
+      "retail": "R",
+      "stages": [
+        "Purchase",
+        "Delivery",
+        "Change"
+      ],
+      "error_states": [
+        "not_found",
+        "identity_required",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "1",
+      "input_fields": [
+        "email",
+        "phone",
+        "order_id"
+      ],
+      "output_fields": [
+        "party_id",
+        "roles"
+      ],
+      "key": "party.list",
+      "object": "party",
+      "verb": "list",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Identify: find the party by an identifier. Names come back masked.",
+      "retail": "R",
+      "stages": [
+        "Purchase",
+        "Delivery",
+        "Change",
+        "Support",
+        "Exit"
+      ],
+      "error_states": [
+        "ambiguous",
+        "identity_required",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "party_id"
+      ],
+      "output_fields": [
+        "name",
+        "email",
+        "phone",
+        "postal_address"
+      ],
+      "key": "party.read",
+      "object": "party",
+      "verb": "read",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "The verified customer’s own record.",
+      "retail": "O",
+      "stages": [
+        "Change"
+      ],
+      "error_states": [
+        "not_found",
+        "identity_required",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "do",
+      "is_derive": false,
+      "side_effect": "P",
+      "idempotency": "key+dup",
+      "confirm_back": true,
+      "verify_read": "payment.list",
+      "builtin": false,
+      "op_kind": "hosted_payment_link",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "order_id",
+        "amount"
+      ],
+      "output_fields": [
+        "payment_url",
+        "expires_at"
+      ],
+      "key": "payment.create",
+      "object": "payment",
+      "verb": "create",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Hosted payment link only (D27): the reply carries the PSP link, never card data.",
+      "retail": "O",
+      "stages": [
+        "Purchase"
+      ],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "duplicate",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "party_id",
+        "order_id"
+      ],
+      "output_fields": [
+        "payment_id",
+        "direction",
+        "amount",
+        "method_ref",
+        "status",
+        "date"
+      ],
+      "key": "payment.list",
+      "object": "payment",
+      "verb": "list",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Payments and refunds; masked method only.",
+      "retail": "R",
+      "stages": [
+        "Purchase",
+        "Support"
+      ],
+      "error_states": [
+        "ambiguous",
+        "identity_required",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "do",
+      "is_derive": false,
+      "side_effect": "X",
+      "idempotency": "key+dup",
+      "confirm_back": true,
+      "verify_read": "payment.list",
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "payment_id",
+        "amount",
+        "refund_reason"
+      ],
+      "output_fields": [
+        "status",
+        "amount",
+        "expected_at"
+      ],
+      "key": "payment.refund",
+      "object": "payment",
+      "verb": "refund",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Refund to the original method; no card data.",
+      "retail": "O",
+      "stages": [
+        "Support"
+      ],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "duplicate",
+        "invalid_state:pending",
+        "invalid_state:failed",
+        "invalid_state:cancelled",
+        "invalid_state:expired",
+        "invalid_state:refunded",
+        "ineligible:PAY-04",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": true,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": true,
+      "op_kind": "builtin",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "rule_id",
+        "subject_object"
+      ],
+      "output_fields": [
+        "outcome",
+        "reason",
+        "options"
+      ],
+      "key": "rule.evaluate",
+      "object": "rule",
+      "verb": "evaluate",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Built-in derive read, runs in agent (K49). Stores nothing.",
+      "retail": null,
+      "stages": [
+        "Purchase",
+        "Support"
+      ],
+      "error_states": [
+        "identity_required"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": true,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": true,
+      "op_kind": "builtin",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "payment_id"
+      ],
+      "output_fields": [
+        "outcome",
+        "reason",
+        "options"
+      ],
+      "key": "rule.evaluate{PAY-04}",
+      "object": "rule",
+      "verb": "evaluate",
+      "variant": "PAY-04",
+      "discriminator": {
+        "field": "rule_id",
+        "value": "PAY-04"
+      },
+      "overridden": [
+        "input_fields"
+      ],
+      "inherited": [
+        "modality",
+        "is_derive",
+        "identity_level",
+        "side_effect",
+        "idempotency",
+        "output_fields",
+        "confirm_back",
+        "verify_read",
+        "builtin",
+        "op_kind",
+        "guard_rules"
+      ],
+      "description": "Pending-charge rule: a pending charge cannot be refunded yet.",
+      "retail": "R",
+      "stages": [
+        "Purchase",
+        "Support"
+      ],
+      "error_states": [
+        "identity_required"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": true,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": true,
+      "op_kind": "builtin",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "order_id",
+        "delivered_at",
+        "return_lines"
+      ],
+      "output_fields": [
+        "outcome",
+        "reason",
+        "options"
+      ],
+      "key": "rule.evaluate{RET-01}",
+      "object": "rule",
+      "verb": "evaluate",
+      "variant": "RET-01",
+      "discriminator": {
+        "field": "rule_id",
+        "value": "RET-01"
+      },
+      "overridden": [
+        "input_fields"
+      ],
+      "inherited": [
+        "modality",
+        "is_derive",
+        "identity_level",
+        "side_effect",
+        "idempotency",
+        "output_fields",
+        "confirm_back",
+        "verify_read",
+        "builtin",
+        "op_kind",
+        "guard_rules"
+      ],
+      "description": "Return window 30 days (shaped on schema.org MerchantReturnPolicy).",
+      "retail": "R",
+      "stages": [
+        "Support"
+      ],
+      "error_states": [
+        "identity_required"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": true,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": true,
+      "op_kind": "builtin",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "order_id",
+        "offering_id",
+        "purchase_date"
+      ],
+      "output_fields": [
+        "outcome",
+        "reason",
+        "options"
+      ],
+      "key": "rule.evaluate{WAR-01}",
+      "object": "rule",
+      "verb": "evaluate",
+      "variant": "WAR-01",
+      "discriminator": {
+        "field": "rule_id",
+        "value": "WAR-01"
+      },
+      "overridden": [
+        "input_fields"
+      ],
+      "inherited": [
+        "modality",
+        "is_derive",
+        "identity_level",
+        "side_effect",
+        "idempotency",
+        "output_fields",
+        "confirm_back",
+        "verify_read",
+        "builtin",
+        "op_kind",
+        "guard_rules"
+      ],
+      "description": "Warranty 24 months.",
+      "retail": "R",
+      "stages": [
+        "Support"
+      ],
+      "error_states": [
+        "identity_required"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "0",
+      "input_fields": [
+        "code"
+      ],
+      "output_fields": [
+        "kind",
+        "valid_to",
+        "applies_to"
+      ],
+      "key": "promotion.read",
+      "object": "promotion",
+      "verb": "read",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Why did my code not apply.",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "not_found",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "request",
+      "is_derive": false,
+      "side_effect": "X",
+      "idempotency": "key+dup",
+      "confirm_back": true,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [
+        "ARR-01"
+      ],
+      "identity_level": "3",
+      "input_fields": [
+        "contract_id",
+        "type",
+        "instalments"
+      ],
+      "output_fields": [
+        "arrangement_id",
+        "status"
+      ],
+      "key": "arrangement.create",
+      "object": "arrangement",
+      "verb": "create",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Payment plan; step-up identity (level 3).",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "identity_required",
+        "invalid_input",
+        "conflict",
+        "duplicate",
+        "ineligible:ARR-01",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed",
+        "unknown_outcome"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "0",
+      "input_fields": [
+        "area"
+      ],
+      "output_fields": [
+        "type",
+        "status",
+        "estimated_restore"
+      ],
+      "key": "service_event.list",
+      "object": "service_event",
+      "verb": "list",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Is there an outage in my area.",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "ambiguous",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "contract_id",
+        "period"
+      ],
+      "output_fields": [
+        "quantity",
+        "unit",
+        "reading_type"
+      ],
+      "key": "usage.list",
+      "object": "usage",
+      "verb": "list",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Meter readings for a period.",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "ambiguous",
+        "identity_required",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    },
+    {
+      "modality": "observe",
+      "is_derive": false,
+      "side_effect": "R",
+      "idempotency": "nat",
+      "confirm_back": false,
+      "verify_read": null,
+      "builtin": false,
+      "op_kind": "standard",
+      "guard_rules": [],
+      "identity_level": "2",
+      "input_fields": [
+        "party_id"
+      ],
+      "output_fields": [
+        "asset_id",
+        "serial",
+        "warranty_until",
+        "status"
+      ],
+      "key": "asset.list",
+      "object": "asset",
+      "verb": "list",
+      "variant": "*",
+      "discriminator": null,
+      "overridden": [],
+      "inherited": [],
+      "description": "Owned units, e.g. for a warranty claim.",
+      "retail": null,
+      "stages": [],
+      "error_states": [
+        "ambiguous",
+        "identity_required",
+        "upstream_unavailable",
+        "timeout",
+        "rate_limited",
+        "connector_auth_failed"
+      ]
+    }
+  ],
+  "error_states_for": {
+    "access_grant.create": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "duplicate",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "access_grant.list": [
+      "ambiguous",
+      "identity_required",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "access_grant.revoke": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "invalid_state:requested",
+      "invalid_state:revoked",
+      "invalid_state:expired",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "appointment.book": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "invalid_state:booked",
+      "invalid_state:confirmed",
+      "invalid_state:completed",
+      "invalid_state:no_show",
+      "invalid_state:cancelled",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "appointment.cancel": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "invalid_state:completed",
+      "invalid_state:no_show",
+      "invalid_state:cancelled",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "case.comment": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "invalid_state:resolved",
+      "invalid_state:closed",
+      "invalid_state:cancelled",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "case.create": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "duplicate",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "case.create{complaint}": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "duplicate",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "case.create{dispute}": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "duplicate",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "case.create{handover}": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "outside_hours",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "case.create{incident}": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "duplicate",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "case.create{return}": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "duplicate",
+      "ineligible:RET-01",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "case.create{service_request}": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "duplicate",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "case.create{warranty_claim}": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "duplicate",
+      "ineligible:WAR-01",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "case.read": [
+      "not_found",
+      "identity_required",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "consent.update": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "contact_point.update": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "contract.read": [
+      "not_found",
+      "identity_required",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "contract.read{tc}": [
+      "not_found",
+      "identity_required",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "credential.reset": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "duplicate",
+      "locked",
+      "invalid_state:disabled",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "credential.reset_mfa": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "duplicate",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "credential.unlock": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "invalid_state:active",
+      "invalid_state:expired",
+      "invalid_state:disabled",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "credential.verify": [
+      "not_found",
+      "identity_required",
+      "attempts_exceeded"
+    ],
+    "delivery.read": [
+      "not_found",
+      "identity_required",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "delivery.read{by_tracking_ref}": [
+      "not_found",
+      "identity_required",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "delivery.redirect": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "invalid_state:pickup_available",
+      "invalid_state:delivered",
+      "invalid_state:problem",
+      "invalid_state:failed",
+      "invalid_state:returned",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "delivery.report_problem": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "duplicate",
+      "invalid_state:created",
+      "invalid_state:ready",
+      "invalid_state:returned",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "document.read": [
+      "not_found",
+      "identity_required",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "document.read{invoice}": [
+      "not_found",
+      "identity_required",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "interaction.create": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "interaction.create{survey}": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "interaction.send": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "knowledge.answer": [
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "knowledge.search": [
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "offering.list": [
+      "ambiguous",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "offering.read": [
+      "not_found",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "order.cancel": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "duplicate",
+      "invalid_state:in_transit",
+      "invalid_state:pickup_available",
+      "invalid_state:delivered",
+      "invalid_state:problem",
+      "invalid_state:cancelled",
+      "invalid_state:returned",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "order.list": [
+      "ambiguous",
+      "identity_required",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "order.modify": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "invalid_state:payment_due",
+      "invalid_state:in_transit",
+      "invalid_state:pickup_available",
+      "invalid_state:delivered",
+      "invalid_state:problem",
+      "invalid_state:cancelled",
+      "invalid_state:returned",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "order.place": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "duplicate",
+      "invalid_state:processing",
+      "invalid_state:payment_due",
+      "invalid_state:in_transit",
+      "invalid_state:pickup_available",
+      "invalid_state:delivered",
+      "invalid_state:problem",
+      "invalid_state:cancelled",
+      "invalid_state:returned",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "order.read": [
+      "not_found",
+      "identity_required",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "party.list": [
+      "ambiguous",
+      "identity_required",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "party.read": [
+      "not_found",
+      "identity_required",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "payment.create": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "duplicate",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "payment.list": [
+      "ambiguous",
+      "identity_required",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "payment.refund": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "duplicate",
+      "invalid_state:pending",
+      "invalid_state:failed",
+      "invalid_state:cancelled",
+      "invalid_state:expired",
+      "invalid_state:refunded",
+      "ineligible:PAY-04",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "rule.evaluate": [
+      "identity_required"
+    ],
+    "rule.evaluate{PAY-04}": [
+      "identity_required"
+    ],
+    "rule.evaluate{RET-01}": [
+      "identity_required"
+    ],
+    "rule.evaluate{WAR-01}": [
+      "identity_required"
+    ],
+    "promotion.read": [
+      "not_found",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "arrangement.create": [
+      "identity_required",
+      "invalid_input",
+      "conflict",
+      "duplicate",
+      "ineligible:ARR-01",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed",
+      "unknown_outcome"
+    ],
+    "service_event.list": [
+      "ambiguous",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "usage.list": [
+      "ambiguous",
+      "identity_required",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ],
+    "asset.list": [
+      "ambiguous",
+      "identity_required",
+      "upstream_unavailable",
+      "timeout",
+      "rate_limited",
+      "connector_auth_failed"
+    ]
+  },
+  "verb_states": {
+    "access_grant": [
+      {
+        "verb": "access_grant.revoke",
+        "allowed_from": [
+          "approved",
+          "active"
+        ],
+        "invalid_states": [
+          "requested",
+          "revoked",
+          "expired"
+        ]
+      }
+    ],
+    "appointment": [
+      {
+        "verb": "appointment.book",
+        "allowed_from": [
+          "held"
+        ],
+        "invalid_states": [
+          "booked",
+          "confirmed",
+          "completed",
+          "no_show",
+          "cancelled"
+        ]
+      },
+      {
+        "verb": "appointment.cancel",
+        "allowed_from": [
+          "held",
+          "booked",
+          "confirmed"
+        ],
+        "invalid_states": [
+          "completed",
+          "no_show",
+          "cancelled"
+        ]
+      }
+    ],
+    "case": [
+      {
+        "verb": "case.comment",
+        "allowed_from": [
+          "new",
+          "open",
+          "pending_customer",
+          "pending_provider"
+        ],
+        "invalid_states": [
+          "resolved",
+          "closed",
+          "cancelled"
+        ]
+      },
+      {
+        "verb": "case.cancel",
+        "allowed_from": [
+          "new",
+          "open",
+          "pending_customer"
+        ],
+        "invalid_states": [
+          "pending_provider",
+          "resolved",
+          "closed",
+          "cancelled"
+        ]
+      },
+      {
+        "verb": "case.reopen",
+        "allowed_from": [
+          "resolved"
+        ],
+        "invalid_states": [
+          "new",
+          "open",
+          "pending_customer",
+          "pending_provider",
+          "closed",
+          "cancelled"
+        ]
+      }
+    ],
+    "consent": [
+      {
+        "verb": "consent.update",
+        "allowed_from": [
+          "granted",
+          "withdrawn"
+        ],
+        "invalid_states": []
+      }
+    ],
+    "contract": [
+      {
+        "verb": "contract.activate",
+        "allowed_from": [
+          "draft"
+        ],
+        "invalid_states": [
+          "active",
+          "expired",
+          "terminated"
+        ]
+      },
+      {
+        "verb": "contract.terminate",
+        "allowed_from": [
+          "active"
+        ],
+        "invalid_states": [
+          "draft",
+          "expired",
+          "terminated"
+        ]
+      }
+    ],
+    "credential": [
+      {
+        "verb": "credential.unlock",
+        "allowed_from": [
+          "locked"
+        ],
+        "invalid_states": [
+          "active",
+          "expired",
+          "disabled"
+        ]
+      },
+      {
+        "verb": "credential.reset",
+        "allowed_from": [
+          "active",
+          "locked",
+          "expired"
+        ],
+        "invalid_states": [
+          "disabled"
+        ]
+      }
+    ],
+    "delivery": [
+      {
+        "verb": "delivery.redirect",
+        "allowed_from": [
+          "created",
+          "ready",
+          "in_transit"
+        ],
+        "invalid_states": [
+          "pickup_available",
+          "delivered",
+          "problem",
+          "failed",
+          "returned"
+        ]
+      },
+      {
+        "verb": "delivery.report_problem",
+        "allowed_from": [
+          "in_transit",
+          "pickup_available",
+          "delivered",
+          "problem",
+          "failed"
+        ],
+        "invalid_states": [
+          "created",
+          "ready",
+          "returned"
+        ]
+      }
+    ],
+    "order": [
+      {
+        "verb": "order.place",
+        "allowed_from": [
+          "quoted"
+        ],
+        "invalid_states": [
+          "processing",
+          "payment_due",
+          "in_transit",
+          "pickup_available",
+          "delivered",
+          "problem",
+          "cancelled",
+          "returned"
+        ]
+      },
+      {
+        "verb": "order.modify",
+        "allowed_from": [
+          "quoted",
+          "processing"
+        ],
+        "invalid_states": [
+          "payment_due",
+          "in_transit",
+          "pickup_available",
+          "delivered",
+          "problem",
+          "cancelled",
+          "returned"
+        ]
+      },
+      {
+        "verb": "order.cancel",
+        "allowed_from": [
+          "quoted",
+          "processing",
+          "payment_due"
+        ],
+        "invalid_states": [
+          "in_transit",
+          "pickup_available",
+          "delivered",
+          "problem",
+          "cancelled",
+          "returned"
+        ]
+      }
+    ],
+    "payment": [
+      {
+        "verb": "payment.cancel",
+        "allowed_from": [
+          "pending"
+        ],
+        "invalid_states": [
+          "captured",
+          "failed",
+          "cancelled",
+          "expired",
+          "partially_refunded",
+          "refunded"
+        ]
+      },
+      {
+        "verb": "payment.refund",
+        "allowed_from": [
+          "captured",
+          "partially_refunded"
+        ],
+        "invalid_states": [
+          "pending",
+          "failed",
+          "cancelled",
+          "expired",
+          "refunded"
+        ]
+      }
+    ],
+    "arrangement": [
+      {
+        "verb": "arrangement.cancel",
+        "allowed_from": [
+          "proposed",
+          "active"
+        ],
+        "invalid_states": [
+          "broken",
+          "completed",
+          "cancelled"
+        ]
+      }
+    ]
+  },
+  "invalid_states_for": [
+    {
+      "object": "order",
+      "verb": "order.cancel",
+      "expected": [
+        "invalid_state:in_transit",
+        "invalid_state:pickup_available",
+        "invalid_state:delivered",
+        "invalid_state:problem",
+        "invalid_state:cancelled",
+        "invalid_state:returned"
+      ]
+    },
+    {
+      "object": "order",
+      "verb": "order.modify",
+      "expected": [
+        "invalid_state:payment_due",
+        "invalid_state:in_transit",
+        "invalid_state:pickup_available",
+        "invalid_state:delivered",
+        "invalid_state:problem",
+        "invalid_state:cancelled",
+        "invalid_state:returned"
+      ]
+    },
+    {
+      "object": "order",
+      "verb": "order.read",
+      "expected": []
+    },
+    {
+      "object": "delivery",
+      "verb": "delivery.redirect",
+      "expected": [
+        "invalid_state:pickup_available",
+        "invalid_state:delivered",
+        "invalid_state:problem",
+        "invalid_state:failed",
+        "invalid_state:returned"
+      ]
+    },
+    {
+      "object": "delivery",
+      "verb": "delivery.report_problem",
+      "expected": [
+        "invalid_state:created",
+        "invalid_state:ready",
+        "invalid_state:returned"
+      ]
+    },
+    {
+      "object": "payment",
+      "verb": "payment.refund",
+      "expected": [
+        "invalid_state:pending",
+        "invalid_state:failed",
+        "invalid_state:cancelled",
+        "invalid_state:expired",
+        "invalid_state:refunded"
+      ]
+    },
+    {
+      "object": "credential",
+      "verb": "credential.reset",
+      "expected": [
+        "invalid_state:disabled"
+      ]
+    },
+    {
+      "object": "consent",
+      "verb": "consent.update",
+      "expected": []
+    },
+    {
+      "object": "offering",
+      "verb": "backend:restock",
+      "expected": []
+    }
+  ],
+  "guard_rules_for": [
+    {
+      "object": "order",
+      "verb": "order.cancel",
+      "expected": []
+    },
+    {
+      "object": "order",
+      "verb": "order.modify",
+      "expected": []
+    },
+    {
+      "object": "order",
+      "verb": "order.read",
+      "expected": []
+    },
+    {
+      "object": "delivery",
+      "verb": "delivery.redirect",
+      "expected": []
+    },
+    {
+      "object": "delivery",
+      "verb": "delivery.report_problem",
+      "expected": []
+    },
+    {
+      "object": "payment",
+      "verb": "payment.refund",
+      "expected": [
+        "PAY-04"
+      ]
+    },
+    {
+      "object": "credential",
+      "verb": "credential.reset",
+      "expected": []
+    },
+    {
+      "object": "consent",
+      "verb": "consent.update",
+      "expected": []
+    },
+    {
+      "object": "offering",
+      "verb": "backend:restock",
+      "expected": []
+    }
+  ]
+}

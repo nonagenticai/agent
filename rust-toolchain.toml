@@ -1,0 +1,9 @@
+# One Rust toolchain for this repo, everywhere: the same release CI installs
+# (`.github/workflows/rust.yml` `rust_toolchain`) and the image builds with
+# (`Dockerfile.rust`). The estate builders' rustup default is older (1.98.0 on
+# the mini3/m4 hosts), so without this file a bare `cargo` compiles with the
+# default instead of the release the service ships on.
+[toolchain]
+channel = "1.99.1"
+components = ["rustfmt", "clippy"]
+profile = "minimal"

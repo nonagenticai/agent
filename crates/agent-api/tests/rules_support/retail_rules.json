@@ -1,0 +1,294 @@
+[
+ {
+  "key": "RET-01",
+  "fields": {
+   "label": "Return window",
+   "applies_to": [
+    "case.create{return}",
+    "payment.refund"
+   ],
+   "inputs": [
+    "order.delivered_at",
+    "order_line.sku",
+    "offering.category"
+   ],
+   "outcome": "eligible | ineligible:RET-01 (window passed or excluded category)",
+   "statement": "A return is accepted up to {window_days} after delivery, except for {excluded_categories}.",
+   "values": [
+    {
+     "key": "window_days",
+     "label": "Return window",
+     "unit": "days",
+     "hint": "Days after delivery.",
+     "suggested": "14"
+    },
+    {
+     "key": "excluded_categories",
+     "label": "Excluded categories",
+     "unit": "list",
+     "hint": "Comma separated.",
+     "suggested": "made-to-measure items"
+    }
+   ],
+   "uses": [
+    {
+     "activity": "support:return_initiation",
+     "activity_label": "Start a return",
+     "procedure": "return",
+     "step": "Step 3 · Check return window"
+    },
+    {
+     "activity": "support:refund_tracking",
+     "activity_label": "Where is my refund",
+     "procedure": null,
+     "step": "Before payment.refund is offered"
+    }
+   ],
+   "outcomes": [
+    {
+     "code": "eligible",
+     "label": "Inside the window",
+     "agent_does": "Opens case.create{return}, sends the label and quotes the refund time."
+    },
+    {
+     "code": "ineligible:RET-01",
+     "label": "Window passed or excluded category",
+     "agent_does": "Explains why with the cited policy passage; offers a person if the customer disagrees."
+    }
+   ],
+   "facts": [
+    {
+     "key": "order.delivered_at",
+     "label": "Delivered on",
+     "kind": "date"
+    },
+    {
+     "key": "offering.category",
+     "label": "Product category",
+     "kind": "choice",
+     "options": [
+      "textiles",
+      "lighting",
+      "tableware",
+      "sofas",
+      "made-to-measure rugs",
+      "opened bedding"
+     ]
+    }
+   ],
+   "examples": [
+    {
+     "label": "Linen throw, delivered 9 days ago",
+     "facts": {
+      "order.delivered_at": "2026-10-09",
+      "offering.category": "textiles"
+     }
+    },
+    {
+     "label": "Rug, delivered last week",
+     "facts": {
+      "order.delivered_at": "2026-10-11",
+      "offering.category": "made-to-measure rugs"
+     }
+    },
+    {
+     "label": "Lamp, delivered 52 days ago",
+     "facts": {
+      "order.delivered_at": "2026-08-27",
+      "offering.category": "lighting"
+     }
+    }
+   ]
+  }
+ },
+ {
+  "key": "WAR-01",
+  "fields": {
+   "label": "Warranty period",
+   "applies_to": [
+    "case.create{warranty_claim}"
+   ],
+   "inputs": [
+    "order.delivered_at",
+    "asset.serial"
+   ],
+   "outcome": "eligible | ineligible:WAR-01 (out of warranty)",
+   "statement": "A warranty claim is accepted up to {period_months} after delivery.",
+   "values": [
+    {
+     "key": "period_months",
+     "label": "Warranty period",
+     "unit": "months",
+     "hint": "From the delivery date.",
+     "suggested": "24"
+    }
+   ],
+   "uses": [
+    {
+     "activity": "support:warranty_registration",
+     "activity_label": "Warranty claim",
+     "procedure": "warranty_claim",
+     "step": "Step 3 · Check warranty"
+    }
+   ],
+   "outcomes": [
+    {
+     "code": "eligible",
+     "label": "Inside the warranty period",
+     "agent_does": "Asks for the defect and a photo, opens case.create{warranty_claim}."
+    },
+    {
+     "code": "ineligible:WAR-01",
+     "label": "Out of warranty",
+     "agent_does": "Says so with the cited passage and offers a paid repair or a person."
+    }
+   ],
+   "facts": [
+    {
+     "key": "order.delivered_at",
+     "label": "Delivered on",
+     "kind": "date"
+    },
+    {
+     "key": "asset.serial",
+     "label": "Serial number",
+     "kind": "text"
+    }
+   ],
+   "examples": [
+    {
+     "label": "Floor lamp, delivered in April",
+     "facts": {
+      "order.delivered_at": "2026-04-11",
+      "asset.serial": "LB-4471"
+     }
+    },
+    {
+     "label": "Sofa, delivered 2023",
+     "facts": {
+      "order.delivered_at": "2023-09-02",
+      "asset.serial": "SF-1180"
+     }
+    }
+   ]
+  }
+ },
+ {
+  "key": "PAY-04",
+  "fields": {
+   "label": "Pending charge",
+   "applies_to": [
+    "payment.refund",
+    "payment.list"
+   ],
+   "inputs": [
+    "payment.status",
+    "payment.at",
+    "order.status"
+   ],
+   "outcome": "ineligible:PAY-04 — the charge is pending, not settled; it drops off by itself",
+   "statement": "A pending charge is not refunded: it drops off by itself. Pending longer than {drop_off_days} goes to a person. The customer hears: {customer_text}",
+   "values": [
+    {
+     "key": "drop_off_days",
+     "label": "Reservation drops off after",
+     "unit": "days",
+     "hint": "How long a card reservation may stay pending before the agent escalates.",
+     "suggested": "7"
+    },
+    {
+     "key": "customer_text",
+     "label": "What the agent tells the customer",
+     "unit": "text",
+     "hint": "One sentence, in plain words.",
+     "suggested": null
+    }
+   ],
+   "uses": [
+    {
+     "activity": "purchase:payment_problem",
+     "activity_label": "Payment problem",
+     "procedure": null,
+     "step": "After payment.list, before payment.refund"
+    },
+    {
+     "activity": "support:refund_tracking",
+     "activity_label": "Where is my refund",
+     "procedure": "refund_status",
+     "step": "When the original charge is still pending"
+    }
+   ],
+   "outcomes": [
+    {
+     "code": "eligible",
+     "label": "Charge settled",
+     "agent_does": "PAY-04 does not block; the refund path continues."
+    },
+    {
+     "code": "ineligible:PAY-04",
+     "label": "Charge still pending",
+     "agent_does": "Tells the customer your sentence; no refund is created."
+    },
+    {
+     "code": "escalate",
+     "label": "Pending too long",
+     "agent_does": "Hands over to a person to check with the bank."
+    }
+   ],
+   "facts": [
+    {
+     "key": "payment.status",
+     "label": "Payment status",
+     "kind": "choice",
+     "options": [
+      "pending",
+      "settled",
+      "refunded"
+     ]
+    },
+    {
+     "key": "payment.at",
+     "label": "Charged on",
+     "kind": "date"
+    },
+    {
+     "key": "order.status",
+     "label": "Order status",
+     "kind": "choice",
+     "options": [
+      "cancelled",
+      "placed",
+      "shipped",
+      "delivered"
+     ]
+    }
+   ],
+   "examples": [
+    {
+     "label": "Cancelled order, charged 2 days ago",
+     "facts": {
+      "payment.status": "pending",
+      "payment.at": "2026-10-16",
+      "order.status": "cancelled"
+     }
+    },
+    {
+     "label": "Still pending after 12 days",
+     "facts": {
+      "payment.status": "pending",
+      "payment.at": "2026-10-06",
+      "order.status": "cancelled"
+     }
+    },
+    {
+     "label": "Settled charge",
+     "facts": {
+      "payment.status": "settled",
+      "payment.at": "2026-10-02",
+      "order.status": "delivered"
+     }
+    }
+   ]
+  }
+ }
+]

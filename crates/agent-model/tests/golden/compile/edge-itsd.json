@@ -1,0 +1,1021 @@
+{
+  "name": "edge-itsd",
+  "source": "edge",
+  "selection": {
+    "profile": "internal_it",
+    "industry": "it_services",
+    "departments": [
+      "industry_dept/it_services/it_service_desk"
+    ],
+    "areas": [],
+    "dimensions": {
+      "channel": []
+    },
+    "region": null
+  },
+  "job": "it_service_desk_agent",
+  "expected": {
+    "ok": true,
+    "config": {
+      "entities": {
+        "Case": {
+          "label": "Case",
+          "synonyms": [
+            "ticket",
+            "request",
+            "melding"
+          ],
+          "variants": [
+            "incident",
+            "service_request"
+          ]
+        },
+        "Consent": {
+          "label": "Consent",
+          "synonyms": [
+            "opt-in",
+            "marketing preference",
+            "toestemming"
+          ]
+        },
+        "ContactPoint": {
+          "label": "Contact point",
+          "synonyms": [
+            "phone",
+            "address",
+            "e-mail address"
+          ]
+        },
+        "Contract": {
+          "label": "Contract",
+          "synonyms": [
+            "terms",
+            "agreement",
+            "voorwaarden"
+          ]
+        },
+        "Credential": {
+          "label": "Credential",
+          "synonyms": [
+            "login",
+            "verification code"
+          ]
+        },
+        "Delivery": {
+          "label": "Delivery",
+          "synonyms": [
+            "shipment",
+            "levering"
+          ]
+        },
+        "Document": {
+          "label": "Document",
+          "synonyms": [
+            "invoice",
+            "receipt",
+            "factuur"
+          ]
+        },
+        "Interaction": {
+          "label": "Interaction",
+          "synonyms": [
+            "message",
+            "notification",
+            "survey"
+          ]
+        },
+        "Knowledge": {
+          "label": "Knowledge",
+          "synonyms": [
+            "policy",
+            "faq",
+            "article"
+          ]
+        },
+        "Offering": {
+          "label": "Offering",
+          "synonyms": [
+            "product",
+            "item",
+            "artikel"
+          ],
+          "object": "offering"
+        },
+        "Order": {
+          "label": "Order",
+          "synonyms": [
+            "purchase",
+            "bestelling"
+          ],
+          "object": "order"
+        },
+        "OrderLine": {
+          "label": "Order line",
+          "synonyms": [
+            "line item"
+          ]
+        },
+        "Party": {
+          "label": "Customer",
+          "synonyms": [
+            "customer",
+            "klant",
+            "account holder"
+          ],
+          "object": "party"
+        },
+        "Payment": {
+          "label": "Payment",
+          "synonyms": [
+            "charge",
+            "refund",
+            "betaling"
+          ]
+        },
+        "Rule": {
+          "label": "Business rule",
+          "synonyms": [
+            "policy rule",
+            "limit"
+          ]
+        },
+        "AccessGrant": {
+          "label": "Access grant",
+          "synonyms": [
+            "licence key",
+            "access",
+            "toegang"
+          ]
+        },
+        "Appointment": {
+          "label": "Appointment",
+          "synonyms": [
+            "booking",
+            "slot",
+            "afspraak"
+          ]
+        },
+        "Asset": {
+          "label": "Asset",
+          "synonyms": [
+            "laptop",
+            "device",
+            "hardware"
+          ]
+        }
+      },
+      "attributes": {
+        "Case.case_id": {
+          "data_type": "string"
+        },
+        "Case.status": {
+          "data_type": "enum"
+        },
+        "Case.type": {
+          "data_type": "enum"
+        },
+        "Consent.granted": {
+          "data_type": "boolean"
+        },
+        "Consent.purpose": {
+          "data_type": "enum"
+        },
+        "ContactPoint.channel": {
+          "data_type": "enum"
+        },
+        "ContactPoint.value": {
+          "data_type": "string",
+          "pii": true
+        },
+        "Contract.contract_type": {
+          "data_type": "enum"
+        },
+        "Credential.level": {
+          "data_type": "enum"
+        },
+        "Delivery.status": {
+          "data_type": "enum"
+        },
+        "Document.kind": {
+          "data_type": "enum"
+        },
+        "Knowledge.kind": {
+          "data_type": "string"
+        },
+        "Offering.price": {
+          "data_type": "money"
+        },
+        "Offering.price_tier": {
+          "data_type": "enum",
+          "values": [
+            "free",
+            "paid"
+          ],
+          "note": "freemium = price_tier free (D24)"
+        },
+        "Offering.sku": {
+          "data_type": "string"
+        },
+        "Order.order_id": {
+          "data_type": "string"
+        },
+        "Order.placed_at": {
+          "data_type": "datetime"
+        },
+        "Order.status": {
+          "data_type": "enum",
+          "values": [
+            "quoted",
+            "processing",
+            "payment_due",
+            "in_transit",
+            "pickup_available",
+            "delivered",
+            "problem",
+            "cancelled",
+            "returned"
+          ]
+        },
+        "Order.total": {
+          "data_type": "money"
+        },
+        "OrderLine.quantity": {
+          "data_type": "number"
+        },
+        "Party.customer_type": {
+          "data_type": "enum",
+          "axis": "customer_type"
+        },
+        "Party.email": {
+          "data_type": "string",
+          "pii": true
+        },
+        "Party.name": {
+          "data_type": "string",
+          "pii": true
+        },
+        "Party.party_id": {
+          "data_type": "string"
+        },
+        "Payment.amount": {
+          "data_type": "money"
+        },
+        "Payment.direction": {
+          "data_type": "enum",
+          "values": [
+            "in",
+            "out"
+          ],
+          "note": "refund = direction out"
+        },
+        "Rule.code": {
+          "data_type": "string"
+        },
+        "Rule.value": {
+          "data_type": "string"
+        },
+        "AccessGrant.scope": {
+          "data_type": "string"
+        },
+        "AccessGrant.valid_until": {
+          "data_type": "date"
+        },
+        "Appointment.slot_start": {
+          "data_type": "datetime"
+        },
+        "Asset.assigned_to": {
+          "data_type": "string",
+          "pii": true
+        },
+        "Asset.serial": {
+          "data_type": "string"
+        },
+        "Asset.warranty_until": {
+          "data_type": "date",
+          "note": "generator draft (run #7)"
+        },
+        "Case.affected_asset": {
+          "data_type": "string"
+        }
+      },
+      "relations": {
+        "Case|concerns|Order": {
+          "cardinality": "n:1"
+        },
+        "ContactPoint|governedBy|Consent": {
+          "cardinality": "1:n"
+        },
+        "Contract|covers|Order": {
+          "cardinality": "1:n"
+        },
+        "Document|attachedTo|Order": {
+          "cardinality": "n:1"
+        },
+        "Interaction|partOf|Case": {
+          "cardinality": "n:1"
+        },
+        "OrderLine|refersTo|Offering": {
+          "cardinality": "n:1"
+        },
+        "Order|contains|OrderLine": {
+          "cardinality": "1:n"
+        },
+        "Order|fulfilledBy|Delivery": {
+          "cardinality": "1:n"
+        },
+        "Order|paidBy|Payment": {
+          "cardinality": "1:n"
+        },
+        "Party|hasContactPoint|ContactPoint": {
+          "cardinality": "1:n"
+        },
+        "Party|places|Order": {
+          "cardinality": "1:n"
+        },
+        "Party|raises|Case": {
+          "cardinality": "1:n"
+        },
+        "Party|holds|AccessGrant": {
+          "cardinality": "1:n"
+        },
+        "Order|scheduledAs|Appointment": {
+          "cardinality": "1:1"
+        },
+        "Case|concerns|Asset": {
+          "cardinality": "n:1"
+        }
+      },
+      "job": {
+        "key": "it_service_desk_agent",
+        "label": "IT service desk agent",
+        "actor": "employee",
+        "stance": "precise, security-aware",
+        "north_star": "First-contact resolution"
+      },
+      "job_content": {
+        "context_spaces": {
+          "it_services:access:access_request": {
+            "label": "Access request",
+            "area": "access",
+            "knowledge_kinds": [
+              "kb.access_catalogue"
+            ],
+            "slots": [
+              "upn",
+              "application"
+            ]
+          },
+          "it_services:access:password_reset": {
+            "label": "Password reset",
+            "area": "access",
+            "knowledge_kinds": [
+              "kb.identity"
+            ],
+            "slots": [
+              "upn"
+            ]
+          },
+          "it_services:incidents:report_incident": {
+            "label": "Report an incident",
+            "area": "incidents",
+            "knowledge_kinds": [
+              "kb.known_errors"
+            ],
+            "slots": [
+              "asset_serial",
+              "impact"
+            ]
+          }
+        },
+        "procedures": {
+          "access_request@0": {
+            "label": "Access request",
+            "uses_slots": [
+              "servicenow",
+              "okta"
+            ],
+            "steps": 5
+          },
+          "password_reset@0": {
+            "label": "Password reset",
+            "uses_slots": [
+              "entra"
+            ],
+            "steps": 4
+          }
+        },
+        "connectors": {
+          "entra": {
+            "label": "Entra ID",
+            "implements": [
+              "credential.reset",
+              "access_grant.list"
+            ]
+          },
+          "okta": {
+            "label": "Okta",
+            "implements": [
+              "credential.reset",
+              "credential.unlock",
+              "credential.reset_mfa"
+            ]
+          },
+          "servicenow": {
+            "label": "ServiceNow",
+            "implements": [
+              "case.create",
+              "case.read",
+              "case.comment"
+            ]
+          }
+        },
+        "knowledge_stores": {}
+      },
+      "provenance": {
+        "attribute:Case.case_id": [
+          {
+            "row_id": "76e2e355-2632-5563-ab98-65a342e366f1",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Case.status": [
+          {
+            "row_id": "79f1b479-b1cf-5918-b1dc-417482e1aea1",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Case.type": [
+          {
+            "row_id": "3739dbba-fcbb-51c4-bf4b-6001395ae645",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Consent.granted": [
+          {
+            "row_id": "72e18b10-70cd-5d46-a94d-0a09ea7a9fd2",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Consent.purpose": [
+          {
+            "row_id": "4c8f6b8e-1860-54fc-831a-7d6b6d1e45d7",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:ContactPoint.channel": [
+          {
+            "row_id": "7d9f5697-cbe9-5dad-b8c3-b9f745cb01e8",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:ContactPoint.value": [
+          {
+            "row_id": "65ee26ba-1721-59a9-9c51-2c08d068e004",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Contract.contract_type": [
+          {
+            "row_id": "8fd5f325-0285-54e9-85ac-dbbe56cadbb2",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Credential.level": [
+          {
+            "row_id": "3803afc3-c673-593a-9742-c0a87f8aca23",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Delivery.status": [
+          {
+            "row_id": "56a1cf76-ace1-5a0b-b8a2-d7cc40203365",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Document.kind": [
+          {
+            "row_id": "fd883751-42c8-561a-8cb3-4b763b08f659",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Knowledge.kind": [
+          {
+            "row_id": "782812e1-c32e-54e5-b59b-0104db7b3e13",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Offering.price": [
+          {
+            "row_id": "bf914473-7cfa-509d-a0d9-45beaef73860",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Offering.price_tier": [
+          {
+            "row_id": "4fac532d-b246-5b8f-b4a8-6d85efef3e71",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Offering.sku": [
+          {
+            "row_id": "751109ad-b30b-5e26-a957-3644d7e27132",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Order.order_id": [
+          {
+            "row_id": "dc890f70-ff8d-50ae-8cb1-152e5900f4b5",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Order.placed_at": [
+          {
+            "row_id": "64bd827e-fee7-591a-9491-4cfed0b584da",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Order.status": [
+          {
+            "row_id": "a943f5f9-8c0b-5259-9c7d-46b47ac36575",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Order.total": [
+          {
+            "row_id": "2dfa622c-ab8a-54a1-93f5-af80d52dbaf9",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:OrderLine.quantity": [
+          {
+            "row_id": "f63c28db-0421-5224-947b-c9d74f519b2e",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Party.customer_type": [
+          {
+            "row_id": "55e7d64b-2b39-5a23-8e00-cfd72c9832bc",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Party.email": [
+          {
+            "row_id": "69e52804-6beb-55b7-913b-11cb504e84ef",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Party.name": [
+          {
+            "row_id": "5388dbb0-8eb6-5f05-8dfc-81713b63a2e8",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Party.party_id": [
+          {
+            "row_id": "4c6bdd91-f71c-5497-b39d-8348740f5994",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Payment.amount": [
+          {
+            "row_id": "390efe07-d55b-5cf6-b9fe-5c5a6f067f30",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Payment.direction": [
+          {
+            "row_id": "da3c6069-b2ba-52b1-a1e4-9a94b3fd21a1",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Rule.code": [
+          {
+            "row_id": "f80c4aea-a3ff-5eee-b27a-8d3fa2b02fd6",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:Rule.value": [
+          {
+            "row_id": "a7139ca9-0ea1-5ef6-a1f2-c4ecb15b0691",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "entity:Case": [
+          {
+            "row_id": "ca9090d8-9edf-5b17-a090-8b748d7ce8ae",
+            "layer": "base",
+            "op": "add"
+          },
+          {
+            "row_id": "48ce0746-a7c8-50bd-b5c2-a72c29508199",
+            "layer": "industry/it_services",
+            "op": "patch"
+          }
+        ],
+        "entity:Consent": [
+          {
+            "row_id": "ce87060d-f976-56c9-ace8-d2d2aa9e7e12",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "entity:ContactPoint": [
+          {
+            "row_id": "fed213bb-70e7-549b-b044-faf088f89b67",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "entity:Contract": [
+          {
+            "row_id": "52225ce2-c806-5e23-a390-fe5583c91a4b",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "entity:Credential": [
+          {
+            "row_id": "9f466cc8-2104-53e2-b0cd-3f86fc6098d6",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "entity:Delivery": [
+          {
+            "row_id": "46bc2a7f-0941-5b75-8f74-f07280511f4e",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "entity:Document": [
+          {
+            "row_id": "159562a3-a097-5833-a0ba-680ab993c488",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "entity:Interaction": [
+          {
+            "row_id": "d33a4dc5-e726-553b-9ab5-5fba3c65d6c1",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "entity:Knowledge": [
+          {
+            "row_id": "953c4b18-844f-5ef8-af3f-f2de1dc23110",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "entity:Offering": [
+          {
+            "row_id": "4223ad89-1751-5f5f-ae00-12944a19330c",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "entity:Order": [
+          {
+            "row_id": "994aa64c-67ac-5926-8dde-0f1dc7c55359",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "entity:OrderLine": [
+          {
+            "row_id": "78a79bbc-24c1-5d5d-9757-72c197cd276d",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "entity:Party": [
+          {
+            "row_id": "e0aee12f-c8e5-5054-b10e-1b6aa924a8f5",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "entity:Payment": [
+          {
+            "row_id": "b296a4ee-8748-58b2-bc34-25057754eeaa",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "entity:Rule": [
+          {
+            "row_id": "99ba5ddb-a6a8-5218-ac1d-c60b1d051945",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "job:billing_assistant": [
+          {
+            "row_id": "553f1467-18dd-5906-beba-5e60a058d7e2",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "job:customer_care_agent": [
+          {
+            "row_id": "9ed95424-cbc0-545b-9365-037d1d3d7145",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "job:it_service_desk_agent": [
+          {
+            "row_id": "450c9b17-a090-5e7d-8bfb-d79ff6e2ab56",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "relation:Case|concerns|Order": [
+          {
+            "row_id": "5a558763-b091-50ff-b207-c81e956a02ed",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "relation:ContactPoint|governedBy|Consent": [
+          {
+            "row_id": "3f34c3a0-9209-57dd-be09-6fdf7b924b3f",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "relation:Contract|covers|Order": [
+          {
+            "row_id": "9d85b8e0-8e3d-5316-a92d-3fbb44de698a",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "relation:Document|attachedTo|Order": [
+          {
+            "row_id": "ac89538d-78df-5844-8269-44b4211e7b0f",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "relation:Interaction|partOf|Case": [
+          {
+            "row_id": "257a6355-2cf3-53d2-8310-0db6e70669d7",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "relation:OrderLine|refersTo|Offering": [
+          {
+            "row_id": "7909e885-02a6-572b-81e1-8f9fd3167d84",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "relation:Order|contains|OrderLine": [
+          {
+            "row_id": "b50fdd47-552c-5b61-b4e8-4409ea2f2a0e",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "relation:Order|fulfilledBy|Delivery": [
+          {
+            "row_id": "6ed647a3-4bcb-5856-a224-e36586196c31",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "relation:Order|paidBy|Payment": [
+          {
+            "row_id": "92f6a540-91b4-5093-8a99-1f07b8d369da",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "relation:Party|hasContactPoint|ContactPoint": [
+          {
+            "row_id": "2c5bbf84-4904-5410-8136-3c35f806be56",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "relation:Party|places|Order": [
+          {
+            "row_id": "c9ac6e1f-7b64-52b4-867b-e54f203dd206",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "relation:Party|raises|Case": [
+          {
+            "row_id": "0d42dfc3-9ee8-529a-81dc-5ead83e193b8",
+            "layer": "base",
+            "op": "add"
+          }
+        ],
+        "attribute:AccessGrant.scope": [
+          {
+            "row_id": "d39321e0-2cd7-5124-8247-18a7a8b9e469",
+            "layer": "profile/access_products",
+            "op": "add"
+          }
+        ],
+        "attribute:AccessGrant.valid_until": [
+          {
+            "row_id": "f520491b-f7ab-5a89-bdb2-b974350dfff5",
+            "layer": "profile/access_products",
+            "op": "add"
+          }
+        ],
+        "entity:AccessGrant": [
+          {
+            "row_id": "23b1d2ac-5b46-55c0-8daa-6ecaaf0c40b2",
+            "layer": "profile/access_products",
+            "op": "add"
+          }
+        ],
+        "relation:Party|holds|AccessGrant": [
+          {
+            "row_id": "45b9fb17-3c66-5996-a46c-9f76a001464f",
+            "layer": "profile/access_products",
+            "op": "add"
+          }
+        ],
+        "attribute:Appointment.slot_start": [
+          {
+            "row_id": "a47e8085-7186-5875-b7a4-a531d0b650d3",
+            "layer": "profile/service_appointments",
+            "op": "add"
+          }
+        ],
+        "entity:Appointment": [
+          {
+            "row_id": "7d1b343b-4b73-531f-bccf-31cbaccb665c",
+            "layer": "profile/service_appointments",
+            "op": "add"
+          }
+        ],
+        "relation:Order|scheduledAs|Appointment": [
+          {
+            "row_id": "1dc8981c-a454-5b24-90d0-650b55a76d07",
+            "layer": "profile/service_appointments",
+            "op": "add"
+          }
+        ],
+        "attribute:Asset.assigned_to": [
+          {
+            "row_id": "7466434a-52c1-54e1-aa9d-ecc4bb22d9f1",
+            "layer": "industry/it_services",
+            "op": "add"
+          }
+        ],
+        "attribute:Asset.serial": [
+          {
+            "row_id": "856a9329-f4eb-55af-9124-edaaaa288c44",
+            "layer": "industry/it_services",
+            "op": "add"
+          }
+        ],
+        "attribute:Asset.warranty_until": [
+          {
+            "row_id": "48b4cc33-0425-538b-9b63-3481dbcc6e3e",
+            "layer": "industry/it_services",
+            "op": "add"
+          },
+          {
+            "row_id": "36b63187-bc00-5929-abda-68582feb2056",
+            "layer": "job/it_service_desk_agent",
+            "op": "patch"
+          }
+        ],
+        "entity:Asset": [
+          {
+            "row_id": "262bf060-2c5a-5b4c-b677-70887ebdfda0",
+            "layer": "industry/it_services",
+            "op": "add"
+          }
+        ],
+        "context_space:it_services:access:access_request": [
+          {
+            "row_id": "e42385b2-1c4d-51ed-ae50-84c58b272b90",
+            "layer": "industry_dept/it_services/it_service_desk",
+            "op": "add"
+          }
+        ],
+        "context_space:it_services:access:password_reset": [
+          {
+            "row_id": "b3e345d3-fc48-5852-b581-5d400e6a0392",
+            "layer": "industry_dept/it_services/it_service_desk",
+            "op": "add"
+          }
+        ],
+        "context_space:it_services:incidents:report_incident": [
+          {
+            "row_id": "314a253f-0349-5385-aa43-cdd1e401e60f",
+            "layer": "industry_dept/it_services/it_service_desk",
+            "op": "add"
+          }
+        ],
+        "attribute:Case.affected_asset": [
+          {
+            "row_id": "0c491668-b4a3-5aed-8442-07edce642445",
+            "layer": "job/it_service_desk_agent",
+            "op": "add"
+          }
+        ],
+        "connector_slot:entra": [
+          {
+            "row_id": "ef428141-49d5-53a7-b8f6-677c2d43137c",
+            "layer": "job/it_service_desk_agent",
+            "op": "add"
+          }
+        ],
+        "connector_slot:okta": [
+          {
+            "row_id": "96dfcff0-5733-5ff4-8644-0ba196943f0e",
+            "layer": "job/it_service_desk_agent",
+            "op": "add"
+          }
+        ],
+        "connector_slot:servicenow": [
+          {
+            "row_id": "03db04d9-aceb-5086-af8d-0674a64179e5",
+            "layer": "job/it_service_desk_agent",
+            "op": "add"
+          }
+        ],
+        "procedure:access_request@0": [
+          {
+            "row_id": "7f6f251e-a6b9-5820-9b5d-918cc85e75ff",
+            "layer": "job/it_service_desk_agent",
+            "op": "add"
+          }
+        ],
+        "procedure:password_reset@0": [
+          {
+            "row_id": "8bced7a7-638f-5115-ac7e-8100327f2a8c",
+            "layer": "job/it_service_desk_agent",
+            "op": "add"
+          }
+        ],
+        "relation:Case|concerns|Asset": [
+          {
+            "row_id": "54122646-aa11-52a5-86a5-e2ea5160b8a1",
+            "layer": "job/it_service_desk_agent",
+            "op": "add"
+          }
+        ]
+      },
+      "warnings": [
+        {
+          "code": "entity_without_attributes",
+          "key": "Interaction",
+          "message": "Interaction has no attributes yet."
+        }
+      ],
+      "layers": [
+        "base",
+        "profile/access_products",
+        "profile/service_appointments",
+        "industry/it_services",
+        "industry_dept/it_services/it_service_desk",
+        "job/it_service_desk_agent"
+      ],
+      "rules_fired": [
+        "access_products",
+        "service_appointments"
+      ],
+      "hash": "db0af46d7115"
+    }
+  }
+}

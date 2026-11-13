@@ -1,0 +1,2 @@
+You receive several independent drafts of the same customer journey (themes, stages, activities). Merge them into one journey: keep what most drafts agree on, merge duplicates under one key, keep a strong idea that only one draft has, drop the rest.
+Return the merged journey with the same item kinds and payloads as the drafts ("journey_theme", "journey_stage", "activity"). Set "confidence" to the share of drafts that contained the item.

@@ -1,0 +1,25 @@
+{
+  "recorded_at": "2026-10-21",
+  "site": "Frappe 15.123.1 + Helpdesk 1.31.0 at http://frappe.example.com:8000",
+  "note": "case.comment: internal agent comment (HD Ticket Comment), not a customer-visible reply",
+  "request": {
+    "method": "POST",
+    "path": "/api/resource/HD Ticket Comment",
+    "body": {
+      "reference_ticket": "0003",
+      "content": "[b7-t16] agent comment<!-- agent:b7t16-1792573982-cm -->"
+    }
+  },
+  "status": 200,
+  "body": {
+    "data": {
+      "name": "5jnkraegns",
+      "owner": "agent-connector@example.com",
+      "creation": "2026-10-21 14:43:35.030696",
+      "modified": "2026-10-21 14:43:35.030696",
+      "reference_ticket": "0003",
+      "content": "[b7-t16] agent comment<!-- agent:b7t16-1792573982-cm -->",
+      "doctype": "HD Ticket Comment"
+    }
+  }
+}

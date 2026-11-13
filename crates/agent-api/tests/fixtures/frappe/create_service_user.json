@@ -1,0 +1,35 @@
+{
+  "recorded_at": "2026-10-21",
+  "site": "Frappe 15.123.1 + Helpdesk 1.31.0 at http://frappe.example.com:8000",
+  "note": "no customer_email: raised_by = the configured service user (Basic auth)",
+  "request": {
+    "method": "POST",
+    "path": "/api/resource/HD Ticket",
+    "body": {
+      "subject": "[b7-t16] service-user ticket",
+      "description": "Recorded by B7 T16 live verification (no customer email).",
+      "raised_by": "agent-connector@example.com",
+      "ticket_type": "Unspecified",
+      "custom_agent_key": "b7t16-1792573982-b"
+    }
+  },
+  "status": 200,
+  "body": {
+    "data": {
+      "name": "0004",
+      "owner": "agent-connector@example.com",
+      "creation": "2026-10-21 14:43:18.299479",
+      "modified": "2026-10-21 14:43:18.299479",
+      "subject": "[b7-t16] service-user ticket",
+      "custom_agent_key": "b7t16-1792573982-b",
+      "raised_by": "agent-connector@example.com",
+      "status": "Open",
+      "priority": "Medium",
+      "status_category": "Open",
+      "ticket_type": "Unspecified",
+      "description": "Recorded by B7 T16 live verification (no customer email).",
+      "opening_date": "2026-10-21",
+      "doctype": "HD Ticket"
+    }
+  }
+}

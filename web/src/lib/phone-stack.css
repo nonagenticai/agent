@@ -1,0 +1,87 @@
+/* Phone/tablet stacked tables. Put `ph-stack` on a `.tbl-wrap` (or an ancestor of one) and `data-label` on the
+   body cells: at ≤860px the header row goes, each body row becomes a block (first cell = its title, every labelled
+   cell = "LABEL  value"), and the table no longer scrolls sideways. Group rows (`<tr><th colspan>`) become section
+   bars. Desktop rendering is untouched. `ph-only` content shows only in the stacked layout, `ph-off` cells are
+   dropped from it (e.g. a matrix's empty cells). Imported by the pages that use it (U1 viewport work, 2026-10-19). */
+@media (min-width: 861px) {
+	.ph-only {
+		display: none !important;
+	}
+}
+@media (max-width: 860px) {
+	.ph-stack .tbl-wrap,
+	.tbl-wrap.ph-stack {
+		overflow-x: visible;
+		background: none;
+	}
+	:is(.ph-stack .tbl-wrap, .tbl-wrap.ph-stack) .tbl,
+	:is(.ph-stack .tbl-wrap, .tbl-wrap.ph-stack) .tbl > tbody {
+		display: block;
+		width: 100%;
+		min-width: 0; /* pages give wide tables a min-width for the scrolling layout */
+	}
+	:is(.ph-stack .tbl-wrap, .tbl-wrap.ph-stack) .tbl > thead {
+		display: none;
+	}
+	:is(.ph-stack .tbl-wrap, .tbl-wrap.ph-stack) .tbl > tbody > tr {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 5px 10px;
+		align-items: baseline;
+		padding: 10px 12px;
+		border-bottom: 1px solid var(--line-2);
+	}
+	:is(.ph-stack .tbl-wrap, .tbl-wrap.ph-stack) .tbl > tbody > tr:last-child {
+		border-bottom: 0;
+	}
+	:is(.ph-stack .tbl-wrap, .tbl-wrap.ph-stack) .tbl > tbody > tr > :is(td, th) {
+		display: block;
+		flex: 1 1 100%;
+		position: static;
+		min-width: 0;
+		max-width: none;
+		padding: 0;
+		border: 0;
+		box-shadow: none;
+		background: none;
+		text-align: left;
+		white-space: normal;
+		overflow-wrap: anywhere;
+	}
+	:is(.ph-stack .tbl-wrap, .tbl-wrap.ph-stack) .tbl > tbody > tr > :is(td, th):first-child {
+		padding-left: 0; /* beats app.css .card.flush first-cell inset */
+		font-weight: 600;
+		font-size: 13.5px;
+	}
+	:is(.ph-stack .tbl-wrap, .tbl-wrap.ph-stack) .tbl > tbody > tr > td[data-label] {
+		position: relative;
+		padding-left: 112px;
+		min-height: 18px;
+		font-weight: 400;
+		font-size: 13px;
+	}
+	:is(.ph-stack .tbl-wrap, .tbl-wrap.ph-stack) .tbl > tbody > tr > td[data-label]::before {
+		content: attr(data-label);
+		position: absolute;
+		left: 0;
+		top: 1px;
+		width: 102px;
+		font: 600 10.5px/1.5 var(--cond);
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--muted);
+	}
+	:is(.ph-stack .tbl-wrap, .tbl-wrap.ph-stack) .tbl > tbody > tr > .ph-off {
+		display: none;
+	}
+	:is(.ph-stack .tbl-wrap, .tbl-wrap.ph-stack) .tbl > tbody > tr > .ph-half {
+		flex: 0 1 auto;
+	}
+	:is(.ph-stack .tbl-wrap, .tbl-wrap.ph-stack) .tbl > tbody > tr:has(> th[colspan]) {
+		padding: 6px 12px;
+		background: var(--sunk);
+	}
+	.ph-stack .ph-hide {
+		display: none;
+	}
+}

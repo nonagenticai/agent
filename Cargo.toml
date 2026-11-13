@@ -1,0 +1,21 @@
+[workspace]
+resolver = "3"
+members = ["crates/agent-api", "crates/agent-model"]
+
+[workspace.package]
+license = "Apache-2.0"
+
+# RSA key generation in test binaries is minutes at opt-level 0.
+[profile.dev.package.num-bigint-dig]
+opt-level = 3
+
+[profile.dev.package.rsa]
+opt-level = 3
+
+# ~75 integration-test binaries each link every dependency. With CI's line tables (CARGO_PROFILE_DEV_DEBUG) target/
+# reached 15G and the B4 head was evicted mid test step (runner EmptyDir "work" > 16Gi, 2026-10-21). Test builds
+# carry no debuginfo (std's stripped too); panics still name functions. Folding tests into per-plan binaries
+# (tests/b3, tests/b4) is the structural fix.
+[profile.test]
+debug = false
+strip = "debuginfo"

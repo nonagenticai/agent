@@ -1,0 +1,730 @@
+[
+  {
+    "kind": "languages",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {},
+        "key": "languages"
+      }
+    ]
+  },
+  {
+    "kind": "setting",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "key": "preamble"
+        },
+        "key": "setting:preamble"
+      },
+      {
+        "ref": {
+          "key": "stance"
+        },
+        "key": "setting:stance"
+      },
+      {
+        "ref": {
+          "key": "change:reset_password"
+        },
+        "key": "setting:change:reset_password"
+      }
+    ]
+  },
+  {
+    "kind": "overlay",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "object": "context_space",
+          "key": "billing"
+        },
+        "key": "overlay:context_space:billing"
+      },
+      {
+        "ref": {
+          "object": "gate",
+          "key": "B6"
+        },
+        "key": "overlay:gate:B6"
+      },
+      {
+        "ref": {
+          "object": "procedure",
+          "key": "refund.small"
+        },
+        "key": "overlay:procedure:refund.small"
+      }
+    ]
+  },
+  {
+    "kind": "rule_values",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "id": "R-1"
+        },
+        "key": "rule:R-1"
+      },
+      {
+        "ref": {
+          "id": "refund_limit"
+        },
+        "key": "rule:refund_limit"
+      },
+      {
+        "ref": {
+          "id": "0195f48b-7c1e-7d0a-9f3e-000000000099"
+        },
+        "key": "rule:0195f48b-7c1e-7d0a-9f3e-000000000099"
+      }
+    ]
+  },
+  {
+    "kind": "rule_passage",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "id": "R-1"
+        },
+        "key": "rule-passage:R-1"
+      },
+      {
+        "ref": {
+          "id": "refund_limit"
+        },
+        "key": "rule-passage:refund_limit"
+      },
+      {
+        "ref": {
+          "id": "0195f48b-7c1e-7d0a-9f3e-000000000099"
+        },
+        "key": "rule-passage:0195f48b-7c1e-7d0a-9f3e-000000000099"
+      }
+    ]
+  },
+  {
+    "kind": "selection",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {},
+        "key": "selection"
+      }
+    ]
+  },
+  {
+    "kind": "gate",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "gate": "B6",
+          "option": "nl"
+        },
+        "key": "gate:B6:nl"
+      },
+      {
+        "ref": {
+          "gate": "J5",
+          "option": null
+        },
+        "key": "gate:J5:threshold"
+      },
+      {
+        "ref": {
+          "gate": "G-identity",
+          "option": "strict"
+        },
+        "key": "gate:G-identity:strict"
+      }
+    ]
+  },
+  {
+    "kind": "gate_question",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "gate": "B6"
+        },
+        "key": "gate-question:B6"
+      },
+      {
+        "ref": {
+          "gate": "J5"
+        },
+        "key": "gate-question:J5"
+      },
+      {
+        "ref": {
+          "gate": "G-identity"
+        },
+        "key": "gate-question:G-identity"
+      }
+    ]
+  },
+  {
+    "kind": "gate_setting",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "gate": "B6"
+        },
+        "key": "gate-setting:B6"
+      },
+      {
+        "ref": {
+          "gate": "J5"
+        },
+        "key": "gate-setting:J5"
+      },
+      {
+        "ref": {
+          "gate": "SAFE1"
+        },
+        "key": "gate-setting:SAFE1"
+      }
+    ]
+  },
+  {
+    "kind": "entity",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "name": "Customer"
+        },
+        "key": "entity:Customer"
+      },
+      {
+        "ref": {
+          "name": "Invoice"
+        },
+        "key": "entity:Invoice"
+      },
+      {
+        "ref": {
+          "name": "Meter reading"
+        },
+        "key": "entity:Meter reading"
+      }
+    ]
+  },
+  {
+    "kind": "entity_hidden",
+    "scope": "job",
+    "projection": true,
+    "samples": [
+      {
+        "ref": {
+          "name": "Customer"
+        },
+        "key": "hide:Customer"
+      },
+      {
+        "ref": {
+          "name": "Invoice"
+        },
+        "key": "hide:Invoice"
+      },
+      {
+        "ref": {
+          "name": "Meter reading"
+        },
+        "key": "hide:Meter reading"
+      }
+    ]
+  },
+  {
+    "kind": "entity_synonyms",
+    "scope": "job",
+    "projection": true,
+    "samples": [
+      {
+        "ref": {
+          "name": "Customer"
+        },
+        "key": "synonyms:Customer"
+      },
+      {
+        "ref": {
+          "name": "Invoice"
+        },
+        "key": "synonyms:Invoice"
+      },
+      {
+        "ref": {
+          "name": "Meter reading"
+        },
+        "key": "synonyms:Meter reading"
+      }
+    ]
+  },
+  {
+    "kind": "entity_attributes",
+    "scope": "job",
+    "projection": true,
+    "samples": [
+      {
+        "ref": {
+          "name": "Customer"
+        },
+        "key": "attributes:Customer"
+      },
+      {
+        "ref": {
+          "name": "Invoice"
+        },
+        "key": "attributes:Invoice"
+      },
+      {
+        "ref": {
+          "name": "Meter reading"
+        },
+        "key": "attributes:Meter reading"
+      }
+    ]
+  },
+  {
+    "kind": "relation",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "subject": "Customer",
+          "predicate": "has",
+          "object": "Invoice"
+        },
+        "key": "relation:Customer:has:Invoice"
+      },
+      {
+        "ref": {
+          "subject": "Invoice",
+          "predicate": "billed_for",
+          "object": "Meter reading"
+        },
+        "key": "relation:Invoice:billed_for:Meter reading"
+      },
+      {
+        "ref": {
+          "subject": "Ticket",
+          "predicate": "raised_by",
+          "object": "Customer"
+        },
+        "key": "relation:Ticket:raised_by:Customer"
+      }
+    ]
+  },
+  {
+    "kind": "space_required",
+    "scope": "job",
+    "projection": true,
+    "samples": [
+      {
+        "ref": {
+          "key": "billing"
+        },
+        "key": "space:billing"
+      },
+      {
+        "ref": {
+          "key": "identity"
+        },
+        "key": "space:identity"
+      },
+      {
+        "ref": {
+          "key": "outage.area"
+        },
+        "key": "space:outage.area"
+      }
+    ]
+  },
+  {
+    "kind": "knowledge",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "stage": "answer",
+          "kind": "policy"
+        },
+        "key": "kind:answer:policy"
+      },
+      {
+        "ref": {
+          "stage": "triage",
+          "kind": "faq"
+        },
+        "key": "kind:triage:faq"
+      },
+      {
+        "ref": {
+          "stage": "resolve",
+          "kind": "procedure"
+        },
+        "key": "kind:resolve:procedure"
+      }
+    ]
+  },
+  {
+    "kind": "narrowing",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "role": "agent",
+          "activity": "refund",
+          "op": "invoice.credit"
+        },
+        "key": "narrow:agent:refund:invoice.credit"
+      },
+      {
+        "ref": {
+          "role": "supervisor",
+          "activity": "triage",
+          "op": "ticket.assign"
+        },
+        "key": "narrow:supervisor:triage:ticket.assign"
+      },
+      {
+        "ref": {
+          "role": "agent",
+          "activity": "identify",
+          "op": "customer.lookup"
+        },
+        "key": "narrow:agent:identify:customer.lookup"
+      }
+    ]
+  },
+  {
+    "kind": "role_setting",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "role": "assistant"
+        },
+        "key": "role-setting:assistant"
+      },
+      {
+        "ref": {
+          "role": "qualifier"
+        },
+        "key": "role-setting:qualifier"
+      },
+      {
+        "ref": {
+          "role": "field.agent"
+        },
+        "key": "role-setting:field.agent"
+      }
+    ]
+  },
+  {
+    "kind": "procedure",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "name": "refund"
+        },
+        "key": "procedure:refund"
+      },
+      {
+        "ref": {
+          "name": "reset_password"
+        },
+        "key": "procedure:reset_password"
+      },
+      {
+        "ref": {
+          "name": "move house"
+        },
+        "key": "procedure:move house"
+      }
+    ]
+  },
+  {
+    "kind": "route",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "object": "invoice",
+          "verb": "credit",
+          "variant": null,
+          "env": "production"
+        },
+        "key": "route:invoice.credit:production"
+      },
+      {
+        "ref": {
+          "object": "ticket",
+          "verb": "create",
+          "variant": "*",
+          "env": "test"
+        },
+        "key": "route:ticket.create:test"
+      },
+      {
+        "ref": {
+          "object": "customer",
+          "verb": "lookup",
+          "variant": "by_email",
+          "env": "production"
+        },
+        "key": "route:customer.lookup{by_email}:production"
+      }
+    ]
+  },
+  {
+    "kind": "activity",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "key": "identify"
+        },
+        "key": "journey:identify"
+      },
+      {
+        "ref": {
+          "key": "refund"
+        },
+        "key": "journey:refund"
+      },
+      {
+        "ref": {
+          "key": "handover"
+        },
+        "key": "journey:handover"
+      }
+    ]
+  },
+  {
+    "kind": "handover_policy",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {},
+        "key": "handover_policy"
+      }
+    ]
+  },
+  {
+    "kind": "embedding_pin",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "store": "faq"
+        },
+        "key": "embedding:faq"
+      },
+      {
+        "ref": {
+          "store": "policy.gift_cards"
+        },
+        "key": "embedding:policy.gift_cards"
+      },
+      {
+        "ref": {
+          "store": "kb-2"
+        },
+        "key": "embedding:kb-2"
+      }
+    ]
+  },
+  {
+    "kind": "llm_use",
+    "scope": "tenant",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "use": "reply"
+        },
+        "key": "llm-use:reply"
+      },
+      {
+        "ref": {
+          "use": "classify"
+        },
+        "key": "llm-use:classify"
+      },
+      {
+        "ref": {
+          "use": "summarise"
+        },
+        "key": "llm-use:summarise"
+      }
+    ]
+  },
+  {
+    "kind": "provider_slot",
+    "scope": "tenant",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "slot": "chat"
+        },
+        "key": "slot:chat"
+      },
+      {
+        "ref": {
+          "slot": "embed"
+        },
+        "key": "slot:embed"
+      },
+      {
+        "ref": {
+          "slot": "rerank"
+        },
+        "key": "slot:rerank"
+      }
+    ]
+  },
+  {
+    "kind": "mapping_override",
+    "scope": "tenant",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "instance": "crm-1",
+          "op": "customer.lookup",
+          "field": "email"
+        },
+        "key": "mapping:crm-1:customer.lookup:email"
+      },
+      {
+        "ref": {
+          "instance": "billing",
+          "op": "invoice.credit",
+          "field": "amount"
+        },
+        "key": "mapping:billing:invoice.credit:amount"
+      },
+      {
+        "ref": {
+          "instance": "crm-1",
+          "op": "ticket.create",
+          "field": "subject"
+        },
+        "key": "mapping:crm-1:ticket.create:subject"
+      }
+    ]
+  },
+  {
+    "kind": "tenant_template",
+    "scope": "tenant",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "key": "zendesk",
+          "version": "1"
+        },
+        "key": "tenant-template:zendesk@1"
+      },
+      {
+        "ref": {
+          "key": "salesforce",
+          "version": "3"
+        },
+        "key": "tenant-template:salesforce@3"
+      },
+      {
+        "ref": {
+          "key": "custom.erp",
+          "version": "12"
+        },
+        "key": "tenant-template:custom.erp@12"
+      }
+    ]
+  },
+  {
+    "kind": "tenant_calendar",
+    "scope": "tenant",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {},
+        "key": "tenant-calendar"
+      }
+    ]
+  },
+  {
+    "kind": "tool_policy",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "op": "order.read"
+        },
+        "key": "tool-policy:order.read"
+      },
+      {
+        "ref": {
+          "op": "case.create{return}"
+        },
+        "key": "tool-policy:case.create{return}"
+      }
+    ]
+  },
+  {
+    "kind": "iam_attachment",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "procedure": "11111111-1111-1111-1111-111111111111"
+        },
+        "key": "iam-attachment:11111111-1111-1111-1111-111111111111"
+      }
+    ]
+  },
+  {
+    "kind": "job_operation",
+    "scope": "job",
+    "projection": false,
+    "samples": [
+      {
+        "ref": {
+          "op": "fr.start_project"
+        },
+        "key": "job-op:fr.start_project"
+      }
+    ]
+  }
+]

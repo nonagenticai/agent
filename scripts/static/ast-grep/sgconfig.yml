@@ -1,0 +1,4 @@
+# ast-grep project config for the pre-submit static gate (scripts/static/gate.sh).
+# Run: ast-grep scan -c scripts/static/ast-grep/sgconfig.yml crates
+ruleDirs:
+  - rules

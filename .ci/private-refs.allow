@@ -1,0 +1,42 @@
+# Allowlist for scripts/ci/no-private-refs.sh — a security decision, not a convenience.
+#
+# One rule per line, `path/glob:pattern  # justification`. The glob matches the repo-relative
+# path; the pattern is an ERE matched against the whole `git grep` hit (`path:line:text`).
+# Blank lines and `#` comments are ignored. A justification is mandatory in review.
+#
+# ⛔ Do NOT add an entry to keep a real internal hostname, address or private repository path
+# in a public tree. Remove it instead. An entry is only for a string that *looks* private but
+# is not: a documented loopback example, a placeholder, or a term that collides with a rule.
+#
+# Everything below is one of three shapes:
+#   1. a SECURITY RULE that must name `.internal`/CGNAT/service-DNS to block it, plus the
+#      fixtures that assert the block — the guard is searching for the string the feature exists
+#      to reject;
+#   2. an IDENTIFIER that happens to be called `internal` (a struct field, a TS property);
+#   3. a TEST FIXTURE whose whole point is that the target is private and must be refused.
+# Each rule is scoped to the file where that is true, never to the repository.
+
+# ── rules and their fixtures ────────────────────────────────────────────────────────────────
+crates/agent-api/src/netguard.rs:\.internal|100\.|registry\.internal|\.svc\.cluster\.local   # the SSRF block rule and the fixtures that assert it
+crates/agent-api/src/generator/llm.rs:\.internal|100\.64\.            # funding-lane classifier: internal/private ⇒ local_gpu
+crates/agent-api/src/knowledge/sources.rs:\.internal|100\.           # fixtures asserting a private source is refused
+crates/agent-api/src/knowledge/packs/curation.rs:\.internal|\.svc\.cluster\.local  # fixtures asserting a private source is refused
+crates/agent-api/src/interaction/webhook.rs:100\.                    # fixtures asserting a private webhook target is refused
+
+# ── identifiers named `internal` ────────────────────────────────────────────────────────────
+crates/agent-api/src/interaction/mod.rs:\.internal                   # struct field `internal`, not a hostname
+crates/agent-api/src/providers/llm.rs:ctx\.internal                  # struct field access, not a hostname
+web/src/lib/api/types/tenant.ts:\.internal                           # TS property `GpuProviderKind.internal`
+web/src/lib/connectors/ops.ts:\.internal                             # client-side private-host rule, not a reference
+web/src/routes/admin/knowledge/stores/ModelCard.svelte:\.internal    # TS property `embedding.internal`
+
+# ── test fixtures asserting a private target is refused ─────────────────────────────────────
+crates/agent-api/tests/b3/foundations.rs:100\.|\.internal|\.svc\.cluster\.local
+crates/agent-api/tests/b3/llm_providers.rs:100\.|\.internal
+crates/agent-api/tests/b3/sources.rs:100\.|\.internal
+crates/agent-api/tests/b5/laya.rs:\.internal
+crates/agent-api/tests/common/strata_fake.rs:\.internal
+crates/agent-api/tests/connector_instances.rs:100\.|\.internal|\.svc\.cluster\.local
+crates/agent-api/tests/pk/curation.rs:\.internal
+crates/agent-api/tests/transports.rs:100\.|\.internal|\.svc\.cluster\.local
+web/tests/unit/connectors-ops.test.ts:100\.|\.internal

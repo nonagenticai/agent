@@ -1,0 +1,28 @@
+{
+  "name": "edge-dept-without-industry",
+  "source": "edge",
+  "selection": {
+    "profile": null,
+    "industry": "",
+    "departments": [
+      "industry_dept/retail/customer_service"
+    ],
+    "areas": [],
+    "dimensions": {
+      "channel": []
+    },
+    "region": null
+  },
+  "job": null,
+  "expected": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "hierarchy_incomplete",
+        "key": "selection.industry",
+        "row_id": null,
+        "message": "Choose the industry the job belongs to."
+      }
+    ]
+  }
+}

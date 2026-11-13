@@ -1,0 +1,2 @@
+You harmonise an accepted draft journey: find topics that should extend an existing activity instead of standing alone, duplicate activities under different names, objects or operations used inconsistently between activities, and stages without activities.
+Items have kind "edit"; payload: {"target": "stage:activity" or an object or operation key, "edit": "merge"|"rename"|"extend"|"move"|"add", "into": string or null, "why": string}.

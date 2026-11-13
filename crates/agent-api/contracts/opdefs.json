@@ -1,0 +1,1794 @@
+[
+  {
+    "identity_level": "0",
+    "input_fields": [
+      "query",
+      "kind",
+      "store"
+    ],
+    "object": "knowledge",
+    "output_fields": [
+      "passages",
+      "citations"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "search"
+  },
+  {
+    "identity_level": "0",
+    "input_fields": [
+      "question",
+      "kind"
+    ],
+    "object": "knowledge",
+    "output_fields": [
+      "answer",
+      "citations"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "answer"
+  },
+  {
+    "identity_level": "0",
+    "input_fields": [
+      "query",
+      "category"
+    ],
+    "object": "offering",
+    "output_fields": [
+      "offering_id",
+      "name",
+      "price",
+      "availability",
+      "stock_level"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "0",
+    "input_fields": [
+      "offering_id"
+    ],
+    "object": "offering",
+    "output_fields": [
+      "sku",
+      "name",
+      "description",
+      "price",
+      "availability",
+      "stock_level"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "read"
+  },
+  {
+    "identity_level": "1",
+    "input_fields": [
+      "email",
+      "phone",
+      "order_id"
+    ],
+    "object": "party",
+    "output_fields": [
+      "party_id",
+      "roles"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id"
+    ],
+    "object": "party",
+    "output_fields": [
+      "name",
+      "email",
+      "phone",
+      "postal_address"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "read"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "credential_id"
+    ],
+    "object": "credential",
+    "output_fields": [
+      "status",
+      "temporary_password_sent"
+    ],
+    "side_effect": "X",
+    "variant": "*",
+    "verb": "reset"
+  },
+  {
+    "identity_level": "3",
+    "input_fields": [
+      "credential_id"
+    ],
+    "object": "credential",
+    "output_fields": [
+      "status"
+    ],
+    "side_effect": "X",
+    "variant": "*",
+    "verb": "reset_mfa"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "credential_id"
+    ],
+    "object": "credential",
+    "output_fields": [
+      "status"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "unlock"
+  },
+  {
+    "identity_level": "3",
+    "input_fields": [
+      "contact_point_id",
+      "value"
+    ],
+    "object": "contact_point",
+    "output_fields": [
+      "type",
+      "value",
+      "verified"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "update"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id"
+    ],
+    "object": "contact_point",
+    "output_fields": [
+      "contact_point_id",
+      "kind",
+      "value_masked",
+      "preferred"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "1",
+    "input_fields": [
+      "topic",
+      "channel",
+      "granted"
+    ],
+    "object": "consent",
+    "output_fields": [
+      "topic",
+      "granted",
+      "date"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "update"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id"
+    ],
+    "object": "order",
+    "output_fields": [
+      "order_id",
+      "status",
+      "placed_at",
+      "total",
+      "items"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "order_id"
+    ],
+    "object": "order",
+    "output_fields": [
+      "status",
+      "lines",
+      "total",
+      "delivery_type",
+      "payment_method_ref",
+      "customer_id",
+      "customer_email",
+      "delivery_postcode",
+      "placed_at",
+      "delivered_at"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "read"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "order_id"
+    ],
+    "object": "order",
+    "output_fields": [
+      "status",
+      "payment_url"
+    ],
+    "side_effect": "P",
+    "variant": "*",
+    "verb": "place"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "order_id",
+      "lines",
+      "delivery_address"
+    ],
+    "object": "order",
+    "output_fields": [
+      "status",
+      "lines",
+      "total"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "modify"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "order_id",
+      "reason"
+    ],
+    "object": "order",
+    "output_fields": [
+      "status",
+      "refund_expected"
+    ],
+    "side_effect": "X",
+    "variant": "*",
+    "verb": "cancel"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "order_id"
+    ],
+    "object": "delivery",
+    "output_fields": [
+      "status",
+      "carrier",
+      "tracking_ref",
+      "tracking_url",
+      "expected_window",
+      "address",
+      "events"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "read"
+  },
+  {
+    "identity_level": "1",
+    "input_fields": [
+      "tracking_ref"
+    ],
+    "object": "delivery",
+    "output_fields": [
+      "status",
+      "carrier",
+      "expected_window",
+      "events"
+    ],
+    "side_effect": "R",
+    "variant": "by_tracking_ref",
+    "verb": "read"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "delivery_id",
+      "address"
+    ],
+    "object": "delivery",
+    "output_fields": [
+      "status",
+      "address"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "redirect"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "order_id",
+      "address"
+    ],
+    "object": "delivery",
+    "output_fields": [
+      "status",
+      "address"
+    ],
+    "side_effect": "W",
+    "variant": "by_order",
+    "verb": "redirect"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "delivery_id",
+      "problem",
+      "photo_ref"
+    ],
+    "object": "delivery",
+    "output_fields": [
+      "case_id",
+      "status"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "report_problem"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "order_id",
+      "problem",
+      "photo_ref"
+    ],
+    "object": "delivery",
+    "output_fields": [
+      "case_id",
+      "status"
+    ],
+    "side_effect": "W",
+    "variant": "by_order",
+    "verb": "report_problem"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id"
+    ],
+    "object": "delivery",
+    "output_fields": [
+      "status",
+      "carrier",
+      "tracking_ref",
+      "tracking_url",
+      "expected_window",
+      "address",
+      "events",
+      "order_id"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id"
+    ],
+    "object": "return",
+    "output_fields": [
+      "return_id",
+      "order_id",
+      "status",
+      "created_at"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id"
+    ],
+    "object": "case",
+    "output_fields": [
+      "case_id",
+      "title",
+      "status",
+      "updated_at"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id"
+    ],
+    "object": "claim",
+    "output_fields": [
+      "claim_id",
+      "claim_number",
+      "policy_id",
+      "status",
+      "loss_type",
+      "reported_at",
+      "next_step",
+      "description",
+      "incident_date"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id"
+    ],
+    "object": "premium_notice",
+    "output_fields": [
+      "premium_notice_id",
+      "policy_id",
+      "period",
+      "amount",
+      "currency",
+      "due_date",
+      "status"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id"
+    ],
+    "object": "payslip",
+    "output_fields": [
+      "payslip_id",
+      "period",
+      "issue_date"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id"
+    ],
+    "object": "account",
+    "output_fields": [
+      "account_id",
+      "account_ref",
+      "kind",
+      "status",
+      "opened_at"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id"
+    ],
+    "object": "invoice",
+    "output_fields": [
+      "document_ref",
+      "kind",
+      "issue_date",
+      "amount",
+      "currency"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id"
+    ],
+    "object": "send",
+    "output_fields": [
+      "campaign_ref",
+      "campaign_name",
+      "channel",
+      "sent_at"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id",
+      "order_id"
+    ],
+    "object": "payment",
+    "output_fields": [
+      "payment_id",
+      "direction",
+      "amount",
+      "method_ref",
+      "status",
+      "date",
+      "customer_id",
+      "customer_email",
+      "delivery_postcode",
+      "order_id"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "payment_id",
+      "amount",
+      "refund_reason"
+    ],
+    "object": "payment",
+    "output_fields": [
+      "status",
+      "amount",
+      "expected_at"
+    ],
+    "side_effect": "X",
+    "variant": "*",
+    "verb": "refund"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "order_id",
+      "amount"
+    ],
+    "object": "payment",
+    "output_fields": [
+      "payment_url",
+      "expires_at"
+    ],
+    "side_effect": "P",
+    "variant": "*",
+    "verb": "create"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "rule_id",
+      "subject_object"
+    ],
+    "object": "rule",
+    "output_fields": [
+      "outcome",
+      "reason",
+      "options"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "evaluate"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "order_id",
+      "delivered_at",
+      "return_lines"
+    ],
+    "object": "rule",
+    "output_fields": [
+      "outcome",
+      "reason",
+      "options"
+    ],
+    "side_effect": "R",
+    "variant": "RET-01",
+    "verb": "evaluate"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "order_id",
+      "offering_id",
+      "purchase_date"
+    ],
+    "object": "rule",
+    "output_fields": [
+      "outcome",
+      "reason",
+      "options"
+    ],
+    "side_effect": "R",
+    "variant": "WAR-01",
+    "verb": "evaluate"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "payment_id"
+    ],
+    "object": "rule",
+    "output_fields": [
+      "outcome",
+      "reason",
+      "options"
+    ],
+    "side_effect": "R",
+    "variant": "PAY-04",
+    "verb": "evaluate"
+  },
+  {
+    "identity_level": "0",
+    "input_fields": [
+      "code",
+      "basket_total",
+      "offering_ids"
+    ],
+    "object": "rule",
+    "output_fields": [
+      "outcome",
+      "reason",
+      "options"
+    ],
+    "side_effect": "R",
+    "variant": "PROMO-01",
+    "verb": "evaluate"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "case_type",
+      "subject",
+      "subject_object",
+      "description",
+      "customer_email"
+    ],
+    "object": "case",
+    "output_fields": [
+      "case_id",
+      "status",
+      "due_at"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "create"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "subject_object",
+      "return_lines",
+      "return_method",
+      "refund_type",
+      "customer_email"
+    ],
+    "object": "case",
+    "output_fields": [
+      "case_id",
+      "status",
+      "label",
+      "deadline"
+    ],
+    "side_effect": "W",
+    "variant": "return",
+    "verb": "create"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "subject_object",
+      "description",
+      "photo_ref",
+      "customer_email"
+    ],
+    "object": "case",
+    "output_fields": [
+      "case_id",
+      "status",
+      "due_at"
+    ],
+    "side_effect": "W",
+    "variant": "warranty_claim",
+    "verb": "create"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "case_type",
+      "subject",
+      "subject_object",
+      "description",
+      "customer_email"
+    ],
+    "object": "case",
+    "output_fields": [
+      "case_id",
+      "status",
+      "due_at"
+    ],
+    "side_effect": "W",
+    "variant": "complaint",
+    "verb": "create"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "subject_object",
+      "amount",
+      "description",
+      "customer_email"
+    ],
+    "object": "case",
+    "output_fields": [
+      "case_id",
+      "status",
+      "due_at"
+    ],
+    "side_effect": "W",
+    "variant": "dispute",
+    "verb": "create"
+  },
+  {
+    "identity_level": "1",
+    "input_fields": [
+      "subject",
+      "transcript_ref",
+      "customer_email"
+    ],
+    "object": "case",
+    "output_fields": [
+      "case_id",
+      "status",
+      "due_at"
+    ],
+    "side_effect": "W",
+    "variant": "handover",
+    "verb": "create"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id",
+      "case_type",
+      "subject",
+      "subject_object",
+      "description",
+      "customer_email"
+    ],
+    "object": "case",
+    "output_fields": [
+      "case_id",
+      "status",
+      "due_at"
+    ],
+    "side_effect": "W",
+    "variant": "service_request",
+    "verb": "create"
+  },
+  {
+    "identity_level": "1",
+    "input_fields": [
+      "case_type",
+      "subject",
+      "subject_object",
+      "description",
+      "customer_email"
+    ],
+    "object": "case",
+    "output_fields": [
+      "case_id",
+      "status",
+      "due_at"
+    ],
+    "side_effect": "W",
+    "variant": "incident",
+    "verb": "create"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "subject",
+      "subject_object",
+      "description",
+      "customer_email"
+    ],
+    "object": "case",
+    "output_fields": [
+      "case_id",
+      "status",
+      "due_at"
+    ],
+    "side_effect": "W",
+    "variant": "data_subject_request",
+    "verb": "create"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "subject",
+      "subject_object",
+      "description"
+    ],
+    "object": "case",
+    "output_fields": [
+      "case_id",
+      "status",
+      "due_at"
+    ],
+    "side_effect": "W",
+    "variant": "fault",
+    "verb": "create"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "subject",
+      "subject_object",
+      "description"
+    ],
+    "object": "case",
+    "output_fields": [
+      "case_id",
+      "status",
+      "due_at"
+    ],
+    "side_effect": "W",
+    "variant": "prescription_query",
+    "verb": "create"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "case_id"
+    ],
+    "object": "case",
+    "output_fields": [
+      "status",
+      "case_type",
+      "due_at",
+      "queue",
+      "title",
+      "latest_update"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "read"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "case_id",
+      "comment"
+    ],
+    "object": "case",
+    "output_fields": [
+      "status"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "comment"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "document_id"
+    ],
+    "object": "document",
+    "output_fields": [
+      "kind",
+      "issue_date",
+      "url"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "read"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "order_id"
+    ],
+    "object": "document",
+    "output_fields": [
+      "kind",
+      "issue_date",
+      "url"
+    ],
+    "side_effect": "R",
+    "variant": "invoice",
+    "verb": "read"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "document_id"
+    ],
+    "object": "document",
+    "output_fields": [
+      "kind",
+      "issue_date",
+      "url",
+      "period",
+      "gross",
+      "tax",
+      "pension",
+      "net",
+      "currency"
+    ],
+    "side_effect": "R",
+    "variant": "payslip",
+    "verb": "read"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "contract_id"
+    ],
+    "object": "contract",
+    "output_fields": [
+      "contract_type",
+      "status",
+      "terms_version",
+      "accepted_at"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "read"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "order_id"
+    ],
+    "object": "contract",
+    "output_fields": [
+      "terms_version",
+      "accepted_at",
+      "url"
+    ],
+    "side_effect": "R",
+    "variant": "tc",
+    "verb": "read"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id",
+      "channel",
+      "topic",
+      "content_ref"
+    ],
+    "object": "interaction",
+    "output_fields": [
+      "interaction_id",
+      "delivery_status"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "send"
+  },
+  {
+    "identity_level": "1",
+    "input_fields": [
+      "party_id",
+      "channel",
+      "topic"
+    ],
+    "object": "interaction",
+    "output_fields": [
+      "interaction_id",
+      "delivery_status"
+    ],
+    "side_effect": "W",
+    "variant": "double_opt_in",
+    "verb": "send"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id",
+      "type"
+    ],
+    "object": "interaction",
+    "output_fields": [
+      "interaction_id"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "create"
+  },
+  {
+    "identity_level": "1",
+    "input_fields": [
+      "party_id",
+      "type"
+    ],
+    "object": "interaction",
+    "output_fields": [
+      "interaction_id"
+    ],
+    "side_effect": "W",
+    "variant": "survey",
+    "verb": "create"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id",
+      "slot",
+      "offering_id"
+    ],
+    "object": "appointment",
+    "output_fields": [
+      "appointment_id",
+      "status",
+      "slot"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "book"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "appointment_id"
+    ],
+    "object": "appointment",
+    "output_fields": [
+      "status"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "cancel"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id"
+    ],
+    "object": "access_grant",
+    "output_fields": [
+      "grant_id",
+      "resource",
+      "role",
+      "status"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "resource",
+      "role",
+      "period"
+    ],
+    "object": "access_grant",
+    "output_fields": [
+      "grant_id",
+      "status"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "create"
+  },
+  {
+    "identity_level": "S",
+    "input_fields": [
+      "grant_id"
+    ],
+    "object": "access_grant",
+    "output_fields": [
+      "status"
+    ],
+    "side_effect": "X",
+    "variant": "*",
+    "verb": "revoke"
+  },
+  {
+    "identity_level": "0",
+    "input_fields": [
+      "area"
+    ],
+    "object": "service_event",
+    "output_fields": [
+      "type",
+      "status",
+      "area",
+      "start",
+      "estimated_restore"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "contract_id",
+      "period",
+      "usage_type"
+    ],
+    "object": "usage",
+    "output_fields": [
+      "usage_type",
+      "quantity",
+      "unit",
+      "reading_type",
+      "roaming_zone",
+      "out_of_bundle"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "3",
+    "input_fields": [
+      "contract_id",
+      "type",
+      "instalments"
+    ],
+    "object": "arrangement",
+    "output_fields": [
+      "arrangement_id",
+      "status"
+    ],
+    "side_effect": "X",
+    "variant": "*",
+    "verb": "create"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id"
+    ],
+    "object": "asset",
+    "output_fields": [
+      "asset_id",
+      "serial",
+      "warranty_until",
+      "status"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "0",
+    "input_fields": [
+      "code"
+    ],
+    "object": "promotion",
+    "output_fields": [
+      "kind",
+      "valid_to",
+      "applies_to"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "read"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id",
+      "absence_type",
+      "start_date",
+      "expected_return"
+    ],
+    "object": "absence",
+    "output_fields": [
+      "absence_id",
+      "status"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "create"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id",
+      "start_date",
+      "expected_return"
+    ],
+    "object": "absence",
+    "output_fields": [
+      "absence_id",
+      "status"
+    ],
+    "side_effect": "W",
+    "variant": "sickness",
+    "verb": "create"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id",
+      "status"
+    ],
+    "object": "appointment",
+    "output_fields": [
+      "appointment_id",
+      "offering_id",
+      "slot",
+      "status"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "claim_id",
+      "document_kind",
+      "upload_ref",
+      "note"
+    ],
+    "object": "claim",
+    "output_fields": [
+      "document_id",
+      "status"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "add_document"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "policy_id",
+      "date_of_loss",
+      "cause",
+      "description",
+      "asset_id",
+      "claimed_amount",
+      "claimant_role"
+    ],
+    "object": "claim",
+    "output_fields": [
+      "claim_id",
+      "claim_number",
+      "status",
+      "documents_requested"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "create"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "claim_number"
+    ],
+    "object": "claim",
+    "output_fields": [
+      "claim_id",
+      "policy_id",
+      "status",
+      "documents_requested",
+      "decision_reason",
+      "paid_amount",
+      "reported_at",
+      "next_step",
+      "description",
+      "incident_date"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "read"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id",
+      "topic",
+      "channel"
+    ],
+    "object": "consent",
+    "output_fields": [
+      "topic",
+      "channel",
+      "granted",
+      "date",
+      "source"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "policy_id",
+      "loss_type"
+    ],
+    "object": "coverage",
+    "output_fields": [
+      "coverage_id",
+      "coverage_type",
+      "limit",
+      "excess_amount",
+      "excess_type",
+      "waiting_period_end",
+      "conditions_ref",
+      "covered"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "check"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "prescription_id"
+    ],
+    "object": "dispense",
+    "output_fields": [
+      "dispense_id",
+      "status",
+      "when_prepared",
+      "fulfilment",
+      "collection_point",
+      "delivery_id"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "read"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "dispense_id",
+      "change"
+    ],
+    "object": "dispense",
+    "output_fields": [
+      "dispense_id",
+      "status"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "update"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "dispense_id",
+      "fulfilment",
+      "collection_point",
+      "delivery_address"
+    ],
+    "object": "dispense",
+    "output_fields": [
+      "status",
+      "fulfilment",
+      "collection_point",
+      "when_prepared"
+    ],
+    "side_effect": "W",
+    "variant": "fulfilment",
+    "verb": "update"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id",
+      "leave_id"
+    ],
+    "object": "leave",
+    "output_fields": [
+      "status"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "cancel"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id",
+      "leave_type",
+      "start_date",
+      "end_date",
+      "part_day",
+      "hours"
+    ],
+    "object": "leave",
+    "output_fields": [
+      "leave_id",
+      "status",
+      "approver"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "create"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id",
+      "leave_type"
+    ],
+    "object": "leave",
+    "output_fields": [
+      "leave_id",
+      "leave_type",
+      "start_date",
+      "end_date",
+      "status",
+      "balance"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id"
+    ],
+    "object": "loyalty_account",
+    "output_fields": [
+      "programme",
+      "points_balance",
+      "tier",
+      "next_expiry_date",
+      "points_expiring"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "read"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id",
+      "status"
+    ],
+    "object": "onboarding_task",
+    "output_fields": [
+      "task_id",
+      "title",
+      "due_date",
+      "owner",
+      "status"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "1",
+    "input_fields": [
+      "customer_type",
+      "name",
+      "email",
+      "phone",
+      "roles"
+    ],
+    "object": "party",
+    "output_fields": [
+      "party_id",
+      "roles"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "create"
+  },
+  {
+    "identity_level": "3",
+    "input_fields": [
+      "party_id",
+      "name",
+      "postal_address",
+      "billing_address",
+      "tax_id"
+    ],
+    "object": "party",
+    "output_fields": [
+      "name",
+      "postal_address",
+      "billing_address",
+      "tax_id"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "update"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "policy_id",
+      "reason",
+      "requested_end_date",
+      "withdrawal"
+    ],
+    "object": "policy",
+    "output_fields": [
+      "status",
+      "end_date",
+      "premium_refund_expected"
+    ],
+    "side_effect": "X",
+    "variant": "*",
+    "verb": "cancel_request"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "policy_id",
+      "change_type",
+      "details",
+      "requested_effective_date"
+    ],
+    "object": "policy",
+    "output_fields": [
+      "endorsement_id",
+      "status",
+      "effective_date",
+      "premium_effect"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "change_request"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id",
+      "status"
+    ],
+    "object": "policy",
+    "output_fields": [
+      "policy_id",
+      "policy_number",
+      "line_of_business",
+      "status",
+      "renewal_date",
+      "product_name",
+      "annual_premium",
+      "excess",
+      "currency"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "policy_id"
+    ],
+    "object": "policy",
+    "output_fields": [
+      "policy_number",
+      "line_of_business",
+      "status",
+      "start_date",
+      "end_date",
+      "renewal_date",
+      "conditions_version",
+      "cooling_off_until",
+      "asset_id",
+      "product_name",
+      "annual_premium",
+      "excess",
+      "currency"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "read"
+  },
+  {
+    "identity_level": "3",
+    "input_fields": [
+      "msisdn",
+      "direction",
+      "porting_date",
+      "consent"
+    ],
+    "object": "porting",
+    "output_fields": [
+      "porting_id",
+      "status",
+      "porting_date"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "create"
+  },
+  {
+    "identity_level": "3",
+    "input_fields": [
+      "msisdn",
+      "donor_operator",
+      "porting_date",
+      "consent"
+    ],
+    "object": "porting",
+    "output_fields": [
+      "porting_id",
+      "status",
+      "porting_date"
+    ],
+    "side_effect": "W",
+    "variant": "port_in",
+    "verb": "create"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "msisdn"
+    ],
+    "object": "porting",
+    "output_fields": [
+      "porting_id",
+      "direction",
+      "status",
+      "porting_date",
+      "rejection_reason"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "read"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "policy_id"
+    ],
+    "object": "premium",
+    "output_fields": [
+      "premium_id",
+      "amount",
+      "premium_tax",
+      "frequency",
+      "due_date",
+      "status"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "read"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id",
+      "status"
+    ],
+    "object": "prescription",
+    "output_fields": [
+      "prescription_id",
+      "medication",
+      "status",
+      "repeats_allowed",
+      "repeats_used"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "prescription_id"
+    ],
+    "object": "prescription",
+    "output_fields": [
+      "prescription_id",
+      "medication",
+      "status",
+      "authored_on",
+      "repeats_allowed",
+      "repeats_used"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "read"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "prescription_id",
+      "needed_by"
+    ],
+    "object": "prescription",
+    "output_fields": [
+      "prescription_id",
+      "status"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "request_repeat"
+  },
+  {
+    "identity_level": "1",
+    "input_fields": [
+      "offering_id",
+      "practitioner",
+      "from",
+      "to"
+    ],
+    "object": "slot",
+    "output_fields": [
+      "slot_id",
+      "start",
+      "end",
+      "location",
+      "practitioner",
+      "status"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "subscription_id",
+      "offering_id",
+      "requested_date"
+    ],
+    "object": "subscription",
+    "output_fields": [
+      "subscription_id",
+      "status",
+      "effective_date",
+      "commitment_end"
+    ],
+    "side_effect": "W",
+    "variant": "*",
+    "verb": "change"
+  },
+  {
+    "identity_level": "2",
+    "input_fields": [
+      "party_id",
+      "status"
+    ],
+    "object": "subscription",
+    "output_fields": [
+      "subscription_id",
+      "offering_id",
+      "msisdn",
+      "status",
+      "commitment_end"
+    ],
+    "side_effect": "R",
+    "variant": "*",
+    "verb": "list"
+  }
+]

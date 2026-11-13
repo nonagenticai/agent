@@ -1,0 +1,9 @@
+id: no-versioned-api-route
+language: rust
+severity: error
+message: "Routes are unversioned /api/<resource>, never /api/v1/... (fleet convention)."
+files:
+  - "crates/*/src/**"
+rule:
+  kind: string_literal
+  regex: ^"/api/v\d+/

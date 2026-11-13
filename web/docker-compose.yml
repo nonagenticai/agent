@@ -1,0 +1,19 @@
+# Start: docker compose up --build -d
+# Open: http://localhost:4310
+# Set WEB_PORT to change the local port; set ORIGIN for a custom public URL.
+# Everyone signs in through Keycloak (PUBLIC_KEYCLOAK_URL / _REALM / _CLIENT_ID); the app runs on the real agent-api only.
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BASE_REGISTRY: ${BASE_REGISTRY:-docker.io}
+    ports:
+      - '${WEB_PORT:-4310}:4310'
+    environment:
+      HOST: 0.0.0.0
+      PORT: '4310'
+      ORIGIN: ${ORIGIN:-http://localhost:${WEB_PORT:-4310}}
+    init: true
+    restart: unless-stopped

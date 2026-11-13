@@ -1,0 +1,7 @@
+id: ignore-needs-reason
+language: rust
+severity: error
+message: "Bare #[ignore]: say why and how to run it (#[ignore = \"...\"]) so the ignored/manual acceptance run is named."
+rule:
+  kind: attribute_item
+  regex: ^#\[\s*ignore\s*\]$

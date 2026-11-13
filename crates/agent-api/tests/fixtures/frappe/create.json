@@ -1,0 +1,35 @@
+{
+  "recorded_at": "2026-10-21",
+  "site": "Frappe 15.123.1 + Helpdesk 1.31.0 at http://frappe.example.com:8000",
+  "note": "customer_email given: raised_by = the customer; Helpdesk accepts an unknown email (no Contact is created)",
+  "request": {
+    "method": "POST",
+    "path": "/api/resource/HD Ticket",
+    "body": {
+      "subject": "[b7-t16] customer ticket",
+      "description": "Recorded by B7 T16 live verification.",
+      "raised_by": "b7t16-customer@example.com",
+      "ticket_type": "Question",
+      "custom_agent_key": "b7t16-1792573982-a"
+    }
+  },
+  "status": 200,
+  "body": {
+    "data": {
+      "name": "0003",
+      "owner": "agent-connector@example.com",
+      "creation": "2026-10-21 14:43:03.732334",
+      "modified": "2026-10-21 14:43:03.732334",
+      "subject": "[b7-t16] customer ticket",
+      "custom_agent_key": "b7t16-1792573982-a",
+      "raised_by": "b7t16-customer@example.com",
+      "status": "Open",
+      "priority": "Medium",
+      "status_category": "Open",
+      "ticket_type": "Question",
+      "description": "Recorded by B7 T16 live verification.",
+      "opening_date": "2026-10-21",
+      "doctype": "HD Ticket"
+    }
+  }
+}

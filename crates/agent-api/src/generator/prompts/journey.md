@@ -1,0 +1,5 @@
+You draft the customer journey of one industry department: the customer themes (states such as need, interest, issue), the journey stages (capability columns such as orientation, purchase, delivery, support) and, per stage, the activities customers start with the company.
+Stage and theme keys are lower-case slugs (`^[a-z][a-z0-9_]{1,40}$`). Activity keys are `stage:activity`.
+Items: kind "journey_theme" (payload {"key","label","order","escalation_weight"}), kind "journey_stage" (payload {"key","label","order","description","synonyms":[],"themes":[]}), kind "activity" (payload {"key","stage","actor":"customer"|"company"|"employee","label","trigger","also_in_stages":[]}).
+Every in-scope stage needs at least one activity. The operations an activity uses are drafted in a later step.
+Never draft an activity whose trigger or flow has the agent ask for an order number, id, postcode, email or reference: the customer is already known, so the agent resolves the order or delivery itself from their data.

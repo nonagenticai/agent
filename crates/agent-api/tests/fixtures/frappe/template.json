@@ -1,0 +1,900 @@
+{
+  "auth_detail": "Authorization: token <api_key>:<api_secret> (a dedicated Helpdesk agent user, role Agent) · in-cluster http://frappe.example.com:8000 needs no Host header; when config.site_host is set the runner also sends Host: <site_host> (multi-site benches routed by Host)",
+  "auth_kind": "api_key_header",
+  "auth_params": {
+    "header": "Authorization",
+    "value_template": "token {{secret.api_key}}:{{secret.api_secret}}"
+  },
+  "credential_schema": [
+    {
+      "hint": "User settings → API access → Generate keys",
+      "label": "API key",
+      "name": "api_key",
+      "secret": true
+    },
+    {
+      "hint": "shown once, when the keys are generated",
+      "label": "API secret",
+      "name": "api_secret",
+      "secret": true
+    },
+    {
+      "hint": "only when the site name differs from the base URL host",
+      "label": "Site host (optional)",
+      "name": "site_host",
+      "secret": false
+    }
+  ],
+  "description": "HD Ticket create/read and internal agent comments over the Frappe REST API (/api/resource), verified live against Frappe 15.123.1 + Helpdesk 1.31.0 (B7 T16, 2026-10-21). raised_by is the customer when case.create gets customer_email (Helpdesk accepts an unknown email and creates no Contact), else the service user env.requester_id. Idempotency needs a unique custom field on HD Ticket (fieldname custom_agent_key); a second insert with the same key answers HTTP 417 UniqueValidationError, which maps to invalid_input (the dup_search before the insert is what prevents it). case.comment writes an HD Ticket Comment: internal, not a customer-visible reply (Helpdesk replies go through hd_ticket.reply_via_agent). Helpdesk 1.31 ships the statuses Open, Replied, Resolved and Closed; Paused is mapped for sites that add it. Basic auth (key:secret) is accepted as well as token.",
+  "key": "frappe_helpdesk",
+  "label": "Frappe Helpdesk",
+  "ops": [
+    {
+      "fault_map": [
+        {
+          "code": "connector_auth_failed",
+          "system": "HTTP 401 AuthenticationError"
+        },
+        {
+          "code": "connector_misconfigured",
+          "system": "HTTP 403 PermissionError"
+        },
+        {
+          "code": "not_found",
+          "system": "HTTP 404 DoesNotExistError"
+        },
+        {
+          "code": "duplicate",
+          "system": "HTTP 409 DuplicateEntryError"
+        },
+        {
+          "code": "invalid_input",
+          "system": "HTTP 417 ValidationError"
+        },
+        {
+          "code": "rate_limited",
+          "system": "HTTP 429"
+        },
+        {
+          "code": "upstream_unavailable",
+          "system": "HTTP 5xx"
+        }
+      ],
+      "field_map": [
+        {
+          "field": "case_id",
+          "path": "$.data.name"
+        },
+        {
+          "field": "status",
+          "path": "$.data.status",
+          "transform": "enum_map"
+        }
+      ],
+      "fixtures": [
+        {
+          "body": {
+            "data": {
+              "custom_agent_key": "b7t16-1792573982-a",
+              "doctype": "HD Ticket",
+              "modified": "2026-10-21 14:43:03.732334",
+              "name": "0003",
+              "opening_date": "2026-10-21",
+              "priority": "Medium",
+              "raised_by": "b7t16-customer@example.com",
+              "status": "Open",
+              "status_category": "Open",
+              "subject": "[b7-t16] customer ticket",
+              "ticket_type": "Question"
+            }
+          },
+          "name": "case.create ok",
+          "outcome": "ok",
+          "status": 200
+        },
+        {
+          "body": {
+            "errors": [
+              {
+                "message": "Not Found"
+              }
+            ]
+          },
+          "name": "not found",
+          "outcome": "not_found",
+          "status": 404
+        },
+        {
+          "body": {
+            "errors": "Unauthorized"
+          },
+          "name": "expired credential",
+          "outcome": "401 → connector_auth_failed",
+          "status": 401
+        },
+        {
+          "body": null,
+          "name": "upstream timeout",
+          "outcome": "timeout (fault injection)",
+          "status": 0
+        }
+      ],
+      "idempotency": {
+        "kind": "dup_search",
+        "on": "HD Ticket.custom_agent_key = step key"
+      },
+      "method": "POST",
+      "object": "case",
+      "op_kind": "standard",
+      "pagination": null,
+      "path": "/api/resource/HD Ticket",
+      "request": "{\"subject\":\"{{canonical.subject}}\",\"description\":\"{{canonical.description}}\",\"raised_by\":\"{{canonical.customer_email ?? env.requester_id}}\",\"ticket_type\":\"{{env.default_ticket_type}}\",\"custom_agent_key\":\"{{step.idempotency_key}}\"}",
+      "side_effect": "W",
+      "status_map": [
+        {
+          "canonical": "open",
+          "system": "Open"
+        },
+        {
+          "canonical": "pending_customer",
+          "system": "Replied"
+        },
+        {
+          "canonical": "pending_provider",
+          "system": "Paused"
+        },
+        {
+          "canonical": "resolved",
+          "system": "Resolved"
+        },
+        {
+          "canonical": "closed",
+          "system": "Closed"
+        }
+      ],
+      "timeout_ms": 8000,
+      "variant": "*",
+      "verb": "create",
+      "verify_read": "case.read"
+    },
+    {
+      "fault_map": [
+        {
+          "code": "connector_auth_failed",
+          "system": "HTTP 401 AuthenticationError"
+        },
+        {
+          "code": "connector_misconfigured",
+          "system": "HTTP 403 PermissionError"
+        },
+        {
+          "code": "not_found",
+          "system": "HTTP 404 DoesNotExistError"
+        },
+        {
+          "code": "duplicate",
+          "system": "HTTP 409 DuplicateEntryError"
+        },
+        {
+          "code": "invalid_input",
+          "system": "HTTP 417 ValidationError"
+        },
+        {
+          "code": "rate_limited",
+          "system": "HTTP 429"
+        },
+        {
+          "code": "upstream_unavailable",
+          "system": "HTTP 5xx"
+        }
+      ],
+      "field_map": [
+        {
+          "field": "case_id",
+          "path": "$.data.name"
+        },
+        {
+          "field": "status",
+          "path": "$.data.status",
+          "transform": "enum_map"
+        }
+      ],
+      "fixtures": [
+        {
+          "body": {
+            "data": {
+              "custom_agent_key": "b7t16-1792573982-a",
+              "doctype": "HD Ticket",
+              "modified": "2026-10-21 14:43:03.732334",
+              "name": "0003",
+              "opening_date": "2026-10-21",
+              "priority": "Medium",
+              "raised_by": "b7t16-customer@example.com",
+              "status": "Open",
+              "status_category": "Open",
+              "subject": "[b7-t16] customer ticket",
+              "ticket_type": "Question"
+            }
+          },
+          "name": "case.create ok",
+          "outcome": "ok",
+          "status": 200
+        },
+        {
+          "body": {
+            "errors": [
+              {
+                "message": "Not Found"
+              }
+            ]
+          },
+          "name": "not found",
+          "outcome": "not_found",
+          "status": 404
+        },
+        {
+          "body": {
+            "errors": "Unauthorized"
+          },
+          "name": "expired credential",
+          "outcome": "401 → connector_auth_failed",
+          "status": 401
+        },
+        {
+          "body": null,
+          "name": "upstream timeout",
+          "outcome": "timeout (fault injection)",
+          "status": 0
+        }
+      ],
+      "idempotency": {
+        "kind": "dup_search",
+        "on": "HD Ticket.custom_agent_key = step key"
+      },
+      "method": "POST",
+      "object": "case",
+      "op_kind": "standard",
+      "pagination": null,
+      "path": "/api/resource/HD Ticket",
+      "request": "{\"subject\":\"Return {{canonical.subject_object}}\",\"description\":\"Return {{canonical.return_lines}} by {{canonical.return_method}}, refund as {{canonical.refund_type}}\",\"raised_by\":\"{{canonical.customer_email ?? env.requester_id}}\",\"ticket_type\":\"{{env.return_ticket_type}}\",\"custom_agent_key\":\"{{step.idempotency_key}}\"}",
+      "side_effect": "W",
+      "status_map": [
+        {
+          "canonical": "open",
+          "system": "Open"
+        },
+        {
+          "canonical": "pending_customer",
+          "system": "Replied"
+        },
+        {
+          "canonical": "pending_provider",
+          "system": "Paused"
+        },
+        {
+          "canonical": "resolved",
+          "system": "Resolved"
+        },
+        {
+          "canonical": "closed",
+          "system": "Closed"
+        }
+      ],
+      "timeout_ms": 8000,
+      "variant": "return",
+      "verb": "create",
+      "verify_read": "case.read"
+    },
+    {
+      "fault_map": [
+        {
+          "code": "connector_auth_failed",
+          "system": "HTTP 401 AuthenticationError"
+        },
+        {
+          "code": "connector_misconfigured",
+          "system": "HTTP 403 PermissionError"
+        },
+        {
+          "code": "not_found",
+          "system": "HTTP 404 DoesNotExistError"
+        },
+        {
+          "code": "duplicate",
+          "system": "HTTP 409 DuplicateEntryError"
+        },
+        {
+          "code": "invalid_input",
+          "system": "HTTP 417 ValidationError"
+        },
+        {
+          "code": "rate_limited",
+          "system": "HTTP 429"
+        },
+        {
+          "code": "upstream_unavailable",
+          "system": "HTTP 5xx"
+        }
+      ],
+      "field_map": [
+        {
+          "field": "case_id",
+          "path": "$.data.name"
+        },
+        {
+          "field": "status",
+          "path": "$.data.status",
+          "transform": "enum_map"
+        }
+      ],
+      "fixtures": [
+        {
+          "body": {
+            "data": {
+              "custom_agent_key": "b7t16-1792573982-a",
+              "doctype": "HD Ticket",
+              "modified": "2026-10-21 14:43:03.732334",
+              "name": "0003",
+              "opening_date": "2026-10-21",
+              "priority": "Medium",
+              "raised_by": "b7t16-customer@example.com",
+              "status": "Open",
+              "status_category": "Open",
+              "subject": "[b7-t16] customer ticket",
+              "ticket_type": "Question"
+            }
+          },
+          "name": "case.create ok",
+          "outcome": "ok",
+          "status": 200
+        },
+        {
+          "body": {
+            "errors": [
+              {
+                "message": "Not Found"
+              }
+            ]
+          },
+          "name": "not found",
+          "outcome": "not_found",
+          "status": 404
+        },
+        {
+          "body": {
+            "errors": "Unauthorized"
+          },
+          "name": "expired credential",
+          "outcome": "401 → connector_auth_failed",
+          "status": 401
+        },
+        {
+          "body": null,
+          "name": "upstream timeout",
+          "outcome": "timeout (fault injection)",
+          "status": 0
+        }
+      ],
+      "idempotency": {
+        "kind": "dup_search",
+        "on": "HD Ticket.custom_agent_key = step key"
+      },
+      "method": "POST",
+      "object": "case",
+      "op_kind": "standard",
+      "pagination": null,
+      "path": "/api/resource/HD Ticket",
+      "request": "{\"subject\":\"Warranty claim {{canonical.subject_object}}\",\"description\":\"{{canonical.description}}\",\"raised_by\":\"{{canonical.customer_email ?? env.requester_id}}\",\"ticket_type\":\"{{env.warranty_claim_ticket_type}}\",\"custom_agent_key\":\"{{step.idempotency_key}}\"}",
+      "side_effect": "W",
+      "status_map": [
+        {
+          "canonical": "open",
+          "system": "Open"
+        },
+        {
+          "canonical": "pending_customer",
+          "system": "Replied"
+        },
+        {
+          "canonical": "pending_provider",
+          "system": "Paused"
+        },
+        {
+          "canonical": "resolved",
+          "system": "Resolved"
+        },
+        {
+          "canonical": "closed",
+          "system": "Closed"
+        }
+      ],
+      "timeout_ms": 8000,
+      "variant": "warranty_claim",
+      "verb": "create",
+      "verify_read": "case.read"
+    },
+    {
+      "fault_map": [
+        {
+          "code": "connector_auth_failed",
+          "system": "HTTP 401 AuthenticationError"
+        },
+        {
+          "code": "connector_misconfigured",
+          "system": "HTTP 403 PermissionError"
+        },
+        {
+          "code": "not_found",
+          "system": "HTTP 404 DoesNotExistError"
+        },
+        {
+          "code": "duplicate",
+          "system": "HTTP 409 DuplicateEntryError"
+        },
+        {
+          "code": "invalid_input",
+          "system": "HTTP 417 ValidationError"
+        },
+        {
+          "code": "rate_limited",
+          "system": "HTTP 429"
+        },
+        {
+          "code": "upstream_unavailable",
+          "system": "HTTP 5xx"
+        }
+      ],
+      "field_map": [
+        {
+          "field": "case_id",
+          "path": "$.data.name"
+        },
+        {
+          "field": "status",
+          "path": "$.data.status",
+          "transform": "enum_map"
+        }
+      ],
+      "fixtures": [
+        {
+          "body": {
+            "data": {
+              "custom_agent_key": "b7t16-1792573982-a",
+              "doctype": "HD Ticket",
+              "modified": "2026-10-21 14:43:03.732334",
+              "name": "0003",
+              "opening_date": "2026-10-21",
+              "priority": "Medium",
+              "raised_by": "b7t16-customer@example.com",
+              "status": "Open",
+              "status_category": "Open",
+              "subject": "[b7-t16] customer ticket",
+              "ticket_type": "Question"
+            }
+          },
+          "name": "case.create ok",
+          "outcome": "ok",
+          "status": 200
+        },
+        {
+          "body": {
+            "errors": [
+              {
+                "message": "Not Found"
+              }
+            ]
+          },
+          "name": "not found",
+          "outcome": "not_found",
+          "status": 404
+        },
+        {
+          "body": {
+            "errors": "Unauthorized"
+          },
+          "name": "expired credential",
+          "outcome": "401 → connector_auth_failed",
+          "status": 401
+        },
+        {
+          "body": null,
+          "name": "upstream timeout",
+          "outcome": "timeout (fault injection)",
+          "status": 0
+        }
+      ],
+      "idempotency": {
+        "kind": "dup_search",
+        "on": "HD Ticket.custom_agent_key = step key"
+      },
+      "method": "POST",
+      "object": "case",
+      "op_kind": "standard",
+      "pagination": null,
+      "path": "/api/resource/HD Ticket",
+      "request": "{\"subject\":\"{{canonical.subject}}\",\"description\":\"{{canonical.description}}\",\"raised_by\":\"{{canonical.customer_email ?? env.requester_id}}\",\"ticket_type\":\"{{env.complaint_ticket_type}}\",\"custom_agent_key\":\"{{step.idempotency_key}}\"}",
+      "side_effect": "W",
+      "status_map": [
+        {
+          "canonical": "open",
+          "system": "Open"
+        },
+        {
+          "canonical": "pending_customer",
+          "system": "Replied"
+        },
+        {
+          "canonical": "pending_provider",
+          "system": "Paused"
+        },
+        {
+          "canonical": "resolved",
+          "system": "Resolved"
+        },
+        {
+          "canonical": "closed",
+          "system": "Closed"
+        }
+      ],
+      "timeout_ms": 8000,
+      "variant": "complaint",
+      "verb": "create",
+      "verify_read": "case.read"
+    },
+    {
+      "fault_map": [
+        {
+          "code": "connector_auth_failed",
+          "system": "HTTP 401 AuthenticationError"
+        },
+        {
+          "code": "connector_misconfigured",
+          "system": "HTTP 403 PermissionError"
+        },
+        {
+          "code": "not_found",
+          "system": "HTTP 404 DoesNotExistError"
+        },
+        {
+          "code": "duplicate",
+          "system": "HTTP 409 DuplicateEntryError"
+        },
+        {
+          "code": "invalid_input",
+          "system": "HTTP 417 ValidationError"
+        },
+        {
+          "code": "rate_limited",
+          "system": "HTTP 429"
+        },
+        {
+          "code": "upstream_unavailable",
+          "system": "HTTP 5xx"
+        }
+      ],
+      "field_map": [
+        {
+          "field": "case_id",
+          "path": "$.data.name"
+        },
+        {
+          "field": "status",
+          "path": "$.data.status",
+          "transform": "enum_map"
+        }
+      ],
+      "fixtures": [
+        {
+          "body": {
+            "data": {
+              "custom_agent_key": "b7t16-1792573982-a",
+              "doctype": "HD Ticket",
+              "modified": "2026-10-21 14:43:03.732334",
+              "name": "0003",
+              "opening_date": "2026-10-21",
+              "priority": "Medium",
+              "raised_by": "b7t16-customer@example.com",
+              "status": "Open",
+              "status_category": "Open",
+              "subject": "[b7-t16] customer ticket",
+              "ticket_type": "Question"
+            }
+          },
+          "name": "case.create ok",
+          "outcome": "ok",
+          "status": 200
+        },
+        {
+          "body": {
+            "errors": [
+              {
+                "message": "Not Found"
+              }
+            ]
+          },
+          "name": "not found",
+          "outcome": "not_found",
+          "status": 404
+        },
+        {
+          "body": {
+            "errors": "Unauthorized"
+          },
+          "name": "expired credential",
+          "outcome": "401 → connector_auth_failed",
+          "status": 401
+        },
+        {
+          "body": null,
+          "name": "upstream timeout",
+          "outcome": "timeout (fault injection)",
+          "status": 0
+        }
+      ],
+      "idempotency": {
+        "kind": "dup_search",
+        "on": "HD Ticket.custom_agent_key = step key"
+      },
+      "method": "POST",
+      "object": "case",
+      "op_kind": "standard",
+      "pagination": null,
+      "path": "/api/resource/HD Ticket",
+      "request": "{\"subject\":\"Dispute {{canonical.subject_object}}\",\"description\":\"{{canonical.description}}\",\"raised_by\":\"{{canonical.customer_email ?? env.requester_id}}\",\"ticket_type\":\"{{env.dispute_ticket_type}}\",\"custom_agent_key\":\"{{step.idempotency_key}}\"}",
+      "side_effect": "W",
+      "status_map": [
+        {
+          "canonical": "open",
+          "system": "Open"
+        },
+        {
+          "canonical": "pending_customer",
+          "system": "Replied"
+        },
+        {
+          "canonical": "pending_provider",
+          "system": "Paused"
+        },
+        {
+          "canonical": "resolved",
+          "system": "Resolved"
+        },
+        {
+          "canonical": "closed",
+          "system": "Closed"
+        }
+      ],
+      "timeout_ms": 8000,
+      "variant": "dispute",
+      "verb": "create",
+      "verify_read": "case.read"
+    },
+    {
+      "fault_map": [
+        {
+          "code": "connector_auth_failed",
+          "system": "HTTP 401 AuthenticationError"
+        },
+        {
+          "code": "connector_misconfigured",
+          "system": "HTTP 403 PermissionError"
+        },
+        {
+          "code": "not_found",
+          "system": "HTTP 404 DoesNotExistError"
+        },
+        {
+          "code": "duplicate",
+          "system": "HTTP 409 DuplicateEntryError"
+        },
+        {
+          "code": "invalid_input",
+          "system": "HTTP 417 ValidationError"
+        },
+        {
+          "code": "rate_limited",
+          "system": "HTTP 429"
+        },
+        {
+          "code": "upstream_unavailable",
+          "system": "HTTP 5xx"
+        }
+      ],
+      "field_map": [
+        {
+          "field": "status",
+          "path": "$.data.status",
+          "transform": "enum_map"
+        }
+      ],
+      "fixtures": [
+        {
+          "body": {
+            "data": {
+              "custom_agent_key": "b7t16-1792573982-a",
+              "doctype": "HD Ticket",
+              "modified": "2026-10-21 14:43:03.732334",
+              "name": "0003",
+              "opening_date": "2026-10-21",
+              "priority": "Medium",
+              "raised_by": "b7t16-customer@example.com",
+              "status": "Open",
+              "status_category": "Open",
+              "subject": "[b7-t16] customer ticket",
+              "ticket_type": "Question"
+            }
+          },
+          "name": "case.read ok",
+          "outcome": "ok",
+          "status": 200
+        },
+        {
+          "body": {
+            "errors": [
+              {
+                "message": "Not Found"
+              }
+            ]
+          },
+          "name": "not found",
+          "outcome": "not_found",
+          "status": 404
+        },
+        {
+          "body": {
+            "errors": "Unauthorized"
+          },
+          "name": "expired credential",
+          "outcome": "401 → connector_auth_failed",
+          "status": 401
+        },
+        {
+          "body": null,
+          "name": "upstream timeout",
+          "outcome": "timeout (fault injection)",
+          "status": 0
+        }
+      ],
+      "idempotency": {
+        "kind": "nat"
+      },
+      "method": "GET",
+      "object": "case",
+      "op_kind": "standard",
+      "pagination": null,
+      "path": "/api/resource/HD Ticket/{{canonical.case_id}}",
+      "request": "",
+      "side_effect": "R",
+      "status_map": [
+        {
+          "canonical": "open",
+          "system": "Open"
+        },
+        {
+          "canonical": "pending_customer",
+          "system": "Replied"
+        },
+        {
+          "canonical": "pending_provider",
+          "system": "Paused"
+        },
+        {
+          "canonical": "resolved",
+          "system": "Resolved"
+        },
+        {
+          "canonical": "closed",
+          "system": "Closed"
+        }
+      ],
+      "timeout_ms": 8000,
+      "variant": "*",
+      "verb": "read",
+      "verify_read": null
+    },
+    {
+      "fault_map": [
+        {
+          "code": "connector_auth_failed",
+          "system": "HTTP 401 AuthenticationError"
+        },
+        {
+          "code": "connector_misconfigured",
+          "system": "HTTP 403 PermissionError"
+        },
+        {
+          "code": "not_found",
+          "system": "HTTP 404 DoesNotExistError"
+        },
+        {
+          "code": "duplicate",
+          "system": "HTTP 409 DuplicateEntryError"
+        },
+        {
+          "code": "invalid_input",
+          "system": "HTTP 417 ValidationError"
+        },
+        {
+          "code": "rate_limited",
+          "system": "HTTP 429"
+        },
+        {
+          "code": "upstream_unavailable",
+          "system": "HTTP 5xx"
+        }
+      ],
+      "field_map": [],
+      "fixtures": [
+        {
+          "body": {
+            "data": {
+              "content": "[b7-t16] agent comment<!-- agent:b7t16-1792573982-cm -->",
+              "doctype": "HD Ticket Comment",
+              "name": "5jnkraegns",
+              "reference_ticket": "0003"
+            }
+          },
+          "name": "case.comment ok",
+          "outcome": "ok",
+          "status": 200
+        },
+        {
+          "body": {
+            "errors": [
+              {
+                "message": "Not Found"
+              }
+            ]
+          },
+          "name": "not found",
+          "outcome": "not_found",
+          "status": 404
+        },
+        {
+          "body": {
+            "errors": "Unauthorized"
+          },
+          "name": "expired credential",
+          "outcome": "401 → connector_auth_failed",
+          "status": 401
+        },
+        {
+          "body": null,
+          "name": "upstream timeout",
+          "outcome": "timeout (fault injection)",
+          "status": 0
+        }
+      ],
+      "idempotency": {
+        "kind": "dup_search",
+        "on": "HD Ticket Comment (reference_ticket, content contains step key)"
+      },
+      "method": "POST",
+      "object": "case",
+      "op_kind": "standard",
+      "pagination": null,
+      "path": "/api/resource/HD Ticket Comment",
+      "request": "{\"reference_ticket\":\"{{canonical.case_id}}\",\"content\":\"{{canonical.comment}}<!-- agent:{{step.idempotency_key}} -->\"}",
+      "side_effect": "W",
+      "status_map": [],
+      "timeout_ms": 8000,
+      "variant": "*",
+      "verb": "comment",
+      "verify_read": null
+    }
+  ],
+  "platform_connector": false,
+  "rate_limit_model": {
+    "honour_retry_after": true,
+    "kind": "rps",
+    "value": "site-dependent (Frappe Cloud plan or bench rate_limit; declare per instance)"
+  },
+  "status": "active",
+  "system_class": "Helpdesk",
+  "transport": "rest",
+  "vendor": "Frappe",
+  "vendor_api_pin": "/api/resource (Frappe 15.123, Helpdesk 1.31)",
+  "version": "1.31",
+  "wave": "next",
+  "webhooks": []
+}

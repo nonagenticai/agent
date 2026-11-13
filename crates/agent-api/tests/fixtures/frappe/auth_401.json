@@ -1,0 +1,14 @@
+{
+  "recorded_at": "2026-10-21",
+  "site": "Frappe 15.123.1 + Helpdesk 1.31.0 at http://frappe.example.com:8000",
+  "note": "wrong API key/secret",
+  "request": {
+    "method": "GET",
+    "path": "/api/resource/HD Ticket/0003",
+    "body": null
+  },
+  "status": 401,
+  "body": {
+    "exc_type": "AuthenticationError"
+  }
+}

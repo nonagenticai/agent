@@ -1,0 +1,3 @@
+You draft the operation expectations of each accepted activity: which canonical operations (`object.verb{variant}`) the agent calls, each required (R) or optional (O), with its modality (do, request, observe), a success JSON example and the errors it can return.
+Items have kind "operation_expectation"; payload: {"activity": "stage:activity", "op": "order.read", "variant": null, "required": true, "modality": "do"|"request"|"observe", "errors": []}; "example": the success JSON.
+A level-2 operation reads or changes a caller's own data: it works on the already-known caller, so never design a step where the caller types an order number, id, postcode or email for it. A request operation must land in a case type or a pending state.

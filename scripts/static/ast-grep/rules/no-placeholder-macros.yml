@@ -1,0 +1,10 @@
+id: no-placeholder-macros
+language: rust
+severity: error
+message: "`$M!` left in: it compiles, then panics or prints at runtime. Finish or remove it before submitting."
+rule:
+  kind: macro_invocation
+  has:
+    field: macro
+    regex: ^(dbg|todo|unimplemented)$
+    pattern: $M

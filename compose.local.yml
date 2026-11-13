@@ -1,0 +1,65 @@
+name: agent-local
+
+# Images come from Docker Hub by default. A host behind a registry mirror sets AGENT_PG_REGISTRY /
+# AGENT_REDIS_REGISTRY to that mirror's path; the tests' own containers take the same choice through
+# TEST_PG_REGISTRY.
+
+services:
+  postgres-test:
+    image: ${AGENT_PG_REGISTRY:-docker.io/library}/postgres:18-alpine
+    command: [postgres, -c, max_connections=300, -c, fsync=off]
+    environment:
+      POSTGRES_USER: agent_test_owner
+      POSTGRES_DB: agent_test_control
+      POSTGRES_PASSWORD: ${AGENT_TEST_POSTGRES_PASSWORD:?Generate the local dependency env file first}
+    ports: ["127.0.0.1:5432:5432"]
+    shm_size: 512mb
+    volumes: [postgres-test:/var/lib/postgresql]
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
+      interval: 2s
+      timeout: 5s
+      retries: 30
+  postgres-dev:
+    image: ${AGENT_PG_REGISTRY:-docker.io/library}/postgres:18-alpine
+    command: [postgres, -p, "5433", -c, max_connections=100]
+    environment:
+      POSTGRES_USER: agent_dev_owner
+      POSTGRES_DB: agent_development
+      POSTGRES_PASSWORD: ${AGENT_DEV_POSTGRES_PASSWORD:?Generate the local dependency env file first}
+    ports: ["127.0.0.1:5433:5433"]
+    shm_size: 512mb
+    volumes: [postgres-dev:/var/lib/postgresql]
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -p 5433 -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
+      interval: 2s
+      timeout: 5s
+      retries: 30
+  redis-test:
+    image: ${AGENT_REDIS_REGISTRY:-docker.io/library}/redis:8.10.1-alpine
+    command: [redis-server, --requirepass, "${AGENT_TEST_REDIS_PASSWORD:?Generate the local dependency env file first}"]
+    environment:
+      REDISCLI_AUTH: ${AGENT_TEST_REDIS_PASSWORD}
+    ports: ["127.0.0.1:6379:6379"]
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+  redis-dev:
+    image: ${AGENT_REDIS_REGISTRY:-docker.io/library}/redis:8.10.1-alpine
+    command: [redis-server, --port, "6380", --requirepass, "${AGENT_DEV_REDIS_PASSWORD:?Generate the local dependency env file first}"]
+    environment:
+      REDISCLI_AUTH: ${AGENT_DEV_REDIS_PASSWORD}
+    ports: ["127.0.0.1:6380:6380"]
+    volumes: [redis-dev:/data]
+    healthcheck:
+      test: [CMD, redis-cli, -p, "6380", ping]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  postgres-test:
+  postgres-dev:
+  redis-dev:

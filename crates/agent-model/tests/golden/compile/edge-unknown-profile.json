@@ -1,0 +1,24 @@
+{
+  "name": "edge-unknown-profile",
+  "source": "edge",
+  "selection": {
+    "profile": "no_such_profile",
+    "industry": "retail",
+    "departments": [
+      "industry_dept/retail/customer_service"
+    ],
+    "areas": [],
+    "dimensions": {
+      "channel": []
+    },
+    "region": null
+  },
+  "job": "customer_care_agent",
+  "expected": {
+    "ok": false,
+    "refused": {
+      "status": 404,
+      "code": "profile_not_found"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "edge-no-industry",
+  "source": "edge",
+  "selection": {
+    "profile": "retail_ecommerce",
+    "industry": "",
+    "departments": [],
+    "areas": [],
+    "dimensions": {
+      "channel": [
+        "chat"
+      ]
+    },
+    "region": null
+  },
+  "job": "customer_care_agent",
+  "expected": {
+    "ok": false,
+    "errors": [
+      {
+        "code": "hierarchy_incomplete",
+        "key": "selection.industry",
+        "row_id": null,
+        "message": "Choose the industry the job belongs to."
+      },
+      {
+        "code": "hierarchy_incomplete",
+        "key": "selection.departments",
+        "row_id": null,
+        "message": "Choose at least one department of the job's industry."
+      }
+    ]
+  }
+}

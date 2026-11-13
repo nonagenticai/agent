@@ -1,0 +1,20 @@
+{
+  "recorded_at": "2026-10-21",
+  "site": "Frappe 15.123.1 + Helpdesk 1.31.0 at http://frappe.example.com:8000",
+  "note": "custom_agent_key is unique: a second insert with the same key is HTTP 417 UniqueValidationError (not 409)",
+  "request": {
+    "method": "POST",
+    "path": "/api/resource/HD Ticket",
+    "body": {
+      "subject": "[b7-t16] dup key",
+      "description": "x",
+      "raised_by": "b7t16-customer@example.com",
+      "ticket_type": "Question",
+      "custom_agent_key": "b7t16-1792573982-a"
+    }
+  },
+  "status": 417,
+  "body": {
+    "exc_type": "UniqueValidationError"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "recorded_at": "2026-10-21",
+  "site": "Frappe 15.123.1 + Helpdesk 1.31.0 at http://frappe.example.com:8000",
+  "note": "404 DoesNotExistError",
+  "request": {
+    "method": "GET",
+    "path": "/api/resource/HD Ticket/999999",
+    "body": null
+  },
+  "status": 404,
+  "body": {
+    "exc_type": "DoesNotExistError",
+    "_server_messages": "[\"{\\\"message\\\": \\\"HD Ticket 999999 not found\\\"}\"]"
+  }
+}
