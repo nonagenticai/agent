@@ -47,7 +47,7 @@ uuid = { version = "=1.28.0", features = ["v4", "v7", "serde"] }
 # `ptr::write_volatile` loop: the trait is the audited form of that wipe (volatile writes, no elision).
 zeroize = "=1.9.1"
 # XLSX column preview (crate::tabular). Read-only deflate via zlib-rs; zip <9.0.3 is yanked (security advisories).
-zip = { version = "=9.0.4", default-features = false, features = ["deflate-flate2-zlib-rs"] }
+zip = { version = "=9.0.5", default-features = false, features = ["deflate-flate2-zlib-rs"] }
 
 [dev-dependencies]
 http-body-util = "=0.1.5"
