@@ -13,7 +13,7 @@ export const DEFAULT_AUTH_CONFIG: AuthConfig = {
 	clientId: 'agent',
 };
 
-/** The sign-in config from the public environment (`$env/dynamic/public`), the defaults where a value is unset. */
+/** The sign-in config from the public environment (`$app/env/public`), the defaults where a value is unset. */
 export function authConfigFrom(pub: Record<string, string | undefined>): AuthConfig {
 	return {
 		keycloakUrl: pub.PUBLIC_KEYCLOAK_URL || DEFAULT_AUTH_CONFIG.keycloakUrl,

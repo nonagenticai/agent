@@ -18,7 +18,7 @@
 	} from '$lib/app.svelte';
 	import { ROLE_KEYS, rolesText, sortRoles, type Role, type RoleInfo } from '$lib/api/types/core';
 	import RoleSetEditor from '$lib/tenant/RoleSetEditor.svelte';
-	import { env as pubEnv } from '$env/dynamic/public';
+	import { PUBLIC_KEYCLOAK_URL, PUBLIC_KEYCLOAK_REALM, PUBLIC_KEYCLOAK_CLIENT_ID } from '$app/env/public';
 	import { authConfigFrom, type AuthConfig } from '$lib/auth/config';
 	import Sidebar from '$lib/shell/Sidebar.svelte';
 	import UserMenu from '$lib/shell/UserMenu.svelte';
@@ -46,7 +46,14 @@
 	onMount(() => {
 		loadPrefs();
 		// An unknown path (the 404 page) has no layout data: read the same public env the server load reads.
-		bootKeycloak(data?.config ?? authConfigFrom(pubEnv)).catch((e) => (bootError = (e as Error).message));
+		bootKeycloak(
+			data?.config ??
+				authConfigFrom({
+					PUBLIC_KEYCLOAK_URL,
+					PUBLIC_KEYCLOAK_REALM,
+					PUBLIC_KEYCLOAK_CLIENT_ID,
+				}),
+		).catch((e) => (bootError = (e as Error).message));
 	});
 
 	const jobLabel = $derived(app.jobs.find((j) => j.key === app.job)?.label ?? app.job);

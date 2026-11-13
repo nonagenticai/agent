@@ -250,7 +250,10 @@ const list = (v: string | undefined) =>
  * its default). `department` (department layer keys `industry_dept/<i>/<d>`, or bare keys of `industry`), `areas` and dimension values are comma-separated; dimension params
  * are read only for the known `dimensionKeys`.
  */
-export function selectionFromQuery(q: URLSearchParams, dimensionKeys: string[]): CompileTarget | null {
+export function selectionFromQuery(
+	q: Pick<URLSearchParams, 'get'>,
+	dimensionKeys: string[],
+): CompileTarget | null {
 	const get = (k: string) => q.get(k)?.trim() || undefined;
 	let selection: Selection = {
 		...emptySelection(),
