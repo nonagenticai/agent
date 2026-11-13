@@ -14,7 +14,7 @@ anyhow = "=1.0.104"
 # B4 T1: SSE bodies built from async generators (the runtime's event feeds).
 async-stream = "=0.3.6"
 axum = { version = "=0.8.9", features = ["multipart"] }
-base64 = "=0.22.1"
+base64 = "=0.23.1"
 chrono = { version = "=0.4.45", features = ["serde"] }
 # B3 T7: column preview of CSV / XLSX sources (crate::tabular).
 csv = "=1.4.0"
