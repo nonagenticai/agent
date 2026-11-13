@@ -147,8 +147,8 @@
 						{#each j.pins as p (p)}<span class="chip muted mono">{p}</span>{/each}
 					</span>
 					<span class="j4-desc"
-						>{t.inherited} activities in {j.stages.length} stages, messages, knowledge kinds and theme → stage
-						priors — authored by the platform, read-only here.</span
+						>{t.inherited} activities in {j.stages.length} stages, messages, knowledge kinds and theme → stage priors
+						— authored by the platform, read-only here.</span
 					>
 					{#if sa}
 						<a class="j4-link" href="/platform/journeys/{encodeURIComponent(j.industry)}"

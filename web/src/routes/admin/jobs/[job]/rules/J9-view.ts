@@ -11,8 +11,7 @@ export function outcomeVariant(o: RuleEvaluation['outcome'] | string): OutcomeVa
 }
 
 export type StatementPart =
-	| { text: string }
-	| { key: string; label: string; value: string | null; unit: string };
+	{ text: string } | { key: string; label: string; value: string | null; unit: string };
 
 /** `A return is accepted up to {window_days} days…` → text and value parts (unknown keys stay literal). */
 export function statementParts(r: BusinessRule): StatementPart[] {

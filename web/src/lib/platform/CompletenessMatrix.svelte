@@ -71,8 +71,8 @@
 	<p class="legend small muted">
 		<span class="cell empty">0</span> required by the contract, no rows ·
 		<span class="cell misplaced">2✗</span> on a job layer, belongs above job level ·
-		<span class="cell none">·</span> not required, none · Profiles are not judged; region sub-layers are shown
-		but optional.
+		<span class="cell none">·</span> not required, none · Profiles are not judged; region sub-layers are shown but
+		optional.
 	</p>
 	{#if error}<Callout kind="err" title="Could not build the matrix">{error}</Callout>{/if}
 	{#if rows}

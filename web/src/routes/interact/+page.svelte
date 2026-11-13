@@ -620,8 +620,8 @@
 				Base URL for <strong>{jobLabel}</strong>: <code>{snippets.base}</code>. Authenticate with a bearer
 				access token for your account (<code>$AGENT_TOKEN</code>), or with a job API key (<code>ak_…</code>,
 				below) from a server. The API is stateless: send the whole conversation each turn.
-				<code>/responses</code> and <code>/chat/completions</code> speak the OpenAI shapes, so the OpenAI SDKs
-				work with this base URL.
+				<code>/responses</code> and <code>/chat/completions</code> speak the OpenAI shapes, so the OpenAI SDKs work
+				with this base URL.
 			</p>
 			{#if jobKey}
 				{#key jobKey}

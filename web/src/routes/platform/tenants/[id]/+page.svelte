@@ -827,8 +827,8 @@
 	{#snippet sub()}<span>{detail?.tenant.name}</span>{/snippet}
 	<form class="stack" onsubmit={reissue}>
 		<Callout kind="info" title="Revokes the current licence">
-			The current licence{detail?.licence ? ` (${detail.licence.licence_id})` : ''} is revoked, then a new one
-			is issued for the same holder in the tenant's residency region ({detail?.tenant.residency.toUpperCase()}).
+			The current licence{detail?.licence ? ` (${detail.licence.licence_id})` : ''} is revoked, then a new one is
+			issued for the same holder in the tenant's residency region ({detail?.tenant.residency.toUpperCase()}).
 			Members are not disabled. If licences does not confirm the revoke in time, the provisioning tick
 			finishes the re-issue.
 		</Callout>

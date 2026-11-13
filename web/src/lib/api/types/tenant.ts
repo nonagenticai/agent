@@ -22,13 +22,7 @@ import type {
 export type ProvisionTarget = 'licences' | 'strata_rag' | 'strata_ingest';
 export type ProvisionOp = 'licence_ensure' | 'licence_revoke' | 'connections_put' | 'store_ensure';
 export type ProvisionStatus =
-	| 'pending'
-	| 'in_flight'
-	| 'succeeded'
-	| 'failed'
-	| 'dead'
-	| 'superseded'
-	| 'cancelled';
+	'pending' | 'in_flight' | 'succeeded' | 'failed' | 'dead' | 'superseded' | 'cancelled';
 
 /** One `provision_outbox` row (06 §4.5). `last_error` is redacted text; payloads are never sent to the UI. */
 export interface ProvisionRow {
@@ -459,13 +453,7 @@ export interface AuditOutcome {
 
 /** T4 event families (page grouping); `calls` = agent operation calls (`execute`). */
 export type AuditFamily =
-	| 'access'
-	| 'releases'
-	| 'connections'
-	| 'knowledge'
-	| 'platform'
-	| 'calls'
-	| 'other';
+	'access' | 'releases' | 'connections' | 'knowledge' | 'platform' | 'calls' | 'other';
 
 export interface AuditQuery {
 	q?: string;
@@ -1190,14 +1178,7 @@ export interface KnowledgeQueryResult {
  * leaves `deleting`: marked, some staged blobs may already be gone, rows kept; never claimed, retry and cancel → 409,
  * `DELETE` again resumes and finishes it. Clients must know all eight. */
 export type IngestStatus =
-	| 'queued'
-	| 'running'
-	| 'cancelling'
-	| 'deleting'
-	| 'completed'
-	| 'failed'
-	| 'rejected'
-	| 'cancelled';
+	'queued' | 'running' | 'cancelling' | 'deleting' | 'completed' | 'failed' | 'rejected' | 'cancelled';
 /** A job that can still be cancelled. */
 export const INGEST_CANCELLABLE: readonly IngestStatus[] = ['queued', 'running'];
 /** A job that has ended: only these can be deleted (and a `deleting` one, to resume an unfinished delete). */

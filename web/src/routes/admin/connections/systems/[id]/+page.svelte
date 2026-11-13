@@ -619,8 +619,8 @@
 						<p class="note t11-pad">
 							<span class="t11-key t11-m-ok"></span> ok <span class="t11-key t11-m-reply"></span> answered
 							(user outcome) <span class="t11-key t11-m-esc"></span> escalated (system error). Reads probe with
-							your test identifiers; writes are tagged agent-contract-test and closed; a prod write needs your
-							OK; X/P ops run only against a test-env instance. A stub never makes a route ready.
+							your test identifiers; writes are tagged agent-contract-test and closed; a prod write needs your OK;
+							X/P ops run only against a test-env instance. A stub never makes a route ready.
 						</p>
 					</Card>
 

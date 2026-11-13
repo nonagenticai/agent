@@ -228,7 +228,7 @@
 		{#if conv && owner}
 			<strong class="who">{conv.display_name}</strong>
 			<VerifiedChip verified={conv.verified} />
-			<span class="ch">{(CHANNEL_LABEL as Record<string, string>)[conv.channel] ?? conv.channel}</span>
+			<span class="ch">{(CHANNEL_LABEL as Record)[conv.channel] ?? conv.channel}</span>
 			<span class="sp"></span>
 			<OwnerChip {owner} {meSub} />
 			<AutoChip {owner} />

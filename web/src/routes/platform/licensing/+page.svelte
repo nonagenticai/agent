@@ -343,8 +343,8 @@
 					</dd>
 					<dt>Verdict refresh stalls</dt>
 					<dd>
-						After {VERDICT_MAX_AGE_S / 60} min the edge fails closed even though the licence is fine — that is
-						the safe default, not an outage of the licence.
+						After {VERDICT_MAX_AGE_S / 60} min the edge fails closed even though the licence is fine — that is the
+						safe default, not an outage of the licence.
 					</dd>
 				</dl>
 			</Card>
@@ -423,9 +423,9 @@
 			</div>
 		{:else}
 			<Callout kind="info" title="Revokes the current licence">
-				The current licence{replaceRow?.licence ? ` (${replaceRow.licence.licence_id})` : ''} is revoked, then
-				a new one is issued for the same holder in the tenant's residency region. Members are not disabled. If
-				licences does not confirm the revoke in time, the provisioning tick finishes the re-issue.
+				The current licence{replaceRow?.licence ? ` (${replaceRow.licence.licence_id})` : ''} is revoked, then a
+				new one is issued for the same holder in the tenant's residency region. Members are not disabled. If licences
+				does not confirm the revoke in time, the provisioning tick finishes the re-issue.
 			</Callout>
 		{/if}
 		{#if replaced}

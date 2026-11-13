@@ -6,15 +6,7 @@ import type { Session } from './auth/session.svelte';
 
 /** The areas of the product a page belongs to. */
 export type Area =
-	| 'runtime'
-	| 'tenant'
-	| 'platform'
-	| 'model'
-	| 'connectors'
-	| 'release'
-	| 'journey'
-	| 'ontology'
-	| 'live';
+	'runtime' | 'tenant' | 'platform' | 'model' | 'connectors' | 'release' | 'journey' | 'ontology' | 'live';
 
 export type NavGroup = 'platform' | 'tenant' | 'job' | 'live';
 /** Where a page sits in the redesigned shell: one scope per sidebar. `dev` is the super-admin-only tools. */

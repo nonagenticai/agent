@@ -564,10 +564,9 @@
 	}
 	.t13-door {
 		display: grid;
-		grid-template-columns: minmax(0, 2fr) minmax(0, 0.9fr) minmax(0, 1.2fr) minmax(0, 1.1fr) minmax(0, 1.2fr) minmax(
-				0,
-				0.9fr
-			);
+		grid-template-columns:
+			minmax(0, 2fr) minmax(0, 0.9fr) minmax(0, 1.2fr) minmax(0, 1.1fr) minmax(0, 1.2fr)
+			minmax(0, 0.9fr);
 		gap: 14px;
 		padding: 12px 16px;
 		border-top: 1px solid var(--line-2);

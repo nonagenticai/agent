@@ -83,14 +83,12 @@ export function toHandoverItem(raw: Partial<HandoverItem> & Record<string, unkno
 	const rawMessages = (Array.isArray(raw.messages)
 		? raw.messages
 		: []) as unknown as (Partial<HandoverMessage> & Record<string, unknown>)[];
-	const messages = rawMessages.map(
-		(m): HandoverMessage => ({
-			at: (m.at as string) ?? isoOf(m.at_ms),
-			from: (m.from ?? m.role ?? 'system') as HandoverMessage['from'],
-			author: (m.author as string) ?? '',
-			text: (m.text as string) ?? '',
-		}),
-	);
+	const messages = rawMessages.map((m): HandoverMessage => ({
+		at: (m.at as string) ?? isoOf(m.at_ms),
+		from: (m.from ?? m.role ?? 'system') as HandoverMessage['from'],
+		author: (m.author as string) ?? '',
+		text: (m.text as string) ?? '',
+	}));
 	return {
 		case_type: 'handover',
 		subject: '',

@@ -2,9 +2,7 @@
 
 /** Where a `state` input comes from when its key is not in the conversation state yet. */
 export type StateFrom =
-	| 'state'
-	| { tool: string; output: string }
-	| { ask_user: string; secret?: boolean; retries?: number };
+	'state' | { tool: string; output: string } | { ask_user: string; secret?: boolean; retries?: number };
 
 /** One tool input: set by the model, or taken from the conversation state. */
 export type InputDecl = { source: 'model' } | { source: 'state'; key: string; from?: StateFrom };

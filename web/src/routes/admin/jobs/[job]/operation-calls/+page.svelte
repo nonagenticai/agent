@@ -151,7 +151,7 @@
 				for (const k of ENDINGS) a[k] += m[k];
 				return a;
 			},
-			{ ok: 0, denied: 0, replied: 0, escalated: 0, unknown: 0 } as Record<Ending, number>,
+			{ ok: 0, denied: 0, replied: 0, escalated: 0, unknown: 0 } as Record,
 		)}
 		{@const calls = s.items.reduce((a, x) => a + x.calls, 0)}
 		{@const pat = failurePatterns(s.items)}

@@ -333,8 +333,8 @@
 						<div class="callout info" data-testid="pick-tenant">
 							<strong>Choose a tenant to see this page</strong>
 							<span
-								>You are a super admin in the platform view. {currentTitle ?? 'This page'} acts in one tenant:
-								pick it here.</span
+								>You are a super admin in the platform view. {currentTitle ?? 'This page'} acts in one tenant: pick
+								it here.</span
 							>
 						</div>
 						<TenantPicker />

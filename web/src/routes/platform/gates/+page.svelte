@@ -85,9 +85,9 @@
 				<div class="gl-leg">
 					<h3>Who changes what</h3>
 					<p>
-						Here: question text, threshold, authored options. <Chip text="generated" variant="tool" /> options
-						are rebuilt from each job's grid at the release cut. Tenants relabel, hide and tune per job on the
-						job's Gates page.
+						Here: question text, threshold, authored options. <Chip text="generated" variant="tool" /> options are
+						rebuilt from each job's grid at the release cut. Tenants relabel, hide and tune per job on the job's
+						Gates page.
 					</p>
 				</div>
 			</div>
@@ -160,7 +160,7 @@
 				</Card>
 			{/if}
 		{/each}
-		{#if !GROUPS.some((g) => (group === 'all' || group === g.key) && page.items.some( (q) => visible(q, g.key), ))}
+		{#if !GROUPS.some((g) => (group === 'all' || group === g.key) && page.items.some( (q) => visible(q, g.key) ))}
 			<p class="muted gl-none">
 				No {point} questions in this layer.
 				<button type="button" class="linkish" onclick={() => (point = 'all')}>Show every gate point</button>

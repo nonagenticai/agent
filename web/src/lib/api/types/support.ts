@@ -206,12 +206,7 @@ export interface OwnerFrame extends OwnerView {
 }
 
 export type SupportFrameName =
-	| 'inbox_row'
-	| 'message'
-	| 'owner'
-	| 'handover'
-	| 'delivery_failed'
-	| 'presence';
+	'inbox_row' | 'message' | 'owner' | 'handover' | 'delivery_failed' | 'presence';
 
 /** Why a take / assign lost the race: 409 `owner_changed`, `details.owner` is the owner now. */
 export const OWNER_CHANGED = 'owner_changed';
