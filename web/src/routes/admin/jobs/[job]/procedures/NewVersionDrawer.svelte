@@ -458,8 +458,7 @@
 				rows="6"
 				aria-label="PDDL domain"
 				placeholder="(define (domain …))"
-				bind:value={form.pddl}
-			></textarea>
+				bind:value={form.pddl}></textarea>
 		</details>
 
 		{#if grant}

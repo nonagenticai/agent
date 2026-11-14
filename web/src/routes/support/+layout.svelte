@@ -650,8 +650,7 @@
 							bind:value={handBackNote}
 							oninput={() => (handBackError = null)}
 							aria-invalid={handBackError ? 'true' : undefined}
-							aria-describedby={handBackError ? 'hb-err' : undefined}
-						></textarea>
+							aria-describedby={handBackError ? 'hb-err' : undefined}></textarea>
 						{#if handBackError}<p class="err" id="hb-err">{handBackError}</p>{/if}
 						<div class="hb-actions">
 							<button class="btn sm" type="button" onclick={() => (handBackOpen = false)}>Cancel</button>

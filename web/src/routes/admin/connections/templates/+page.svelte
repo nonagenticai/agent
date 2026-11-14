@@ -904,8 +904,7 @@
 												class="input mono"
 												rows="3"
 												bind:value={o.request}
-												disabled={!editable}
-											></textarea>
+												disabled={!editable}></textarea>
 										</div>
 										<div class="tbl-wrap">
 											<table class="tbl dense">
@@ -1148,8 +1147,7 @@
 				id="nt-desc"
 				class="input"
 				rows="2"
-				bind:value={nf.description}
-			></textarea>
+				bind:value={nf.description}></textarea>
 		</div>
 		<p class="muted">
 			Starts as draft <span class="mono">@1</span> on

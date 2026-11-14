@@ -820,8 +820,7 @@
 										class="input"
 										rows="3"
 										bind:value={cfg.env_ids}
-										disabled={!writable || i.platform}
-									></textarea>
+										disabled={!writable || i.platform}></textarea>
 								</details>
 								<div class="field">
 									<label for="c-rps">max_rps</label><input

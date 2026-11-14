@@ -260,8 +260,7 @@
 					id="new-op-description"
 					class="input"
 					bind:value={form.description}
-					disabled={busy}
-				></textarea>
+					disabled={busy}></textarea>
 			</div>
 			<button class="btn primary" type="submit" disabled={busy || !form.layer_key || !form.identity_level}
 				>{busy ? 'Creating…' : 'Create operation draft'}</button

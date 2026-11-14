@@ -130,8 +130,7 @@
 				class="input"
 				rows="3"
 				placeholder="What the business sells and to whom; a website; or the discovery cluster this refines"
-				bind:value={description}
-			></textarea>
+				bind:value={description}></textarea>
 			<small class="muted"
 				>Step 1 (Business model) drafts axis values from this. Existing systems are mapped later by connector
 				templates.</small
