@@ -14,7 +14,8 @@ use tokio::sync::Mutex;
 use uuid::Uuid;
 
 use crate::config::LicensesAdminConfig;
-use crate::service_token::{ServiceToken, UpstreamError, encode};
+use crate::http_base::BaseUrl;
+use crate::service_token::{ServiceToken, UpstreamError};
 
 /// A licence the registry created: its id and the licences service's own Subject id for the holder (not
 /// the Keycloak `sub`).
@@ -94,8 +95,8 @@ struct RegionCache {
 }
 
 pub struct LicensesAdmin {
-    /// The admin API base, without a trailing slash.
-    base: String,
+    /// The admin API base, parsed and checked once (http(s), no query or fragment), no trailing slash.
+    base: BaseUrl,
     app_key: String,
     plan_code: String,
     /// The realm the holder lives in, stated on the licence (commonpractice `subject_realm`): without
@@ -114,7 +115,7 @@ pub struct LicensesAdmin {
 impl LicensesAdmin {
     pub fn new(cfg: &LicensesAdminConfig, http: reqwest::Client) -> Self {
         Self {
-            base: cfg.url.trim_end_matches('/').into(),
+            base: cfg.url.clone(),
             app_key: cfg.app_key.clone(),
             plan_code: cfg.plan_code.clone(),
             subject_realm: cfg.subject_realm.clone(),
@@ -130,10 +131,6 @@ impl LicensesAdmin {
     #[doc(hidden)]
     pub fn set_regions_ttl(&mut self, ttl: Duration) {
         self.regions_ttl = ttl;
-    }
-
-    fn url(&self, path: &str) -> String {
-        format!("{}/{path}", self.base)
     }
 
     /// `req` with the SA's bearer token (and `X-Tenant-Id` when acting on a tenant), sent.
@@ -173,10 +170,14 @@ impl LicensesAdmin {
         if let Some(hit) = ids.as_ref() {
             return Ok(hit.clone());
         }
-        let key = encode(&self.app_key);
+        let key = self.app_key.as_str();
         let what = "licences resolve app";
         let resp = self
-            .send(self.http.get(self.url(&format!("apps/{key}"))), None, what)
+            .send(
+                self.http.get(self.base.endpoint(&["apps", key])),
+                None,
+                what,
+            )
             .await?;
         let app: WireId = Self::ok_json(resp, what).await?;
         let app_id = app
@@ -185,7 +186,7 @@ impl LicensesAdmin {
         let what = "licences resolve plans";
         let resp = self
             .send(
-                self.http.get(self.url(&format!("apps/{key}/plans"))),
+                self.http.get(self.base.endpoint(&["apps", key, "plans"])),
                 None,
                 what,
             )
@@ -222,7 +223,7 @@ impl LicensesAdmin {
         }
         let what = "licences list regions";
         let resp = self
-            .send(self.http.get(self.url("regions")), None, what)
+            .send(self.http.get(self.base.endpoint(&["regions"])), None, what)
             .await?;
         let listed: Vec<WireRegion> = Self::ok_json(resp, what).await?;
         cache.list = listed
@@ -247,7 +248,7 @@ impl LicensesAdmin {
         let resp = self
             .send(
                 self.http
-                    .put(self.url(&format!("tenants/{tenant}")))
+                    .put(self.base.endpoint(&["tenants", &tenant.to_string()]))
                     .json(&json!({"name": registry_name})),
                 None,
                 what,
@@ -287,7 +288,7 @@ impl LicensesAdmin {
         let resp = self
             .send(
                 self.http
-                    .post(self.url(&format!("licenses/user/{}", encode(holder_sub))))
+                    .post(self.base.endpoint(&["licenses", "user", holder_sub]))
                     .json(&body),
                 Some(tenant),
                 what,
@@ -318,18 +319,17 @@ impl LicensesAdmin {
     /// keeps licences' `detail.error` in the error, and still fails the issuance.
     pub async fn mint(&self, tenant: Uuid, license_id: &str) -> Result<String, UpstreamError> {
         let what = "licences mint token";
-        let path = format!(
-            "licenses/{}/tokens?token_type=internal&long_lived=true&long_lived_owner={}&long_lived_reason={}",
-            encode(license_id),
-            encode(MINT_OWNER),
-            encode(MINT_REASON),
+        let url = self.base.endpoint_with_query(
+            &["licenses", license_id, "tokens"],
+            &[
+                ("token_type", "internal"),
+                ("long_lived", "true"),
+                ("long_lived_owner", MINT_OWNER),
+                ("long_lived_reason", MINT_REASON),
+            ],
         );
         let resp = self
-            .send(
-                self.http.post(self.url(&path)).json(&json!({})),
-                Some(tenant),
-                what,
-            )
+            .send(self.http.post(url).json(&json!({})), Some(tenant), what)
             .await?;
         let status = resp.status();
         if !status.is_success() {
@@ -358,7 +358,7 @@ impl LicensesAdmin {
         let resp = self
             .send(
                 self.http
-                    .post(self.url("license/revoke"))
+                    .post(self.base.endpoint(&["license", "revoke"]))
                     .json(&json!({"license_id": license_id})),
                 Some(tenant),
                 what,
@@ -379,16 +379,17 @@ impl LicensesAdmin {
         plans: &[&str],
     ) -> Result<Ensured, UpstreamError> {
         let what = "licences bundle ensure";
-        let path = format!(
-            "internal/tenants/{}/bundles/{}/ensure",
-            tenant,
-            encode(bundle_key)
-        );
+        let url = self.base.endpoint(&[
+            "internal",
+            "tenants",
+            &tenant.to_string(),
+            "bundles",
+            bundle_key,
+            "ensure",
+        ]);
         let resp = self
             .send(
-                self.http
-                    .post(self.url(&path))
-                    .json(&json!({ "plans": plans })),
+                self.http.post(url).json(&json!({ "plans": plans })),
                 None,
                 what,
             )
