@@ -520,7 +520,18 @@ impl Verifier {
     ) -> Self {
         let entries = trusted
             .iter()
-            .map(|iss| (iss.clone(), Keys::Static(DecodingKey::from_secret(secret))))
+            // jsonwebtoken 12 makes `from_secret` fallible: an empty HMAC secret is now a
+            // hard error (InvalidKeyFormat). This helper is test-only and the secret is a
+            // literal, so panicking with the reason is the honest failure mode.
+            .map(|iss| {
+                (
+                    iss.clone(),
+                    Keys::Static(
+                        DecodingKey::from_secret(secret)
+                            .expect("test HMAC secret must not be empty"),
+                    ),
+                )
+            })
             .collect();
         Self::trusted(audience, client_id, service_only_realms, entries)
     }
@@ -1081,7 +1092,7 @@ mod tests {
         jsonwebtoken::encode(
             &h,
             &serde_json::json!({"sub": "x", "iss": iss}),
-            &jsonwebtoken::EncodingKey::from_secret(b"k"),
+            &jsonwebtoken::EncodingKey::from_secret(b"k").expect("literal test secret"),
         )
         .unwrap()
     }
