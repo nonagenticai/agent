@@ -102,6 +102,7 @@ use anyhow::{Context, Result};
 use crate::connectors::t2::{self, Sandboxes};
 use crate::crypto::keyring::{KeySet, Purpose};
 use crate::crypto::licence::{LEGACY_KEY_VAR, LicenceKeys};
+use crate::http_base::BaseUrl;
 use crate::netguard::Policy;
 use crate::observability::{DEFAULT_METRICS_BIND, LogFormat, ObsConfig};
 
@@ -573,8 +574,8 @@ impl std::fmt::Debug for ClientCredentials {
 #[derive(Clone, Debug)]
 pub struct KeycloakAdminConfig {
     pub creds: ClientCredentials,
-    /// `KEYCLOAK_ADMIN_API_URL`: `.../admin/realms/portal`.
-    pub api_url: String,
+    /// `KEYCLOAK_ADMIN_API_URL`: `.../admin/realms/portal`, parsed at boot (http(s), no query or fragment).
+    pub api_url: BaseUrl,
     /// `AGENT_KC_CLIENT_UUID` (required): the internal id of the `agent` client in the portal realm. The super_admin
     /// check reads the user's role mappings on it directly, so the admin service account needs `view-users` only,
     /// never `view-clients` (which would expose every client's secret).
@@ -585,8 +586,8 @@ pub struct KeycloakAdminConfig {
 #[derive(Clone, Debug)]
 pub struct LicensesAdminConfig {
     pub creds: ClientCredentials,
-    /// `LICENSES_ADMIN_URL`: the licences admin API base.
-    pub url: String,
+    /// `LICENSES_ADMIN_URL`: the licences admin API base, parsed at boot (http(s), no query or fragment).
+    pub url: BaseUrl,
     /// `LICENSE_APP_KEY` (default `agent`).
     pub app_key: String,
     /// `LICENSE_PLAN_CODE` (default `byo`, as commonpractice issues early-access licences; owner 2026-10-20).
@@ -996,6 +997,11 @@ const RUNNER_NO_OWNER_LOGIN: &str = "postgres://runner-never-migrates.invalid/no
 const RUNNER_NO_ISSUER: &str = "https://runner-verifies-no-token.invalid";
 const RUNNER_NO_AUDIENCE: &str = "runner-verifies-no-token";
 
+/// A constant `.invalid` base URL for the runner's inert identity; the literal is http(s) by construction.
+fn inert_base(url: &str) -> BaseUrl {
+    BaseUrl::parse(url).expect("the inert identity URL is a valid http(s) URL")
+}
+
 /// The runner's identity slot (B4 F1): no Keycloak-admin or licences-admin credential and no licence-token key.
 /// Every URL is `.invalid` (never resolves) and the licence keyring is empty (a seal fails, an open finds no key), so
 /// a call through it fails instead of reaching a real service. No runner path uses `AppState::identity`.
@@ -1008,12 +1014,12 @@ fn inert_identity() -> IdentityConfig {
     IdentityConfig {
         keycloak_admin: KeycloakAdminConfig {
             creds: none("https://runner-has-no-keycloak-admin.invalid/token"),
-            api_url: "https://runner-has-no-keycloak-admin.invalid".into(),
+            api_url: inert_base("https://runner-has-no-keycloak-admin.invalid"),
             agent_client_uuid: String::new(),
         },
         licenses_admin: LicensesAdminConfig {
             creds: none("https://runner-has-no-licences-admin.invalid/token"),
-            url: "https://runner-has-no-licences-admin.invalid".into(),
+            url: inert_base("https://runner-has-no-licences-admin.invalid"),
             app_key: "agent".into(),
             plan_code: "byo".into(),
             subject_realm: "portal".into(),
@@ -1177,6 +1183,12 @@ pub(crate) fn base_url(k: &str, v: String) -> Result<String> {
         anyhow::bail!("{k} must be an http(s) URL");
     }
     Ok(v)
+}
+
+/// An http(s) base URL from config, parsed and checked at boot (crate::http_base); anything else fails the boot by
+/// name, so a client never sends a request to an unvalidated string.
+fn parsed_base(k: &str, v: String) -> Result<BaseUrl> {
+    BaseUrl::parse(&v).map_err(|e| anyhow::anyhow!("{k}: {e}"))
 }
 
 /// The bundle-token minter: unset = `None`; a partial set fails the boot by name; ttl 1 to 60 minutes.
@@ -1477,9 +1489,7 @@ fn identity_from(trimmed: &impl Fn(&str) -> Option<String>) -> Result<IdentityCo
                 client_id: req("KEYCLOAK_ADMIN_CLIENT_ID")?,
                 client_secret: req("KEYCLOAK_ADMIN_CLIENT_SECRET")?,
             },
-            api_url: req("KEYCLOAK_ADMIN_API_URL")?
-                .trim_end_matches('/')
-                .to_string(),
+            api_url: parsed_base("KEYCLOAK_ADMIN_API_URL", req("KEYCLOAK_ADMIN_API_URL")?)?,
             agent_client_uuid: req("AGENT_KC_CLIENT_UUID")?,
         },
         licenses_admin: LicensesAdminConfig {
@@ -1488,7 +1498,7 @@ fn identity_from(trimmed: &impl Fn(&str) -> Option<String>) -> Result<IdentityCo
                 client_id: req("LICENSES_ADMIN_CLIENT_ID")?,
                 client_secret: req("LICENSES_ADMIN_CLIENT_SECRET")?,
             },
-            url: req("LICENSES_ADMIN_URL")?.trim_end_matches('/').to_string(),
+            url: parsed_base("LICENSES_ADMIN_URL", req("LICENSES_ADMIN_URL")?)?,
             app_key: or("LICENSE_APP_KEY", "agent"),
             plan_code: or("LICENSE_PLAN_CODE", "byo"),
             subject_realm: or("LICENSE_SUBJECT_REALM", "portal"),
@@ -2724,14 +2734,14 @@ mod tests {
         assert!(id.keycloak_admin.creds.client_id.is_empty());
         assert!(id.licence_keys.set.keys.is_empty());
         for url in [
-            &id.keycloak_admin.creds.token_url,
-            &id.keycloak_admin.api_url,
-            &id.licenses_admin.creds.token_url,
-            &id.licenses_admin.url,
-            &id.public_url,
-            &rc.app.migrate_database_url,
-            &rc.app.keycloak_issuer,
-            &rc.app.keycloak_jwks_url,
+            id.keycloak_admin.creds.token_url.as_str(),
+            id.keycloak_admin.api_url.as_str(),
+            id.licenses_admin.creds.token_url.as_str(),
+            id.licenses_admin.url.as_str(),
+            id.public_url.as_str(),
+            rc.app.migrate_database_url.as_str(),
+            rc.app.keycloak_issuer.as_str(),
+            rc.app.keycloak_jwks_url.as_str(),
         ] {
             assert!(url.contains(".invalid"), "{url}");
         }

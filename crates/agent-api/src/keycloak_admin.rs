@@ -13,7 +13,8 @@ use serde::Deserialize;
 use serde_json::{Map, Value, json};
 
 use crate::config::KeycloakAdminConfig;
-use crate::service_token::{ServiceToken, UpstreamError, encode};
+use crate::http_base::BaseUrl;
+use crate::service_token::{ServiceToken, UpstreamError};
 
 /// The actions the set-password email asks for: set a password, confirm the address.
 pub const INVITE_ACTIONS: [&str; 2] = ["UPDATE_PASSWORD", "VERIFY_EMAIL"];
@@ -85,8 +86,8 @@ pub struct ActionsEmail<'a> {
 }
 
 pub struct KeycloakAdmin {
-    /// `.../admin/realms/portal`, without a trailing slash.
-    api: String,
+    /// `.../admin/realms/portal`, parsed and checked once (http(s), no query or fragment), no trailing slash.
+    base: BaseUrl,
     token: ServiceToken,
     http: reqwest::Client,
 }
@@ -94,14 +95,10 @@ pub struct KeycloakAdmin {
 impl KeycloakAdmin {
     pub fn new(cfg: &KeycloakAdminConfig, http: reqwest::Client) -> Self {
         Self {
-            api: cfg.api_url.trim_end_matches('/').into(),
+            base: cfg.api_url.clone(),
             token: ServiceToken::from_creds(&cfg.creds, http.clone()),
             http,
         }
-    }
-
-    fn url(&self, path: &str) -> String {
-        format!("{}/{path}", self.api)
     }
 
     /// `req` with the service account's bearer token, sent.
@@ -122,7 +119,10 @@ impl KeycloakAdmin {
     /// is still case-insensitive, so the match is re-checked here.
     pub async fn find_by_email(&self, email: &str) -> Result<Option<String>, UpstreamError> {
         for field in ["email", "username"] {
-            let url = self.url(&format!("users?{field}={}&exact=true&max=2", encode(email)));
+            let url = self.base.endpoint_with_query(
+                &["users"],
+                &[(field, email), ("exact", "true"), ("max", "2")],
+            );
             let what = format!("keycloak user lookup by {field}");
             let resp = self.send(self.http.get(url), &what).await?;
             if !resp.status().is_success() {
@@ -177,7 +177,10 @@ impl KeycloakAdmin {
         }
         let what = "keycloak create user";
         let resp = self
-            .send(self.http.post(self.url("users")).json(&rep), what)
+            .send(
+                self.http.post(self.base.endpoint(&["users"])).json(&rep),
+                what,
+            )
             .await?;
         if resp.status() == StatusCode::CONFLICT {
             return Ok(None);
@@ -202,9 +205,9 @@ impl KeycloakAdmin {
         id: &str,
         attrs: &[(&str, Option<&str>)],
     ) -> Result<(), UpstreamError> {
-        let url = self.url(&format!("users/{}", encode(id)));
+        let url = self.base.endpoint(&["users", id]);
         let what = "keycloak read user";
-        let resp = self.send(self.http.get(url.as_str()), what).await?;
+        let resp = self.send(self.http.get(url.clone()), what).await?;
         if !resp.status().is_success() {
             return Err(UpstreamError::status(what, resp.status()));
         }
@@ -246,9 +249,9 @@ impl KeycloakAdmin {
         first_name: Option<&str>,
         last_name: Option<&str>,
     ) -> Result<bool, UpstreamError> {
-        let url = self.url(&format!("users/{}", encode(id)));
+        let url = self.base.endpoint(&["users", id]);
         let what = "keycloak read user";
-        let resp = self.send(self.http.get(url.as_str()), what).await?;
+        let resp = self.send(self.http.get(url.clone()), what).await?;
         if !resp.status().is_success() {
             return Err(UpstreamError::status(what, resp.status()));
         }
@@ -284,14 +287,16 @@ impl KeycloakAdmin {
     /// positively for both; `None` when either list is refused to the service account (commonpractice
     /// `identityCredentialState`: unknown is never "none").
     pub async fn has_credential_or_link(&self, id: &str) -> Result<Option<bool>, UpstreamError> {
-        let base = self.url(&format!("users/{}", encode(id)));
         let mut unknown = false;
         for (path, what) in [
             ("credentials", "keycloak read credentials"),
             ("federated-identity", "keycloak read identity links"),
         ] {
             let r = self
-                .send(self.http.get(format!("{base}/{path}")), what)
+                .send(
+                    self.http.get(self.base.endpoint(&["users", id, path])),
+                    what,
+                )
                 .await?;
             if r.status() == StatusCode::FORBIDDEN {
                 unknown = true;
@@ -320,9 +325,9 @@ impl KeycloakAdmin {
         attr: &str,
         prefix: &str,
     ) -> Result<Option<String>, UpstreamError> {
-        let url = self.url(&format!("users/{}", encode(id)));
+        let url = self.base.endpoint(&["users", id]);
         let what = "keycloak read user";
-        let resp = self.send(self.http.get(url.as_str()), what).await?;
+        let resp = self.send(self.http.get(url.clone()), what).await?;
         if !resp.status().is_success() {
             return Err(UpstreamError::status(what, resp.status()));
         }
@@ -355,7 +360,7 @@ impl KeycloakAdmin {
 
     /// The first value of `id`'s attribute `attr`, if any.
     pub async fn attribute(&self, id: &str, attr: &str) -> Result<Option<String>, UpstreamError> {
-        let url = self.url(&format!("users/{}", encode(id)));
+        let url = self.base.endpoint(&["users", id]);
         let what = "keycloak read user";
         let resp = self.send(self.http.get(url), what).await?;
         if !resp.status().is_success() {
@@ -371,7 +376,7 @@ impl KeycloakAdmin {
     /// Delete the identity `id`; `false` when it was already gone (404).
     pub async fn delete_user(&self, id: &str) -> Result<bool, UpstreamError> {
         let what = "keycloak delete user";
-        let url = self.url(&format!("users/{}", encode(id)));
+        let url = self.base.endpoint(&["users", id]);
         let resp = self.send(self.http.delete(url), what).await?;
         if resp.status() == StatusCode::NOT_FOUND {
             return Ok(false);
@@ -392,9 +397,9 @@ impl KeycloakAdmin {
         attr: &str,
         value: &str,
     ) -> Result<bool, UpstreamError> {
-        let url = self.url(&format!("users/{}", encode(id)));
+        let url = self.base.endpoint(&["users", id]);
         let what = "keycloak read user";
-        let resp = self.send(self.http.get(url.as_str()), what).await?;
+        let resp = self.send(self.http.get(url.clone()), what).await?;
         if !resp.status().is_success() {
             return Err(UpstreamError::status(what, resp.status()));
         }
@@ -412,13 +417,13 @@ impl KeycloakAdmin {
         rep["enabled"] = json!(false);
         let what = "keycloak disable user";
         let resp = self
-            .send(self.http.put(url.as_str()).json(&rep), what)
+            .send(self.http.put(url.clone()).json(&rep), what)
             .await?;
         if !resp.status().is_success() {
             return Err(UpstreamError::status(what, resp.status()));
         }
         let what = "keycloak read user back";
-        let resp = self.send(self.http.get(url.as_str()), what).await?;
+        let resp = self.send(self.http.get(url.clone()), what).await?;
         if !resp.status().is_success() {
             return Err(UpstreamError::status(what, resp.status()));
         }
@@ -439,9 +444,9 @@ impl KeycloakAdmin {
     /// service account (403): then, as in commonpractice, only `requiredActions` decides ("can sign in"
     /// unless `UPDATE_PASSWORD` is pending).
     pub async fn login_state(&self, id: &str) -> Result<LoginState, UpstreamError> {
-        let url = self.url(&format!("users/{}", encode(id)));
+        let url = self.base.endpoint(&["users", id]);
         let what = "keycloak read user";
-        let resp = self.send(self.http.get(url.as_str()), what).await?;
+        let resp = self.send(self.http.get(url.clone()), what).await?;
         if !resp.status().is_success() {
             return Err(UpstreamError::status(what, resp.status()));
         }
@@ -452,7 +457,11 @@ impl KeycloakAdmin {
         let pending_password = u.required_actions.iter().any(|a| a == "UPDATE_PASSWORD");
         let what = "keycloak read credentials";
         let r = self
-            .send(self.http.get(format!("{url}/credentials")), what)
+            .send(
+                self.http
+                    .get(self.base.endpoint(&["users", id, "credentials"])),
+                what,
+            )
             .await?;
         let has_password = if r.status().is_success() {
             r.json::<Vec<Credential>>()
@@ -475,7 +484,7 @@ impl KeycloakAdmin {
     /// The identity `id`; `None` only on Keycloak's 404 (any other failure is an error, never "no such user").
     pub async fn get_user(&self, id: &str) -> Result<Option<PortalUser>, UpstreamError> {
         let what = "keycloak get user";
-        let url = self.url(&format!("users/{}", encode(id)));
+        let url = self.base.endpoint(&["users", id]);
         let resp = self.send(self.http.get(url), what).await?;
         if resp.status() == StatusCode::NOT_FOUND {
             return Ok(None);
@@ -515,11 +524,14 @@ impl KeycloakAdmin {
         role: &str,
     ) -> Result<bool, UpstreamError> {
         let what = "keycloak read client role mappings";
-        let url = self.url(&format!(
-            "users/{}/role-mappings/clients/{}/composite",
-            encode(id),
-            encode(client_uuid)
-        ));
+        let url = self.base.endpoint(&[
+            "users",
+            id,
+            "role-mappings",
+            "clients",
+            client_uuid,
+            "composite",
+        ]);
         let resp = self.send(self.http.get(url), what).await?;
         if resp.status() == StatusCode::NOT_FOUND {
             return Ok(false);
@@ -542,13 +554,15 @@ impl KeycloakAdmin {
         to: &ActionsEmail<'_>,
     ) -> Result<(), UpstreamError> {
         let what = "keycloak execute-actions-email";
-        let url = self.url(&format!(
-            "users/{}/execute-actions-email?client_id={}&redirect_uri={}&lifespan={}",
-            encode(id),
-            encode(to.client_id),
-            encode(to.redirect_uri),
-            to.lifespan_seconds,
-        ));
+        let lifespan = to.lifespan_seconds.to_string();
+        let url = self.base.endpoint_with_query(
+            &["users", id, "execute-actions-email"],
+            &[
+                ("client_id", to.client_id),
+                ("redirect_uri", to.redirect_uri),
+                ("lifespan", &lifespan),
+            ],
+        );
         let resp = self
             .send(self.http.put(url).json(&to.actions), what)
             .await?;
