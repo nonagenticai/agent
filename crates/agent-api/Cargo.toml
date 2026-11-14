@@ -22,7 +22,7 @@ futures-util = { version = "0.3.34", default-features = false, features = ["std"
 hex = "0.4.3"
 # SW-9 attachments (crate::attachments::validate): decode with limits, strip metadata by re-encoding. Pure Rust, no rayon.
 image = { version = "0.25.10", default-features = false, features = ["jpeg", "png", "webp"] }
-jsonwebtoken = { version = "10.4.0", features = ["rust_crypto"] }
+jsonwebtoken = { version = "12.0.0", features = ["rust_crypto"] }
 # SW-9: PDF structure check (every object walked for active-content keys), under a size/time budget.
 lopdf = { version = "0.47.0", default-features = false }
 metrics = "0.24.6"

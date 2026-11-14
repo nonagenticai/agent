@@ -152,7 +152,13 @@ pub fn verify(
             let Some(k) = hs_keys.iter().find(|k| k.kid == kid) else {
                 return invalid("kid_unknown");
             };
-            DecodingKey::from_secret(k.secret.as_bytes())
+            // jsonwebtoken 12 makes `from_secret` fallible (an empty secret is
+            // InvalidKeyFormat). Treat it the same way as a malformed JWK below: a
+            // misconfigured key slot must refuse the assertion, never panic a request.
+            match DecodingKey::from_secret(k.secret.as_bytes()) {
+                Ok(key) => key,
+                Err(_) => return invalid("key_malformed"),
+            }
         }
         _ => {
             let Some(jwk) = s
@@ -385,7 +391,8 @@ pub fn mint_hs256(
     encode(
         &h,
         &claims,
-        &EncodingKey::from_secret(key.secret.as_bytes()),
+        &EncodingKey::from_secret(key.secret.as_bytes())
+            .expect("a configured HS256 key slot always carries a non-empty secret"),
     )
     .expect("an HS256 assertion with string and integer claims always serializes")
 }
@@ -426,7 +433,12 @@ mod tests {
     fn hs_raw(kid: &str, secret: &str, c: &Value) -> String {
         let mut h = Header::new(Algorithm::HS256);
         h.kid = Some(kid.into());
-        encode(&h, c, &EncodingKey::from_secret(secret.as_bytes())).unwrap()
+        encode(
+            &h,
+            c,
+            &EncodingKey::from_secret(secret.as_bytes()).expect("test secret is non-empty"),
+        )
+        .unwrap()
     }
 
     fn ok_hs_token(k: &HsKey) -> String {
@@ -683,7 +695,7 @@ mod tests {
         let nokid = encode(
             &Header::new(Algorithm::HS256),
             &claims(binding(), NOW, NOW + 300),
-            &EncodingKey::from_secret(k.secret.as_bytes()),
+            &EncodingKey::from_secret(k.secret.as_bytes()).expect("test secret is non-empty"),
         )
         .unwrap();
         assert_refused(verify(&s, binding(), &keys, &nokid, NOW), "no kid");
