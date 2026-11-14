@@ -51,7 +51,7 @@ function testNote(n: number): string {
 
 /** The design the J3 page checks, from its URL (`/readiness?of=draft`): `'draft'` or `'release'` when asked, else
  * `undefined` (the API's default, the release). Passed through to `readinessBoard({of})`. */
-export function boardOf(q: URLSearchParams): 'draft' | 'release' | undefined {
+export function boardOf(q: Pick<URLSearchParams, 'get'>): 'draft' | 'release' | undefined {
 	const of = q.get('of');
 	return of === 'draft' || of === 'release' ? of : undefined;
 }

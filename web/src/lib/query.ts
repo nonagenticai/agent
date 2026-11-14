@@ -14,7 +14,7 @@ export type QueryOptions = {
  */
 export function setQuery(values: Record<string, string>, opts: QueryOptions = {}) {
 	const { resetPage = true, replaceState = true } = opts;
-	const url = new URL(page.url);
+	const url = new URL(page.url.href);
 	if (resetPage) {
 		url.searchParams.delete('before');
 		url.searchParams.delete('previous');
@@ -24,5 +24,5 @@ export function setQuery(values: Record<string, string>, opts: QueryOptions = {}
 		if (value) url.searchParams.set(key, value);
 		else url.searchParams.delete(key);
 	}
-	return goto(url, { keepFocus: true, noScroll: true, replaceState });
+	return goto(url, { reset: false, replace: replaceState });
 }
