@@ -23,6 +23,7 @@ use uuid::Uuid;
 use crate::config::BundleMinterConfig;
 use crate::connectors::custody::{open_fields, seal_fields};
 use crate::crypto::keyring::Keyring;
+use crate::http_base::{BaseUrl, BaseUrlError};
 use crate::mcp_client::client::{CredentialSource, McpCredentials};
 use crate::service_token::form;
 use crate::tenancy::begin_scoped;
@@ -114,9 +115,17 @@ pub struct AgentMcpSource {
     minter: Arc<BundleMinter>,
     /// The minter's Keycloak client (`agent-bundle-minter`); `None` = unconfigured, every fetch fails.
     client: Option<BundleMinterConfig>,
+    /// [`Self::client`]'s token endpoint, parsed once; `Err` fails every fetch closed with the reason.
+    client_token_url: Option<Result<BaseUrl, BaseUrlError>>,
     http: reqwest::Client,
-    /// The MCP server's base URL, no trailing slash.
-    mcp_base: String,
+    /// The MCP server's base URL (deployment/tenant-configured), parsed once.
+    ///
+    /// TRUST DECISION: fetching the MCP endpoint a tenant's configuration names is this source's purpose — it makes
+    /// the call on that tenant's behalf, so following the configured endpoint is not a request forgery. What the parse
+    /// restricts is its SHAPE: `http`/`https` only (never `file:`, `ftp:` or another scheme), a host, no query or
+    /// fragment, and every appended path segment percent-encoded under the base. `Err` (an unusable URL) fails every
+    /// fetch closed rather than sending a raw string.
+    mcp_base: Result<BaseUrl, BaseUrlError>,
     client_token: Mutex<Option<(String, Instant)>>,
     refusals: StdMutex<HashMap<Uuid, (u32, Instant)>>,
     /// When each tenant's stored-token binding was last re-ensured (see [`ENSURE_TTL`]).
@@ -141,13 +150,15 @@ impl AgentMcpSource {
         http: reqwest::Client,
         mcp_base: &str,
     ) -> Self {
+        let client_token_url = client.as_ref().map(|c| BaseUrl::parse(&c.token_url));
         Self {
             db,
             keyring,
             minter,
             client,
+            client_token_url,
             http,
-            mcp_base: mcp_base.trim_end_matches('/').to_string(),
+            mcp_base: BaseUrl::parse(mcp_base),
             client_token: Mutex::new(None),
             refusals: StdMutex::new(HashMap::new()),
             ensured: StdMutex::new(HashMap::new()),
@@ -284,6 +295,13 @@ impl AgentMcpSource {
             .client
             .as_ref()
             .context("the MCP binding client (BUNDLE_MINTER_*) is not configured")?;
+        let token_url = match self.client_token_url.as_ref() {
+            Some(Ok(base)) => base,
+            Some(Err(e)) => {
+                bail!("the MCP binding client token endpoint is unusable: {e}")
+            }
+            None => bail!("the MCP binding client (BUNDLE_MINTER_*) is not configured"),
+        };
         let mut cached = self.client_token.lock().await;
         if drop_cached {
             *cached = None;
@@ -300,7 +318,7 @@ impl AgentMcpSource {
         ]);
         let res = self
             .http
-            .post(c.token_url.as_str())
+            .post(token_url.endpoint(&[]))
             .header(
                 reqwest::header::CONTENT_TYPE,
                 "application/x-www-form-urlencoded",
@@ -349,10 +367,18 @@ impl AgentMcpSource {
         licence_token: &str,
         rotate: bool,
     ) -> Result<Ensured> {
-        let url = format!(
-            "{}/mcp/internal/tenants/{}/bindings/ensure",
-            self.mcp_base, tenant
-        );
+        let url = self
+            .mcp_base
+            .as_ref()
+            .map_err(|e| anyhow!("the MCP server base URL is unusable: {e}"))?
+            .endpoint(&[
+                "mcp",
+                "internal",
+                "tenants",
+                &tenant.to_string(),
+                "bindings",
+                "ensure",
+            ]);
         let mut body =
             json!({"product": PRODUCT, "licence_id": licence_id, "licence_token": licence_token});
         if rotate {
@@ -544,7 +570,7 @@ mod tests {
         assert!(src.refused(t));
         src.forget_refusals(t);
         assert!(!src.refused(t));
-        assert_eq!(src.mcp_base, "http://mcp.test");
+        assert_eq!(src.mcp_base.as_ref().unwrap().as_str(), "http://mcp.test/");
     }
 
     use axum::response::IntoResponse as _;
