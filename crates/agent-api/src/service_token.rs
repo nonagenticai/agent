@@ -9,6 +9,8 @@ use reqwest::StatusCode;
 use serde::Deserialize;
 use tokio::sync::Mutex;
 
+use crate::http_base::{BaseUrl, BaseUrlError};
+
 /// A cached token is refreshed this long before Keycloak says it expires.
 const EXPIRY_MARGIN: Duration = Duration::from_secs(30);
 /// The lifetime assumed when the token response carries no `expires_in` (commonpractice's 60 s).
@@ -96,7 +98,10 @@ struct TokenResponse {
 
 /// One service account's access token, fetched with the client-credentials grant and cached.
 pub struct ServiceToken {
-    token_url: String,
+    /// The token endpoint, parsed once (http(s), a host, no query or fragment). Construction cannot fail the boot,
+    /// so an unusable URL is kept as the error and every [`Self::get`] fails closed with it — never a raw string
+    /// handed to reqwest.
+    token_url: Result<BaseUrl, BaseUrlError>,
     client_id: String,
     client_secret: String,
     http: reqwest::Client,
@@ -113,7 +118,7 @@ impl ServiceToken {
         http: reqwest::Client,
     ) -> Self {
         Self {
-            token_url: token_url.into(),
+            token_url: BaseUrl::parse(token_url),
             client_id: client_id.into(),
             client_secret: client_secret.into(),
             http,
@@ -138,9 +143,15 @@ impl ServiceToken {
             ("client_id", self.client_id.as_str()),
             ("client_secret", self.client_secret.as_str()),
         ]);
+        let token_url = self.token_url.as_ref().map_err(|e| {
+            UpstreamError::new(
+                None,
+                format!("service-account token endpoint is unusable: {e}"),
+            )
+        })?;
         let send = self
             .http
-            .post(self.token_url.as_str())
+            .post(token_url.endpoint(&[]))
             .header(
                 reqwest::header::CONTENT_TYPE,
                 "application/x-www-form-urlencoded",
