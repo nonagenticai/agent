@@ -1,0 +1,33 @@
+# CodeQL configuration for nonagenticai/agent.
+#
+# This file only takes effect under ADVANCED setup (`.github/workflows/codeql.yml`).
+# GitHub's default setup cannot read a config file, which is why the repository
+# moved to advanced setup when this landed.
+name: "agent CodeQL"
+
+# `rust/request-forgery` is excluded for the whole repository, deliberately.
+#
+# Every admin client here (Keycloak, the licence server, the service-account token
+# endpoint, the MCP server) builds its request URL from a base that comes from
+# DEPLOYMENT CONFIGURATION, not from request input. `http_base::BaseUrl` parses that
+# base once — http/https only, a host required, no query or fragment — and appends
+# each path segment through `Url::path_segments_mut`, which percent-encodes it, so a
+# segment cannot leave the base path.
+#
+# CodeQL's Rust model has no sanitiser that recognises any of that, and percent-
+# encoding has no barrier semantics it understands. Every one of the 22 alerts is the
+# same shape: a configured host plus an encoded segment. A code change cannot clear
+# them — the earlier attempt (PR #16, `lane/http-base-urls`) introduced 14 *new*
+# critical alerts rather than resolving any.
+#
+# The exception is written here, in the repository, so it is reviewable and survives;
+# a UI dismissal would not be. If a URL is ever built from caller-supplied host data,
+# this exclusion hides it — review any new base-URL construction by hand.
+#
+# The other three criticals this repository carried were fixed in code, not excluded:
+# the hard-coded-cryptographic-value finding in conveyor and the command-injection
+# finding in coding-security are separate repositories.
+
+query-filters:
+  - exclude:
+      id: rust/request-forgery

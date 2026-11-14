@@ -1,0 +1,70 @@
+# CodeQL — ADVANCED setup, replacing GitHub's managed default setup.
+#
+# ⛔ Why this file exists at all: the default setup cannot read a config file, and
+#    `.github/codeql/codeql-config.yml` carries a documented exclusion that must live
+#    in the repository rather than in the security UI. Do not delete this workflow
+#    without also re-enabling default setup, or the repository silently loses
+#    code-scanning coverage.
+#
+# ⛔ Enabling this file does NOT by itself switch the repository over: default setup
+#    must be turned off (`code-scanning/default-setup`, state `not-configured`), or
+#    both run and the default one keeps uploading its own results.
+#
+# Every language the default setup covered is listed, so coverage is unchanged.
+name: codeql
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "23 4 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    # Public repository: GitHub-hosted runners only. A fork PR can edit `runs-on`,
+    # so a self-hosted runner here would be untrusted code inside the estate network.
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: actions
+            build-mode: none
+          - language: javascript-typescript
+            build-mode: none
+          - language: python
+            build-mode: none
+          # `build-mode: none` is the only supported mode for Rust: CodeQL does not
+          # compile it, it analyses the source tree.
+          - language: rust
+            build-mode: none
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          config-file: ./.github/codeql/codeql-config.yml
+
+      - name: Analyze
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
