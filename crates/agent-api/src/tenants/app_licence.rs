@@ -28,7 +28,8 @@ use uuid::Uuid;
 use crate::audit::{self, Actor, Event};
 use crate::config::BundleMinterConfig;
 use crate::error::{ApiError, ApiResult};
-use crate::service_token::{encode, form};
+use crate::http_base::{BaseUrl, BaseUrlError};
+use crate::service_token::form;
 use crate::state::AppState;
 use crate::tenancy::begin_scoped;
 
@@ -120,19 +121,46 @@ struct Cached {
 /// The bundle-token minter (see the module doc). One per process, in `AppState`.
 pub struct BundleMinter {
     cfg: Option<BundleMinterConfig>,
+    /// The configured URLs, parsed once: `None` = no `BUNDLE_MINTER_*` configuration; `Some(Err)` = a URL this
+    /// process cannot use, and every mint then fails closed with that reason instead of sending a raw string.
+    urls: Option<Result<MinterUrls, BaseUrlError>>,
     http: reqwest::Client,
     /// The minter client's access token and when it must be refreshed. The lock is held across a fetch.
     client_token: Mutex<Option<(String, Instant)>>,
     cache: StdMutex<HashMap<(Uuid, &'static str, String), Cached>>,
 }
 
+/// `BUNDLE_MINTER_LICENSES_URL` and `BUNDLE_MINTER_TOKEN_URL`, parsed and checked once.
+struct MinterUrls {
+    licences: BaseUrl,
+    token: BaseUrl,
+}
+
 impl BundleMinter {
     pub fn new(cfg: Option<BundleMinterConfig>, http: reqwest::Client) -> Self {
+        let urls = cfg.as_ref().map(|c| {
+            Ok::<_, BaseUrlError>(MinterUrls {
+                licences: BaseUrl::parse(&c.licenses_url)?,
+                token: BaseUrl::parse(&c.token_url)?,
+            })
+        });
         Self {
             cfg,
+            urls,
             http,
             client_token: Mutex::new(None),
             cache: StdMutex::new(HashMap::new()),
+        }
+    }
+
+    /// The configured URLs, parsed: `Err` when this process has no usable minter configuration.
+    fn urls(&self) -> Result<&MinterUrls, MintError> {
+        match &self.urls {
+            Some(Ok(urls)) => Ok(urls),
+            Some(Err(e)) => Err(MintError::Unavailable(format!(
+                "BUNDLE_MINTER_* URLs are unusable: {e}"
+            ))),
+            None => Err(MintError::NotConfigured),
         }
     }
 
@@ -185,7 +213,7 @@ impl BundleMinter {
         ]);
         let res = self
             .http
-            .post(c.token_url.as_str())
+            .post(self.urls()?.token.endpoint(&[]))
             .header(
                 reqwest::header::CONTENT_TYPE,
                 "application/x-www-form-urlencoded",
@@ -240,20 +268,21 @@ impl BundleMinter {
                 cache.remove(&key);
             }
         }
-        let url = format!(
-            "{}/internal/tenants/{}/bundle-token?app={}&bundle={}&ttl_minutes={}",
-            c.licenses_url,
-            tenant,
-            encode(app.key()),
-            encode(&c.bundle),
-            c.ttl_minutes
+        let ttl_minutes = c.ttl_minutes.to_string();
+        let url = self.urls()?.licences.endpoint_with_query(
+            &["internal", "tenants", &tenant.to_string(), "bundle-token"],
+            &[
+                ("app", app.key()),
+                ("bundle", &c.bundle),
+                ("ttl_minutes", &ttl_minutes),
+            ],
         );
         let mut retried = false;
         let (status, payload) = loop {
             let bearer = self.access_token(c).await?;
             let res = self
                 .http
-                .post(url.as_str())
+                .post(url.clone())
                 .bearer_auth(bearer)
                 .send()
                 .await
@@ -523,28 +552,30 @@ impl Provisioned {
     }
 }
 
-/// The URL the smoke authenticates against, or `None` when the app's upstream is not configured. The router has a
-/// default URL, so it is always configured; strata is configured by `STRATA_*_URL`.
-fn smoke_url(st: &AppState, app: App) -> Option<String> {
+/// The URL the smoke authenticates against, or `None` when the app's upstream is not configured (or its URL is not
+/// a usable http(s) base). The router has a default URL, so it is always configured; strata is configured by
+/// `STRATA_*_URL`.
+fn smoke_url(st: &AppState, app: App) -> Option<reqwest::Url> {
+    let endpoint =
+        |raw: &str, segments: &[&str]| BaseUrl::parse(raw).ok().map(|base| base.endpoint(segments));
     match app {
-        App::InferenceRouter => Some(format!(
-            "{}/chat/completions",
-            st.cfg.internal_providers.llm_url.trim_end_matches('/')
-        )),
+        App::InferenceRouter => {
+            endpoint(&st.cfg.internal_providers.llm_url, &["chat", "completions"])
+        }
         // strata_rag src/api/mod.rs:39-40 `GET /api/stores` (list the tenant's stores).
         App::StrataRag => st
             .cfg
             .strata
             .rag_url
             .as_deref()
-            .map(|u| format!("{}/api/stores", u.trim_end_matches('/'))),
+            .and_then(|u| endpoint(u, &["api", "stores"])),
         // strata_ingest src/api/mod.rs:140-142 `GET /api/ingest/jobs` (list the tenant's jobs).
         App::StrataIngest => st
             .cfg
             .strata
             .ingest_url
             .as_deref()
-            .map(|u| format!("{}/api/ingest/jobs", u.trim_end_matches('/'))),
+            .and_then(|u| endpoint(u, &["api", "ingest", "jobs"])),
         // Never provisioned or smoked (not in ALL).
         App::Mcp | App::Conveyor => None,
     }
@@ -554,17 +585,17 @@ fn smoke_url(st: &AppState, app: App) -> Option<String> {
 async fn smoke_request(
     st: &AppState,
     app: App,
-    url: &str,
+    url: &reqwest::Url,
     bearer: &str,
     tenant: Uuid,
 ) -> Result<u16, ProvisionError> {
     let req = match app {
-        App::InferenceRouter => st.http.post(url).json(&serde_json::json!({
+        App::InferenceRouter => st.http.post(url.clone()).json(&serde_json::json!({
             "model": st.cfg.internal_providers.llm_model,
             "messages": [{"role": "user", "content": "ping"}],
             "max_tokens": 1,
         })),
-        App::StrataRag | App::StrataIngest | App::Mcp | App::Conveyor => st.http.get(url),
+        App::StrataRag | App::StrataIngest | App::Mcp | App::Conveyor => st.http.get(url.clone()),
     };
     let res = req
         .bearer_auth(bearer)
@@ -587,7 +618,7 @@ async fn smoke(
     st: &AppState,
     tenant: Uuid,
     app: App,
-    url: &str,
+    url: &reqwest::Url,
     token: &AppToken,
 ) -> Result<(), ProvisionError> {
     let bogus = format!("{}{}", Uuid::new_v4().simple(), Uuid::new_v4().simple());
