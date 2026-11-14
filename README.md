@@ -41,6 +41,17 @@ The API image is `Dockerfile.rust` (build with `--build-arg PACKAGE=agent-api`);
 `agent-api`, `agent-edge`, `orchestrator`, `runner` and `interaction`. The web image is
 `web/Dockerfile`. Both default to Docker Hub base images.
 
+## Licensing
+
+The code in this repository is Apache-2.0 and needs no licence key to build, test or run.
+The agent platform integrates with an **optional** licence gate: `LICENSE_GATE_2_ENABLED`
+(default `false`) checks the stored tenant verdict at tenant-context resolution, and
+enabling it also requires `LICENSE_INTROSPECT_URL`. With the flag off, no licence request is
+ever made. Configured, enforcement is fail-closed: an unreachable licences service denies the
+request rather than allowing it.
+
+The licensing stack is public too — [`licenses`](https://github.com/nonagenticai/licenses) (entitlements, plans and tokens) and [`license-authz`](https://github.com/nonagenticai/license-authz) (the Envoy `ext_authz` enforcement point). Neither is required to run this code.
+
 ## License
 
 Apache 2.0 — see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
