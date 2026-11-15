@@ -6,15 +6,7 @@ import type { Idempotency as OperationIdempotency } from './model';
 import type { ToolPolicy } from './iam';
 
 export type Transport =
-	| 'rest'
-	| 'graphql'
-	| 'platform'
-	| 'stub'
-	| 'soap'
-	| 'graph'
-	| 'ldap'
-	| 'mcp'
-	| 'table';
+	'rest' | 'graphql' | 'platform' | 'stub' | 'soap' | 'graph' | 'ldap' | 'mcp' | 'table';
 /**
  * v1 `auth_kind` (K49); `bundle_token` is the strata_rag platform connector's licence bundle. `mtls` presents the
  * credential's `client_cert_pem` + `client_key_pem` secrets as a TLS client certificate (no header); an optional

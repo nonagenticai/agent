@@ -191,8 +191,8 @@
 		<p class="note legend">
 			<span class="sw generic"></span> Base <span class="sw industry"></span> Industry
 			<span class="sw industry_dept"></span> Specialized — inherited, read-only
-			<span class="sw tenant"></span> Added by you (cards, <b class="plus">+</b> attributes, dashed relations)
-			· click an entity to see what uses it; its neighbours stay lit.
+			<span class="sw tenant"></span> Added by you (cards, <b class="plus">+</b> attributes, dashed relations) ·
+			click an entity to see what uses it; its neighbours stay lit.
 		</p>
 	{/if}
 {:else}

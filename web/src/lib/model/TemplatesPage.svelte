@@ -412,8 +412,8 @@
 					title="{tagLayer.pinned_jobs} job{tagLayer.pinned_jobs === 1 ? '' : 's'} will fall behind"
 				>
 					<span
-						>{tagLayer.pins.map((p) => `${p.tenant_name} (@v${p.version})`).join(', ')} keep their pin and get
-						the K5 base-changed badge. Nothing changes for them until they cut and apply a new release.</span
+						>{tagLayer.pins.map((p) => `${p.tenant_name} (@v${p.version})`).join(', ')} keep their pin and get the
+						K5 base-changed badge. Nothing changes for them until they cut and apply a new release.</span
 					>
 				</Callout>
 			{/if}

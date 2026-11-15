@@ -155,8 +155,8 @@
 				Last 7 days, since {d.window_from.slice(0, 10)} · laya p95 {fmt.ms(p95(d))} · {fmt.n(timeouts(d))} timeouts.
 				“Unsure” = below the threshold; “outages” = laya did not answer and the fail policy applied.
 			{:else}
-				<strong>No verdicts yet.</strong> This job is not on the bus, so no message has been gated. Counts and
-				latency appear with the first traffic.
+				<strong>No verdicts yet.</strong> This job is not on the bus, so no message has been gated. Counts and latency
+				appear with the first traffic.
 			{/if}
 			{#if point !== 'all'}
 				<button type="button" class="linkish" onclick={() => (point = 'all')}>Show all gate points</button>
