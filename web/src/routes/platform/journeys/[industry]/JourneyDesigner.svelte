@@ -485,8 +485,8 @@
 						onAdd={openAdd}
 					/>
 					<p class="note small">
-						<b>Change / Exit labels are owner-vetoable</b> — the slide leaves both lanes unlabelled; D23 names
-						them (K48). Stage synonyms feed the GS option text and import mapping.
+						<b>Change / Exit labels are owner-vetoable</b> — the slide leaves both lanes unlabelled; D23 names them
+						(K48). Stage synonyms feed the GS option text and import mapping.
 					</p>
 				</Card>
 

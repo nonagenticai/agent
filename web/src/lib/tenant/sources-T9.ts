@@ -11,14 +11,7 @@ export const SOURCE_STALE_DAYS = 7;
 
 /** One source's health, worst first. */
 export type SourceHealth =
-	| 'failing'
-	| 'mapping'
-	| 'unsupported'
-	| 'never'
-	| 'running'
-	| 'stale'
-	| 'paused'
-	| 'ok';
+	'failing' | 'mapping' | 'unsupported' | 'never' | 'running' | 'stale' | 'paused' | 'ok';
 
 export const HEALTH: Record<
 	SourceHealth,

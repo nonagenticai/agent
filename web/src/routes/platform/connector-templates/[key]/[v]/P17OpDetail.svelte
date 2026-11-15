@@ -155,8 +155,7 @@
 				<dd>
 					<span class="mono">{op.verify_read ?? (write ? '— (confirm-back only)' : 'n/a (read)')}</span>
 					{#if write}<span class="cell-sub"
-							>After a timeout the write is <span class="mono">unknown_outcome</span> until this read confirms
-							it.</span
+							>After a timeout the write is <span class="mono">unknown_outcome</span> until this read confirms it.</span
 						>{/if}
 				</dd>
 				{#if op.op_kind === 'hosted_payment_link'}

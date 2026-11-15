@@ -140,8 +140,7 @@ async function testScopeServed(job: string): Promise<void> {
 		`an interaction process serving the TEST scope of ${job}`,
 		async () =>
 			rowsOf((await ta.get(`/api/jobs/${job}/agents`)).body).find((a) => a.role === 'interaction') as
-				| { test?: { rev?: number | null } }
-				| undefined,
+				{ test?: { rev?: number | null } } | undefined,
 		(a) => a?.test?.rev !== null && a?.test?.rev !== undefined,
 	);
 }

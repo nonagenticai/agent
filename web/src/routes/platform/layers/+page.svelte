@@ -333,8 +333,8 @@
 									kind="gap"
 									title={`${summary.untagged} change${summary.untagged === 1 ? '' : 's'} since ${selected.tag}`}
 								>
-									Tagged {utc(selected.tagged_at)}; the revisions marked <em>draft</em> below came later. Jobs
-									pinned to the tag do not get them until the next tag.
+									Tagged {utc(selected.tagged_at)}; the revisions marked <em>draft</em> below came later. Jobs pinned
+									to the tag do not get them until the next tag.
 								</Callout>
 							{:else}
 								<Callout kind="info" title={`Everything here is in ${selected.tag}`}>

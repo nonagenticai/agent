@@ -457,8 +457,8 @@
 						{#if unreleased}
 							<p class="j1-unrel-note">
 								<Chip text="not live yet" variant="accent" />
-								{unreleased === 1 ? 'One design change was' : `${unreleased} design changes were`} saved after
-								the live release: draft (or approved, not yet applied). Customers see
+								{unreleased === 1 ? 'One design change was' : `${unreleased} design changes were`} saved after the
+								live release: draft (or approved, not yet applied). Customers see
 								{unreleased === 1 ? 'it' : 'them'} once published —
 								<a href="/chat">test in test chat</a> ·
 								<a href={href('/release')}>review &amp; publish</a>.

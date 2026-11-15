@@ -421,7 +421,7 @@ export function placeholders(s: string): Placeholder[] {
 /** Byte-for-byte twin of `mapping::query_start`: the first `?` outside a `{{…}}` placeholder. */
 function queryStart(raw: string): number {
 	let depth = 0;
-	for (let i = 0; i < raw.length; ) {
+	for (let i = 0; i < raw.length;) {
 		if (raw.startsWith('{{', i)) {
 			depth++;
 			i += 2;
