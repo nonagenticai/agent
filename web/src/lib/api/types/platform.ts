@@ -21,13 +21,7 @@ import type { TokenMode } from './tenant';
 export type ProvisionTarget = 'licences' | 'strata_rag' | 'strata_ingest';
 export type ProvisionOp = 'licence_ensure' | 'licence_revoke' | 'connections_put' | 'store_ensure';
 export type ProvisionStatus =
-	| 'pending'
-	| 'in_flight'
-	| 'succeeded'
-	| 'failed'
-	| 'dead'
-	| 'superseded'
-	| 'cancelled';
+	'pending' | 'in_flight' | 'succeeded' | 'failed' | 'dead' | 'superseded' | 'cancelled';
 
 /** One `provision_outbox` row joined with its target's `provision_state` (K22, K45). */
 export interface ProvisionRow {

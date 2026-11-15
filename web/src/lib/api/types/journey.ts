@@ -6,23 +6,10 @@ import type { Funding } from './tenant';
 
 /** The seven D23 stages, in order. Change and Exit labels are owner-vetoable (K48). */
 export type StageKey =
-	| 'orientation'
-	| 'investigation'
-	| 'purchase'
-	| 'delivery'
-	| 'change'
-	| 'support'
-	| 'exit';
+	'orientation' | 'investigation' | 'purchase' | 'delivery' | 'change' | 'support' | 'exit';
 
 export type ThemeKey =
-	| 'need'
-	| 'interest'
-	| 'choice'
-	| 'awaiting'
-	| 'elated'
-	| 'issue'
-	| 'issue_resolved'
-	| 'need_change';
+	'need' | 'interest' | 'choice' | 'awaiting' | 'elated' | 'issue' | 'issue_resolved' | 'need_change';
 
 export type Actor = 'customer' | 'company' | 'employee';
 
