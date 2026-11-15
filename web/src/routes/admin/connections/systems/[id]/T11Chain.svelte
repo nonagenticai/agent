@@ -120,8 +120,8 @@
 			provisions, versions and tests it for you — there is nothing to pin, store or rotate here.
 		{:else}
 			Your agent only speaks canonical operations. The pinned template turns each one into a call to {d
-				.template.vendor || 'your system'} and maps the answer — fields, statuses, faults — back. The platform
-			owns the template; you own the pin, the credential, the overrides and the tests.
+				.template.vendor || 'your system'} and maps the answer — fields, statuses, faults — back. The platform owns
+			the template; you own the pin, the credential, the overrides and the tests.
 		{/if}
 	</p>
 </section>

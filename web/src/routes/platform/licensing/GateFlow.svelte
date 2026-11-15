@@ -15,8 +15,8 @@
 	<li class="gf-node">
 		<span class="gf-k">agent-api</span>
 		<span class="gf-d"
-			>Opens the sealed token by its kid, introspects (cache {cacheS} s), rewrites the row every ≤{refreshS} s
-			— at once on <code>licence:changed</code>.</span
+			>Opens the sealed token by its kid, introspects (cache {cacheS} s), rewrites the row every ≤{refreshS} s —
+			at once on <code>licence:changed</code>.</span
 		>
 	</li>
 	<li class="gf-wall" aria-hidden="true"><span>keys + tokens stop here</span></li>

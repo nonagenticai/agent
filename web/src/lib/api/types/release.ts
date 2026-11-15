@@ -577,14 +577,7 @@ export type ReadinessBlocks = 'apply' | 'go_live' | 'testing';
 /** Who can fix a gap: the tenant's own admin, or the platform owner (template / provisioning side). */
 export type ReadinessFixer = 'tenant_admin' | 'super_admin';
 export type ReadinessAreaKey =
-	| 'providers'
-	| 'routes'
-	| 'tests'
-	| 'knowledge'
-	| 'gates'
-	| 'toolsets'
-	| 'procedures'
-	| 'rules';
+	'providers' | 'routes' | 'tests' | 'knowledge' | 'gates' | 'toolsets' | 'procedures' | 'rules';
 
 /** One thing the next release needs that this tenant's environment does not have yet. */
 export interface ReadinessGap {
