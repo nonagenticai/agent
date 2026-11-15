@@ -217,12 +217,9 @@ async fn resolve_profile(
 /// Job languages (D132.4): trimmed, lower-cased, deduplicated, non-empty, each from the job-language vocabulary
 /// (`routes::release::settings::LANGUAGES`).
 pub(crate) fn valid_languages(raw: Vec<String>) -> ApiResult<Vec<String>> {
-    // at most one entry per vocabulary language survives deduplication, so the caller's
-    // array length is not a reason to preallocate more than the vocabulary.
-    let mut next: Vec<String> = Vec::with_capacity(
-        raw.len()
-            .min(crate::routes::release::settings::LANGUAGES.len()),
-    );
+    // no preallocation from the caller's array length: deduplication keeps at most one entry per
+    // vocabulary language, so the vector grows from empty and never sizes itself to input.
+    let mut next: Vec<String> = Vec::new();
     for l in raw {
         let l = l.trim().to_lowercase();
         if !next.contains(&l) {

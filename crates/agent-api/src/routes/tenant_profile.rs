@@ -159,10 +159,9 @@ async fn save_profile(
             format!("Unknown industry “{industry}”."),
         ));
     }
-    // the result can never hold more departments than the industry's catalogue, so bound the
-    // preallocation by the catalogue size rather than by the caller's array length.
-    let mut departments: Vec<String> =
-        Vec::with_capacity(b.departments.len().min(o.departments.len()));
+    // no preallocation from the caller's array length: the loop drops duplicates and rejects
+    // anything outside the industry's catalogue, so it grows from empty and never sizes to input.
+    let mut departments: Vec<String> = Vec::new();
     for d in &b.departments {
         if departments.contains(d) {
             continue;
