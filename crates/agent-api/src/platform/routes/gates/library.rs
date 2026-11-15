@@ -373,7 +373,9 @@ pub fn draft_fields(d: GateDraft, by: &str, now: DateTime<Utc>) -> ApiResult<Gat
         ));
     }
     let question = gate::check_question_text(&d.question).map_err(refused)?;
-    let mut options: Vec<GateOption> = Vec::with_capacity(d.options.len());
+    // no preallocation from the caller's option count: the row rule below caps the result at
+    // MAX_OPTIONS, so the vector grows from empty instead of sizing itself to input.
+    let mut options: Vec<GateOption> = Vec::new();
     for (i, o) in d.options.into_iter().enumerate() {
         let label = o.label.trim().to_owned();
         let key = o

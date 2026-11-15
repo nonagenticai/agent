@@ -1534,7 +1534,10 @@ mod tests {
     #[test]
     fn scrubbed_removes_the_key() {
         let t = scrubbed("HTTP 401 with sk-live-123456 sent", Some("sk-live-123456"));
-        assert!(!t.contains("sk-live-123456"), "{t}");
+        assert!(
+            !t.contains("sk-live-123456"),
+            "scrubbed() left the secret token in its output"
+        );
         assert!(ingestible("Returns.PDF") && !ingestible("setup.exe") && !ingestible("noext"));
     }
 }
