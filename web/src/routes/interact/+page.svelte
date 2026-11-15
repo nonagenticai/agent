@@ -556,8 +556,7 @@
 						e.preventDefault();
 						void sendText();
 					}
-				}}
-			></textarea>
+				}}></textarea>
 			<div class="ia-actions">
 				{#if stoppable}
 					<button class="btn" type="button" onclick={stop}>Stop</button>

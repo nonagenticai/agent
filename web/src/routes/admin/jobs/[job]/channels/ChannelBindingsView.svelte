@@ -775,8 +775,7 @@
 															rows="2"
 															bind:value={gF[f.key]}
 															data-testid="edit-{f.key}"
-															disabled={!may}
-														></textarea>
+															disabled={!may}></textarea>
 													{:else}
 														<input
 															class="input mono"
@@ -933,8 +932,7 @@
 														maxlength={WEBCHAT_GREETING_MAX}
 														placeholder="Hi! How can we help?"
 														data-testid="widget-greeting"
-														disabled={!may}
-													></textarea>
+														disabled={!may}></textarea>
 												</label>
 												<label class="field"
 													>Colour (#rrggbb)
@@ -964,8 +962,7 @@
 													bind:value={wOrigins}
 													placeholder="https://shop.example.com"
 													data-testid="widget-origins"
-													disabled={!may}
-												></textarea>
+													disabled={!may}></textarea>
 											</label>
 											<label class="cb-check"
 												><input
@@ -1097,8 +1094,7 @@
 															bind:value={idJwks}
 															placeholder={'{"kty":"EC","crv":"P-256","kid":"2026-1","x":"…","y":"…"}'}
 															data-testid="widget-identity-jwks"
-															disabled={!may}
-														></textarea>
+															disabled={!may}></textarea>
 													</label>
 												{/if}
 												{#if idMode === 'hs256'}
@@ -1280,8 +1276,7 @@
 					placeholder="https://shop.example.com"
 					bind:value={origins}
 					data-testid="binding-origins"
-					disabled={!may}
-				></textarea>
+					disabled={!may}></textarea>
 			</label>
 		{:else if side === 'worker' && kind === 'helpdesk'}
 			<label class="field"

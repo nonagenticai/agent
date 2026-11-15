@@ -187,8 +187,7 @@
 					id="new-template-auth-detail"
 					class="input"
 					bind:value={form.auth_detail}
-					disabled={busy}
-				></textarea>
+					disabled={busy}></textarea>
 			</div>
 			<div class="field">
 				<label for="new-template-api-pin">Vendor API version</label><input
@@ -211,8 +210,7 @@
 							class="input mono"
 							bind:value={params}
 							placeholder={'{"header":"Authorization","value_template":"Bearer {{secret.api_key}}"}'}
-							disabled={busy}
-						></textarea>
+							disabled={busy}></textarea>
 					</div>
 					<div class="field">
 						<label for="new-template-schema">Credential fields (JSON array, optional)</label><textarea
@@ -220,8 +218,7 @@
 							class="input mono"
 							bind:value={schema}
 							placeholder={'[{"name":"api_key","label":"API key","secret":true}]'}
-							disabled={busy}
-						></textarea><span class="muted"
+							disabled={busy}></textarea><span class="muted"
 							>Leave blank to use the authentication method's default fields.</span
 						>
 					</div>
@@ -232,8 +229,7 @@
 					id="new-template-description"
 					class="input"
 					bind:value={form.description}
-					disabled={busy}
-				></textarea>
+					disabled={busy}></textarea>
 			</div>
 			{#if error}<p role="alert">{error}</p>{/if}
 			<p class="muted">

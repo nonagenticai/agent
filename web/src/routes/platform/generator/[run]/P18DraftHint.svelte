@@ -24,8 +24,7 @@
 		{disabled}
 		placeholder="e.g. this team only handles employee onboarding, not customer tickets"
 		aria-invalid={st.over || !!error}
-		bind:value
-	></textarea>
+		bind:value></textarea>
 	<div class="p18-hint-foot">
 		{#if st.over}
 			<span class="p18-hint-err" role="alert"

@@ -630,8 +630,7 @@
 						class="input mono"
 						rows="8"
 						bind:value={fixturesText}
-						aria-describedby="op-fixtures-hint"
-					></textarea>
+						aria-describedby="op-fixtures-hint"></textarea>
 					<p id="op-fixtures-hint" class="muted">
 						Use redacted vendor responses with name, status, outcome and body. Publishing replays these
 						through the field and error mappings.

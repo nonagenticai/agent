@@ -567,8 +567,7 @@
 						class="input"
 						rows="3"
 						placeholder="Invoice VAT number requests from business customers"
-						bind:value={runDesc}
-					></textarea>
+						bind:value={runDesc}></textarea>
 				</div>
 				<div class="row">
 					<button

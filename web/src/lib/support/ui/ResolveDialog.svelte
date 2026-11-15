@@ -99,8 +99,7 @@
 				rows="3"
 				aria-label="Closing message (optional)"
 				placeholder="Sent to the customer before the conversation goes back to the agent"
-				bind:value={closing}
-			></textarea>
+				bind:value={closing}></textarea>
 			<span class="count" class:over>{closing.trim().length} / {limit}</span>
 		</label>
 		{#if closing.trim()}
