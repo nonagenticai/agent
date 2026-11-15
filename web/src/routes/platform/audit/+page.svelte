@@ -70,12 +70,12 @@
 	$effect(() => {
 		const want: Record<string, string> = { action, family, actor, status, q, tenant, since };
 		untrack(() => {
-			const u = new URL(page.url);
+			const u = new URL(page.url.href);
 			for (const [k, v] of Object.entries(want)) {
 				if (v) u.searchParams.set(k, v);
 				else u.searchParams.delete(k);
 			}
-			if (u.search !== page.url.search) void goto(u, { replaceState: true, keepFocus: true, noScroll: true });
+			if (u.search !== page.url.search) void goto(u, { replace: true, reset: false });
 		});
 	});
 
