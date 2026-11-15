@@ -90,8 +90,7 @@
 				id="vq-e-e"
 				class="input"
 				rows="3"
-				bind:value={to.expected}
-			></textarea>
+				bind:value={to.expected}></textarea>
 		</div>
 		<div class="field">
 			<label for="vq-e-r">Reference citation</label><input

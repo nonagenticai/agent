@@ -233,8 +233,7 @@
 					><span class="label">URLs, one per line</span><textarea
 						class="input mono"
 						rows="4"
-						bind:value={draft.urls}
-					></textarea></label
+						bind:value={draft.urls}></textarea></label
 				>
 			{:else}
 				<label class="field span"
@@ -268,8 +267,7 @@
 					><span class="label">Allowed domains, one per line</span><textarea
 						class="input mono"
 						rows="2"
-						bind:value={draft.allowedDomains}
-					></textarea></label
+						bind:value={draft.allowedDomains}></textarea></label
 				>
 			{/if}
 		{/if}

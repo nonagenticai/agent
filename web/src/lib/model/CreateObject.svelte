@@ -97,8 +97,7 @@
 					id="new-object-description"
 					class="input"
 					bind:value={form.description}
-					disabled={busy}
-				></textarea>
+					disabled={busy}></textarea>
 			</div>
 			<p class="muted">
 				Add the object's fields, states and relations in its detail editor after creating it.

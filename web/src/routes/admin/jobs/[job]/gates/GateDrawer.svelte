@@ -210,8 +210,7 @@
 				aria-label="Customer reply for {gate.key}"
 				bind:value={reply}
 				disabled={!canWrite || busy}
-				placeholder={gate.customer_reply_default ?? 'The standard handover / block message'}
-			></textarea>
+				placeholder={gate.customer_reply_default ?? 'The standard handover / block message'}></textarea>
 			<div class="row">
 				<button
 					type="button"

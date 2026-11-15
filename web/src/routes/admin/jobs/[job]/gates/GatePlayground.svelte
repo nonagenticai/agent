@@ -114,8 +114,7 @@
 			rows="2"
 			aria-label="Message text"
 			placeholder={point === 'response' ? 'A draft reply the bot would send' : 'A customer message'}
-			bind:value={text}
-		></textarea>
+			bind:value={text}></textarea>
 		<div class="gp-row">
 			<button type="submit" class="btn primary sm" disabled={busy || !text.trim()}>Evaluate</button>
 			<span class="muted gp-samples-l">Samples:</span>
