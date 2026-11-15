@@ -569,7 +569,8 @@ pub fn check_ops(ops: Vec<TenantTemplateOp>) -> Result<Vec<TenantTemplateOp>, St
     if ops.len() > MAX_OPS {
         return Err(format!("A template has at most {MAX_OPS} operations."));
     }
-    let mut out: Vec<TenantTemplateOp> = Vec::with_capacity(ops.len());
+    // capacity is bounded by MAX_OPS: the length check above is the ceiling, not the caller's count.
+    let mut out: Vec<TenantTemplateOp> = Vec::with_capacity(ops.len().min(MAX_OPS));
     for mut o in ops {
         o.object = o.object.trim().to_owned();
         o.verb = o.verb.trim().to_owned();

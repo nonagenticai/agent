@@ -426,17 +426,23 @@ mod tests {
         let b = new_secret().unwrap();
         assert_ne!(a, b);
         assert_eq!(a.len(), 43);
-        assert!(well_formed(&a), "{a}");
+        assert!(
+            well_formed(&a),
+            "a freshly generated 43-char secret was not well formed"
+        );
         assert_eq!(hash(&a).len(), 32);
         let upper = a.to_uppercase();
-        for bad in [
-            "",
-            "ak_",
-            "wk_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            &a[..42],
-            upper.as_str(),
+        for (why, bad) in [
+            ("empty", ""),
+            ("prefix only", "ak_"),
+            (
+                "wrong prefix",
+                "wk_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            ),
+            ("one char short", &a[..42]),
+            ("upper-cased", upper.as_str()),
         ] {
-            assert!(!well_formed(bad), "{bad}");
+            assert!(!well_formed(bad), "well_formed accepted the {why} case");
         }
     }
 }

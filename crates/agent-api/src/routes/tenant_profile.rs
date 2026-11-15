@@ -159,7 +159,10 @@ async fn save_profile(
             format!("Unknown industry “{industry}”."),
         ));
     }
-    let mut departments: Vec<String> = Vec::with_capacity(b.departments.len());
+    // the result can never hold more departments than the industry's catalogue, so bound the
+    // preallocation by the catalogue size rather than by the caller's array length.
+    let mut departments: Vec<String> =
+        Vec::with_capacity(b.departments.len().min(o.departments.len()));
     for d in &b.departments {
         if departments.contains(d) {
             continue;

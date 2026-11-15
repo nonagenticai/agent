@@ -342,7 +342,7 @@ mod tests {
     /// The headers `p.auth()` puts on a request (built, not sent).
     fn sent(p: &Plane<'_>) -> reqwest::header::HeaderMap {
         p.auth()
-            .apply(reqwest::Client::new().get("http://strata.test/x"))
+            .apply(reqwest::Client::new().get("https://strata.test/x"))
             .build()
             .unwrap()
             .headers()

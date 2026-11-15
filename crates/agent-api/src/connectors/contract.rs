@@ -772,8 +772,11 @@ mod tests {
         }]);
         let stored = storable(&body, MAX_STORED_RESPONSE).unwrap();
         let sample = sample_body(&body);
-        for v in [&stored, &sample] {
-            assert!(!v.to_string().contains("Xy7-not-real"), "{v}");
+        for (which, v) in [("stored", &stored), ("sample", &sample)] {
+            assert!(
+                !v.to_string().contains("Xy7-not-real"),
+                "the {which} response still carries the vendor password"
+            );
         }
         assert_eq!(
             sample["stdout"],
