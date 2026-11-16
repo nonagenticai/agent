@@ -1,1 +1,3 @@
 /target
+# Archived histories (bundles, per-branch patches) — never commit a multi-MB pack.
+/.archive/

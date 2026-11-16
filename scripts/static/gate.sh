@@ -21,7 +21,10 @@ for a in "$@"; do
 done
 
 # CI's toolchain (rust.yml / runbook) when rustup has it; rustfmt output can differ between releases.
-toolchain="$HOME/.rustup/toolchains/1.99.1-aarch64-apple-darwin/bin"
+# Follow rust-toolchain.toml rather than a hardcoded release: the pin moves, this file must move with it.
+channel=$(sed -n 's/^channel = "\(.*\)"$/\1/p' rust-toolchain.toml)
+host=$(rustc -vV | sed -n 's/^host: //p')
+toolchain="$HOME/.rustup/toolchains/${channel}-${host}/bin"
 [[ -x "$toolchain/cargo" ]] && PATH="$toolchain:$PATH"
 
 failed=()
