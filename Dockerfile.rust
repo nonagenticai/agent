@@ -7,7 +7,7 @@
 # Env per binary: the module doc of crates/agent-api/src/bin/<name>.rs. Building -p agent-api builds every
 # src/bin target; each is copied by name, so a missing binary fails the image build, not the rollout.
 ARG BASE_REGISTRY=docker.io
-FROM ${BASE_REGISTRY}/library/rust:1.99.1-bookworm AS build
+FROM ${BASE_REGISTRY}/library/rust:1.100.0-bookworm AS build
 ARG PACKAGE=agent-api
 WORKDIR /src
 COPY Cargo.toml Cargo.lock ./
