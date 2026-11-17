@@ -135,8 +135,10 @@
 				<button
 					class="btn {next.tone === 'err' ? 'danger' : 'primary'}"
 					type="button"
-					onclick={() => goTo(next.target)}>{next.cta}</button
+					onclick={() => goTo(next.target)}
 				>
+					{next.cta}
+				</button>
 			{/if}
 		</section>
 
@@ -145,8 +147,10 @@
 				<span class="p18-io-k">In</span>
 				<div class="p18-keys mono">
 					<span>{r.industry}</span><span aria-hidden="true">/</span><span>{r.department}</span><span
-						aria-hidden="true">/</span
-					><span>{r.job}</span>
+						aria-hidden="true"
+					>
+						/
+					</span><span>{r.job}</span>
 				</div>
 				{#if r.description}<p class="p18-desc">“{r.description}”</p>{/if}
 				<span class="p18-by">
@@ -157,29 +161,31 @@
 			</div>
 			<div class="p18-io-mid" aria-hidden="true">
 				<span class="p18-io-arrow"></span>
-				<span class="p18-io-stat"
-					>{all.total} drafts · {all.kept} kept · {all.dropped} dropped{#if all.pending}
-						· {all.pending} open{/if}</span
-				>
+				<span class="p18-io-stat">
+					{all.total} drafts · {all.kept} kept · {all.dropped} dropped{#if all.pending}
+						· {all.pending} open{/if}
+				</span>
 				<span class="p18-io-stat">{tokens(r.cost.tokens)} tokens</span>
 			</div>
 			<div class="p18-io-cell">
 				<span class="p18-io-k">Out</span>
-				<span class="p18-io-state chip {r.status === 'packaged' ? 'ok' : r.red ? 'err' : 'muted'}"
-					>{r.status === 'packaged'
+				<span class="p18-io-state chip {r.status === 'packaged' ? 'ok' : r.red ? 'err' : 'muted'}">
+					{r.status === 'packaged'
 						? r.scope === 'platform'
 							? 'tagged'
 							: 'saved'
 						: r.status === 'abandoned'
 							? 'abandoned'
-							: 'not published yet'}</span
-				>
+							: 'not published yet'}
+				</span>
 				<ul class="p18-outs">
 					{#each outs as o (o.label)}
 						<li>
 							{#if o.href && r.status === 'packaged'}<a class="mono" href={o.href}>{o.label}</a>{:else}<span
-									class="mono">{o.label}</span
-								>{/if}
+									class="mono"
+								>
+									{o.label}
+								</span>{/if}
 						</li>
 					{/each}
 				</ul>
@@ -211,10 +217,10 @@
 					<div class="p18-stepline">
 						<span class="chip {STATE_CHIP[st][1]}">{STATE_CHIP[st][0]}</span>
 						<span>produces <b>{STEP_PRODUCES[step]}</b></span>
-						{#if t.total}<span class="muted"
-								>· {t.total} drafted · {t.kept} kept · {t.dropped} dropped{#if t.pending}
-									· <b class="p18-warn">{t.pending} to decide</b>{/if}</span
-							>{/if}
+						{#if t.total}<span class="muted">
+								· {t.total} drafted · {t.kept} kept · {t.dropped} dropped{#if t.pending}
+									· <b class="p18-warn">{t.pending} to decide</b>{/if}
+							</span>{/if}
 					</div>
 					{#if open && step === r.current_step && DRAFT_STEPS.includes(step)}
 						<P18DraftHint bind:value={hint} error={hintError} disabled={drafting} />
@@ -262,11 +268,12 @@
 							<ul class="p18-outs big">
 								{#each outs as o (o.label)}
 									<li>
-										<span class="chip {r.status === 'packaged' ? 'ok' : 'muted'}"
-											>{r.status === 'packaged' ? 'landed' : 'will land'}</span
-										>
-										{#if o.href && r.status === 'packaged'}<a class="mono" href={o.href}>{o.label}</a
-											>{:else}<span class="mono">{o.label}</span>{/if}
+										<span class="chip {r.status === 'packaged' ? 'ok' : 'muted'}">
+											{r.status === 'packaged' ? 'landed' : 'will land'}
+										</span>
+										{#if o.href && r.status === 'packaged'}<a class="mono" href={o.href}>
+												{o.label}
+											</a>{:else}<span class="mono">{o.label}</span>{/if}
 									</li>
 								{/each}
 							</ul>
@@ -293,8 +300,10 @@
 										act(
 											() => api().tagGeneratorRun(r.id),
 											r.scope === 'platform' ? 'Tagged.' : 'Refinements saved.',
-										)}>{r.scope === 'platform' ? `Tag ${r.output.join(' + ')}` : 'Save refinements'}</button
+										)}
 								>
+									{r.scope === 'platform' ? `Tag ${r.output.join(' + ')}` : 'Save refinements'}
+								</button>
 							{:else}
 								<button
 									class="btn primary"
@@ -306,15 +315,16 @@
 											? 'Red validation items block Validate'
 											: undefined}
 									onclick={() => act(() => api().advanceGeneratorRun(r.id), 'Step done.')}
-									>Continue to next step</button
 								>
+									Continue to next step
+								</button>
 							{/if}
-							{#if t.pending && step !== 'package'}<span class="muted"
-									>{t.pending} draft(s) still to decide.</span
-								>{/if}
-							{#if r.red}<span class="p18-red"
-									>{r.red} red item(s) block {step === 'package' ? 'tagging' : 'Validate'}.</span
-								>{/if}
+							{#if t.pending && step !== 'package'}<span class="muted">
+									{t.pending} draft(s) still to decide.
+								</span>{/if}
+							{#if r.red}<span class="p18-red">
+									{r.red} red item(s) block {step === 'package' ? 'tagging' : 'Validate'}.
+								</span>{/if}
 						</div>
 					{/if}
 				</Card>

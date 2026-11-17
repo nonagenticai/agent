@@ -151,11 +151,11 @@
 				<div class="ind">
 					<div class="split">
 						<a href="/platform/journeys/{g.industry}">{g.label}</a>
-						<span class="muted"
-							>{g.items.filter((a) => a.role === 'subject').length} subject · {g.items.filter(
+						<span class="muted">
+							{g.items.filter((a) => a.role === 'subject').length} subject · {g.items.filter(
 								(a) => a.role === 'context',
-							).length} context</span
-						>
+							).length} context
+						</span>
 					</div>
 					<ul class="list acts" data-testid="object-activities">
 						{#each g.items as a (a.key)}
@@ -167,8 +167,9 @@
 											class="mono op"
 											class:opt={!o.required}
 											title={o.required ? 'required' : 'optional'}
-											>{o.op.slice(o.op.indexOf('.') + 1)}{o.required ? '' : '?'}</span
-										>{/each}
+										>
+											{o.op.slice(o.op.indexOf('.') + 1)}{o.required ? '' : '?'}
+										</span>{/each}
 								</span>
 							</li>
 						{/each}

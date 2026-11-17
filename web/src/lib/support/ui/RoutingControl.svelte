@@ -77,26 +77,21 @@
 			{/if}
 			<fieldset title={canEdit ? undefined : writeHint('support_manager')}>
 				<legend>New handovers</legend>
-				<label class="opt"
-					><input
-						type="radio"
-						name="routing-mode"
-						value="off"
-						bind:group={mode}
-						disabled={!canEdit || busy}
-					/> Off — wait in the queue</label
-				>
-				<label class="opt"
-					><input
+				<label class="opt">
+					<input type="radio" name="routing-mode" value="off" bind:group={mode} disabled={!canEdit || busy} /> Off
+					— wait in the queue
+				</label>
+				<label class="opt">
+					<input
 						type="radio"
 						name="routing-mode"
 						value="round_robin"
 						bind:group={mode}
 						disabled={!canEdit || busy}
-					/> Round-robin — to whoever is online</label
-				>
-				<label class="mins"
-					>Reassign after
+					/> Round-robin — to whoever is online
+				</label>
+				<label class="mins">
+					Reassign after
 					<input
 						type="number"
 						min="1"
@@ -106,8 +101,8 @@
 						bind:value={minutes}
 						disabled={!canEdit || busy || mode !== 'round_robin'}
 					/>
-					min</label
-				>
+					min
+				</label>
 				<p class="note">
 					Only people on the Support workspace count as online. An item nobody opened is moved on when its
 					assignee goes away. Something you took or assigned yourself never moves.
@@ -121,8 +116,10 @@
 					class="btn sm primary"
 					type="button"
 					disabled={!canEdit || !valid || !dirty || busy}
-					onclick={save}>Save</button
+					onclick={save}
 				>
+					Save
+				</button>
 			</div>
 		</div>
 	{/if}

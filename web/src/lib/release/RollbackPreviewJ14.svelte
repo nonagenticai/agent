@@ -75,26 +75,26 @@
 				{back
 					? `Production goes back to ${p.target} as it was: its selection, template versions and your design values.`
 					: `Production gets ${p.target} back as it was cut: its selection, template versions and design values.`}
-				<b data-testid="rollback-count"
-					>{plural(p.design_changes, 'design place')} change{p.design_changes === 1 ? 's' : ''} live.</b
-				>
+				<b data-testid="rollback-count">
+					{plural(p.design_changes, 'design place')} change{p.design_changes === 1 ? 's' : ''} live.
+				</b>
 			</p>
 
 			{#if p.missing.length}
 				<Callout kind="err" title="Apply would refuse: 409 release_not_ready">
 					{p.target} needs
-					{#each p.missing as m, i (m.dependency + m.slot)}{i ? ', ' : ''}<span class="mono"
-							>{m.dependency}.{m.slot}</span
-						>{/each}. Fix {p.missing.length === 1 ? 'it' : 'them'} first (Readiness), then roll back.
+					{#each p.missing as m, i (m.dependency + m.slot)}{i ? ', ' : ''}<span class="mono">
+							{m.dependency}.{m.slot}
+						</span>{/each}. Fix {p.missing.length === 1 ? 'it' : 'them'} first (Readiness), then roll back.
 				</Callout>
 			{/if}
 
 			<section class="rb-sec" data-testid="rollback-undone">
 				<h3>
 					{back ? 'Customers lose' : 'Customers get back'}
-					<span class="muted small"
-						>({plural((back ? p.undone : p.reapplied).length, 'published change')})</span
-					>
+					<span class="muted small">
+						({plural((back ? p.undone : p.reapplied).length, 'published change')})
+					</span>
 				</h3>
 				{#if (back ? p.undone : p.reapplied).length}
 					<ul class="rb-list">
@@ -155,10 +155,10 @@
 						{#each p.draft as d (d.id)}
 							<li data-draft={d.id}>
 								<span class="rb-label">{d.label}</span>
-								<span class="small"
-									>live {d.live_now ?? 'not set'} → <b>{d.live_after ?? 'not set'}</b> · draft {d.draft ??
-										'removed'}</span
-								>
+								<span class="small">
+									live {d.live_now ?? 'not set'} → <b>{d.live_after ?? 'not set'}</b> · draft {d.draft ??
+										'removed'}
+								</span>
 								{#if d.matches_live}<Chip
 										text="Becomes live with it"
 										variant="ok"
@@ -177,8 +177,10 @@
 					data-testid="rollback-confirm"
 					disabled={wa.disabled || busy || p.missing.length > 0}
 					title={wa.title}
-					onclick={() => confirm(p)}>{back ? `Roll back to ${p.target}` : `Apply ${p.target}`}</button
+					onclick={() => confirm(p)}
 				>
+					{back ? `Roll back to ${p.target}` : `Apply ${p.target}`}
+				</button>
 				<button class="btn" type="button" onclick={oncancel}>Cancel</button>
 				<span class="muted small">Audited: one event for the rollback, one per change it undoes.</span>
 			</div>

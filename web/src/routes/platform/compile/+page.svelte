@@ -300,10 +300,10 @@
 						{:else}
 							<span class="note">Pick an industry.</span>
 						{/if}
-						<span class="note"
-							>A job needs its industry and at least one department (D106). Without both, only the base-only
-							preview compiles (no job, no profile).</span
-						>
+						<span class="note">
+							A job needs its industry and at least one department (D106). Without both, only the base-only
+							preview compiles (no job, no profile).
+						</span>
 					</fieldset>
 					{#each chosenDepts as d (d.key)}
 						<fieldset class="areas" data-testid={`compile-areas-${d.key}`}>
@@ -325,49 +325,50 @@
 						<label for="profile">Business model (profile)</label>
 						<select id="profile" class="input" bind:value={profile} disabled={!options}>
 							<option value="">No profile</option>
-							{#each options?.profiles ?? [] as p (p.key)}<option value={p.key}
-									>{p.label}{p.industry ? ` · ${p.industry}` : ''}</option
-								>{/each}
+							{#each options?.profiles ?? [] as p (p.key)}<option value={p.key}>
+									{p.label}{p.industry ? ` · ${p.industry}` : ''}
+								</option>{/each}
 						</select>
-						<span class="hint"
-							>Its axis values decide which <a href="/platform/business-models">axis rules</a> fire.</span
-						>
+						<span class="hint">
+							Its axis values decide which <a href="/platform/business-models">axis rules</a> fire.
+						</span>
 					</div>
 					<div class="dims">
 						{#each options?.dimensions ?? [] as d (d.key)}
 							<fieldset class="areas" data-testid={`compile-dim-${d.key}`} disabled={!job}>
 								<legend class="label">{d.label}</legend>
 								{#each d.values as v (v.key)}
-									<label class="row"
-										><input
+									<label class="row">
+										<input
 											type="checkbox"
 											checked={(dims[d.key] ?? []).includes(v.key)}
 											onchange={(e) =>
 												(dims[d.key] = toggle(dims[d.key] ?? [], v.key, e.currentTarget.checked))}
-										/>{v.label}</label
-									>
+										/>{v.label}
+									</label>
 								{/each}
 								<span class="note">None ticked = any.</span>
 							</fieldset>
 						{/each}
 					</div>
-					{#if !job}<span class="hint"
-							>Dimension values qualify job layers, so they need a job. <a href="/platform/dimensions"
-								>Dimensions</a
-							></span
-						>{/if}
-					<button class="btn primary" type="submit" disabled={!options || compiling}
-						>{compiling ? 'Compiling…' : 'Compile'}</button
-					>
-					{#if stale}<span class="hint stale" role="status">Selection changed since the last compile.</span
-						>{/if}
+					{#if !job}<span class="hint">
+							Dimension values qualify job layers, so they need a job. <a href="/platform/dimensions">
+								Dimensions
+							</a>
+						</span>{/if}
+					<button class="btn primary" type="submit" disabled={!options || compiling}>
+						{compiling ? 'Compiling…' : 'Compile'}
+					</button>
+					{#if stale}<span class="hint stale" role="status">
+							Selection changed since the last compile.
+						</span>{/if}
 					<div class="row presets">
-						<button class="btn sm" type="button" onclick={golden} disabled={!options}
-							>Golden: retail customer care</button
-						>
-						<button class="table-action" type="button" onclick={invalid} disabled={!options}
-							>Try an invalid combination</button
-						>
+						<button class="btn sm" type="button" onclick={golden} disabled={!options}>
+							Golden: retail customer care
+						</button>
+						<button class="table-action" type="button" onclick={invalid} disabled={!options}>
+							Try an invalid combination
+						</button>
 					</div>
 				</form>
 			{/if}
@@ -407,19 +408,18 @@
 		{#if error}
 			<div class="callout err" role="alert">
 				<strong class="callout-title">This selection does not compile</strong>
-				<span
-					>{error} A job cannot be cut from it. Every error is listed — fix the row it points at, or change the
-					selection.</span
-				>
+				<span>
+					{error} A job cannot be cut from it. Every error is listed — fix the row it points at, or change the selection.
+				</span>
 				{#if errors.length}
 					<ul class="errs" data-testid="compile-errors">
 						{#each errors as e, i (i)}
 							<li>
 								<Chip text={e.code} variant="err" />
 								<code>{e.key}</code> — {e.message}
-								{#if e.row_id}<a href={`/platform/layers?row=${encodeURIComponent(e.row_id)}`}
-										>Open row {e.row_id}</a
-									>{/if}
+								{#if e.row_id}<a href={`/platform/layers?row=${encodeURIComponent(e.row_id)}`}>
+										Open row {e.row_id}
+									</a>{/if}
 							</li>
 						{/each}
 					</ul>
@@ -437,11 +437,11 @@
 				<div class="verdict-main">
 					<span class="label">Effective model</span>
 					<strong>{total} items from {result.layers.length} layers</strong>
-					<span class="muted small"
-						>{counts.entity} entities · {counts.attribute} attributes · {counts.relation} relations{#if result.job}
+					<span class="muted small">
+						{counts.entity} entities · {counts.attribute} attributes · {counts.relation} relations{#if result.job}
 							· {counts.context_space} context spaces · {counts.procedure} procedures · {counts.connector_slot}
-							connector slots{/if}</span
-					>
+							connector slots{/if}
+					</span>
 				</div>
 				<div class="verdict-facts">
 					<span><b>{overrides.length}</b> overrides</span>
@@ -514,10 +514,10 @@
 					{:else if diff.same}
 						<div class="callout info" data-testid="diff-same">
 							<strong class="callout-title">Identical effective model</strong>
-							<span
-								>Same hash as the reference (#{reference?.hash}). A release cut from this selection would
-								change nothing in the model.</span
-							>
+							<span>
+								Same hash as the reference (#{reference?.hash}). A release cut from this selection would
+								change nothing in the model.
+							</span>
 						</div>
 					{:else}
 						<div class="diff" data-testid="compile-diff">
@@ -529,12 +529,12 @@
 							</div>
 							{#if diff.layers_added.length || diff.layers_removed.length}
 								<p class="small">
-									{#each diff.layers_added as l (l)}<span class="layer-delta add"
-											>+ layer <code>{l}</code></span
-										>{/each}
-									{#each diff.layers_removed as l (l)}<span class="layer-delta rem"
-											>− layer <code>{l}</code></span
-										>{/each}
+									{#each diff.layers_added as l (l)}<span class="layer-delta add">
+											+ layer <code>{l}</code>
+										</span>{/each}
+									{#each diff.layers_removed as l (l)}<span class="layer-delta rem">
+											− layer <code>{l}</code>
+										</span>{/each}
 								</p>
 							{/if}
 							<ul class="diff-list">
@@ -566,9 +566,9 @@
 				<Tabs items={tabItems} bind:active={tab} label="Object kind">
 					<div class="tools">
 						<input class="input" placeholder="Find an item…" aria-label="Find an item" bind:value={search} />
-						<label class="row small"
-							><input type="checkbox" bind:checked={onlyTouched} />Only items more than one layer touched</label
-						>
+						<label class="row small">
+							<input type="checkbox" bind:checked={onlyTouched} />Only items more than one layer touched
+						</label>
 					</div>
 					{#if entries.length}
 						<div class="tbl-wrap">

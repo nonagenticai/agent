@@ -261,11 +261,12 @@
 					{#if st.code === EXISTING_IDENTITY_INVITE_PENDING}<span
 							class="cell-sub p3-invite-pending"
 							data-testid="step-invite-pending"
-							>Existing account — not seated or licensed at approval; a pending member invite holds the
-							tenant-admin seat until they accept.</span
-						>{:else if st.code || st.message}<span class="cell-sub"
-							>{st.code ?? ''}{st.code && st.message ? ' — ' : ''}{st.message ?? ''}</span
-						>{/if}
+						>
+							Existing account — not seated or licensed at approval; a pending member invite holds the
+							tenant-admin seat until they accept.
+						</span>{:else if st.code || st.message}<span class="cell-sub">
+							{st.code ?? ''}{st.code && st.message ? ' — ' : ''}{st.message ?? ''}
+						</span>{/if}
 					{#if st.attempts && st.attempts > 1}<span class="cell-sub">{st.attempts} attempts</span>{/if}
 				</li>
 			{/each}
@@ -279,9 +280,9 @@
 />
 
 {#if !allowed}
-	<Callout kind="err" title="Super-admin only"
-		>Only a platform super admin reviews early-access signups.</Callout
-	>
+	<Callout kind="err" title="Super-admin only">
+		Only a platform super admin reviews early-access signups.
+	</Callout>
 {:else}
 	{#if linkError}<Callout kind="err" title="Link expired">{linkError}</Callout>{/if}
 	{#if notice}
@@ -309,15 +310,19 @@
 					class="tab"
 					class:on={view === 'pending'}
 					aria-pressed={view === 'pending'}
-					onclick={() => show('pending')}>Pending</button
+					onclick={() => show('pending')}
 				>
+					Pending
+				</button>
 				<button
 					type="button"
 					class="tab"
 					class:on={view === 'decided'}
 					aria-pressed={view === 'decided'}
-					onclick={() => show('decided')}>Decided</button
+					onclick={() => show('decided')}
 				>
+					Decided
+				</button>
 			</div>
 			<span class="row">
 				<span class="muted" data-testid="signup-count">{loading ? '…' : `${rows.length} ${view}`}</span>
@@ -326,8 +331,10 @@
 					type="button"
 					data-testid="invite-open"
 					{...superAdminAttrs(session)}
-					onclick={() => openInvite()}>Invite…</button
+					onclick={() => openInvite()}
 				>
+					Invite…
+				</button>
 			</span>
 		</div>
 
@@ -357,14 +364,14 @@
 											variant="warn"
 											title="An approve is running; a second one is refused until it ends"
 										/>{/if}
-									<span data-testid="signup-locale"
-										><Chip
+									<span data-testid="signup-locale">
+										<Chip
 											text={s.locale
 												? `${LOCALE_NAMES[s.locale] ?? s.locale} (${s.locale})`
 												: 'English (not told)'}
 											variant="accent"
-										/></span
-									>
+										/>
+									</span>
 									{#if s.trust !== undefined}<Chip
 											text={s.trust ?? 'untrusted'}
 											variant={s.trust ? 'ok' : 'warn'}
@@ -384,8 +391,10 @@
 												class="p3-sig-link"
 												href={`/platform/audit?action=${encodeURIComponent(g.audit_action)}`}
 												title={`${SIGNAL_MARK[g.level].word}: ${g.detail} Opens the platform audit for ${g.audit_action}.`}
-												data-testid="signal-audit"><Chip {text} variant={SIGNAL_VARIANT[g.level]} /></a
-											>{:else}<Chip
+												data-testid="signal-audit"
+											>
+												<Chip {text} variant={SIGNAL_VARIANT[g.level]} />
+											</a>{:else}<Chip
 												{text}
 												variant={SIGNAL_VARIANT[g.level]}
 												title={`${SIGNAL_MARK[g.level].word}: ${g.detail}`}
@@ -406,18 +415,20 @@
 									<button
 										class="btn sm primary"
 										{...superAdminAttrs(session)}
-										onclick={() => decide(s, 'approve')}>Approve…</button
+										onclick={() => decide(s, 'approve')}
 									>
-									<button class="btn sm" {...superAdminAttrs(session)} onclick={() => decide(s, 'reject')}
-										>Reject…</button
-									>
+										Approve…
+									</button>
+									<button class="btn sm" {...superAdminAttrs(session)} onclick={() => decide(s, 'reject')}>
+										Reject…
+									</button>
 								</div>
 							{:else}
 								<div class="p3-outcome">
 									<Chip text={s.status} variant={s.status === 'approved' ? 'ok' : 'err'} />
-									{#if s.decided_at}<span class="cell-sub"
-											>{utc(s.decided_at)}{s.decided_by ? ` · ${s.decided_by}` : ''}</span
-										>{/if}
+									{#if s.decided_at}<span class="cell-sub">
+											{utc(s.decided_at)}{s.decided_by ? ` · ${s.decided_by}` : ''}
+										</span>{/if}
 									{#if s.status === 'approved' && hasFailedStep(s)}
 										<button
 											class="btn sm"
@@ -425,8 +436,9 @@
 											{...superAdminAttrs(session)}
 											disabled={!allowed || !session.superAdmin || retrying === s.id}
 											onclick={() => retry(s)}
-											>{retrying === s.id ? 'Retrying…' : 'Retry failed steps'}</button
 										>
+											{retrying === s.id ? 'Retrying…' : 'Retry failed steps'}
+										</button>
 									{/if}
 								</div>
 							{/if}
@@ -498,9 +510,9 @@
 			{#if error}<Callout kind="err" title={error.code}>{error.message}</Callout>
 				{#if error.steps?.length}{@render steps(error.steps)}{/if}{/if}
 			<div class="actions">
-				<button class="btn primary" type="submit" disabled={deciding || !allowed}
-					>{decision.action === 'approve' ? 'Approve and create workspace' : 'Reject signup'}</button
-				>
+				<button class="btn primary" type="submit" disabled={deciding || !allowed}>
+					{decision.action === 'approve' ? 'Approve and create workspace' : 'Reject signup'}
+				</button>
 			</div>
 		</form>
 	{/if}
@@ -553,9 +565,9 @@
 		{#if inviteError}<Callout kind="err" title={inviteError.code}>{inviteError.message}</Callout>
 			{#if inviteError.steps?.length}{@render steps(inviteError.steps)}{/if}{/if}
 		<div class="actions">
-			<button class="btn primary" type="submit" disabled={inviting || !allowed || !session.superAdmin}
-				>{inviting ? 'Sending…' : 'Create workspace and send invite'}</button
-			>
+			<button class="btn primary" type="submit" disabled={inviting || !allowed || !session.superAdmin}>
+				{inviting ? 'Sending…' : 'Create workspace and send invite'}
+			</button>
 		</div>
 	</form>
 </Drawer>

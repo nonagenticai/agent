@@ -317,9 +317,9 @@
 			</Callout>
 		{/if}
 		{#if i.stub}
-			<Callout kind="info" title="Stub instance"
-				>Recorded fixtures with fault injection. Allowed on test routes only and never counts for readiness.</Callout
-			>
+			<Callout kind="info" title="Stub instance">
+				Recorded fixtures with fault injection. Allowed on test routes only and never counts for readiness.
+			</Callout>
 		{/if}
 		{#if i.platform}
 			<Callout kind="info" title="Platform connector">
@@ -334,9 +334,9 @@
 		<div class="grid g-main t11-decide">
 			<Card title="Can your agent rely on it?">
 				<p class="t11-verdict t11-v-{verdict.tone}" data-testid="t11-verdict">
-					<span class="t11-vmark" aria-hidden="true"
-						>{verdict.tone === 'ok' ? '✓' : verdict.tone === 'err' ? '✕' : '!'}</span
-					>
+					<span class="t11-vmark" aria-hidden="true">
+						{verdict.tone === 'ok' ? '✓' : verdict.tone === 'err' ? '✕' : '!'}
+					</span>
 					{verdict.headline}
 				</p>
 				<dl class="t11-kpis">
@@ -408,8 +408,10 @@
 										type="button"
 										{...writeAttrs(session, 'integrations_manager')}
 										disabled={!writable || running !== ''}
-										onclick={() => act(t, d)}>{t.action.label}</button
+										onclick={() => act(t, d)}
 									>
+										{t.action.label}
+									</button>
 								{/if}
 							</li>
 						{/each}
@@ -457,15 +459,19 @@
 											class="btn primary"
 											type="button"
 											{...writeAttrs(session, 'integrations_manager')}
-											onclick={() => saveProbes(i.env_ids)}>Save test records</button
+											onclick={() => saveProbes(i.env_ids)}
 										>
+											Save test records
+										</button>
 										{#if probeSaved}
 											<button
 												class="btn"
 												type="button"
 												disabled={!writable || running !== ''}
-												onclick={() => runReads(d)}>Run all reads</button
+												onclick={() => runReads(d)}
 											>
+												Run all reads
+											</button>
 										{/if}
 									</div>
 								{/if}
@@ -483,8 +489,10 @@
 								type="button"
 								{...writeAttrs(session, 'integrations_manager')}
 								disabled={!writable || running !== ''}
-								onclick={() => runReads(d)}>{running === '*' ? 'Running…' : 'Run all reads'}</button
+								onclick={() => runReads(d)}
 							>
+								{running === '*' ? 'Running…' : 'Run all reads'}
+							</button>
 						{/snippet}
 						<div class="tbl-wrap ph-stack">
 							<table class="tbl" data-testid="t3">
@@ -509,16 +517,17 @@
 											{@const ok = r.calls != null ? r.calls - r.replied - r.escalated : 0}
 											<tr>
 												<td class="mono">{r.op}</td>
-												<td data-label="Effect"
-													><span class="t11-eff" title="side effect">{r.side_effect}</span></td
-												>
+												<td data-label="Effect">
+													<span class="t11-eff" title="side effect">{r.side_effect}</span>
+												</td>
 												<td data-label="Readiness">
 													<Chip
 														text={READINESS[r.readiness].label}
 														variant={READINESS[r.readiness].variant}
 													/>
-													{#if r.routed.length}<span class="cell-sub">routed {r.routed.join(' + ')}</span
-														>{/if}
+													{#if r.routed.length}<span class="cell-sub">
+															routed {r.routed.join(' + ')}
+														</span>{/if}
 												</td>
 												<td class="t11-t3cell" data-label="Contract test">
 													<OutcomeChip outcome={r.result.outcome} code={r.result.code} />
@@ -529,17 +538,19 @@
 															class="btn btn-sm"
 															data-testid="add-probe-{k}"
 															disabled={!writable || i.platform}
-															onclick={() => focusProbe(k)}>Set test record</button
+															onclick={() => focusProbe(k)}
 														>
+															Set test record
+														</button>
 													{/each}
-													{#if xp && r.insight?.verify_read}<span class="cell-sub"
-															>verify_read: {r.insight.verify_read}</span
-														>{/if}
+													{#if xp && r.insight?.verify_read}<span class="cell-sub">
+															verify_read: {r.insight.verify_read}
+														</span>{/if}
 													{#if r.result.at}<span class="cell-sub mono">{fmtAt(r.result.at)}</span>{/if}
 												</td>
-												<td class="mono" data-label="Calls · 30 d"
-													>{r.calls == null ? '—' : r.calls.toLocaleString('en')}</td
-												>
+												<td class="mono" data-label="Calls · 30 d">
+													{r.calls == null ? '—' : r.calls.toLocaleString('en')}
+												</td>
 												<td class="t11-mixcell" data-label="How ended">
 													{#if r.calls}
 														<span
@@ -556,8 +567,11 @@
 														{#if r.errors.length}
 															<span class="cell-sub">
 																{#each r.errors as e, k (e.code)}{k ? ' · ' : ''}<span
-																		class={e.handling === 'reply' ? '' : 's-err'}>{e.count} {e.code}</span
-																	>{/each}
+																		class={e.handling === 'reply' ? '' : 's-err'}
+																	>
+																		{e.count}
+																		{e.code}
+																	</span>{/each}
 															</span>
 														{:else}
 															<span class="cell-sub">no failures</span>
@@ -566,29 +580,31 @@
 														<span class="muted">—</span>
 													{/if}
 												</td>
-												<td class="mono t11-nw" data-label="p95"
-													>{r.p95_ms == null ? '—' : `${r.p95_ms} ms`}</td
-												>
+												<td class="mono t11-nw" data-label="p95">
+													{r.p95_ms == null ? '—' : `${r.p95_ms} ms`}
+												</td>
 												<td>
 													{#if xp}
 														<span class="muted t11-small">test env only</span>
 													{:else if prodWrite}
 														{#if okFor === r.op}
 															<div class="t11-okbox" role="group" aria-label="Allow a prod write">
-																<label class="row"
-																	><input type="checkbox" bind:checked={okChecked} /> I allow one tagged test
-																	write on {i.base_url}; it is closed afterwards.</label
-																>
+																<label class="row">
+																	<input type="checkbox" bind:checked={okChecked} /> I allow one tagged test
+																	write on {i.base_url}; it is closed afterwards.
+																</label>
 																<span class="row">
 																	<button
 																		class="btn sm primary"
 																		type="button"
 																		disabled={!okChecked || running !== ''}
-																		onclick={() => run(r.result, true)}>Run with OK</button
+																		onclick={() => run(r.result, true)}
 																	>
-																	<button class="btn sm" type="button" onclick={() => (okFor = '')}
-																		>Cancel</button
-																	>
+																		Run with OK
+																	</button>
+																	<button class="btn sm" type="button" onclick={() => (okFor = '')}>
+																		Cancel
+																	</button>
 																</span>
 															</div>
 														{:else}
@@ -597,8 +613,10 @@
 																type="button"
 																{...writeAttrs(session, 'integrations_manager')}
 																disabled={!writable || running !== ''}
-																onclick={() => ((okFor = r.op), (okChecked = false))}>Run… (needs OK)</button
+																onclick={() => ((okFor = r.op), (okChecked = false))}
 															>
+																Run… (needs OK)
+															</button>
 														{/if}
 													{:else}
 														<button
@@ -606,8 +624,10 @@
 															type="button"
 															{...writeAttrs(session, 'integrations_manager')}
 															disabled={!writable || running !== ''}
-															onclick={() => run(r.result)}>{running === r.op ? 'Running…' : 'Run'}</button
+															onclick={() => run(r.result)}
 														>
+															{running === r.op ? 'Running…' : 'Run'}
+														</button>
 													{/if}
 												</td>
 											</tr>
@@ -648,19 +668,20 @@
 													text={c.outcome}
 													variant={c.state === 'denied' ? 'muted' : h === 'reply' ? 'warn' : 'err'}
 												/>
-												<span class="muted t11-small"
-													>{c.state === 'denied'
+												<span class="muted t11-small">
+													{c.state === 'denied'
 														? 'denied before the call'
 														: h === 'reply'
 															? 'agent answered'
-															: 'escalated'}</span
-												>
+															: 'escalated'}
+												</span>
 											{/if}
 										</span>
 										<span class="row t11-small">
 											{#if c.latency_ms != null}<span class="mono">{c.latency_ms} ms</span>{/if}
-											{#if callsJob}<a href="/admin/jobs/{callsJob}/cases/{c.case_id}">{c.case_id}</a
-												>{:else}<span>{c.case_id}</span>{/if}
+											{#if callsJob}<a href="/admin/jobs/{callsJob}/cases/{c.case_id}">
+													{c.case_id}
+												</a>{:else}<span>{c.case_id}</span>{/if}
 										</span>
 									</li>
 								{/each}
@@ -692,9 +713,9 @@
 								<div class="field t11-oppick">
 									<label for="map-op">Operation</label>
 									<select id="map-op" class="input mono" bind:value={mapOp} onchange={() => seedPaths(d)}>
-										{#each mapped as o (o.op)}<option value={o.op}
-												>{o.op}{i.overrides.some((x) => x.op === o.op) ? ' · overridden' : ''}</option
-											>{/each}
+										{#each mapped as o (o.op)}<option value={o.op}>
+												{o.op}{i.overrides.some((x) => x.op === o.op) ? ' · overridden' : ''}
+											</option>{/each}
 									</select>
 								</div>
 								<button
@@ -702,24 +723,25 @@
 									type="button"
 									{...writeAttrs(session, 'integrations_manager')}
 									disabled={!writable || !mapOp}
-									onclick={fetchSample}>Fetch sample from system</button
+									onclick={fetchSample}
 								>
+									Fetch sample from system
+								</button>
 							</div>
 							<div class="grid g-main t11-mapgrid">
 								<div class="tbl-wrap">
 									<table class="tbl dense">
-										<thead
-											><tr><th>Canonical field</th><th>JSONPath</th><th>Value in sample</th><th></th></tr
-											></thead
-										>
+										<thead>
+											<tr><th>Canonical field</th><th>JSONPath</th><th>Value in sample</th><th></th></tr>
+										</thead>
 										<tbody>
 											{#each op?.field_map ?? [] as f (f.field)}
 												{@const ov = i.overrides.find((x) => x.op === mapOp && x.field === f.field)}
 												{@const val = tryPath(d, f.field)}
 												<tr>
-													<td class="mono"
-														>{f.field}{#if ov}<Chip text="override" variant="accent" />{/if}</td
-													>
+													<td class="mono">
+														{f.field}{#if ov}<Chip text="override" variant="accent" />{/if}
+													</td>
 													<td>
 														<input
 															class="input mono t11-path"
@@ -738,14 +760,18 @@
 																type="button"
 																{...writeAttrs(session, 'integrations_manager')}
 																disabled={!writable || paths[f.field] === (ov?.path ?? f.path)}
-																onclick={() => saveOverride(f.field)}>Save</button
+																onclick={() => saveOverride(f.field)}
 															>
+																Save
+															</button>
 															{#if ov}<button
 																	class="btn sm"
 																	type="button"
 																	{...writeAttrs(session, 'integrations_manager')}
-																	onclick={() => revert(f.field)}>Revert</button
-																>{/if}
+																	onclick={() => revert(f.field)}
+																>
+																	Revert
+																</button>{/if}
 														</span>
 													</td>
 												</tr>
@@ -810,11 +836,11 @@
 								<details class="field">
 									<summary>Advanced: raw env ids</summary>
 									<label for="c-ids">Env IDs (key = value)</label>
-									<span class="cell-sub" data-testid="probe-hint"
-										>Contract tests read sample inputs from env ids named <span class="mono"
-											>probe.&lt;field&gt;</span
-										>.</span
-									>
+									<span class="cell-sub" data-testid="probe-hint">
+										Contract tests read sample inputs from env ids named <span class="mono">
+											probe.&lt;field&gt;
+										</span>.
+									</span>
 									<textarea
 										id="c-ids"
 										class="input"
@@ -839,8 +865,10 @@
 											class="btn primary"
 											type="button"
 											{...writeAttrs(session, 'integrations_manager')}
-											onclick={() => saveCfg()}>Save connection</button
+											onclick={() => saveCfg()}
 										>
+											Save connection
+										</button>
 										{#if !writable}<span class="muted">{writeHint('integrations_manager')}</span>{/if}
 									</div>
 								{/if}
@@ -852,13 +880,13 @@
 							sub="Write-only and sealed per tenant: never echoed, logged, put on the bus or in a release. Rotate by replacing it."
 						>
 							{#if i.status === 'auth_failed'}
-								<Callout kind="err" title="connector_auth_failed"
-									>{i.last_error?.message} (at {fmtAt(i.last_error?.at ?? null)} UTC)</Callout
-								>
+								<Callout kind="err" title="connector_auth_failed">
+									{i.last_error?.message} (at {fmtAt(i.last_error?.at ?? null)} UTC)
+								</Callout>
 							{:else if i.status === 'invalid_target'}
-								<Callout kind="err" title="invalid_target"
-									>{i.last_error?.message ?? 'The base URL resolves to a non-public address.'}</Callout
-								>
+								<Callout kind="err" title="invalid_target">
+									{i.last_error?.message ?? 'The base URL resolves to a non-public address.'}
+								</Callout>
 							{/if}
 							<dl class="kvs">
 								<dt>State</dt>
@@ -894,10 +922,10 @@
 								>
 									{#each d.template.credential_schema as f (f.name)}
 										<div class="field">
-											<label for="cr-{f.name}"
-												>{f.label}
-												{#if f.secret}<Chip text="x-secret" variant="warn" />{/if}</label
-											>
+											<label for="cr-{f.name}">
+												{f.label}
+												{#if f.secret}<Chip text="x-secret" variant="warn" />{/if}
+											</label>
 											<input
 												id="cr-{f.name}"
 												class="input mono"
@@ -917,9 +945,13 @@
 									{/each}
 									{#if credErr}<p class="s-err" role="alert">{credErr}</p>{/if}
 									<div class="actions">
-										<button class="btn primary" type="submit" {...writeAttrs(session, 'integrations_manager')}
-											>{i.credential.set ? 'Replace credential' : 'Set credential'}</button
+										<button
+											class="btn primary"
+											type="submit"
+											{...writeAttrs(session, 'integrations_manager')}
 										>
+											{i.credential.set ? 'Replace credential' : 'Set credential'}
+										</button>
 									</div>
 									<p class="note">
 										Derived access tokens live only in runner memory and are re-minted on a 401; they are
@@ -939,10 +971,10 @@
 								{hasRateLimit(insight?.rate_limit)
 									? `${insight.rate_limit.value ?? insight.rate_limit.kind}${insight.rate_limit.honour_retry_after ? ' · honours Retry-After' : ''}`
 									: NO_RATE_LIMIT}
-								<span class="cell-sub"
-									>Enforced per system{i.max_rps != null ? `, capped at ${i.max_rps} rps here` : ''}; 429 →
-									rate_limited (one backoff, then escalate).</span
-								>
+								<span class="cell-sub">
+									Enforced per system{i.max_rps != null ? `, capped at ${i.max_rps} rps here` : ''}; 429 →
+									rate_limited (one backoff, then escalate).
+								</span>
 							</dd>
 							<dt>Webhooks</dt>
 							<dd>
@@ -955,10 +987,10 @@
 											/>{/each}
 										<Chip text="inert in v1" variant="warn" />
 									</span>
-									<span class="cell-sub"
-										>Declared by the template, never delivered: the agent pulls and confirms writes with
-										verify_read.</span
-									>
+									<span class="cell-sub">
+										Declared by the template, never delivered: the agent pulls and confirms writes with
+										verify_read.
+									</span>
 								{:else}
 									<span class="muted">None declared — v1 is pull-only.</span>
 								{/if}

@@ -131,9 +131,9 @@
 				</select>
 			</div>
 		</div>
-		<label class="row"
-			><input type="checkbox" bind:checked={f.confirm_back} /> Confirm back to the customer before running</label
-		>
+		<label class="row">
+			<input type="checkbox" bind:checked={f.confirm_back} /> Confirm back to the customer before running
+		</label>
 		{#if showErrors && errs.confirm_back}<span class="op-err" role="alert">{errs.confirm_back}</span>{/if}
 		<div class="field">
 			<label for="op-verify">Verify read</label>

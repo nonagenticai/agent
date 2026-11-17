@@ -56,9 +56,9 @@
 				</li>
 			{/each}
 		</ul>
-		<span class="muted tdb-foot"
-			>Not live yet in {[...new Set(rows.flatMap((r) => r.jobs.map((j) => j.job_label)))].join(', ')}.</span
-		>
+		<span class="muted tdb-foot">
+			Not live yet in {[...new Set(rows.flatMap((r) => r.jobs.map((j) => j.job_label)))].join(', ')}.
+		</span>
 	{/if}
 </div>
 

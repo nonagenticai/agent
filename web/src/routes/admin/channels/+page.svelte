@@ -201,9 +201,9 @@
 							bot of your own is not set up for this tenant <MilestoneChip milestone="M2" />. Meanwhile your
 							staff can test as a customer in the <a href="/chat">test chat</a>.
 						{:else}
-							Customers have no way in yet. Your staff can test as a customer in the <a href="/chat"
-								>test chat</a
-							>.
+							Customers have no way in yet. Your staff can test as a customer in the <a href="/chat">
+								test chat
+							</a>.
 						{/if}
 					</p>
 				{/if}
@@ -218,20 +218,22 @@
 							target="_blank"
 							rel="noopener"
 							data-testid="webchat-try"
-							data-channel={wcTry.channel.id}>Try it</a
+							data-channel={wcTry.channel.id}
 						>
-						<span class="muted t13-small"
-							>Web chat: opens the hosted test page with the real widget, answered by {wcTry.channel
-								.answered_by?.job_label ?? 'the job'}.</span
-						>
+							Try it
+						</a>
+						<span class="muted t13-small">
+							Web chat: opens the hosted test page with the real widget, answered by {wcTry.channel
+								.answered_by?.job_label ?? 'the job'}.
+						</span>
 					{:else if wcTry}
-						<a class="btn" href={wcTry.href} data-testid="webchat-try" data-channel={wcTry.channel.id}
-							>Try it</a
-						>
-						<span class="muted t13-small"
-							>Web chat: open the {wcTry.channel.answered_by?.job_label ?? 'job'}'s channels, then the web
-							chat panel's Try it — the hosted test page with the real widget.</span
-						>
+						<a class="btn" href={wcTry.href} data-testid="webchat-try" data-channel={wcTry.channel.id}>
+							Try it
+						</a>
+						<span class="muted t13-small">
+							Web chat: open the {wcTry.channel.answered_by?.job_label ?? 'job'}'s channels, then the web chat
+							panel's Try it — the hosted test page with the real widget.
+						</span>
 					{/if}
 					{#if tgTest || !wcTry}
 						<button
@@ -241,22 +243,21 @@
 							disabled={writeAttrs(session, 'integrations_manager').disabled || sending || !tgTest}
 							title={writeAttrs(session, 'integrations_manager').title}
 							data-channel={tgTest?.id}
-							onclick={() => tgTest && send(tgTest)}>{sending ? 'Sending…' : 'Send test message'}</button
+							onclick={() => tgTest && send(tgTest)}
 						>
-						<span class="muted t13-small"
-							>Sends through the real path to your Telegram account; a closed gate returns the refusal
-							instead.</span
-						>
+							{sending ? 'Sending…' : 'Send test message'}
+						</button>
+						<span class="muted t13-small">
+							Sends through the real path to your Telegram account; a closed gate returns the refusal instead.
+						</span>
 					{/if}
 				</div>
 				{#if last}
 					<div class="t13-last" data-testid="last-test">
 						<b>Last test message</b>
-						<span class="muted"
-							>{when(last.at)} · {last.refused
-								? 'refused by gate 2'
-								: `delivered as ${last.message_id}`}</span
-						>
+						<span class="muted">
+							{when(last.at)} · {last.refused ? 'refused by gate 2' : `delivered as ${last.message_id}`}
+						</span>
 						<div class="t13-chat"><div class="t13-bubble">{last.text}</div></div>
 					</div>
 				{/if}
@@ -282,18 +283,18 @@
 								<span class="t13-k">Side</span>
 								<span>{c.side === 'worker' ? 'staff (worker)' : 'customers'}</span>
 								{#if c.job_key}
-									<a href={jobPath(c.job_key, '/channels')} data-testid="door-job-link" data-job={c.job_key}
-										>Manage in {c.job_key}</a
-									>
+									<a href={jobPath(c.job_key, '/channels')} data-testid="door-job-link" data-job={c.job_key}>
+										Manage in {c.job_key}
+									</a>
 								{/if}
 							</div>
 							<div class="t13-door-cell">
 								<span class="t13-k">Answers</span>
 								{#if c.answered_by}
 									<a href={`/admin/jobs/${c.answered_by.job}/release`}>{c.answered_by.job_label}</a>
-									<span class="muted t13-small"
-										>{c.answered_by.release_id ?? 'no release'} · {c.answered_by.env}</span
-									>
+									<span class="muted t13-small">
+										{c.answered_by.release_id ?? 'no release'} · {c.answered_by.env}
+									</span>
 									{#each c.also_answers ?? [] as o (o.job)}
 										<a href={`/admin/jobs/${o.job}/release`} data-also-answers={o.job}>{o.job_label}</a>
 										<span class="muted t13-small">{o.release_id ?? 'draft only'} · {o.env}</span>
@@ -307,12 +308,12 @@
 							<div class="t13-door-cell">
 								<span class="t13-k">Edge</span>
 								{#if c.webhook}
-									<span
-										><Chip
+									<span>
+										<Chip
 											text={`webhook ${c.webhook.status}`}
 											variant={WEBHOOK_CHIP[c.webhook.status] ?? 'err'}
-										/></span
-									>
+										/>
+									</span>
 									<span class="muted t13-small">last update {when(c.webhook.last_update_at)}</span>
 								{:else}
 									<span class="muted">{c.edge_host ?? 'not routed'}</span>
@@ -324,12 +325,13 @@
 									{#each ladder(c) as l (l.level)}<span
 											class="t13-rung {l.fill}"
 											aria-label={`${l.label}: ${l.fill === 'start' ? 'from the first message' : l.fill === 'verify' ? 'after verification' : 'not reachable'}`}
-											>{l.level}</span
-										>{/each}
+										>
+											{l.level}
+										</span>{/each}
 								</span>
-								<span class="muted t13-small"
-									>{levelLabel(c.identity_start)} → {levelLabel(c.identity_ceiling)}</span
-								>
+								<span class="muted t13-small">
+									{levelLabel(c.identity_start)} → {levelLabel(c.identity_ceiling)}
+								</span>
 							</div>
 							<div class="t13-door-cell t13-door-act">
 								{#if c.kind === 'staff_chat'}
@@ -381,8 +383,10 @@
 									class="tab"
 									class:on={c.id === covPick.id}
 									aria-pressed={c.id === covPick.id}
-									onclick={() => setPick(c.id)}>{c.label}</button
-								>{/each}
+									onclick={() => setPick(c.id)}
+								>
+									{c.label}
+								</button>{/each}
 						</div>
 					</div>
 					<span class="muted t13-small">Operations of <b>{v.operations_job}</b></span>
@@ -401,11 +405,11 @@
 										<li>
 											<code>{o.op}</code>
 											<span class="t13-eff" title={EFFECT[o.side_effect]}>{o.side_effect}</span>
-											<span class="muted t13-small"
-												>needs {o.identity_level}{o.raises_to ? ` → raises to ${o.raises_to}` : ''}{o.note
+											<span class="muted t13-small">
+												needs {o.identity_level}{o.raises_to ? ` → raises to ${o.raises_to}` : ''}{o.note
 													? ` · ${o.note}`
-													: ''}</span
-											>
+													: ''}
+											</span>
 										</li>
 									{/each}
 								</ul>
@@ -416,8 +420,10 @@
 				<p class="note">
 					R read · W write · X irreversible · P payment. W/X/P also need confirm-back from a customer message;
 					P only as a hosted link. Levels and operations are set by the release (<a
-						href={`/admin/jobs/${v.operations_job}/operations`}>operations &amp; routes</a
-					>).
+						href={`/admin/jobs/${v.operations_job}/operations`}
+					>
+						operations &amp; routes
+					</a>).
 				</p>
 			</Card>
 		{/if}
@@ -436,8 +442,10 @@
 								class="tab"
 								class:on={x.id === causeRow.id}
 								aria-pressed={x.id === causeRow.id}
-								onclick={() => setCause(x.id)}>{x.label}</button
-							>{/each}
+								onclick={() => setCause(x.id)}
+							>
+								{x.label}
+							</button>{/each}
 					</div>
 				</div>
 				<div class="t13-refusal-pair">

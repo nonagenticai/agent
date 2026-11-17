@@ -51,9 +51,9 @@
 {:else if step === 'objects' && m.cells.length}
 	<div class="p18-prod">
 		<div class="p18-prod-h">
-			Activity × object matrix <span
-				>— ✓ kept · ? to decide · ✕ dropped · dashed = not a canonical object</span
-			>
+			Activity × object matrix <span>
+				— ✓ kept · ? to decide · ✕ dropped · dashed = not a canonical object
+			</span>
 		</div>
 		<div class="tbl-wrap">
 			<table class="tbl dense p18-matrix" data-testid="p18-matrix">
@@ -77,8 +77,9 @@
 										<span
 											class="p18-m {c.item.decision}"
 											title="{c.item.title}: {c.item.decision} · {c.item.detail.split(' · ')[0]}"
-											>{MARK[c.item.decision]}</span
 										>
+											{MARK[c.item.decision]}
+										</span>
 										<span class="p18-role">{c.item.detail.split(' · ')[0]}</span>
 									{/if}
 								</td>

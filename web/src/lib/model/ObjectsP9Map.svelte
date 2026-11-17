@@ -144,9 +144,9 @@
 
 		{#if layout.addRows}
 			<line class="band" x1="8" x2={layout.width - 8} y1={layout.addTop - 22} y2={layout.addTop - 22} />
-			<text class="band-label" x="12" y={layout.addTop - 8}
-				>INDUSTRY &amp; OPTIONAL ADDITIONS — selected by the business model</text
-			>
+			<text class="band-label" x="12" y={layout.addTop - 8}>
+				INDUSTRY &amp; OPTIONAL ADDITIONS — selected by the business model
+			</text>
 		{/if}
 
 		<g class="edges">
@@ -183,9 +183,9 @@
 					<rect class="box" width={NODE_W} height={NODE_H} rx="6" />
 					<rect class="tier" width="4" height={NODE_H} rx="2" />
 					<text class="name" x="12" y="19">{n.object}</text>
-					<text class="meta" x="12" y="35"
-						>{n.states.length ? `${n.states.length} states` : 'no lifecycle'} · {opsOf(n)} ops</text
-					>
+					<text class="meta" x="12" y="35">
+						{n.states.length ? `${n.states.length} states` : 'no lifecycle'} · {opsOf(n)} ops
+					</text>
 					{#if n.in_retail_job}<circle class="retail" cx={NODE_W - 9} cy="9" r="3.5" />{/if}
 				</g>
 			{/if}

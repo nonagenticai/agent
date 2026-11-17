@@ -35,22 +35,22 @@
 	</button>
 	{#if open}
 		<div class="pop" role="group" aria-label="Inbox filters">
-			<label
-				>Reason
+			<label>
+				Reason
 				<select value={filters.reason ?? ''} onchange={(e) => set('reason', e.currentTarget.value)}>
 					<option value="">Any</option>
 					{#each reasons as r (r)}<option value={r}>{r}</option>{/each}
 				</select>
 			</label>
-			<label
-				>Channel
+			<label>
+				Channel
 				<select value={filters.channel ?? ''} onchange={(e) => set('channel', e.currentTarget.value)}>
 					<option value="">Any</option>
 					{#each channels as c (c)}<option value={c}>{label(c)}</option>{/each}
 				</select>
 			</label>
-			<label
-				>Priority
+			<label>
+				Priority
 				<select value={filters.priority ?? ''} onchange={(e) => set('priority', e.currentTarget.value)}>
 					<option value="">Any</option>
 					{#each ITEM_PRIORITIES as p (p)}<option value={p}>{p[0]!.toUpperCase() + p.slice(1)}</option>{/each}

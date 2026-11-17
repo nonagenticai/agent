@@ -79,8 +79,10 @@
 			type="button"
 			class="btn primary"
 			{...writeAttrs(session, 'job_designer')}
-			onclick={() => newVersion()}>New procedure version</button
+			onclick={() => newVersion()}
 		>
+			New procedure version
+		</button>
 	{/snippet}
 </PageHead>
 
@@ -90,22 +92,22 @@
 	<div class="pr-pipe-live">
 		<span class="label">Live in production</span>
 		{#if release}
-			<span
-				><b>{kpi.published}</b> procedure{kpi.published === 1 ? '' : 's'} from release
-				<a class="mono" href="/admin/jobs/{app.job}/release/{release}">{release}</a></span
-			>
+			<span>
+				<b>{kpi.published}</b> procedure{kpi.published === 1 ? '' : 's'} from release
+				<a class="mono" href="/admin/jobs/{app.job}/release/{release}">{release}</a>
+			</span>
 		{:else if job.value.state === 'ok'}
 			<span>Nothing yet: this job has no release.</span>
 		{/if}
 	</div>
 	<div class="pr-pipe-draft">
 		<span class="label">Draft</span>
-		<span
-			>{#if changes}<Chip
+		<span>
+			{#if changes}<Chip
 					text="{changes} unpublished change{changes === 1 ? '' : 's'}"
 					variant="warn"
-				/>{:else}<span class="muted">No unpublished changes</span>{/if}</span
-		>
+				/>{:else}<span class="muted">No unpublished changes</span>{/if}
+		</span>
 	</div>
 	<p class="muted pr-pipe-how">
 		Every change here is saved to draft. Test it in the test chat, then publish it with a release (approve →

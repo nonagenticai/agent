@@ -32,8 +32,9 @@
 					<ul class="t11-map">
 						{#each g.map as m (m.system + m.canonical)}
 							<li>
-								<span class="mono t11-sys">{m.system}</span><span class="t11-to" aria-hidden="true">→</span
-								><Chip text={m.canonical} variant="cust" />
+								<span class="mono t11-sys">{m.system}</span><span class="t11-to" aria-hidden="true">
+									→
+								</span><Chip text={m.canonical} variant="cust" />
 							</li>
 						{/each}
 					</ul>
@@ -54,8 +55,10 @@
 				{#each faults as f (f.system + f.code)}
 					<li>
 						<span class="mono t11-sys">{f.system}</span><span class="t11-to" aria-hidden="true">→</span><span
-							class="mono">{f.code}</span
+							class="mono"
 						>
+							{f.code}
+						</span>
 						<Chip text={HANDLING[f.handling][0]} variant={HANDLING[f.handling][1]} />
 					</li>
 				{/each}

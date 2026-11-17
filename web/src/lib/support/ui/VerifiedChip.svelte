@@ -9,6 +9,8 @@
 		class="chip ok"
 		data-testid="verified-chip"
 		title="Signed-in customer, verified"
-		aria-label="Signed-in customer, verified">Verified</span
+		aria-label="Signed-in customer, verified"
 	>
+		Verified
+	</span>
 {/if}

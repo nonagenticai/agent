@@ -76,8 +76,9 @@
 			title="Good answer"
 			disabled={busy}
 			onclick={() => submit('up')}
-			><svg viewBox="0 0 24 24" aria-hidden="true"><path d={THUMB} /></svg></button
 		>
+			<svg viewBox="0 0 24 24" aria-hidden="true"><path d={THUMB} /></svg>
+		</button>
 		<button
 			type="button"
 			class="af-btn down"
@@ -88,13 +89,15 @@
 			aria-label="Bad answer"
 			title="Bad answer — say why"
 			disabled={busy}
-			onclick={down}><svg viewBox="0 0 24 24" aria-hidden="true"><path d={THUMB} /></svg></button
+			onclick={down}
 		>
+			<svg viewBox="0 0 24 24" aria-hidden="true"><path d={THUMB} /></svg>
+		</button>
 		{#if current?.vote === 'down' && !open}
 			{#if current.reason}<span class="chip err sm">{reasonLabel(current.reason)}</span>{/if}
-			<a class="af-promote" href={promoteHref(answer.question)} data-testid="promote-golden"
-				>Promote to golden question →</a
-			>
+			<a class="af-promote" href={promoteHref(answer.question)} data-testid="promote-golden">
+				Promote to golden question →
+			</a>
 		{/if}
 	</div>
 	{#if open}

@@ -256,9 +256,9 @@
 							<span class="mono t1-key">{r.job.key}</span>
 							<span class="t1-ns">North star: <b>{r.job.north_star}</b></span>
 							{#if r.job.languages?.length}
-								<span class="t1-ns" data-testid="t1-languages"
-									>Serves: <b>{r.job.languages.map((l) => LANGUAGE_LABEL[l] ?? l).join(', ')}</b></span
-								>
+								<span class="t1-ns" data-testid="t1-languages">
+									Serves: <b>{r.job.languages.map((l) => LANGUAGE_LABEL[l] ?? l).join(', ')}</b>
+								</span>
 							{/if}
 						</div>
 						<Chip text={STAGES[si]!.label.toLowerCase()} variant={STAGE_VARIANT[stage]} />
@@ -292,9 +292,9 @@
 										<span class="t1-kind">{LAYER_LABEL[l.kind]}</span>
 										<span class="t1-lname mono" title={l.pin.layer}>{layerName(l.pin.layer)}</span>
 										<span class="t1-tag mono">v{l.pin.version}</span>
-										{#if l.latest}<span class="t1-newer mono" title={`Newer tag ${pinTag(l.latest)}`}
-												>→ v{l.latest.version}</span
-											>{/if}
+										{#if l.latest}<span class="t1-newer mono" title={`Newer tag ${pinTag(l.latest)}`}>
+												→ v{l.latest.version}
+											</span>{/if}
 									</li>
 								{/each}
 							</ol>
@@ -312,8 +312,10 @@
 											class="btn sm"
 											type="button"
 											{...writeAttrs(session, 'tenant_admin')}
-											onclick={() => requestUpgrade(r)}>Request upgrade</button
+											onclick={() => requestUpgrade(r)}
 										>
+											Request upgrade
+										</button>
 									{/if}
 								</div>
 							{/if}
@@ -335,9 +337,9 @@
 							{:else}
 								<p class="muted">No selection yet.</p>
 							{/if}
-							<a class="t1-link" href={jobPath(r.job.key, '/refinements')}
-								>{r.job.draft_rev} tenant refinement{r.job.draft_rev === 1 ? '' : 's'}</a
-							>
+							<a class="t1-link" href={jobPath(r.job.key, '/refinements')}>
+								{r.job.draft_rev} tenant refinement{r.job.draft_rev === 1 ? '' : 's'}
+							</a>
 						</section>
 
 						<section aria-label="Release">
@@ -346,11 +348,12 @@
 								<span class="t1-k">Current</span>
 								{#if r.job.current_release}
 									<span>
-										<a class="mono" href={jobPath(r.job.key, `/release/${r.job.current_release.id}`)}
-											>{r.job.current_release.id}</a
-										>
-										<span class="cell-sub mono">{r.job.current_release.hash} · {when(r.last_release_at)}</span
-										>
+										<a class="mono" href={jobPath(r.job.key, `/release/${r.job.current_release.id}`)}>
+											{r.job.current_release.id}
+										</a>
+										<span class="cell-sub mono">
+											{r.job.current_release.hash} · {when(r.last_release_at)}
+										</span>
 									</span>
 								{:else}
 									<span class="muted">No release yet</span>
@@ -358,9 +361,9 @@
 								{#if r.approved_waiting}
 									<span class="t1-k">Approved</span>
 									<span>
-										<a class="mono" href={jobPath(r.job.key, `/release/${r.approved_waiting.id}`)}
-											>{r.approved_waiting.id}</a
-										>
+										<a class="mono" href={jobPath(r.job.key, `/release/${r.approved_waiting.id}`)}>
+											{r.approved_waiting.id}
+										</a>
 										<span class="cell-sub">waiting to be applied</span>
 									</span>
 								{/if}
@@ -370,9 +373,9 @@
 								<Chip text="ready" variant="ok" />
 								<p class="t1-cap">Every check passes; the next release can be applied.</p>
 							{:else}
-								<a href={jobPath(r.job.key, '/readiness')}
-									><Chip text={`${r.readiness.missing.length} missing`} variant="warn" /></a
-								>
+								<a href={jobPath(r.job.key, '/readiness')}>
+									<Chip text={`${r.readiness.missing.length} missing`} variant="warn" />
+								</a>
 								<ul class="t1-gaps">
 									{#each r.readiness.missing as m (m)}<li>{m}</li>{/each}
 								</ul>
@@ -393,9 +396,10 @@
 										<dt>Containment</dt>
 										<dd>
 											{r.containment_7d == null ? '—' : fmt.pct(r.containment_7d, 0)}
-											{#if d != null}<small class:up={d >= 0} class:down={d < 0}
-													>{d >= 0 ? '▲' : '▼'} {Math.abs(d)} pt</small
-												>{/if}
+											{#if d != null}<small class:up={d >= 0} class:down={d < 0}>
+													{d >= 0 ? '▲' : '▼'}
+													{Math.abs(d)} pt
+												</small>{/if}
 										</dd>
 									</div>
 									{#if r.live}
@@ -432,9 +436,9 @@
 </LoadState>
 
 <Drawer bind:open title="Create job">
-	{#snippet sub()}<span
-			>Tenant admin · in {app.tenants.find((t) => t.id === app.activeTenant)?.name ?? 'this tenant'}</span
-		>{/snippet}
+	{#snippet sub()}<span>
+			Tenant admin · in {app.tenants.find((t) => t.id === app.activeTenant)?.name ?? 'this tenant'}
+		</span>{/snippet}
 	{#if loadErr}
 		<Callout kind="err" title="Templates unavailable"><span>{loadErr}</span></Callout>
 	{:else if !loaded}
@@ -443,10 +447,10 @@
 		<div class="stack" data-testid="create-job">
 			{#if unassigned}
 				<Callout kind="info" title="Your company industry is not set">
-					<span data-testid="industry-unassigned"
-						>Tell us what your company is on <a href="/admin/company">Company</a> to see which templates fit. Until
-						then the first job you create sets the industry.</span
-					>
+					<span data-testid="industry-unassigned">
+						Tell us what your company is on <a href="/admin/company">Company</a> to see which templates fit. Until
+						then the first job you create sets the industry.
+					</span>
 				</Callout>
 			{/if}
 			{#if nothingPublished}
@@ -462,31 +466,35 @@
 						class:on={mode === 'scratch'}
 						aria-pressed={mode === 'scratch'}
 						data-testid="mode-scratch"
-						onclick={() => (mode = 'scratch')}>From scratch</button
+						onclick={() => (mode = 'scratch')}
 					>
+						From scratch
+					</button>
 					<button
 						type="button"
 						class="tab"
 						class:on={mode === 'template'}
 						aria-pressed={mode === 'template'}
 						data-testid="mode-template"
-						onclick={() => (mode = 'template')}>From a template</button
+						onclick={() => (mode = 'template')}
 					>
+						From a template
+					</button>
 				</div>
 			{/if}
 			{#if mode === 'template'}
-				<label class="field"
-					><span class="label">Template</span>
+				<label class="field">
+					<span class="label">Template</span>
 					<select class="input" bind:value={pick} data-testid="template-select">
 						{#each templates as t (t.template)}
-							<option value={t.template}
-								>{t.recommended ? '★ ' : ''}{t.label} — {t.template}{t.recommended
+							<option value={t.template}>
+								{t.recommended ? '★ ' : ''}{t.label} — {t.template}{t.recommended
 									? ' (Recommended for your company)'
-									: ''}</option
-							>
+									: ''}
+							</option>
 						{/each}
-					</select></label
-				>
+					</select>
+				</label>
 				{#if chosen}
 					<p class="muted" data-testid="template-description">
 						{chosen.description}
@@ -495,55 +503,55 @@
 					<fieldset class="group" data-testid="job-departments">
 						<legend>Departments</legend>
 						{#each chosen.departments as d (d)}
-							<label class="opt inline"
-								><input
+							<label class="opt inline">
+								<input
 									type="checkbox"
 									checked={departments.includes(d)}
 									onchange={(e) => toggleDept(d, e.currentTarget.checked)}
 								/>
-								{deptLabel(d)}</label
-							>
+								{deptLabel(d)}
+							</label>
 						{/each}
 					</fieldset>
 				{/if}
-				<label class="field"
-					><span class="label">Key (optional)</span><input
+				<label class="field">
+					<span class="label">Key (optional)</span><input
 						class="input mono"
 						bind:value={key}
 						placeholder={chosen?.key ?? ''}
 					/>
-					<span class="muted small"
-						>Leave empty to use the template key; a taken key becomes <span class="mono">_2</span>,
-						<span class="mono">_3</span>…</span
-					></label
-				>
-				<label class="field"
-					><span class="label">Label (optional)</span><input
+					<span class="muted small">
+						Leave empty to use the template key; a taken key becomes <span class="mono">_2</span>,
+						<span class="mono">_3</span>…
+					</span>
+				</label>
+				<label class="field">
+					<span class="label">Label (optional)</span><input
 						class="input"
 						bind:value={label}
 						placeholder={chosen?.label ?? ''}
-					/></label
-				>
+					/>
+				</label>
 			{:else}
-				<label class="field"
-					><span class="label">Label</span><input
+				<label class="field">
+					<span class="label">Label</span><input
 						class="input"
 						bind:value={label}
 						oninput={onLabel}
 						data-testid="scratch-label"
-					/></label
-				>
-				<label class="field"
-					><span class="label">Key</span><input
+					/>
+				</label>
+				<label class="field">
+					<span class="label">Key</span><input
 						class="input mono"
 						bind:value={key}
 						oninput={() => (keyTouched = true)}
 						data-testid="scratch-key"
-					/></label
-				>
+					/>
+				</label>
 				{#if industries.length}
-					<label class="field"
-						><span class="label">Industry</span>
+					<label class="field">
+						<span class="label">Industry</span>
 						{#if unassigned}
 							<select class="input" bind:value={industry} data-testid="scratch-industry">
 								<option value="">Choose an industry…</option>
@@ -556,41 +564,39 @@
 								disabled
 								data-testid="scratch-industry"
 							/>
-						{/if}</label
-					>
+						{/if}
+					</label>
 					<fieldset class="group" data-testid="scratch-departments">
 						<legend>Departments</legend>
 						{#each industryDepartments as d (d.key)}
-							<label class="opt inline"
-								><input
+							<label class="opt inline">
+								<input
 									type="checkbox"
 									checked={scratchDepartments.includes(d.key)}
 									onchange={(e) => toggleScratch(d.key, e.currentTarget.checked)}
 								/>
-								{d.label}</label
-							>
+								{d.label}
+							</label>
 						{:else}
-							<span class="muted"
-								>{industry
-									? 'This industry has no departments published.'
-									: 'Choose an industry first.'}</span
-							>
+							<span class="muted">
+								{industry ? 'This industry has no departments published.' : 'Choose an industry first.'}
+							</span>
 						{/each}
 					</fieldset>
 					{#if regions.length}
-						<label class="field"
-							><span class="label">Region</span>
+						<label class="field">
+							<span class="label">Region</span>
 							<select class="input" bind:value={region} data-testid="scratch-region">
 								<option value="">No region</option>
 								{#each regions as r (r.key)}<option value={r.key}>{r.label}</option>{/each}
-							</select></label
-						>
+							</select>
+						</label>
 					{/if}
 				{/if}
 			{/if}
 			{#if loaded && allProfiles.length && jobIndustry}
-				<label class="field"
-					><span class="label">Business profile{profileNeeded ? ' (required)' : ''}</span>
+				<label class="field">
+					<span class="label">Business profile{profileNeeded ? ' (required)' : ''}</span>
 					<select
 						class="input"
 						data-testid="job-profile"
@@ -599,50 +605,50 @@
 					>
 						{#if profileNeeded}<option value="">Choose a profile…</option>{/if}
 						{#each profileOptions as p (p.key)}<option value={p.key}>{p.label}</option>{/each}
-					</select></label
-				>
+					</select>
+				</label>
 			{/if}
 			{#if loaded && mode === 'template' && regions.length}
-				<label class="field"
-					><span class="label">Region</span>
+				<label class="field">
+					<span class="label">Region</span>
 					<select class="input" bind:value={region} data-testid="job-region">
 						<option value="">No region</option>
 						{#each regions as r (r.key)}<option value={r.key}>{r.label}</option>{/each}
 					</select>
-					<span class="muted small">Selects the region sub-layers of the knowledge.</span></label
-				>
+					<span class="muted small">Selects the region sub-layers of the knowledge.</span>
+				</label>
 			{/if}
 			{#if loaded}
 				<fieldset class="group" data-testid="job-languages-pick">
 					<legend>Languages served</legend>
 					{#each LANGS as l (l)}
-						<label class="opt inline"
-							><input
+						<label class="opt inline">
+							<input
 								type="checkbox"
 								checked={jobLanguages.includes(l)}
 								onchange={(e) => toggleLang(l, e.currentTarget.checked)}
 							/>
-							{LANGUAGE_LABEL[l]}</label
-						>
+							{LANGUAGE_LABEL[l]}
+						</label>
 					{/each}
 				</fieldset>
 			{/if}
 			{#if loaded}
 				<fieldset class="group" data-testid="job-audience">
 					<legend>Who does this job serve?</legend>
-					<label class="opt inline"
-						><input type="radio" name="audience" value="customers" bind:group={audience} /> Customers</label
-					>
-					<label class="opt inline"
-						><input type="radio" name="audience" value="employees" bind:group={audience} /> Employees</label
-					>
+					<label class="opt inline">
+						<input type="radio" name="audience" value="customers" bind:group={audience} /> Customers
+					</label>
+					<label class="opt inline">
+						<input type="radio" name="audience" value="employees" bind:group={audience} /> Employees
+					</label>
 				</fieldset>
 			{/if}
 			{#if createErr}
 				<Callout kind="err" title="Job not created">
-					<span data-testid="create-error"
-						><span class="mono">{createErr.code}</span> — {createErr.message}</span
-					>
+					<span data-testid="create-error">
+						<span class="mono">{createErr.code}</span> — {createErr.message}
+					</span>
 				</Callout>
 			{/if}
 			<p class="muted">
@@ -659,8 +665,10 @@
 						(profileNeeded && !profileKey) ||
 						jobLanguages.length === 0 ||
 						(mode === 'template' ? !chosen || departments.length === 0 : !scratchOk)}
-					onclick={create}>{busy ? 'Creating…' : 'Create job'}</button
+					onclick={create}
 				>
+					{busy ? 'Creating…' : 'Create job'}
+				</button>
 			</div>
 		</div>
 	{/if}

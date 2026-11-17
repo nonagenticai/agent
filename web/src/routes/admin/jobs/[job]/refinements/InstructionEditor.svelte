@@ -141,16 +141,20 @@
 								type="submit"
 								class="btn primary"
 								disabled={attrs.disabled || busy !== null || !!bad || text.trim() === r.saved.trim()}
-								title={attrs.title}>{busy === slot ? 'Saving…' : 'Save'}</button
+								title={attrs.title}
 							>
+								{busy === slot ? 'Saving…' : 'Save'}
+							</button>
 							{#if r.own}
 								<button
 									type="button"
 									class="btn"
 									disabled={attrs.disabled || busy !== null}
 									title={attrs.title}
-									onclick={() => revert(slot)}>{r.base ? 'Back to inherited' : 'Remove my text'}</button
+									onclick={() => revert(slot)}
 								>
+									{r.base ? 'Back to inherited' : 'Remove my text'}
+								</button>
 							{/if}
 						</div>
 					{/if}

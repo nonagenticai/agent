@@ -16,9 +16,9 @@
 </script>
 
 {#if prefs.showMilestones}
-	<span class="chip {VARIANT[milestone]} milestone" title={TITLE[milestone]} data-testid="milestone"
-		>{note ?? milestone}</span
-	>
+	<span class="chip {VARIANT[milestone]} milestone" title={TITLE[milestone]} data-testid="milestone">
+		{note ?? milestone}
+	</span>
 {/if}
 
 <style>

@@ -136,20 +136,20 @@
 	sub="The numbers and exceptions your business decides — return window, warranty period, what to say about a pending charge. Before the agent promises a return, a claim or a refund, it checks the rule with your values."
 >
 	{#snippet actions()}
-		<button class="btn primary" type="button" {...wa} onclick={() => author(null)}
-			>Create business rule</button
-		>
+		<button class="btn primary" type="button" {...wa} onclick={() => author(null)}>
+			Create business rule
+		</button>
 		<a class="btn sm" href="{base}/readiness">Readiness</a>
 		<a class="btn sm" href="{base}/release">Releases</a>
 	{/snippet}
 </PageHead>
 
 {#if !writer}
-	<Callout kind="info" title="Read only"
-		>You can read every rule and try it out. Setting values or passages: {writeHint(
+	<Callout kind="info" title="Read only">
+		You can read every rule and try it out. Setting values or passages: {writeHint(
 			'job_designer',
-		).toLowerCase()}.</Callout
-	>
+		).toLowerCase()}.
+	</Callout>
 {/if}
 
 <section class="j9model" aria-label="How a business rule works" data-testid="rule-model">
@@ -162,18 +162,18 @@
 		<li class="mine">
 			<span class="j9step">2</span>
 			<b>Rule + your values</b>
-			<span class="small muted"
-				><span class="mono">rule.evaluate</span> compares the facts with your thresholds.</span
-			>
+			<span class="small muted">
+				<span class="mono">rule.evaluate</span> compares the facts with your thresholds.
+			</span>
 		</li>
 		<li>
 			<span class="j9step">3</span>
 			<b>Outcome</b>
-			<span class="small"
-				><Chip text="eligible" variant="ok" />
+			<span class="small">
+				<Chip text="eligible" variant="ok" />
 				<Chip text="ineligible:RET-01" variant="err" />
-				<Chip text="escalate" variant="warn" /></span
-			>
+				<Chip text="escalate" variant="warn" />
+			</span>
 		</li>
 		<li>
 			<span class="j9step">4</span>
@@ -186,8 +186,10 @@
 			<b class="small">From the template — read-only here</b>
 			<p class="small muted">
 				Template rule definitions and their facts and outcomes. Changes arrive with a new <a
-					href="{base}/release">release</a
-				>.
+					href="{base}/release"
+				>
+					release
+				</a>.
 			</p>
 		</div>
 		<div class="mine">
@@ -270,10 +272,10 @@
 			</p>
 			{#each editing.values as v (v.key)}
 				<div class="j9field">
-					<label for="rv-{v.key}"
-						>{v.label}{#if !['text', 'list'].includes(v.unit)}
-							({v.unit}){/if}</label
-					>
+					<label for="rv-{v.key}">
+						{v.label}{#if !['text', 'list'].includes(v.unit)}
+							({v.unit}){/if}
+					</label>
 					{#if v.unit === 'text'}
 						<textarea id="rv-{v.key}" class="input" rows="2" bind:value={draft[v.key]}></textarea>
 					{:else}
@@ -284,17 +286,19 @@
 							bind:value={draft[v.key]}
 						/>
 					{/if}
-					<span class="muted small"
-						>{v.hint}
+					<span class="muted small">
+						{v.hint}
 						{#if v.suggested != null}
 							Template suggests <b>{withUnit(v.suggested, v.unit)}</b>.
 							{#if (draft[v.key] ?? '') !== v.suggested}<button
 									type="button"
 									class="j9link"
-									onclick={() => (draft[v.key] = v.suggested ?? '')}>Use it</button
-								>{/if}
-						{/if}</span
-					>
+									onclick={() => (draft[v.key] = v.suggested ?? '')}
+								>
+									Use it
+								</button>{/if}
+						{/if}
+					</span>
 				</div>
 			{/each}
 
@@ -327,9 +331,9 @@
 			</section>
 
 			<div class="j9row">
-				<button type="submit" class="btn primary" disabled={busy || !dirty}
-					>{busy ? 'Saving…' : 'Save values'}</button
-				>
+				<button type="submit" class="btn primary" disabled={busy || !dirty}>
+					{busy ? 'Saving…' : 'Save values'}
+				</button>
 				<button type="button" class="btn" onclick={() => (valuesOpen = false)}>Cancel</button>
 			</div>
 		</form>
@@ -351,11 +355,11 @@
 					{#each list as p (p.id)}
 						<label class="j9passage">
 							<input type="radio" name="passage" value={p.id} bind:group={choice} />
-							<span
-								><b>{p.title}</b> <span class="mono muted small">{p.kind}</span><br /><span class="small"
-									>{p.excerpt}</span
-								></span
-							>
+							<span>
+								<b>{p.title}</b> <span class="mono muted small">{p.kind}</span><br /><span class="small">
+									{p.excerpt}
+								</span>
+							</span>
 						</label>
 					{/each}
 				</fieldset>
@@ -364,14 +368,18 @@
 						class="btn primary"
 						type="button"
 						disabled={busy || !choice || choice === linking?.passage?.id}
-						onclick={() => saveLink(choice)}>Link passage</button
+						onclick={() => saveLink(choice)}
 					>
+						Link passage
+					</button>
 					{#if linking?.passage}<button
 							class="btn"
 							type="button"
 							disabled={busy}
-							onclick={() => saveLink(null)}>Unlink</button
-						>{/if}
+							onclick={() => saveLink(null)}
+						>
+							Unlink
+						</button>{/if}
 				</div>
 			{/snippet}
 		</LoadState>

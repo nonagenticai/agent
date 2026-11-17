@@ -49,9 +49,9 @@
 			<li class="nc-step" class:here={s.n === 'N3'} aria-current={s.n === 'N3' ? 'step' : undefined}>
 				<span class="nc-n mono">{s.n}</span>
 				<span class="nc-body">
-					{#if s.href}<a class="nc-label" href={s.href}>{s.label}</a>{:else}<span class="nc-label"
-							>{s.label}</span
-						>{/if}
+					{#if s.href}<a class="nc-label" href={s.href}>{s.label}</a>{:else}<span class="nc-label">
+							{s.label}
+						</span>{/if}
 					<span class="nc-text">{s.text}</span>
 					<span class="nc-who">{s.who}</span>
 				</span>

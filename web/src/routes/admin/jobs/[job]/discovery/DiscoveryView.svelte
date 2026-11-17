@@ -230,8 +230,10 @@
 			type="button"
 			{...writeAttrs(session, 'job_designer')}
 			disabled={!can || uploading}
-			onclick={() => (uploadOpen = true)}>{uploading ? 'Uploading…' : 'Upload export'}</button
+			onclick={() => (uploadOpen = true)}
 		>
+			{uploading ? 'Uploading…' : 'Upload export'}
+		</button>
 	{/snippet}
 </PageHead>
 
@@ -286,8 +288,9 @@
 												class:primary={kindF === k}
 												aria-pressed={kindF === k}
 												onclick={() => (kindF = k)}
-												>{k === 'all' ? 'All kinds' : J18_KIND_LABEL[k as DiscoveryProposal['kind']]} · {n}</button
 											>
+												{k === 'all' ? 'All kinds' : J18_KIND_LABEL[k as DiscoveryProposal['kind']]} · {n}
+											</button>
 										{/if}
 									{/each}
 								</div>
@@ -326,8 +329,9 @@
 									type="button"
 									{...writeAttrs(session, 'job_designer')}
 									onclick={() => uploadRows('servicenow-export-2026-10.csv', 3120)}
-									>Use sample export (3,120 tickets)</button
 								>
+									Use sample export (3,120 tickets)
+								</button>
 							</div>
 						</Card>
 					{:else if imp.status === 'classifying'}
@@ -369,9 +373,9 @@
 								</div>
 								<div class="j18-covleg small">
 									<span><i class="c"></i><b>{fmt.pct(imp.coverage, 0)}</b> covered · {fmt.n(covered)}</span>
-									<span
-										><i class="u"></i>{fmt.n(clustered)} in {imp.clusters.length} uncovered clusters → proposals</span
-									>
+									<span>
+										<i class="u"></i>{fmt.n(clustered)} in {imp.clusters.length} uncovered clusters → proposals
+									</span>
 									<span><i class="t"></i>{fmt.n(imp.long_tail)} long tail (no cluster ≥ 50)</span>
 								</div>
 							</div>
@@ -388,26 +392,27 @@
 											<th>Usable</th>
 											<th
 												title="Scales Valuable: a whole number from 0 to {MAX_WEIGHT}; {DEFAULT_WEIGHT} is the default"
-												>Weight</th
 											>
+												Weight
+											</th>
 										</tr>
 									</thead>
 									<tbody>
 										{#each imp.volumes as v (v.activity)}
 											<tr>
-												<td
-													><a href="{base}/journey/{encodeURIComponent(v.activity)}">{v.label}</a>
-													<div class="cell-sub mono">{v.activity}</div></td
-												>
+												<td>
+													<a href="{base}/journey/{encodeURIComponent(v.activity)}">{v.label}</a>
+													<div class="cell-sub mono">{v.activity}</div>
+												</td>
 												<td>{STAGE_LABEL[v.stage]}</td>
 												<td class="r">{fmt.n(v.tickets)}</td>
 												<td class="r">{fmt.pct(v.tickets / imp.rows)}</td>
 												<td class="dots" title="{v.valuable} of 5">{dots(v.valuable)}</td>
-												<td
-													><span class="chip {v.feasible >= 1 ? 'ok' : v.feasible >= 0.5 ? 'warn' : 'err'}"
-														>{fmt.pct(v.feasible, 0)}</span
-													></td
-												>
+												<td>
+													<span class="chip {v.feasible >= 1 ? 'ok' : v.feasible >= 0.5 ? 'warn' : 'err'}">
+														{fmt.pct(v.feasible, 0)}
+													</span>
+												</td>
 												<td>{v.usable == null ? '—' : fmt.pct(v.usable, 0)}</td>
 												<td class="wt" data-testid="weight-{v.activity}">
 													<div class="row nowrap">
@@ -424,8 +429,10 @@
 															type="button"
 															aria-label="Set weight for {v.label}"
 															{...writeAttrs(session, 'job_designer')}
-															onclick={() => setWeight(v.activity, v.label)}>Set</button
+															onclick={() => setWeight(v.activity, v.label)}
 														>
+															Set
+														</button>
 													</div>
 													{#if weightProblem[v.activity]}<div class="cell-sub err-text" role="alert">
 															{weightProblem[v.activity]}
@@ -445,10 +452,10 @@
 						<ul class="plain j18-sources">
 							{#each s.signals ?? [] as g (g.source)}
 								<li class:off={!g.active}>
-									<span class="split"
-										><b>{g.label}</b>
-										<span class="mono">{g.active ? `${fmt.n(g.count)} ${g.unit}` : 'off'}</span></span
-									>
+									<span class="split">
+										<b>{g.label}</b>
+										<span class="mono">{g.active ? `${fmt.n(g.count)} ${g.unit}` : 'off'}</span>
+									</span>
 									<span class="cell-sub">{g.window}</span>
 								</li>
 							{/each}
@@ -465,16 +472,16 @@
 								{#each s.usage.lines as l (l.what)}
 									<li>
 										<span class="split"><span>{l.what}</span><b class="mono">{fmt.k(l.tokens)} tok</b></span>
-										<span class="cell-sub"
-											>{l.detail} · {FUNDING_LABEL[l.funding]} · activity {l.activity}</span
-										>
+										<span class="cell-sub">
+											{l.detail} · {FUNDING_LABEL[l.funding]} · activity {l.activity}
+										</span>
 									</li>
 								{/each}
 								<li class="j18-total">
 									<span class="split"><b>Total</b><b class="mono">{fmt.k(s.usage.tokens)} tok</b></span>
-									<span class="cell-sub"
-										>part of your usage on <a href="/admin/usage">Usage</a> — not a separate bill</span
-									>
+									<span class="cell-sub">
+										part of your usage on <a href="/admin/usage">Usage</a> — not a separate bill
+									</span>
 								</li>
 							</ul>
 						</Card>
@@ -490,8 +497,10 @@
 								class="btn"
 								type="button"
 								{...writeAttrs(session, 'job_designer')}
-								onclick={() => shadow(false)}>Stop shadow mode</button
+								onclick={() => shadow(false)}
 							>
+								Stop shadow mode
+							</button>
 						{:else}
 							<div class="row">
 								<select class="input env" bind:value={shadowEnv} aria-label="Environment" disabled={!can}>
@@ -502,8 +511,10 @@
 									class="btn"
 									type="button"
 									{...writeAttrs(session, 'job_designer')}
-									onclick={() => shadow(true)}>Start shadow mode</button
+									onclick={() => shadow(true)}
 								>
+									Start shadow mode
+								</button>
 							</div>
 						{/if}
 					</Card>
@@ -518,14 +529,17 @@
 								type="button"
 								{...writeAttrs(session, 'job_designer')}
 								disabled={!can}
-								onclick={() => (runOpen = true)}>Start a run</button
+								onclick={() => (runOpen = true)}
 							>
+								Start a run
+							</button>
 						{/snippet}
 						<ul class="plain">
 							{#each s.runs as r (r.id)}
 								<li>
-									<a class="mono" href={tenantRunHref(app.job, r.id)} data-testid="run-link"><b>#{r.id}</b></a
-									>
+									<a class="mono" href={tenantRunHref(app.job, r.id)} data-testid="run-link">
+										<b>#{r.id}</b>
+									</a>
 									<span class="chip {r.status === 'packaged' ? 'ok' : 'accent'}">{r.status}</span>
 									{STEP_LABEL[r.current_step]} · {r.output.join(', ')}
 									<div class="cell-sub">{costLine(r)}</div>
@@ -574,8 +588,10 @@
 						class="btn primary"
 						type="button"
 						{...writeAttrs(session, 'job_designer')}
-						onclick={() => startRun(s)}>Start run</button
+						onclick={() => startRun(s)}
 					>
+						Start run
+					</button>
 					<button class="btn" type="button" onclick={() => (runOpen = false)}>Cancel</button>
 				</div>
 			</div>
@@ -586,9 +602,9 @@
 {#snippet deleteBtn(i: DiscoveryImport)}
 	{#if confirmDelete === i.id}
 		<span class="row nowrap" data-testid="confirm-delete-import">
-			<button class="btn sm danger" type="button" onclick={() => removeImport(i)}
-				>{i.status === 'classifying' ? 'Cancel classification and delete' : 'Delete import'}</button
-			>
+			<button class="btn sm danger" type="button" onclick={() => removeImport(i)}>
+				{i.status === 'classifying' ? 'Cancel classification and delete' : 'Delete import'}
+			</button>
 			<button class="btn sm" type="button" onclick={() => (confirmDelete = '')}>Keep</button>
 		</span>
 	{:else}
@@ -597,8 +613,10 @@
 			type="button"
 			aria-label="Delete import {i.file}"
 			{...writeAttrs(session, 'job_designer')}
-			onclick={() => (confirmDelete = i.id)}>Delete import</button
+			onclick={() => (confirmDelete = i.id)}
 		>
+			Delete import
+		</button>
 	{/if}
 {/snippet}
 

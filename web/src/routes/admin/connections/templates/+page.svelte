@@ -384,8 +384,10 @@
 			class="btn primary"
 			type="button"
 			{...writeAttrs(session, 'integrations_manager')}
-			onclick={openCreate}>New template</button
+			onclick={openCreate}
 		>
+			New template
+		</button>
 	{/snippet}
 </PageHead>
 
@@ -403,9 +405,9 @@
 				No tenant templates yet. Every platform template is available on the
 				<a href="/admin/connections/systems">Systems</a> page; build one here only for a system none of them covers.
 			</p>
-			<button class="btn" type="button" {...writeAttrs(session, 'integrations_manager')} onclick={openCreate}
-				>New template</button
-			>
+			<button class="btn" type="button" {...writeAttrs(session, 'integrations_manager')} onclick={openCreate}>
+				New template
+			</button>
 		</div>
 	{/snippet}
 	{#snippet children(page)}
@@ -446,8 +448,8 @@
 								>
 									<span class="mono t12-ver-id">@{v.version}</span>
 									<Status word={v.status} />
-									<span class="t12-ver-sub"
-										>{#if v.status === 'draft'}{v.validation
+									<span class="t12-ver-sub">
+										{#if v.status === 'draft'}{v.validation
 												? v.validation.errors.length
 													? `${v.validation.errors.length} validation errors`
 													: v.contract?.status === 'green'
@@ -455,13 +457,13 @@
 														: 'valid — needs contract tests'
 												: 'not validated'}{:else}{v.ops.length} ops · {v.contract
 												? `${v.contract.passed}/${v.contract.total} tests`
-												: 'untested'}{/if}</span
-									>
-									<span class="t12-ver-sub"
-										>{pinned.length
+												: 'untested'}{/if}
+									</span>
+									<span class="t12-ver-sub">
+										{pinned.length
 											? `pinned by ${pinned.length} system${pinned.length === 1 ? '' : 's'}`
-											: 'no system pins it'}</span
-									>
+											: 'no system pins it'}
+									</span>
 								</button>
 							</li>
 						{/each}
@@ -474,29 +476,29 @@
 								<ul class="t12-pins">
 									{#each f.pins as p (p.instance_id)}
 										<li>
-											<a class="mono" href="/admin/connections/systems/{encodeURIComponent(p.instance_id)}"
-												>{p.instance_id}</a
-											>
+											<a class="mono" href="/admin/connections/systems/{encodeURIComponent(p.instance_id)}">
+												{p.instance_id}
+											</a>
 											<span class="muted">· {p.env} · pins @{p.version}</span>
 											<Status word={p.status} />
 										</li>
 									{/each}
 								</ul>
-								<span class="cell-sub"
-									>{f.routes.length} job route{f.routes.length === 1 ? '' : 's'} send operations here
+								<span class="cell-sub">
+									{f.routes.length} job route{f.routes.length === 1 ? '' : 's'} send operations here
 									{#each [...new Map(f.routes.map((r) => [r.job, r.job_label]))] as [job, label] (job)}
 										· <a href="/admin/jobs/{job}/operations">{label}</a>
-									{/each}</span
-								>
+									{/each}
+								</span>
 							</div>
 						{:else}
-							<span class="muted"
-								>{f.versions.some((v) => v.status === 'active')
+							<span class="muted">
+								{f.versions.some((v) => v.status === 'active')
 									? 'Active but no system pins it yet — connect it on Systems.'
 									: f.versions.every((v) => v.status === 'retired')
 										? 'Retired: no system pins it and none may.'
-										: 'Not in use yet.'}</span
-							>
+										: 'Not in use yet.'}
+							</span>
 						{/if}
 						{#if f.upgrade}
 							<div class="t12-up {f.upgrade.state}" data-testid="t12-upgrade-{f.key}">
@@ -535,45 +537,57 @@
 								type="button"
 								{...writeAttrs(session, 'integrations_manager')}
 								disabled={!writable || busy !== '' || !dirty}
-								onclick={saveDraft}>Save draft</button
+								onclick={saveDraft}
 							>
+								Save draft
+							</button>
 							<button
 								class="btn"
 								type="button"
 								{...writeAttrs(session, 'integrations_manager')}
 								disabled={!writable || busy !== ''}
-								onclick={validate}>{busy === 'validate' ? 'Validating…' : 'Validate'}</button
+								onclick={validate}
 							>
+								{busy === 'validate' ? 'Validating…' : 'Validate'}
+							</button>
 							<button
 								class="btn"
 								type="button"
 								{...writeAttrs(session, 'integrations_manager')}
 								disabled={!writable || busy !== '' || dirty}
-								onclick={contract}>Run contract tests</button
+								onclick={contract}
 							>
+								Run contract tests
+							</button>
 							<button
 								class="btn primary"
 								type="button"
 								{...writeAttrs(session, 'integrations_manager')}
 								disabled={!writable || busy !== '' || dirty}
-								onclick={() => setStatus('active')}>Activate</button
+								onclick={() => setStatus('active')}
 							>
+								Activate
+							</button>
 						{:else}
 							<button
 								class="btn"
 								type="button"
 								{...writeAttrs(session, 'integrations_manager')}
 								disabled={!writable || busy !== ''}
-								onclick={newVersion}>New draft version</button
+								onclick={newVersion}
 							>
+								New draft version
+							</button>
 							{#if draft?.status === 'active'}
 								<button
 									class="btn danger"
 									type="button"
 									{...writeAttrs(session, 'integrations_manager')}
 									disabled={!writable || busy !== ''}
-									onclick={() => setStatus('retired')}>Retire</button
+									onclick={() => setStatus('retired')}
 								>
+									Retire
+								</button>
 							{/if}
 						{/if}
 					</span>
@@ -597,29 +611,33 @@
 								<dt>Secrets</dt>
 								<dd>
 									{#each draft.credential_schema.filter((c) => c.secret) as c (c.name)}<span
-											class="mono t12-tag">{c.name}</span
-										>{:else}<span class="muted">none</span>{/each}
+											class="mono t12-tag"
+										>
+											{c.name}
+										</span>{:else}<span class="muted">none</span>{/each}
 									<span class="cell-sub">write-only, encrypted per tenant; never shown again</span>
 								</dd>
 								<dt>Config</dt>
 								<dd>
 									{#each draft.credential_schema.filter((c) => !c.secret) as c (c.name)}<span
-											class="mono t12-tag">{c.name}</span
-										>{:else}<span class="muted">none</span>{/each}
+											class="mono t12-tag"
+										>
+											{c.name}
+										</span>{:else}<span class="muted">none</span>{/each}
 									<span class="cell-sub">stored on the system, visible to admins</span>
 								</dd>
 								<dt>Env IDs</dt>
 								<dd>
-									{#each ids as id (id)}<span class="mono t12-tag">{id}</span>{:else}<span class="muted"
-											>none</span
-										>{/each}
+									{#each ids as id (id)}<span class="mono t12-tag">{id}</span>{:else}<span class="muted">
+											none
+										</span>{/each}
 									<span class="cell-sub">per system — e.g. a team or queue name</span>
 								</dd>
 								<dt>Base URL</dt>
 								<dd>
-									<span class="cell-sub"
-										>set per system; the only host a request may reach (SSRF-guarded)</span
-									>
+									<span class="cell-sub">
+										set per system; the only host a request may reach (SSRF-guarded)
+									</span>
 								</dd>
 							</dl>
 						</div>
@@ -647,13 +665,16 @@
 										type="button"
 										{...writeAttrs(session, 'integrations_manager')}
 										disabled={!writable || busy !== '' || importing || dirty || !impSystem}
-										onclick={importTools}>{importing ? 'Importing…' : 'Import tools from MCP'}</button
+										onclick={importTools}
 									>
+										{importing ? 'Importing…' : 'Import tools from MCP'}
+									</button>
 								</div>
 							{:else}
 								<p class="muted">
-									No system pins this version yet — add one on <a href="/admin/connections/systems">Systems</a
-									>
+									No system pins this version yet — add one on <a href="/admin/connections/systems">
+										Systems
+									</a>
 									(its base URL is the MCP server).
 								</p>
 							{/if}
@@ -669,10 +690,10 @@
 													<Chip text={o.action} variant={o.action === 'created' ? 'ok' : 'warn'} />
 													<span class="mono">{o.op}</span>
 													{#if o.own}<Chip text="your op" variant="accent" />{/if}
-													<span class="muted"
-														>← tool <span class="mono">{o.tool}</span> · {o.side_effect} · {o.inputs.length}
-														input{o.inputs.length === 1 ? '' : 's'}</span
-													>
+													<span class="muted">
+														← tool <span class="mono">{o.tool}</span> · {o.side_effect} · {o.inputs.length}
+														input{o.inputs.length === 1 ? '' : 's'}
+													</span>
 												</li>
 											{/each}
 										</ul>
@@ -736,9 +757,9 @@
 						<p class="muted t12-hint">
 							Each maps one canonical operation onto a request and a response mapping. Typed placeholders only
 							—
-							<span class="mono"
-								>{'{{canonical.*}} {{env.*}} {{config.*}} {{secret.*}} {{step.idempotency_key}}'}</span
-							>; a closed transform list; no code.
+							<span class="mono">
+								{'{{canonical.*}} {{env.*}} {{config.*}} {{secret.*}} {{step.idempotency_key}}'}
+							</span>; a closed transform list; no code.
 						</p>
 						{#if diff?.removed.length}
 							<p class="s-err t12-hint">
@@ -773,15 +794,15 @@
 										<span class="t12-op-meta">
 											<span class="muted">{idempotencyLabel(o.idempotency)}</span>
 											{#if routed.get(k)?.length}
-												<span class="cell-sub"
-													>routed: {routed
+												<span class="cell-sub">
+													routed: {routed
 														.get(k)!
 														.map(
 															(r) =>
 																`${r.job_label} · ${r.env}${pinVer(r.instance_id) === cur.version ? '' : ` (via @${pinVer(r.instance_id)})`}`,
 														)
-														.join(', ')}</span
-												>
+														.join(', ')}
+												</span>
 											{/if}
 											{#if opErrs.length + pre.length}
 												<Chip
@@ -831,14 +852,14 @@
 											</div>
 										</div>
 										<div class="t12-own-def" data-testid="t12-own-def-{i}">
-											<label class="check"
-												><input
+											<label class="check">
+												<input
 													type="checkbox"
 													checked={!!o.def}
 													onchange={(e) => setOwnDef(o, e.currentTarget.checked)}
 													disabled={!editable}
-												/> Own definition (an operation the platform catalogue does not define)</label
-											>
+												/> Own definition (an operation the platform catalogue does not define)
+											</label>
 											{#if o.def}
 												<div class="form-grid">
 													<div class="field">
@@ -896,9 +917,9 @@
 											/>
 										</div>
 										<div class="field">
-											<label for="op-{i}-r"
-												>Request template{def ? ` — inputs: ${def.input_fields.join(', ')}` : ''}</label
-											>
+											<label for="op-{i}-r">
+												Request template{def ? ` — inputs: ${def.input_fields.join(', ')}` : ''}
+											</label>
 											<textarea
 												id="op-{i}-r"
 												class="input mono"
@@ -908,22 +929,22 @@
 										</div>
 										<div class="tbl-wrap">
 											<table class="tbl dense">
-												<thead
-													><tr
-														><th>Response JSONPath</th><th>Canonical field</th><th>Transform</th><th></th></tr
-													></thead
-												>
+												<thead>
+													<tr>
+														<th>Response JSONPath</th><th>Canonical field</th><th>Transform</th><th></th>
+													</tr>
+												</thead>
 												<tbody>
 													{#each o.field_map as f, j (j)}
 														<tr>
-															<td
-																><input
+															<td>
+																<input
 																	class="input mono"
 																	aria-label="Path {j + 1} of {k}"
 																	bind:value={f.path}
 																	disabled={!editable}
-																/></td
-															>
+																/>
+															</td>
 															<td>
 																<select
 																	class="input mono"
@@ -931,11 +952,12 @@
 																	bind:value={f.field}
 																	disabled={!editable}
 																>
-																	{#if !def?.output_fields.includes(f.field)}<option value={f.field}
-																			>{f.field || '—'} (unknown)</option
-																		>{/if}
-																	{#each def?.output_fields ?? [] as of (of)}<option value={of}>{of}</option
-																		>{/each}
+																	{#if !def?.output_fields.includes(f.field)}<option value={f.field}>
+																			{f.field || '—'} (unknown)
+																		</option>{/if}
+																	{#each def?.output_fields ?? [] as of (of)}<option value={of}>
+																			{of}
+																		</option>{/each}
 																</select>
 															</td>
 															<td>
@@ -945,21 +967,25 @@
 																	bind:value={f.transform}
 																	disabled={!editable}
 																>
-																	{#if !transformAllowed(f.transform)}<option value={f.transform}
-																			>{f.transform} (not allowed)</option
-																		>{:else if !(TRANSFORMS as readonly string[]).includes(f.transform)}<option
-																			value={f.transform}>{f.transform}</option
-																		>{/if}
+																	{#if !transformAllowed(f.transform)}<option value={f.transform}>
+																			{f.transform} (not allowed)
+																		</option>{:else if !(TRANSFORMS as readonly string[]).includes(f.transform)}<option
+																			value={f.transform}
+																		>
+																			{f.transform}
+																		</option>{/if}
 																	{#each TRANSFORMS as tr (tr)}<option value={tr}>{tr}</option>{/each}
 																</select>
 															</td>
-															<td
-																>{#if editable}<button
+															<td>
+																{#if editable}<button
 																		class="btn sm"
 																		type="button"
-																		onclick={() => o.field_map.splice(j, 1)}>Remove</button
-																	>{/if}</td
-															>
+																		onclick={() => o.field_map.splice(j, 1)}
+																	>
+																		Remove
+																	</button>{/if}
+															</td>
 														</tr>
 													{/each}
 												</tbody>
@@ -975,11 +1001,13 @@
 															path: '$.',
 															field: def?.output_fields[0] ?? '',
 															transform: 'none',
-														})}>Add mapping</button
+														})}
 												>
-												<button class="btn sm danger" type="button" onclick={() => draft?.ops.splice(i, 1)}
-													>Remove operation</button
-												>
+													Add mapping
+												</button>
+												<button class="btn sm danger" type="button" onclick={() => draft?.ops.splice(i, 1)}>
+													Remove operation
+												</button>
 											</span>
 										{/if}
 										{#if opErrs.length}
@@ -997,11 +1025,12 @@
 								</details>
 							{/each}
 						</div>
-						{#if editable}<button class="btn t12-add" type="button" onclick={addOp}>Add operation</button
-							>{/if}
-						<datalist id="opdefs"
-							>{#each defs as d (opKey(d))}<option value={opKey(d)}></option>{/each}</datalist
-						>
+						{#if editable}<button class="btn t12-add" type="button" onclick={addOp}>
+								Add operation
+							</button>{/if}
+						<datalist id="opdefs">
+							{#each defs as d (opKey(d))}<option value={opKey(d)}></option>{/each}
+						</datalist>
 					</div>
 
 					<div class="field" data-testid="t12-task-tools">
@@ -1013,18 +1042,18 @@
 							placeholder="projects.execute, tasks.answer"
 							disabled={!editable}
 						/>
-						<span class="cell-sub"
-							>Operations on this template that run as durable MCP tasks (up to 16); each must be one it
-							implements.</span
-						>
+						<span class="cell-sub">
+							Operations on this template that run as durable MCP tasks (up to 16); each must be one it
+							implements.
+						</span>
 					</div>
 
 					<details class="t12-op t12-cred" open={editable}>
 						<summary>
-							<span class="t12-op-key"
-								><span class="label">Credential schema</span>
-								<span class="muted">{draft.credential_schema.length} field(s) a system fills in</span></span
-							>
+							<span class="t12-op-key">
+								<span class="label">Credential schema</span>
+								<span class="muted">{draft.credential_schema.length} field(s) a system fills in</span>
+							</span>
 						</summary>
 						<div class="t12-op-body">
 							<div class="tbl-wrap">
@@ -1033,34 +1062,36 @@
 									<tbody>
 										{#each draft.credential_schema as f, i (i)}
 											<tr>
-												<td
-													><input
+												<td>
+													<input
 														class="input mono"
 														aria-label="Field name {i + 1}"
 														bind:value={f.name}
 														disabled={!editable}
-													/></td
-												>
-												<td
-													><input
+													/>
+												</td>
+												<td>
+													<input
 														class="input"
 														aria-label="Field label {i + 1}"
 														bind:value={f.label}
 														disabled={!editable}
-													/></td
-												>
-												<td
-													><label class="row"
-														><input type="checkbox" bind:checked={f.secret} disabled={!editable} /> x-secret</label
-													></td
-												>
-												<td
-													>{#if editable}<button
+													/>
+												</td>
+												<td>
+													<label class="row">
+														<input type="checkbox" bind:checked={f.secret} disabled={!editable} /> x-secret
+													</label>
+												</td>
+												<td>
+													{#if editable}<button
 															class="btn sm"
 															type="button"
-															onclick={() => draft?.credential_schema.splice(i, 1)}>Remove</button
-														>{/if}</td
-												>
+															onclick={() => draft?.credential_schema.splice(i, 1)}
+														>
+															Remove
+														</button>{/if}
+												</td>
 											</tr>
 										{/each}
 									</tbody>
@@ -1070,8 +1101,9 @@
 									class="btn sm"
 									type="button"
 									onclick={() => draft?.credential_schema.push({ name: '', label: '', secret: true })}
-									>Add field</button
-								>{/if}
+								>
+									Add field
+								</button>{/if}
 						</div>
 					</details>
 				</div>
@@ -1136,9 +1168,9 @@
 					<option value="oauth2_client_credentials">oauth2_client_credentials</option>
 					<option value="mtls">mtls</option>
 					{#if nf.transport === 'mcp'}<option value="none">none — the platform MCP server</option>{/if}
-					{#if nf.transport === 'mcp'}<option value="licence_bearer"
-							>licence_bearer — a platform licence, minted per call</option
-						>{/if}
+					{#if nf.transport === 'mcp'}<option value="licence_bearer">
+							licence_bearer — a platform licence, minted per call
+						</option>{/if}
 				</select>
 			</div>
 		</div>
@@ -1155,9 +1187,9 @@
 		</p>
 		{#if createErr}<p class="s-err" role="alert">{createErr}</p>{/if}
 		<div class="actions">
-			<button class="btn primary" type="submit" {...writeAttrs(session, 'integrations_manager')}
-				>Create draft</button
-			>
+			<button class="btn primary" type="submit" {...writeAttrs(session, 'integrations_manager')}>
+				Create draft
+			</button>
 			<button class="btn" type="button" onclick={() => (creating = false)}>Cancel</button>
 		</div>
 	</form>

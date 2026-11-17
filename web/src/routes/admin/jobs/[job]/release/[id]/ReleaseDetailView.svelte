@@ -204,12 +204,13 @@
 				disabled={busy || (!rb && wa.disabled)}
 				title={rb ? 'See the impact first, then confirm' : wa.title}
 				onclick={() => (rb ? previewRollback(id) : apply(id, false))}
-				>{rb ? 'Roll back to this…' : 'Apply'}</button
 			>
+				{rb ? 'Roll back to this…' : 'Apply'}
+			</button>
 		{/if}
-		<button class="btn" type="button" onclick={toggleCompare} aria-pressed={showCompare}
-			>{showCompare ? 'Hide comparison' : 'Compare with current'}</button
-		>
+		<button class="btn" type="button" onclick={toggleCompare} aria-pressed={showCompare}>
+			{showCompare ? 'Hide comparison' : 'Compare with current'}
+		</button>
 	{/snippet}
 </PageHead>
 
@@ -277,15 +278,15 @@
 						<span class="j15-dot" aria-hidden="true">{s.status === 'done' ? '✓' : i + 1}</span>
 						<div>
 							<b>{s.label}</b>
-							<span class="j15-step-st"
-								>{s.status === 'done'
+							<span class="j15-step-st">
+								{s.status === 'done'
 									? 'done'
 									: s.status === 'current'
 										? 'now'
 										: s.status === 'blocked'
 											? 'blocked'
-											: 'not yet'}</span
-							>
+											: 'not yet'}
+							</span>
 							<p class="muted">{s.detail}</p>
 						</div>
 					</li>
@@ -323,9 +324,9 @@
 							<ul class="j15-impact" data-testid="j15-impact">
 								{#each impact as l (l.section + l.item)}
 									<li class="j15-{l.tone}">
-										<span class="j15-sign" aria-label={l.tone === 'add' ? 'added' : 'removed'}
-											>{l.tone === 'add' ? '+' : '−'}</span
-										>{l.text}
+										<span class="j15-sign" aria-label={l.tone === 'add' ? 'added' : 'removed'}>
+											{l.tone === 'add' ? '+' : '−'}
+										</span>{l.text}
 									</li>
 								{/each}
 							</ul>
@@ -460,8 +461,8 @@
 								<ul class="j15-gaps">
 									{#each blocking as g (g.key)}<li>
 											<b>{g.title}</b>{#if g.cause}<span class="muted small">
-													· needed by {g.cause}</span
-												>{/if}
+													· needed by {g.cause}
+												</span>{/if}
 											<div class="muted small">{g.why}</div>
 											<a class="small" href={g.href}>{g.fix_label}</a>
 										</li>{/each}
@@ -509,15 +510,15 @@
 								<div><span class="label">Conversations</span><b>{win.cases}</b></div>
 								<div>
 									<span class="label">Contained</span><b>{pct(c)}</b>
-									{#if ptDelta(containment(prevWin), c)}<span class="small muted"
-											>{ptDelta(containment(prevWin), c)}</span
-										>{/if}
+									{#if ptDelta(containment(prevWin), c)}<span class="small muted">
+											{ptDelta(containment(prevWin), c)}
+										</span>{/if}
 								</div>
 								<div>
 									<span class="label">Escalated</span><b>{pct(e)}</b>
-									{#if ptDelta(escalation(prevWin), e)}<span class="small muted"
-											>{ptDelta(escalation(prevWin), e)}</span
-										>{/if}
+									{#if ptDelta(escalation(prevWin), e)}<span class="small muted">
+											{ptDelta(escalation(prevWin), e)}
+										</span>{/if}
 								</div>
 								<div>
 									<span class="label">CSAT</span><b>{win.csat ?? '—'}</b>
@@ -557,8 +558,10 @@
 										type="button"
 										disabled={busy}
 										title="See the impact first, then confirm"
-										onclick={() => previewRollback(id)}>Roll back to {d.id}…</button
+										onclick={() => previewRollback(id)}
 									>
+										Roll back to {d.id}…
+									</button>
 								{:else if prev}
 									<p class="small">
 										If this release misbehaves, roll back to the one before it: its whole design comes back
@@ -570,8 +573,10 @@
 										type="button"
 										disabled={busy}
 										title="See the impact first, then confirm"
-										onclick={() => previewRollback(prev.id)}>Roll back to {prev.id}…</button
+										onclick={() => previewRollback(prev.id)}
 									>
+										Roll back to {prev.id}…
+									</button>
 								{:else}
 									<p class="muted small">No earlier release to roll back to.</p>
 								{/if}
@@ -580,9 +585,9 @@
 									<ul class="j15-items small" data-testid="j15-rollbacks">
 										{#each d.rollbacks as x (x.id)}
 											<li data-rollback={x.id}>
-												<b
-													>{x.direction === 'rollback' ? 'Rolled back' : 'Re-applied'} on {when(x.at)} by {x.by_name}</b
-												>
+												<b>
+													{x.direction === 'rollback' ? 'Rolled back' : 'Re-applied'} on {when(x.at)} by {x.by_name}
+												</b>
 												· <span class="mono">{x.from ?? '—'}</span> → <span class="mono">{x.to}</span>
 												{#if x.undone.length}
 													<div>
@@ -706,16 +711,18 @@
 												{#each changed as s (s.key)}
 													<tr>
 														<td>{s.label}</td>
-														<td
-															>{#each s.added as x}<div class="add mono">+ {x}</div>{:else}<span class="muted"
-																	>—</span
-																>{/each}</td
-														>
-														<td
-															>{#each s.removed as r}<div class="rm mono">− {r}</div>{:else}<span
-																	class="muted">—</span
-																>{/each}</td
-														>
+														<td>
+															{#each s.added as x}<div class="add mono">+ {x}</div>{:else}<span class="muted">
+																	—
+																</span>{/each}
+														</td>
+														<td>
+															{#each s.removed as r}<div class="rm mono">− {r}</div>{:else}<span
+																	class="muted"
+																>
+																	—
+																</span>{/each}
+														</td>
 													</tr>
 												{/each}
 											</tbody>
@@ -771,14 +778,13 @@
 						<dd>{d.selection.industry}</dd>
 						<dt>Departments</dt>
 						<dd>{d.selection.departments.join(', ') || 'none'}</dd>
-						{#each SELECTION_VALUE_KEYS.map((k) => [k, selectionValues(d.selection, k)] as const) as [k, v] (k)}<dt
-							>
+						{#each SELECTION_VALUE_KEYS.map((k) => [k, selectionValues(d.selection, k)] as const) as [k, v] (k)}<dt>
 								{SEL_KEY[k] ?? k}
 							</dt>
 							<dd>
 								{v.join(', ') || 'none'}{#if k === 'region'}<span class="muted small">
-										· placeholder, selects nothing</span
-									>{/if}
+										· placeholder, selects nothing
+									</span>{/if}
 							</dd>{/each}
 					</dl>
 					<h3 class="j15-h">Profile values</h3>
@@ -803,11 +809,11 @@
 							<thead><tr><th>Scope</th><th>Kind</th><th>Key</th><th class="r">Rev</th></tr></thead>
 							<tbody>
 								{#each d.provenance.overlay_revs as r (r.id)}
-									<tr title={r.id}
-										><td>{r.scope}</td><td>{r.kind}</td><td class="mono small">{r.key}</td><td class="r"
-											>{r.rev}</td
-										></tr
-									>
+									<tr title={r.id}>
+										<td>{r.scope}</td><td>{r.kind}</td><td class="mono small">{r.key}</td><td class="r">
+											{r.rev}
+										</td>
+									</tr>
 								{/each}
 							</tbody>
 						</table>

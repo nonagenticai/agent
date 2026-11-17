@@ -7,33 +7,33 @@
 <ol class="gf" aria-label="Gate 2: how a licence reaches the edge">
 	<li class="gf-node">
 		<span class="gf-k">Licences service</span>
-		<span class="gf-d"
-			>Holds the tenant's <code>agent</code> licence. Introspect answers active · inactive · revoked · expired.</span
-		>
+		<span class="gf-d">
+			Holds the tenant's <code>agent</code> licence. Introspect answers active · inactive · revoked · expired.
+		</span>
 	</li>
 	<li class="gf-arrow" aria-hidden="true">→</li>
 	<li class="gf-node">
 		<span class="gf-k">agent-api</span>
-		<span class="gf-d"
-			>Opens the sealed token by its kid, introspects (cache {cacheS} s), rewrites the row every ≤{refreshS} s —
-			at once on <code>licence:changed</code>.</span
-		>
+		<span class="gf-d">
+			Opens the sealed token by its kid, introspects (cache {cacheS} s), rewrites the row every ≤{refreshS} s —
+			at once on <code>licence:changed</code>.
+		</span>
 	</li>
 	<li class="gf-wall" aria-hidden="true"><span>keys + tokens stop here</span></li>
 	<li class="gf-node">
 		<span class="gf-k">Verdict row</span>
-		<span class="gf-d"
-			><code>tenant_licence_verdict</code>: status · checked_at · reason. No token, no key.</span
-		>
+		<span class="gf-d">
+			<code>tenant_licence_verdict</code>: status · checked_at · reason. No token, no key.
+		</span>
 	</li>
 	<li class="gf-arrow" aria-hidden="true">→</li>
 	<li class="gf-node gf-edge">
 		<span class="gf-k">Edge (inbox drain)</span>
-		<span class="gf-d"
-			><span class="gf-ok">Fresh + active → serve.</span>
+		<span class="gf-d">
+			<span class="gf-ok">Fresh + active → serve.</span>
 			<span class="gf-no">Missing, not active, or older than {maxAgeS / 60} min → refuse</span> with one neutral
-			text; audited once per tenant per hour.</span
-		>
+			text; audited once per tenant per hour.
+		</span>
 	</li>
 </ol>
 

@@ -45,20 +45,20 @@
 					{#each MODES as [v, label] (v)}<option value={v}>{label}</option>{/each}
 				</select>
 				{#if r.mode !== 'model'}
-					<label class="field inline"
-						><span class="label small">State key</span>
+					<label class="field inline">
+						<span class="label small">State key</span>
 						<input
 							class="input mono"
 							aria-label="State key for {r.field}"
 							placeholder="customer_id"
 							{disabled}
 							bind:value={form.inputs[i]!.key}
-						/></label
-					>
+						/>
+					</label>
 				{/if}
 				{#if r.mode === 'tool'}
-					<label class="field inline"
-						><span class="label small">Tool</span>
+					<label class="field inline">
+						<span class="label small">Tool</span>
 						<select
 							class="input"
 							aria-label="Tool that provides {r.field}"
@@ -68,10 +68,10 @@
 						>
 							<option value="" disabled>Choose a tool…</option>
 							{#each tools as t (t.key)}<option value={t.key}>{t.key}</option>{/each}
-						</select></label
-					>
-					<label class="field inline"
-						><span class="label small">Output field</span>
+						</select>
+					</label>
+					<label class="field inline">
+						<span class="label small">Output field</span>
 						<select
 							class="input"
 							aria-label="Output field that provides {r.field}"
@@ -80,25 +80,24 @@
 						>
 							<option value="" disabled>Choose a field…</option>
 							{#each outputsOf(r.tool) as o (o)}<option value={o}>{o}</option>{/each}
-						</select></label
-					>
+						</select>
+					</label>
 				{:else if r.mode === 'ask'}
-					<label class="field inline wide"
-						><span class="label small">What the agent says</span>
+					<label class="field inline wide">
+						<span class="label small">What the agent says</span>
 						<input
 							class="input"
 							aria-label="Prompt for {r.field}"
 							placeholder="Please enter the code we just sent you"
 							{disabled}
 							bind:value={form.inputs[i]!.prompt}
-						/></label
-					>
-					<label class="opt inline"
-						><input type="checkbox" {disabled} bind:checked={form.inputs[i]!.secret} /> Secret (hidden from the
-						transcript)</label
-					>
-					<label class="field inline"
-						><span class="label small">Retries</span>
+						/>
+					</label>
+					<label class="opt inline">
+						<input type="checkbox" {disabled} bind:checked={form.inputs[i]!.secret} /> Secret (hidden from the transcript)
+					</label>
+					<label class="field inline">
+						<span class="label small">Retries</span>
 						<input
 							class="input narrow"
 							type="number"
@@ -107,8 +106,8 @@
 							aria-label="Retries for {r.field}"
 							{disabled}
 							bind:value={form.inputs[i]!.retries}
-						/></label
-					>
+						/>
+					</label>
 				{/if}
 			</div>
 		{/each}
@@ -126,27 +125,27 @@
 		{#if form.outputs.length === 0}<p class="muted small">This tool returns no fields.</p>{/if}
 		{#each form.outputs as r, i (r.field)}
 			<div class="decl-row" data-testid="{idPrefix}-output-{r.field}">
-				<label class="opt inline"
-					><input type="checkbox" {disabled} bind:checked={form.outputs[i]!.write} />
-					Write <span class="mono">{r.field}</span> to state</label
-				>
+				<label class="opt inline">
+					<input type="checkbox" {disabled} bind:checked={form.outputs[i]!.write} />
+					Write <span class="mono">{r.field}</span> to state
+				</label>
 				{#if r.write}
-					<label class="field inline"
-						><span class="label small">State key</span>
+					<label class="field inline">
+						<span class="label small">State key</span>
 						<input
 							class="input mono"
 							aria-label="State key written from {r.field}"
 							placeholder="auth_token"
 							{disabled}
 							bind:value={form.outputs[i]!.key}
-						/></label
-					>
+						/>
+					</label>
 					<select class="input" aria-label="Kind of {r.field}" {disabled} bind:value={form.outputs[i]!.kind}>
 						<option value="value">Value</option>
 						<option value="secret">Secret (sealed, never shown to the model)</option>
 					</select>
-					<label class="field inline"
-						><span class="label small">Expires after (seconds)</span>
+					<label class="field inline">
+						<span class="label small">Expires after (seconds)</span>
 						<input
 							class="input narrow"
 							inputmode="numeric"
@@ -154,12 +153,12 @@
 							placeholder="never"
 							{disabled}
 							bind:value={form.outputs[i]!.ttl}
-						/></label
-					>
-					<label class="opt inline"
-						><input type="checkbox" {disabled} bind:checked={form.outputs[i]!.persist} /> Keep for this customer's
-						next conversations</label
-					>
+						/>
+					</label>
+					<label class="opt inline">
+						<input type="checkbox" {disabled} bind:checked={form.outputs[i]!.persist} /> Keep for this customer's
+						next conversations
+					</label>
 				{/if}
 			</div>
 		{/each}

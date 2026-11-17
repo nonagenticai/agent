@@ -114,14 +114,18 @@
 			type="button"
 			class="btn primary"
 			{...writeAttrs(session, 'job_designer')}
-			onclick={() => (addingEntity = true)}>Add entity</button
+			onclick={() => (addingEntity = true)}
 		>
+			Add entity
+		</button>
 		<button
 			type="button"
 			class="btn"
 			{...writeAttrs(session, 'job_designer')}
-			onclick={() => startAddRelation()}>Add relation</button
+			onclick={() => startAddRelation()}
 		>
+			Add relation
+		</button>
 	{/snippet}
 </PageHead>
 <DraftBar page="J11" tick={[entities.value, relations.value]} />
@@ -139,15 +143,17 @@
 	/>
 	{#if counts.conflicts}
 		<div class="callout gap" role="status">
-			<strong
-				>{counts.conflicts} refinement{counts.conflicts === 1 ? '' : 's'} lost its base parent (marked
-				<span class="j11-bang">!</span> on the map)</strong
-			>
-			<span
-				>An attribute this tenant added sits on a base row that changed. Resolve it on <a
-					href="/admin/jobs/{app.job}/release#conflicts">Release → Conflicts</a
-				>.</span
-			>
+			<strong>
+				{counts.conflicts} refinement{counts.conflicts === 1 ? '' : 's'} lost its base parent (marked
+				<span class="j11-bang">!</span> on the map)
+			</strong>
+			<span>
+				An attribute this tenant added sits on a base row that changed. Resolve it on <a
+					href="/admin/jobs/{app.job}/release#conflicts"
+				>
+					Release → Conflicts
+				</a>.
+			</span>
 		</div>
 	{/if}
 {/if}

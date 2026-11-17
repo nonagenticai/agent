@@ -80,8 +80,10 @@
 			class="btn primary"
 			type="button"
 			{...writeAttrsOrSuperAdmin(session, 'job_designer')}
-			onclick={() => newRun()}>New run</button
+			onclick={() => newRun()}
 		>
+			New run
+		</button>
 	{/snippet}
 </PageHead>
 
@@ -158,8 +160,9 @@
 							type="button"
 							{...writeAttrsOrSuperAdmin(session, 'job_designer')}
 							onclick={() => newRun(seedFor(i.industry))}
-							>{i.label} <span aria-hidden="true">→ run</span></button
 						>
+							{i.label} <span aria-hidden="true">→ run</span>
+						</button>
 					{/each}
 				</div>
 			</Card>
@@ -175,11 +178,11 @@
 			<span class="chip {r.scope === 'tenant' ? 'cust' : 'tool'}">{r.scope}</span>
 			<span class="chip {STATUS[r.status]}">{r.status}</span>
 			<span class="p18-run-title mono">{r.industry} / {r.department} / {r.job}</span>
-			<span class="p18-run-who muted"
-				>{r.started_by_name ?? r.started_by}{r.tenant_name ? ` · for ${r.tenant_name}` : ''} · updated {when(
+			<span class="p18-run-who muted">
+				{r.started_by_name ?? r.started_by}{r.tenant_name ? ` · for ${r.tenant_name}` : ''} · updated {when(
 					r.updated_at,
-				)}</span
-			>
+				)}
+			</span>
 		</div>
 
 		<div class="p18-run-body">
@@ -190,9 +193,9 @@
 					{/each}
 				</div>
 				<p class="p18-next-line" class:red={r.red > 0}>
-					{#if r.status === 'running' || r.status === 'blocked'}<b
-							>At {stepMeta(r.current_step).code} · {stepMeta(r.current_step).label}.</b
-						>{' '}{/if}{nextAction(r)}
+					{#if r.status === 'running' || r.status === 'blocked'}<b>
+							At {stepMeta(r.current_step).code} · {stepMeta(r.current_step).label}.
+						</b>{' '}{/if}{nextAction(r)}
 				</p>
 			</div>
 
@@ -202,8 +205,9 @@
 					{#each runOutputs(r) as o (o.label)}
 						<li>
 							<span class="chip {o.state === 'tagged' ? 'ok' : 'proposed'}">{o.state}</span>
-							{#if o.href}<a class="mono" href={o.href}>{o.label}</a>{:else}<span class="mono">{o.label}</span
-								>{/if}
+							{#if o.href}<a class="mono" href={o.href}>{o.label}</a>{:else}<span class="mono">
+									{o.label}
+								</span>{/if}
 							<small class="muted">{o.where}</small>
 						</li>
 					{/each}
@@ -216,16 +220,16 @@
 			<div class="p18-run-cost">
 				<span class="p18-k">Usage</span>
 				<b>{tokens(r.cost.tokens)} tokens</b>
-				<small
-					>{FUNDING_LABEL[r.cost.funding]} · {r.cost.attributed_to === 'tenant'
+				<small>
+					{FUNDING_LABEL[r.cost.funding]} · {r.cost.attributed_to === 'tenant'
 						? `${r.tenant_name}'s usage`
-						: 'platform usage'}</small
-				>
+						: 'platform usage'}
+				</small>
 			</div>
 
-			<a class="btn sm p18-open" href="/platform/generator/{r.id}"
-				>{r.status === 'running' || r.status === 'blocked' ? 'Continue' : 'Open'}</a
-			>
+			<a class="btn sm p18-open" href="/platform/generator/{r.id}">
+				{r.status === 'running' || r.status === 'blocked' ? 'Continue' : 'Open'}
+			</a>
 		</div>
 	</article>
 {/snippet}

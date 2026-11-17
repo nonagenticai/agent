@@ -19,31 +19,31 @@
 		<a class="t12m-node t12m-plat" href="/admin/connections/systems">
 			<span class="t12m-k">Platform catalogue · use first</span>
 			<strong>{usage ? usage.platform.length : '…'} curated templates</strong>
-			<span class="t12m-d"
-				>{vendors.slice(0, 4).join(', ')}{vendors.length > 4 ? ` +${vendors.length - 4}` : ''} — tested and maintained
-				for you. Connect them on Systems.</span
-			>
+			<span class="t12m-d">
+				{vendors.slice(0, 4).join(', ')}{vendors.length > 4 ? ` +${vendors.length - 4}` : ''} — tested and maintained
+				for you. Connect them on Systems.
+			</span>
 		</a>
 		<span class="t12m-or" aria-hidden="true">or</span>
 		<div class="t12m-node t12m-own" aria-current="page">
 			<span class="t12m-k">Your templates · this page</span>
 			<strong>{families} template{families === 1 ? '' : 's'}, {live} active</strong>
-			<span class="t12m-d"
-				>For an in-house or bespoke system nothing in the catalogue covers. Built on <span class="mono"
-					>generic_rest@2</span
-				>.</span
-			>
+			<span class="t12m-d">
+				For an in-house or bespoke system nothing in the catalogue covers. Built on <span class="mono">
+					generic_rest@2
+				</span>.
+			</span>
 		</div>
 	</div>
 	<span class="t12m-arrow" aria-hidden="true"></span>
 	<a class="t12m-node" href="/admin/connections/systems">
 		<span class="t12m-k">Systems</span>
-		<strong
-			>{usage ? usage.pins.length : '…'} system{usage?.pins.length === 1 ? ' pins' : 's pin'} a version of yours</strong
-		>
-		<span class="t12m-d"
-			>Base URL + write-only credentials per system. A system never floats to a newer version.</span
-		>
+		<strong>
+			{usage ? usage.pins.length : '…'} system{usage?.pins.length === 1 ? ' pins' : 's pin'} a version of yours
+		</strong>
+		<span class="t12m-d">
+			Base URL + write-only credentials per system. A system never floats to a newer version.
+		</span>
 	</a>
 	<span class="t12m-arrow" aria-hidden="true"></span>
 	<div class="t12m-node">
@@ -51,8 +51,9 @@
 		<strong>{usage ? usage.routes.length : '…'} routes served</strong>
 		<span class="t12m-d">
 			{#if jobs.length}
-				{#each jobs as [key, label], i (key)}{i ? ', ' : ''}<a href="/admin/jobs/{key}/operations">{label}</a
-					>{/each}
+				{#each jobs as [key, label], i (key)}{i ? ', ' : ''}<a href="/admin/jobs/{key}/operations">
+						{label}
+					</a>{/each}
 				send operations to those systems.
 			{:else}
 				No job routes to your templates yet.

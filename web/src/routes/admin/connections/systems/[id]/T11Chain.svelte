@@ -74,10 +74,10 @@
 			<span class="t11-pip t11-{tones.tpl}" title={TONE_TEXT[tones.tpl]}></span>
 			<span class="label">3 · Translation</span>
 			<span class="t11-strong mono">{i.template_key}@{i.template_version}</span>
-			<span class="t11-sub"
-				>{i.template_scope === 'platform' ? 'platform template' : 'your template'} · pinned · {d.template
-					.transport}</span
-			>
+			<span class="t11-sub">
+				{i.template_scope === 'platform' ? 'platform template' : 'your template'} · pinned · {d.template
+					.transport}
+			</span>
 			<span class="t11-sub">
 				+ {i.overrides.length} field override{i.overrides.length === 1 ? '' : 's'} · {nIds} env ID{nIds === 1
 					? ''
@@ -107,11 +107,11 @@
 			<span class="t11-pip t11-{tones.sys}" title={TONE_TEXT[tones.sys]}></span>
 			<span class="label">5 · {d.template.vendor || 'System'}</span>
 			<span class="t11-strong mono t11-host">{i.platform ? 'in-app' : host}</span>
-			<span class="t11-sub"
-				>{i.env === 'all' ? 'prod + test' : i.env === 'prod' ? 'production' : 'test'}{i.stub
+			<span class="t11-sub">
+				{i.env === 'all' ? 'prod + test' : i.env === 'prod' ? 'production' : 'test'}{i.stub
 					? ' · stub'
-					: ''}{rateLimitKind(insight?.rate_limit) ? ` · ${rateLimitKind(insight?.rate_limit)}` : ''}</span
-			>
+					: ''}{rateLimitKind(insight?.rate_limit) ? ` · ${rateLimitKind(insight?.rate_limit)}` : ''}
+			</span>
 		</li>
 	</ol>
 	<p class="t11-caption">

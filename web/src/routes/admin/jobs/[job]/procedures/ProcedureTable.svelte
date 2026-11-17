@@ -32,18 +32,18 @@
 
 <div class="split pr-bar">
 	<Seg label="Status" items={statusFilters(rows)} bind:active={filter} />
-	<span class="muted pr-hint"
-		>Runs and success count the last 7 days of cases recorded against each version.</span
-	>
+	<span class="muted pr-hint">
+		Runs and success count the last 7 days of cases recorded against each version.
+	</span>
 </div>
 <Card cls="flush">
 	<div class="tbl-wrap">
 		<table class="tbl clickable">
 			<thead>
 				<tr>
-					<th>Procedure</th><th>Version</th><th>Status</th><th>Context space</th><th class="r">Steps</th><th
-						>Grant check</th
-					><th class="r">Reviewers</th><th class="r">Runs 7d</th><th>Success</th><th></th>
+					<th>Procedure</th><th>Version</th><th>Status</th><th>Context space</th><th class="r">Steps</th><th>
+						Grant check
+					</th><th class="r">Reviewers</th><th class="r">Runs 7d</th><th>Success</th><th></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -78,9 +78,9 @@
 								/>{/if}
 						</td>
 						<td class="mono">{p.context_space}</td>
-						<td class="r"
-							>{sum.steps} <span class="muted">in {sum.phases} phase{sum.phases === 1 ? '' : 's'}</span></td
-						>
+						<td class="r">
+							{sum.steps} <span class="muted">in {sum.phases} phase{sum.phases === 1 ? '' : 's'}</span>
+						</td>
 						<td>
 							{#if p.outside_grant.length}
 								<Chip
@@ -93,14 +93,15 @@
 						<td class="r">
 							{#if p.origin === 'tenant'}<span
 									class:warn-text={p.status === 'CANARY' && p.reviewers.length === 0}
-									>{p.reviewers.length}</span
-								>{:else}<span class="muted">template</span>{/if}
+								>
+									{p.reviewers.length}
+								</span>{:else}<span class="muted">template</span>{/if}
 						</td>
 						<td class="r mono">{p.runs_7d.toLocaleString('en-GB')}</td>
-						<td class="pr-success"
-							>{#if ok}<Meter value={p.success_rate ?? 0} cls={ok.cls} />
-								<span class="mono">{ok.text}</span>{:else}<span class="muted">—</span>{/if}</td
-						>
+						<td class="pr-success">
+							{#if ok}<Meter value={p.success_rate ?? 0} cls={ok.cls} />
+								<span class="mono">{ok.text}</span>{:else}<span class="muted">—</span>{/if}
+						</td>
 						<td class="r nowrap">
 							<button
 								type="button"
@@ -111,8 +112,10 @@
 								onclick={(e) => {
 									e.stopPropagation();
 									onstartfrom(`${p.name}@${p.version}`);
-								}}>Start from</button
+								}}
 							>
+								Start from
+							</button>
 						</td>
 					</tr>
 				{:else}

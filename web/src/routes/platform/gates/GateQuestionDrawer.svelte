@@ -105,9 +105,9 @@
 			<Chip text={gate.type} variant="tool" />
 			<Chip text="fail {gate.fail}" variant={gate.fail === 'closed' ? 'err' : 'muted'} />
 			{#if gate.safety}<Lock />{/if}
-			<span class="mono muted"
-				>{gate.layer} · updated {when(gate.updated_at)} by {gate.updated_by ?? '—'}</span
-			>
+			<span class="mono muted">
+				{gate.layer} · updated {when(gate.updated_at)} by {gate.updated_by ?? '—'}
+			</span>
 		{/if}
 	{/snippet}
 	{#if gate}
@@ -144,9 +144,9 @@
 				<br /><span class="mono">{questionRuleText(gate)}</span>
 			</p>
 			<div class="row">
-				<button type="button" class="btn primary" disabled={busy || !dirty || optLabel !== ''} onclick={save}
-					>Save question</button
-				>
+				<button type="button" class="btn primary" disabled={busy || !dirty || optLabel !== ''} onclick={save}>
+					Save question
+				</button>
 			</div>
 
 			<h3>Rule</h3>
@@ -173,9 +173,9 @@
 					{#each usage.jobs as j (j.tenant_id + j.job)}
 						<li>
 							<span>
-								{#if j.tenant_id === activeTenant}<a href="/admin/jobs/{encodeURIComponent(j.job)}/gates"
-										>{j.job_label}</a
-									>{:else}{j.job_label}{/if}
+								{#if j.tenant_id === activeTenant}<a href="/admin/jobs/{encodeURIComponent(j.job)}/gates">
+										{j.job_label}
+									</a>{:else}{j.job_label}{/if}
 								<span class="muted">· {j.tenant_name}</span>
 							</span>
 							<span class="muted gq-use-n">
@@ -224,17 +224,16 @@
 								<td class="mono">{o.key}</td>
 								<td>{o.label}</td>
 								<td class="muted">{o.description || '—'}</td>
-								<td
-									>{#if o.generated}<Chip text="generated · read-only" variant="tool" />{:else}<Chip
+								<td>
+									{#if o.generated}<Chip text="generated · read-only" variant="tool" />{:else}<Chip
 											text="authored"
-										/>{/if}</td
-								>
+										/>{/if}
+								</td>
 							</tr>
 						{:else}
-							<tr
-								><td colspan="4" class="muted">Built per case from {gate.generated_from ?? 'the case'}.</td
-								></tr
-							>
+							<tr>
+								<td colspan="4" class="muted">Built per case from {gate.generated_from ?? 'the case'}.</td>
+							</tr>
 						{/each}
 					</tbody>
 				</table>
@@ -262,14 +261,16 @@
 						? undefined
 						: gate.generated_from
 							? 'Options are generated at the cut'
-							: 'Only choice questions take options'}>Add option</button
+							: 'Only choice questions take options'}
 				>
+					Add option
+				</button>
 			</form>
 			<h3>Delete</h3>
 			<div class="row">
-				<button type="button" class="btn sm danger" disabled title={del.reason ?? undefined}
-					>Delete question</button
-				>
+				<button type="button" class="btn sm danger" disabled title={del.reason ?? undefined}>
+					Delete question
+				</button>
 				<span class="muted gq-why">{del.reason}</span>
 			</div>
 		</div>

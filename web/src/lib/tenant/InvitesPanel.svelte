@@ -118,8 +118,10 @@
 				class:on={shown === s}
 				aria-pressed={shown === s}
 				data-testid={`invite-state-${s}`}
-				onclick={() => (shown = s)}>{LABEL[s]}</button
+				onclick={() => (shown = s)}
 			>
+				{LABEL[s]}
+			</button>
 		{/each}
 	</div>
 
@@ -133,10 +135,10 @@
 		<div class="tbl-wrap">
 			<table class="tbl inv-tbl">
 				<thead>
-					<tr
-						><th>Invitee</th><th>Roles</th><th>State</th><th>Invited by</th><th aria-label="Invite actions"
-						></th></tr
-					>
+					<tr>
+						<th>Invitee</th><th>Roles</th><th>State</th><th>Invited by</th><th aria-label="Invite actions"
+						></th>
+					</tr>
 				</thead>
 				<tbody>
 					{#each rows as i (i.id)}
@@ -156,9 +158,9 @@
 							</td>
 							<td data-label="Invited by">
 								{i.invited_by_name ?? i.invited_by}
-								{#if i.via === 'signup'}<span data-testid="invite-via-signup"
-										><Chip text="via sign-up" variant="accent" title="Recorded by a signup approval" /></span
-									>{/if}
+								{#if i.via === 'signup'}<span data-testid="invite-via-signup">
+										<Chip text="via sign-up" variant="accent" title="Recorded by a signup approval" />
+									</span>{/if}
 								<span class="cell-sub">{shortDate(i.created_at)}</span>
 							</td>
 							<td class="r inv-act">
@@ -171,8 +173,10 @@
 												type="button"
 												data-testid="invite-revoke-confirm"
 												disabled={busy === i.id}
-												onclick={() => doRevoke(i)}>Revoke invite</button
+												onclick={() => doRevoke(i)}
 											>
+												Revoke invite
+											</button>
 											<button class="btn sm" type="button" onclick={() => (confirming = null)}>Cancel</button>
 										</span>
 									{:else}
@@ -183,15 +187,19 @@
 											disabled={busy === i.id || wait > 0 || !!resendBlocked}
 											title={resendBlocked ??
 												(wait > 0 ? `Sent recently; resend in ${clock(wait)}` : undefined)}
-											onclick={() => doResend(i)}>{wait > 0 ? `Resend in ${clock(wait)}` : 'Resend'}</button
+											onclick={() => doResend(i)}
 										>
+											{wait > 0 ? `Resend in ${clock(wait)}` : 'Resend'}
+										</button>
 										<button
 											class="btn sm danger"
 											type="button"
 											data-testid="invite-revoke"
 											disabled={busy === i.id}
-											onclick={() => (confirming = i.id)}>Revoke…</button
+											onclick={() => (confirming = i.id)}
 										>
+											Revoke…
+										</button>
 									{/if}
 								{/if}
 							</td>

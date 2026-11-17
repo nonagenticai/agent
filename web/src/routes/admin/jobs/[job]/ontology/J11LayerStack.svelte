@@ -70,9 +70,10 @@
 				{#if b.lane === 'tenant'}
 					<div class="j11-band-num">
 						{#if tenantBits.length}
-							{#each tenantBits as [n, one, many], k (one)}{#if k > 0}<span class="sep">·</span>{/if}<span
-									><b>{n}</b> {n === 1 ? one : many}</span
-								>{/each}
+							{#each tenantBits as [n, one, many], k (one)}{#if k > 0}<span class="sep">·</span>{/if}<span>
+									<b>{n}</b>
+									{n === 1 ? one : many}
+								</span>{/each}
 						{:else}
 							<span class="muted">Nothing yet</span>
 						{/if}
@@ -91,8 +92,10 @@
 			</div>
 			<div class="j11-band-scope">
 				views of {plural(objects.length, 'platform object')}{#if unused}<span class="sep">·</span><span
-						class="j11-unused">{unused} not used by any activity</span
-					>{/if}
+						class="j11-unused"
+					>
+						{unused} not used by any activity
+					</span>{/if}
 			</div>
 		</div>
 	</div>
@@ -114,8 +117,10 @@
 			and the states it moves through live on the object:
 			{#each objects as o (o)}
 				{#if superAdmin}<a class="chip j11-obj" href="/platform/objects/{o}">{o}</a>{:else}<span
-						class="chip j11-obj">{o}</span
-					>{/if}
+						class="chip j11-obj"
+					>
+						{o}
+					</span>{/if}
 			{/each}
 		</p>
 	</div>

@@ -54,24 +54,23 @@
 		)} more fit.
 	</p>
 	<div class="row">
-		<label class="btn sm"
-			>Choose a CSV file<input
+		<label class="btn sm">
+			Choose a CSV file<input
 				class="ci-input"
 				type="file"
 				accept=".csv,text/csv"
 				{disabled}
 				aria-label="Choose a CSV file"
 				onchange={pick}
-			/></label
-		>
+			/>
+		</label>
 		{#if fileName}<span class="mono muted ci-small">{fileName}</span>{/if}
 		<button class="btn sm" type="button" {disabled} onclick={() => (text = SAMPLE)}>Paste an example</button>
 	</div>
-	<label class="field ci-text"
-		><span class="label">Or paste it</span>
-		<textarea class="input mono" rows="5" bind:value={text} {disabled} aria-label="CSV text"
-		></textarea></label
-	>
+	<label class="field ci-text">
+		<span class="label">Or paste it</span>
+		<textarea class="input mono" rows="5" bind:value={text} {disabled} aria-label="CSV text"></textarea>
+	</label>
 	{#if parsed}
 		<p class="ci-small" data-testid="ev-import-summary">
 			<b>{parsed.rows.length} question{parsed.rows.length === 1 ? '' : 's'} ready</b>{parsed.errors.length
@@ -90,8 +89,10 @@
 			class="btn sm primary"
 			type="button"
 			disabled={disabled || busy || blocked || !parsed.rows.length}
-			onclick={run}>{busy ? 'Importing…' : `Import ${parsed.rows.length}`}</button
+			onclick={run}
 		>
+			{busy ? 'Importing…' : `Import ${parsed.rows.length}`}
+		</button>
 	{/if}
 </details>
 

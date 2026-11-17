@@ -62,9 +62,9 @@
 			<ol class="states" data-testid="inspector-states">
 				{#each node.states as s (s.status)}
 					<li class:ini={s.initial} class:term={s.terminal}>
-						{s.status}{#if s.initial}<span class="tag">start</span>{/if}{#if s.terminal}<span class="tag"
-								>end</span
-							>{/if}
+						{s.status}{#if s.initial}<span class="tag">start</span>{/if}{#if s.terminal}<span class="tag">
+								end
+							</span>{/if}
 					</li>
 				{/each}
 			</ol>
@@ -88,8 +88,9 @@
 		{#if node.operations.length}
 			<div class="opkeys">
 				{#each node.operations as o (o.key)}
-					<span class="mono opk {o.modality}" title="{o.modality} · side effect {o.side_effect}">{o.key}</span
-					>
+					<span class="mono opk {o.modality}" title="{o.modality} · side effect {o.side_effect}">
+						{o.key}
+					</span>
 				{/each}
 			</div>
 		{/if}
@@ -103,9 +104,9 @@
 					<li>
 						<span class="mono" class:me={r.subject === node.object}>{r.subject}</span>
 						<span class="pred">{r.predicate}</span>
-						<span class="mono" class:me={r.object === node.object && r.subject !== node.object}
-							>{r.object}</span
-						>
+						<span class="mono" class:me={r.object === node.object && r.subject !== node.object}>
+							{r.object}
+						</span>
 						<span class="cardn mono">{r.cardinality}</span>
 					</li>
 				{/each}

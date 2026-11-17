@@ -216,14 +216,18 @@
 					type="button"
 					class="btn"
 					disabled={!canWrite || busy || !reply.trim() || reply.trim() === (gate.customer_reply ?? '')}
-					onclick={() => saveReply(reply)}>Save reply</button
+					onclick={() => saveReply(reply)}
 				>
+					Save reply
+				</button>
 				<button
 					type="button"
 					class="btn"
 					disabled={!canWrite || busy || gate.customer_reply === gate.customer_reply_default}
-					onclick={() => saveReply(null)}>Use default</button
+					onclick={() => saveReply(null)}
 				>
+					Use default
+				</button>
 			</div>
 		</section>
 
@@ -267,16 +271,18 @@
 			/>
 			{#if gate.rule_refined}
 				<p class="row gd-base">
-					<span class="muted"
-						>Template: <span class="mono">{questionRuleText({ ...gate, rule: gate.base_rule })}</span></span
-					>
+					<span class="muted">
+						Template: <span class="mono">{questionRuleText({ ...gate, rule: gate.base_rule })}</span>
+					</span>
 					<button
 						type="button"
 						class="btn sm"
 						disabled={!canWrite || busy}
 						title={canWrite ? undefined : writeHint('job_designer')}
-						onclick={() => saveRule(null)}>Revert rule</button
+						onclick={() => saveRule(null)}
 					>
+						Revert rule
+					</button>
 				</p>
 			{/if}
 			<p class="note">Fired → {ACTION_TEXT[gate.action]}. Saving the rule replaces a tuned threshold.</p>
@@ -302,16 +308,20 @@
 						class="btn sm primary"
 						disabled={!canWrite || busy}
 						title={canWrite ? undefined : writeHint('job_designer')}
-						onclick={() => saveThreshold(Number(threshold))}>Save threshold</button
+						onclick={() => saveThreshold(Number(threshold))}
 					>
+						Save threshold
+					</button>
 					{#if gate.threshold_refined}
 						<button
 							type="button"
 							class="btn sm"
 							disabled={!canWrite || busy}
 							title={canWrite ? undefined : writeHint('job_designer')}
-							onclick={() => saveThreshold(null)}>Revert to base</button
+							onclick={() => saveThreshold(null)}
 						>
+							Revert to base
+						</button>
 					{/if}
 				</div>
 				{#if preview}<p class="preview" role="status" data-testid="threshold-preview">{preview}</p>{/if}
@@ -353,10 +363,9 @@
 			{:else}
 				<div class="tbl-wrap">
 					<table class="tbl dense">
-						<thead
-							><tr><th>Option</th><th>Label</th><th>Description</th><th class="r">Verdicts</th><th></th></tr
-							></thead
-						>
+						<thead>
+							<tr><th>Option</th><th>Label</th><th>Description</th><th class="r">Verdicts</th><th></th></tr>
+						</thead>
 						<tbody>
 							{#each gate.options as o (o.key)}
 								{@const d = drafts[o.key]}
@@ -396,20 +405,24 @@
 												!d ||
 												(d.label === o.label && d.description === o.description)}
 											title={canWrite ? undefined : writeHint('job_designer')}
-											onclick={() => saveOption(o.key)}>Save</button
+											onclick={() => saveOption(o.key)}
 										>
+											Save
+										</button>
 										{#if gate.safety}
-											<button type="button" class="btn sm" disabled title="Safety gates cannot be hidden"
-												><Lock /> Hide</button
-											>
+											<button type="button" class="btn sm" disabled title="Safety gates cannot be hidden">
+												<Lock /> Hide
+											</button>
 										{:else}
 											<button
 												type="button"
 												class="btn sm"
 												disabled={!canWrite || busy}
 												title={canWrite ? undefined : writeHint('job_designer')}
-												onclick={() => toggleHidden(o.key, !o.hidden)}>{o.hidden ? 'Unhide' : 'Hide'}</button
+												onclick={() => toggleHidden(o.key, !o.hidden)}
 											>
+												{o.hidden ? 'Unhide' : 'Hide'}
+											</button>
 										{/if}
 									</td>
 								</tr>
@@ -432,11 +445,13 @@
 					class="btn sm danger"
 					disabled={!del.ok || busy}
 					title={del.reason ?? undefined}
-					onclick={deleteQuestion}>Delete {gate.key} from this job</button
+					onclick={deleteQuestion}
 				>
-				{#if del.reason}<span class="muted gd-why">{del.reason}</span>{:else}<span class="muted gd-why"
-						>Saved to draft: customers keep it until you publish.</span
-					>{/if}
+					Delete {gate.key} from this job
+				</button>
+				{#if del.reason}<span class="muted gd-why">{del.reason}</span>{:else}<span class="muted gd-why">
+						Saved to draft: customers keep it until you publish.
+					</span>{/if}
 			</div>
 		</section>
 	{/if}

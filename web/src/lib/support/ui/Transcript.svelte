@@ -105,9 +105,9 @@
 		{/each}
 	</div>
 	{#if unseen > 0}
-		<button class="pill btn sm primary" type="button" onclick={toEnd}
-			>{unseen} new message{unseen === 1 ? '' : 's'}</button
-		>
+		<button class="pill btn sm primary" type="button" onclick={toEnd}>
+			{unseen} new message{unseen === 1 ? '' : 's'}
+		</button>
 	{/if}
 </div>
 

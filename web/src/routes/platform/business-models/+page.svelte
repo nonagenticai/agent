@@ -253,16 +253,16 @@
 			</li>
 			<li>
 				<span class="step">4</span>
-				<span
-					><strong
-						>{base.value.state === 'ok' ? `${base.value.data.objects.length} base` : 'Base'} + {added.length} added</strong
-					> objects</span
-				>
+				<span>
+					<strong>
+						{base.value.state === 'ok' ? `${base.value.data.objects.length} base` : 'Base'} + {added.length} added
+					</strong> objects
+				</span>
 			</li>
 			<li>
 				<span class="step">5</span>
-				<span
-					>Compile layers them: base → <em>profile</em> → industry → dept → job ·
+				<span>
+					Compile layers them: base → <em>profile</em> → industry → dept → job ·
 					<a
 						data-testid="bm-compile-link"
 						href={editing
@@ -276,9 +276,10 @@
 								})
 							: '/platform/compile'}
 						title={editing ? `Compile preview with ${editing.label} selected` : undefined}
-						>Compile preview{editing ? ` of ${editing.label}` : ''}</a
-					></span
-				>
+					>
+						Compile preview{editing ? ` of ${editing.label}` : ''}
+					</a>
+				</span>
 			</li>
 		</ol>
 
@@ -295,8 +296,9 @@
 					onclick={() => load(p)}
 				>
 					<span class="cell-title">{p.label}</span>
-					<span class="cell-sub mono">{p.industry ?? 'any industry'} · {n} rule{n === 1 ? '' : 's'} fire</span
-					>
+					<span class="cell-sub mono">
+						{p.industry ?? 'any industry'} · {n} rule{n === 1 ? '' : 's'} fire
+					</span>
 					<span class="cell-sub">{p.description}</span>
 				</button>
 			{/each}
@@ -364,9 +366,9 @@
 								<div class="axis-row">
 									<div class="axis-name">
 										<span>{a.label}</span>
-										<span class="cell-sub mono"
-											>{a.key} · {a.cardinality === 'one' ? 'one per offering' : 'many'}</span
-										>
+										<span class="cell-sub mono">
+											{a.key} · {a.cardinality === 'one' ? 'one per offering' : 'many'}
+										</span>
 										{#if a.milestone === 'M4'}<MilestoneChip milestone="M4" note="axis split (N5, N7)" />{/if}
 									</div>
 									<div class="chips" role="group" aria-label={a.label}>
@@ -378,8 +380,10 @@
 												class:accent={sel[a.key]?.includes(v.key)}
 												aria-pressed={!!sel[a.key]?.includes(v.key)}
 												title={v.parent ? `${valueLabel(d.axes, a.key, v.parent)} › ${v.label}` : undefined}
-												onclick={() => toggle(a, v.key)}>{v.label}</button
+												onclick={() => toggle(a, v.key)}
 											>
+												{v.label}
+											</button>
 										{/each}
 									</div>
 								</div>
@@ -408,16 +412,16 @@
 							{#each out.fired as r (r.key)}
 								<li class="fired">
 									<div class="chips">
-										{#each r.adds as o (o)}<Chip text={o} variant="cust" />{:else}<span class="muted"
-												>extends existing objects ({r.rows} row{r.rows === 1 ? '' : 's'})</span
-											>{/each}
+										{#each r.adds as o (o)}<Chip text={o} variant="cust" />{:else}<span class="muted">
+												extends existing objects ({r.rows} row{r.rows === 1 ? '' : 's'})
+											</span>{/each}
 									</div>
-									<span class="why"
-										><a href={layerHref(r.layer_id)} title="Open this rule's profile layer"
-											><strong>{r.key}</strong></a
-										>
-										· because {describe(r.condition)}</span
-									>
+									<span class="why">
+										<a href={layerHref(r.layer_id)} title="Open this rule's profile layer">
+											<strong>{r.key}</strong>
+										</a>
+										· because {describe(r.condition)}
+									</span>
 								</li>
 							{/each}
 						</ul>
@@ -429,9 +433,9 @@
 				<div class="block">
 					<div class="block-head">
 						<strong>Always there</strong>
-						<span class="muted"
-							>{base.value.state === 'ok' && base.value.data.tag ? base.value.data.tag : 'base layer'}</span
-						>
+						<span class="muted">
+							{base.value.state === 'ok' && base.value.data.tag ? base.value.data.tag : 'base layer'}
+						</span>
 					</div>
 					{#if base.value.state === 'ok'}
 						<div class="chips">
@@ -456,10 +460,10 @@
 						<ul class="rules">
 							{#each out.idle as r (r.key)}
 								<li class="idle">
-									<span
-										><strong>{r.key}</strong> → {r.adds.join(', ') ||
-											`${r.rows} row${r.rows === 1 ? '' : 's'}`}</span
-									>
+									<span>
+										<strong>{r.key}</strong> → {r.adds.join(', ') ||
+											`${r.rows} row${r.rows === 1 ? '' : 's'}`}
+									</span>
 									<span class="why">needs {describe(r.condition)}</span>
 								</li>
 							{/each}
@@ -486,16 +490,18 @@
 								class="btn primary"
 								{...superAdminAttrs(session)}
 								disabled={!session.superAdmin || !dirty}
-								onclick={() => openSave(false)}>Save in place…</button
+								onclick={() => openSave(false)}
 							>
-							<button class="btn" {...superAdminAttrs(session)} onclick={() => openSave(true)}
-								>Save as new…</button
-							>
+								Save in place…
+							</button>
+							<button class="btn" {...superAdminAttrs(session)} onclick={() => openSave(true)}>
+								Save as new…
+							</button>
 							<button class="btn" disabled={!dirty} onclick={revert}>Revert</button>
 						{:else}
-							<button class="btn primary" {...superAdminAttrs(session)} onclick={() => openSave(true)}
-								>Save as business model…</button
-							>
+							<button class="btn primary" {...superAdminAttrs(session)} onclick={() => openSave(true)}>
+								Save as business model…
+							</button>
 						{/if}
 					</div>
 					<p class="note tight">
@@ -531,11 +537,12 @@
 						caption="Business models by axis"
 						corner="Axis"
 					>
-						{#snippet rowHeader(a)}<span class="cell-title">{a.label}</span><span class="cell-sub mono"
-								>{a.object}</span
-							>{/snippet}
-						{#snippet colHeader(p)}<button class="table-action" onclick={() => load(p)}>{p.label}</button
-							>{/snippet}
+						{#snippet rowHeader(a)}<span class="cell-title">{a.label}</span><span class="cell-sub mono">
+								{a.object}
+							</span>{/snippet}
+						{#snippet colHeader(p)}<button class="table-action" onclick={() => load(p)}>
+								{p.label}
+							</button>{/snippet}
 						{#snippet cell(a, p)}
 							<div class="chips">
 								{#each p.selection[a.key] ?? [] as v (v)}<Chip
@@ -563,12 +570,14 @@
 									<a
 										href={layerHref(r.layer_id)}
 										data-testid="rule-layer-link"
-										title="Open this rule's profile layer"><strong>{r.key}</strong></a
+										title="Open this rule's profile layer"
 									>
+										<strong>{r.key}</strong>
+									</a>
 									<span class="cell-sub">when {describe(r.condition)}</span>
-									<span class="cell-sub"
-										>fires for {users.map((u) => u.label).join(', ') || 'no saved business model'}</span
-									>
+									<span class="cell-sub">
+										fires for {users.map((u) => u.label).join(', ') || 'no saved business model'}
+									</span>
 								</span>
 								<span class="chips">
 									{#each r.adds as o (o)}<Chip text={`+ ${o}`} variant="cust" />{/each}
@@ -595,9 +604,9 @@
 										<strong>{a.label}</strong>
 										<span class="cell-sub mono">{a.key} → {a.object}</span>
 									</span>
-									<button class="btn sm" {...superAdminAttrs(session)} onclick={() => openValue(a)}
-										>Add value</button
-									>
+									<button class="btn sm" {...superAdminAttrs(session)} onclick={() => openValue(a)}>
+										Add value
+									</button>
 								</div>
 								<p class="note tight">{a.description}</p>
 								<ul class="tree">
@@ -615,9 +624,9 @@
 		</section>
 
 		<Drawer bind:open={ruleOpen} title="Add axis rule">
-			{#snippet sub()}<span
-					>The rule adds one object (a new profile layer); edit its rows later in Layers.</span
-				>{/snippet}
+			{#snippet sub()}<span>
+					The rule adds one object (a new profile layer); edit its rows later in Layers.
+				</span>{/snippet}
 			<form class="stack" onsubmit={addRule}>
 				<div class="form-grid">
 					<div class="field">
@@ -643,17 +652,19 @@
 							</select>
 							<select class="input" aria-label={`Value ${i + 1}`} bind:value={c.value} required>
 								<option value="">=…</option>
-								{#each d.axes.find((a) => a.key === c.axis)?.values ?? [] as v (v.key)}<option value={v.key}
-										>{v.key}</option
-									>{/each}
+								{#each d.axes.find((a) => a.key === c.axis)?.values ?? [] as v (v.key)}<option value={v.key}>
+										{v.key}
+									</option>{/each}
 							</select>
 						</div>
 					{/each}
 					<button
 						type="button"
 						class="table-action"
-						onclick={() => clauses.push({ axis: 'delivery_type', value: '' })}>+ and another condition</button
+						onclick={() => clauses.push({ axis: 'delivery_type', value: '' })}
 					>
+						+ and another condition
+					</button>
 				</fieldset>
 				<div class="form-grid">
 					<div class="field">
@@ -675,11 +686,11 @@
 			bind:open={saveOpen}
 			title={saveAsNew ? 'Save as a new business model' : `Save ${editing?.label ?? ''} in place`}
 		>
-			{#snippet sub()}<span
-					>{saveAsNew
+			{#snippet sub()}<span>
+					{saveAsNew
 						? "Saves the picker's selection under a new key."
-						: 'Updates the business model in place; the next release inlines it in its provenance.'}</span
-				>{/snippet}
+						: 'Updates the business model in place; the next release inlines it in its provenance.'}
+				</span>{/snippet}
 			<form class="stack" onsubmit={saveProfile}>
 				<div class="form-grid">
 					<div class="field">
@@ -730,9 +741,9 @@
 				<label for="v-parent">Parent (optional)</label>
 				<select id="v-parent" class="input" bind:value={vParent}>
 					<option value="">Top level</option>
-					{#each valueAxis.values.filter((v) => !v.parent) as v (v.key)}<option value={v.key}
-							>{v.label}</option
-						>{/each}
+					{#each valueAxis.values.filter((v) => !v.parent) as v (v.key)}<option value={v.key}>
+							{v.label}
+						</option>{/each}
 				</select>
 			</div>
 			<div class="form-grid">

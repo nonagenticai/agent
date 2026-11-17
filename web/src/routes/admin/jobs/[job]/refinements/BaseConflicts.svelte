@@ -63,8 +63,10 @@
 								type="button"
 								disabled={wa.disabled || busy !== ''}
 								title={wa.title ?? CONFLICT_ACTION[op].hint}
-								onclick={() => resolve(c, op)}>{CONFLICT_ACTION[op].label}</button
+								onclick={() => resolve(c, op)}
 							>
+								{CONFLICT_ACTION[op].label}
+							</button>
 						{/each}
 					</div>
 				</li>

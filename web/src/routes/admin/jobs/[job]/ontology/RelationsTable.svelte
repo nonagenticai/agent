@@ -34,43 +34,34 @@
 	{#if relations.value.state === 'ok'}
 		<div class="tbl-wrap">
 			<table class="tbl dense">
-				<thead
-					><tr><th>Subject</th><th>Predicate</th><th>Object</th><th>Cardinality</th><th>Origin</th></tr
-					></thead
-				>
+				<thead>
+					<tr><th>Subject</th><th>Predicate</th><th>Object</th><th>Cardinality</th><th>Origin</th></tr>
+				</thead>
 				<tbody>
 					{#each edges as r (`${r.subject}|${r.predicate}|${r.object}`)}
 						{@const rm = marks?.relations.get(relationMarkKey(r))}
 						<tr data-testid={rm ? 'j11-draft-row' : undefined}>
-							<td
-								><button type="button" class="link" onclick={() => onpick(r.subject)}
-									>{labelOf(r.subject)}</button
-								>{#if marks?.entities.has(r.subject)}
-									<Chip
-										text="Draft"
-										variant="warn"
-										title={draftTitle(marks.entities.get(r.subject))}
-									/>{/if}</td
-							>
+							<td>
+								<button type="button" class="link" onclick={() => onpick(r.subject)}>
+									{labelOf(r.subject)}
+								</button>{#if marks?.entities.has(r.subject)}
+									<Chip text="Draft" variant="warn" title={draftTitle(marks.entities.get(r.subject))} />{/if}
+							</td>
 							<td class="mono">{r.predicate}</td>
-							<td
-								><button type="button" class="link" onclick={() => onpick(r.object)}
-									>{labelOf(r.object)}</button
-								>{#if marks?.entities.has(r.object)}
-									<Chip
-										text="Draft"
-										variant="warn"
-										title={draftTitle(marks.entities.get(r.object))}
-									/>{/if}</td
-							>
+							<td>
+								<button type="button" class="link" onclick={() => onpick(r.object)}>
+									{labelOf(r.object)}
+								</button>{#if marks?.entities.has(r.object)}
+									<Chip text="Draft" variant="warn" title={draftTitle(marks.entities.get(r.object))} />{/if}
+							</td>
 							<td class="mono">{r.cardinality}</td>
-							<td
-								><Chip
+							<td>
+								<Chip
 									text={r.origin === 'tenant' ? 'Tenant' : 'Base'}
 									variant={r.origin === 'tenant' ? 'accent' : 'muted'}
 								/>{#if rm}
-									<Chip text="Draft" variant="warn" title={draftTitle(rm)} />{/if}</td
-							>
+									<Chip text="Draft" variant="warn" title={draftTitle(rm)} />{/if}
+							</td>
 						</tr>
 					{:else}
 						<tr><td colspan="5" class="muted">No relations between the entities in this filter.</td></tr>
@@ -99,16 +90,12 @@
 				<tbody>
 					{#each spaces.value.data.items as s (s.key)}
 						<tr>
-							<td
-								><span class="cell-title mono"
-									>{s.key}{#if marks?.spaces.has(s.key)}
-										<Chip
-											text="Draft"
-											variant="warn"
-											title={draftTitle(marks.spaces.get(s.key))}
-										/>{/if}</span
-								><span class="cell-sub">{s.label}</span></td
-							>
+							<td>
+								<span class="cell-title mono">
+									{s.key}{#if marks?.spaces.has(s.key)}
+										<Chip text="Draft" variant="warn" title={draftTitle(marks.spaces.get(s.key))} />{/if}
+								</span><span class="cell-sub">{s.label}</span>
+							</td>
 							<td>{s.entities.map(labelOf).join(', ')}</td>
 							<td class="mono">{s.required.join(', ') || '—'}</td>
 							<td><a class="mono" href="/admin/jobs/{app.job}/procedures/{s.procedure}">{s.procedure}</a></td>

@@ -76,11 +76,11 @@
 									<thead><tr><th>Template</th><th>@{diff.against}</th><th>@{current}</th></tr></thead>
 									<tbody>
 										{#each diff.meta as m (m.label)}
-											<tr
-												><td>{m.label}</td><td class="mono small">{m.before}</td><td class="mono small"
-													>{m.after}</td
-												></tr
-											>
+											<tr>
+												<td>{m.label}</td><td class="mono small">{m.before}</td><td class="mono small">
+													{m.after}
+												</td>
+											</tr>
 										{/each}
 									</tbody>
 								</table>

@@ -44,12 +44,14 @@
 				<span class="vl-sub">
 					{#if v.released_in && v.released_in === release}in live release{:else if v.released_in}last in
 						{v.released_in}{:else if v.version === pending?.version}published, not live yet{:else if v.status === 'DRAFT' || v.status === 'CANARY'}{#if v.outside_grant.length}<span
-								class="vl-bad">{v.outside_grant.length} outside grant</span
-							>{:else}draft{v.test_runs?.length
+								class="vl-bad"
+							>
+								{v.outside_grant.length} outside grant
+							</span>{:else}draft{v.test_runs?.length
 								? ` · ${v.test_runs.length} test run${v.test_runs.length === 1 ? '' : 's'}`
-								: ''}{/if}{:else if v.outside_grant.length}<span class="vl-bad"
-							>{v.outside_grant.length} outside grant</span
-						>{:else if v.test_runs?.length}{v.test_runs.length} test run{v.test_runs.length === 1
+								: ''}{/if}{:else if v.outside_grant.length}<span class="vl-bad">
+							{v.outside_grant.length} outside grant
+						</span>{:else if v.test_runs?.length}{v.test_runs.length} test run{v.test_runs.length === 1
 							? ''
 							: 's'}{:else}&nbsp;{/if}
 				</span>

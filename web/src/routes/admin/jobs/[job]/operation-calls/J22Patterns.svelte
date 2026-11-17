@@ -39,9 +39,9 @@
 								title={SIDE_EFFECT[p.stat.side_effect].hint}
 							/>{/if}
 						<span class="muted">on</span>
-						{#if href}<a class="mono" {href}>{p.stat.instance}</a>{:else}<span class="mono"
-								>{p.stat.instance ?? p.stat.route}</span
-							>{/if}
+						{#if href}<a class="mono" {href}>{p.stat.instance}</a>{:else}<span class="mono">
+								{p.stat.instance ?? p.stat.route}
+							</span>{/if}
 						{#if p.stat.template}<span class="mono faint">{p.stat.template}</span>{/if}
 					</div>
 					<div
@@ -55,8 +55,10 @@
 								<span
 									class="seg {ENDING[k].cls}"
 									style="flex-grow:{p.mix[k]}"
-									title="{ENDING[k].label}: {p.mix[k]}">{p.mix[k]}</span
+									title="{ENDING[k].label}: {p.mix[k]}"
 								>
+									{p.mix[k]}
+								</span>
 							{/if}
 						{/each}
 					</div>
@@ -68,15 +70,16 @@
 									: c.handling === 'reply'
 										? 'e-replied'
 										: 'e-escalated'}"
-								><b>{c.count}×</b> <span class="mono">{c.code}</span>
-								<span class="arrow"
-									>→ {c.code === 'unknown_outcome'
+							>
+								<b>{c.count}×</b> <span class="mono">{c.code}</span>
+								<span class="arrow">
+									→ {c.code === 'unknown_outcome'
 										? 'a person checks'
 										: c.handling === 'reply'
 											? 'answered'
-											: 'escalated'}</span
-								></span
-							>
+											: 'escalated'}
+								</span>
+							</span>
 						{:else}
 							<span class="muted">No code breakdown recorded.</span>
 						{/each}
@@ -88,9 +91,13 @@
 					<div class="of">failing · {fmt.n(p.stat.errors)} of {fmt.n(p.stat.calls)}</div>
 					<Chip text={KIND_LABEL[p.kind].text} variant={KIND_LABEL[p.kind].variant} />
 					<div class="j22p-links">
-						<button class="btn sm" type="button" onclick={() => setQuery({ op: p.stat.op, outcome: 'error' })}
-							>See failed calls</button
+						<button
+							class="btn sm"
+							type="button"
+							onclick={() => setQuery({ op: p.stat.op, outcome: 'error' })}
 						>
+							See failed calls
+						</button>
 						<a class="btn sm" href={jobPath(app.job, '/operations')}>Route</a>
 					</div>
 				</div>

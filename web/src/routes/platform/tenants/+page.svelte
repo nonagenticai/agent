@@ -212,16 +212,20 @@
 			onclick={() => {
 				formError = null;
 				importOpen = true;
-			}}>Import with fixed id</button
+			}}
 		>
+			Import with fixed id
+		</button>
 		<button
 			class="btn primary"
 			{...superAdminAttrs(session)}
 			onclick={() => {
 				formError = null;
 				createOpen = true;
-			}}>Create tenant</button
+			}}
 		>
+			Create tenant
+		</button>
 	{/snippet}
 </PageHead>
 
@@ -248,8 +252,10 @@
 			.users_disabled === 1
 			? ''
 			: 's'} disabled. Knowledge and ingest data are <strong>retained</strong> by strata_rag / strata_ingest (<code
-			class="mono">complete: false</code
-		>); their licence revokes are queued.
+			class="mono"
+		>
+			complete: false
+		</code>); their licence revokes are queued.
 		<a href={`/platform/tenants/${offboarded.result.tenant_id}`}>See the offboard report</a>
 	</Callout>
 {/if}
@@ -363,9 +369,9 @@
 		<div class="field">
 			<label for="new-admin">First admin email</label>
 			<input id="new-admin" class="input" type="email" bind:value={newAdmin} required />
-			<span class="note"
-				>Not in Keycloak yet? They get an invite. Someone who already has a tenant → 409.</span
-			>
+			<span class="note">
+				Not in Keycloak yet? They get an invite. Someone who already has a tenant → 409.
+			</span>
 		</div>
 		<div class="field">
 			<label for="new-admin-first">First admin first name</label>
@@ -394,26 +400,26 @@
 			<legend class="label">Data residency</legend>
 			<label class="row"><input type="radio" bind:group={newResidency} value="eu" /> EU</label>
 			<label class="row"><input type="radio" bind:group={newResidency} value="us" /> US</label>
-			<span class="note"
-				>Fixed at provisioning; changing it later is a support migration (D66). Pins the tenant’s knowledge
-				stores, LLM providers and logs to this region. A tenant setting, not a job choice (D59).</span
-			>
+			<span class="note">
+				Fixed at provisioning; changing it later is a support migration (D66). Pins the tenant’s knowledge
+				stores, LLM providers and logs to this region. A tenant setting, not a job choice (D59).
+			</span>
 		</fieldset>
 		{#if formError}
 			<Callout kind="err" title={formError.code}>{formError.message}</Callout>
 		{/if}
 		<div class="actions">
-			<button class="btn primary" type="submit" disabled={saving || !session.superAdmin}
-				>{saving ? 'Creating…' : 'Create tenant'}</button
-			>
+			<button class="btn primary" type="submit" disabled={saving || !session.superAdmin}>
+				{saving ? 'Creating…' : 'Create tenant'}
+			</button>
 		</div>
 	</form>
 </Drawer>
 
 <Drawer bind:open={importOpen} title="Import a tenant with a fixed id" dirty={!!(importId || importName)}>
-	{#snippet sub()}<span
-			>K30 — aligns a tenant that exists elsewhere (configurator, w2v) under its own id.</span
-		>{/snippet}
+	{#snippet sub()}<span>
+			K30 — aligns a tenant that exists elsewhere (configurator, w2v) under its own id.
+		</span>{/snippet}
 	<form class="stack" onsubmit={importTenant}>
 		<div class="field">
 			<label for="import-id">Tenant id</label>
@@ -467,9 +473,9 @@
 			<Callout kind="err" title={formError.code}>{formError.message}</Callout>
 		{/if}
 		<div class="actions">
-			<button class="btn primary" type="submit" disabled={saving || !session.superAdmin}
-				>{saving ? 'Importing…' : 'Import tenant'}</button
-			>
+			<button class="btn primary" type="submit" disabled={saving || !session.superAdmin}>
+				{saving ? 'Importing…' : 'Import tenant'}
+			</button>
 		</div>
 		<p class="note">
 			Importing an id that exists already is a no-op (idempotent). A malformed id is refused and audited.

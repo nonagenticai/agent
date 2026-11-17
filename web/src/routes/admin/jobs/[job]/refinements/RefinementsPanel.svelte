@@ -141,11 +141,11 @@
 </script>
 
 {#if !writer}
-	<Callout kind="info" title="Read only"
-		>You can see the base, the refinements and the draft. Changing or discarding them: {writeHint(
+	<Callout kind="info" title="Read only">
+		You can see the base, the refinements and the draft. Changing or discarding them: {writeHint(
 			'job_designer',
-		).toLowerCase()}.</Callout
-	>
+		).toLowerCase()}.
+	</Callout>
 {/if}
 
 <WorkspaceModel

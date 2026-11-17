@@ -42,10 +42,10 @@
 	<header class="cov-head">
 		<h2>Coverage per language</h2>
 		<p class="muted">
-			Documents in each kind's store, per language this job serves (<a href={languagesHref}
-				>languages served</a
-			>). Each document has the language of the source that produced it. A gap is a warning, not a block: the
-			agent answers from a passage in another language, or hands over.
+			Documents in each kind's store, per language this job serves (<a href={languagesHref}>
+				languages served
+			</a>). Each document has the language of the source that produced it. A gap is a warning, not a block:
+			the agent answers from a passage in another language, or hands over.
 		</p>
 	</header>
 	{#if cov.value.state === 'unavailable'}
@@ -58,21 +58,21 @@
 		{:else}
 			{#if c.gaps}
 				<Callout kind="gap" title={`${c.gaps} missing language${c.gaps === 1 ? '' : 's'} on required kinds`}>
-					<span data-testid="coverage-gaps"
-						>{c.languages
+					<span data-testid="coverage-gaps">
+						{c.languages
 							.filter((l) => byLang[l])
 							.map(
 								(l) =>
 									`${label(l)}: ${byLang[l]} required kind${byLang[l] === 1 ? '' : 's'} without a document`,
 							)
 							.join(' · ')}. Add a source in that language on <a href={sourcesHref}>Sources</a> (its language is
-						set per source).</span
-					>
+						set per source).
+					</span>
 				</Callout>
 			{:else}
-				<Callout kind="info" title="Every required kind has documents in every language"
-					><span>Nothing to add.</span></Callout
-				>
+				<Callout kind="info" title="Every required kind has documents in every language">
+					<span>Nothing to add.</span>
+				</Callout>
 			{/if}
 			<div class="tbl-wrap">
 				<table class="tbl dense cov-tbl">
@@ -80,9 +80,9 @@
 						<tr>
 							<th>Knowledge kind</th>
 							{#each c.languages as l, i (l)}
-								<th class="r" title={label(l)}
-									>{l}{#if i === 0}<span class="cell-sub">default</span>{/if}</th
-								>
+								<th class="r" title={label(l)}>
+									{l}{#if i === 0}<span class="cell-sub">default</span>{/if}
+								</th>
 							{/each}
 						</tr>
 					</thead>
@@ -103,8 +103,10 @@
 										data-lang={l}
 										title={n === 0
 											? `No ${label(l)} document${r.store ? ` in ${r.store}` : ': no store bound'}${r.required ? ' (required kind)' : ''}`
-											: `${n} ${label(l)} document${n === 1 ? '' : 's'}`}>{n === 0 ? 'gap' : fmt.n(n)}</td
+											: `${n} ${label(l)} document${n === 1 ? '' : 's'}`}
 									>
+										{n === 0 ? 'gap' : fmt.n(n)}
+									</td>
 								{/each}
 							</tr>
 						{/each}

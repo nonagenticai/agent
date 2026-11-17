@@ -70,5 +70,7 @@
 	stroke-width="1.7"
 	stroke-linecap="round"
 	stroke-linejoin="round"
-	aria-hidden="true"><path d={PATHS[name] ?? PATHS.dashboard} /></svg
+	aria-hidden="true"
 >
+	<path d={PATHS[name] ?? PATHS.dashboard} />
+</svg>

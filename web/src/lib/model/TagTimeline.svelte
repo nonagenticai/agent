@@ -37,9 +37,9 @@
 			{#if on.length}
 				<span class="pins">
 					{#each on as p (p.tenant_id + p.job)}
-						<a class="pin" class:off={p.tenant_status !== 'active'} href="/platform/tenants/{p.tenant_id}"
-							>{p.tenant_name}</a
-						>
+						<a class="pin" class:off={p.tenant_status !== 'active'} href="/platform/tenants/{p.tenant_id}">
+							{p.tenant_name}
+						</a>
 					{/each}
 				</span>
 			{/if}

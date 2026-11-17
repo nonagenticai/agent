@@ -271,12 +271,13 @@
 			{#each states as s (s.id)}
 				{@const out = transitions.filter((t) => t.from === s.id)}
 				<li class:current={s.id === current}>
-					<b>{s.label ?? s.id}</b>{#if s.terminal}<span class="chip">final</span
-						>{/if}{#if s.id === current}<span class="chip accent">current</span>{/if}
+					<b>{s.label ?? s.id}</b>{#if s.terminal}<span class="chip">
+							final
+						</span>{/if}{#if s.id === current}<span class="chip accent">current</span>{/if}
 					{#each out as t, i (i)}
-						<span class="to"
-							>→ {labelOf(t.to)}{#if t.label}<code>{t.label}</code>{/if}</span
-						>
+						<span class="to">
+							→ {labelOf(t.to)}{#if t.label}<code>{t.label}</code>{/if}
+						</span>
 					{/each}
 				</li>
 			{/each}
@@ -308,9 +309,9 @@
 			{/each}
 			{#each transitions as t, i (i)}
 				{@const e = edges[i]}
-				{#if e && t.label}<text class="edge-label" x={e.lx} y={e.ly} text-anchor={e.anchor}
-						>{shortLabel(t.label)}</text
-					>{/if}
+				{#if e && t.label}<text class="edge-label" x={e.lx} y={e.ly} text-anchor={e.anchor}>
+						{shortLabel(t.label)}
+					</text>{/if}
 			{/each}
 			{#each states as s (s.id)}
 				{@const p = layout.pos.get(s.id)!}

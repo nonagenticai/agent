@@ -183,17 +183,17 @@
 		<div class="l1-flow-steps">
 			<span class="l1-node l1-node-cust"><b>Customer</b><small>Telegram · staff test chat</small></span>
 			<span class="l1-arrow" aria-hidden="true">→</span>
-			<span class="l1-node"
-				><b>Qualifier</b><small>P1/P2 gates · activity · slots</small><em>{atStep.qualifier} now</em></span
-			>
+			<span class="l1-node">
+				<b>Qualifier</b><small>P1/P2 gates · activity · slots</small><em>{atStep.qualifier} now</em>
+			</span>
 			<span class="l1-arrow" aria-hidden="true">→</span>
-			<span class="l1-node"
-				><b>Procedure</b><small>operations · knowledge</small><em>{atStep.procedure} now</em></span
-			>
+			<span class="l1-node">
+				<b>Procedure</b><small>operations · knowledge</small><em>{atStep.procedure} now</em>
+			</span>
 			<span class="l1-arrow" aria-hidden="true">→</span>
-			<span class="l1-node"
-				><b>Post-gate</b><small>R1 checks the reply</small><em>{atStep.post_gate} now</em></span
-			>
+			<span class="l1-node">
+				<b>Post-gate</b><small>R1 checks the reply</small><em>{atStep.post_gate} now</em>
+			</span>
 			<span class="l1-arrow" aria-hidden="true">→</span>
 			<span class="l1-node l1-node-cust"><b>Reply</b><small>to the customer</small></span>
 		</div>
@@ -248,10 +248,10 @@
 							<b>{a.title}</b>
 							<span class="l1-time">{since(c.case.updated_at)}</span>
 						</div>
-						<span class="l1-need-who"
-							>{c.case.customer_name} · {c.case.title}
-							<span class="l1-env {c.case.env}">{c.case.env === 'prod' ? 'prod' : 'test · draft'}</span></span
-						>
+						<span class="l1-need-who">
+							{c.case.customer_name} · {c.case.title}
+							<span class="l1-env {c.case.env}">{c.case.env === 'prod' ? 'prod' : 'test · draft'}</span>
+						</span>
 						<span class="l1-need-hint">{a.hint}</span>
 						<div class="l1-need-act">
 							<a class="btn sm primary" href={wsHref(c)}>Open in workspace</a>
@@ -278,10 +278,9 @@
 				/>
 			</header>
 			{#if show !== 'all'}
-				<button type="button" class="l1-filter" onclick={() => (show = 'all')}
-					>Showing: {show === 'live' ? 'agent working or waiting' : PHASE[show].label.toLowerCase()} · show all
-					✕</button
-				>
+				<button type="button" class="l1-filter" onclick={() => (show = 'all')}>
+					Showing: {show === 'live' ? 'agent working or waiting' : PHASE[show].label.toLowerCase()} · show all ✕
+				</button>
 			{/if}
 			<ul>
 				{#each shown as c (c.case.case_id)}
@@ -297,17 +296,17 @@
 							onclick={() => pick(c)}
 						>
 							<span class="l1-row-top">
-								<span class="l1-phase {p}"
-									>{#if p === 'working'}<i class="l1-pulse"></i>{/if}{PHASE[p].label}</span
-								>
+								<span class="l1-phase {p}">
+									{#if p === 'working'}<i class="l1-pulse"></i>{/if}{PHASE[p].label}
+								</span>
 								<span class="l1-env {c.case.env}">{c.case.env === 'prod' ? 'prod' : 'test · draft'}</span>
 								<span class="l1-time">{hhmmss(c.case.updated_at)}</span>
 							</span>
-							<span class="l1-row-name"
-								>{c.case.customer_name}
+							<span class="l1-row-name">
+								{c.case.customer_name}
 								<VerifiedChip verified={c.case.identity_level >= 2} />
-								<small>· {channelLabel(c)}</small></span
-							>
+								<small>· {channelLabel(c)}</small>
+							</span>
 							<span class="l1-row-title">{c.case.title}</span>
 							<span class="l1-row-last">{lastText(c)}</span>
 						</button>
@@ -326,9 +325,9 @@
 			{#if selected}
 				{@const c = selected}
 				{@const p = ph(c)}
-				<button type="button" class="btn sm l1-back" onclick={() => (pane = 'list')}
-					>← All conversations</button
-				>
+				<button type="button" class="btn sm l1-back" onclick={() => (pane = 'list')}>
+					← All conversations
+				</button>
 				<header class="l1-detail-head">
 					<div>
 						<h2>{c.case.customer_name} <VerifiedChip verified={c.case.identity_level >= 2} /></h2>
@@ -336,9 +335,9 @@
 					</div>
 					<div class="l1-detail-meta">
 						<span class="l1-phase {p}">{PHASE[p].label}</span>
-						<span class="l1-env {c.case.env}"
-							>{#if c.case.env === 'prod'}Production · {c.release.id}{:else}Test env · draft{/if}</span
-						>
+						<span class="l1-env {c.case.env}">
+							{#if c.case.env === 'prod'}Production · {c.release.id}{:else}Test env · draft{/if}
+						</span>
 						<span class="l1-dim">{channelLabel(c)}</span>
 						<a href={caseHref(c)} class="l1-mono">{c.case.case_id}</a>
 					</div>
@@ -352,12 +351,10 @@
 				{/if}
 
 				<div class="l1-control" class:staff={heldByStaff(c)} data-testid="console-control">
-					<span class="l1-owner"
-						>Answering <OwnerChip owner={c.owner} meSub={me} />
-						{#if heldByStaff(c)}The agent is silent in this conversation since {hhmmss(
-								c.owner.since,
-							)}.{/if}</span
-					>
+					<span class="l1-owner">
+						Answering <OwnerChip owner={c.owner} meSub={me} />
+						{#if heldByStaff(c)}The agent is silent in this conversation since {hhmmss(c.owner.since)}.{/if}
+					</span>
 					<a class="btn sm primary" href={wsHref(c)} data-testid="open-workspace">Open in workspace</a>
 				</div>
 				{#if attention}

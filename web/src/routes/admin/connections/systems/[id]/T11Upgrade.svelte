@@ -48,8 +48,9 @@
 			{...writeAttrs(session, 'integrations_manager')}
 			disabled={!writable || repinning}
 			onclick={() => onrepin(d.newer_version!)}
-			>{repinning ? 'Re-pinning…' : `Re-pin to @${d.newer_version}`}</button
 		>
+			{repinning ? 'Re-pinning…' : `Re-pin to @${d.newer_version}`}
+		</button>
 	</div>
 {:else if !up}
 	<p class="muted">
@@ -139,8 +140,10 @@
 				type="button"
 				{...writeAttrs(session, 'integrations_manager')}
 				disabled={!writable || repinning || up.verdict.kind === 'blocked'}
-				onclick={() => onrepin(up.to)}>{repinning ? 'Re-pinning…' : `Re-pin to @${up.to}`}</button
+				onclick={() => onrepin(up.to)}
 			>
+				{repinning ? 'Re-pinning…' : `Re-pin to @${up.to}`}
+			</button>
 			<span class="muted t11-small">Stay on @{up.from}: nothing changes until you re-pin.</span>
 		</div>
 	</div>

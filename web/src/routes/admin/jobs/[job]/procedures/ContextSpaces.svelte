@@ -87,8 +87,9 @@
 						{#if areaOfContextSpace(s.key)}<span
 								class="ps-area"
 								title="Area: a grouping of context spaces inside the department (D60)"
-								>area {areaOfContextSpace(s.key)}</span
-							>{/if}
+							>
+								area {areaOfContextSpace(s.key)}
+							</span>{/if}
 					</div>
 					<span class="chips ps-flags">
 						{#if s.origin === 'tenant'}<Chip
@@ -101,9 +102,9 @@
 								variant="accent"
 								title="Required slots refined by this tenant"
 							/>{/if}
-						{#if s.conflict}<a href="/admin/jobs/{app.job}/release#conflicts" title={CONFLICT[s.conflict]}
-								><Chip text={s.conflict} variant="warn" /></a
-							>{/if}
+						{#if s.conflict}<a href="/admin/jobs/{app.job}/release#conflicts" title={CONFLICT[s.conflict]}>
+								<Chip text={s.conflict} variant="warn" />
+							</a>{/if}
 					</span>
 				</header>
 				<dl class="ps-rows">
@@ -119,18 +120,20 @@
 							{:else}<span class="muted">nothing: answers straight away</span>{/each}
 						</span>
 						{#if slotsDraft}
-							<span class="ps-draftslots"
-								><Chip text="draft" variant="warn" title="Saved to draft; not live until the next release" />
-								live: <span class="mono">{liveSlots.join(', ') || 'none'}</span></span
-							>
+							<span class="ps-draftslots">
+								<Chip text="draft" variant="warn" title="Saved to draft; not live until the next release" />
+								live: <span class="mono">{liveSlots.join(', ') || 'none'}</span>
+							</span>
 						{/if}
 						<button
 							type="button"
 							class="btn sm ps-edit"
 							{...writeAttrs(session, 'job_designer')}
 							aria-label="Edit slots of {s.key}"
-							onclick={() => edit(s)}>Edit slots</button
+							onclick={() => edit(s)}
 						>
+							Edit slots
+						</button>
 					</dd>
 					<dt>Does</dt>
 					<dd>
@@ -153,27 +156,29 @@
 								class="ps-v next"
 								href="{href}?v={l.pending.version}"
 								title={reachText(l.pending, eff, release)}
-								><b class="mono">{l.pending.version}</b> published · next release</a
 							>
+								<b class="mono">{l.pending.version}</b> published · next release
+							</a>
 						{/if}
 						{#each l.shadowed as v (v.version)}
 							<a
 								class="ps-v dim"
 								href="{href}?v={v.version}"
 								title="Base version from the template; the tenant version runs"
-								><b class="mono">{v.version}</b> base · shadowed</a
 							>
+								<b class="mono">{v.version}</b> base · shadowed
+							</a>
 						{/each}
 						{#each l.review as v (v.version)}
-							<a class="ps-v review" href="{href}?v={v.version}"
-								><b class="mono">{v.version}</b> in review · {v.reviewers.length} approved</a
-							>
+							<a class="ps-v review" href="{href}?v={v.version}">
+								<b class="mono">{v.version}</b> in review · {v.reviewers.length} approved
+							</a>
 						{/each}
 						{#each l.drafts as v (v.version)}
-							<a class="ps-v draft" href="{href}?v={v.version}"
-								><b class="mono">{v.version}</b> draft{#if v.test_runs?.length}
-									· {v.test_runs.length} test{v.test_runs.length === 1 ? '' : 's'}{/if}</a
-							>
+							<a class="ps-v draft" href="{href}?v={v.version}">
+								<b class="mono">{v.version}</b> draft{#if v.test_runs?.length}
+									· {v.test_runs.length} test{v.test_runs.length === 1 ? '' : 's'}{/if}
+							</a>
 							{#if v.outside_grant.length}<Chip
 									text="{v.outside_grant.length} outside grant"
 									variant="err"
@@ -187,18 +192,22 @@
 						<span class="mono">{eff.runs_7d.toLocaleString('en-GB')}</span>
 						<span class="muted">cases · 7 days</span>
 						{#if ok}<span class="ps-meter"><Meter value={eff.success_rate ?? 0} cls={ok.cls} /></span><span
-								class="mono">{ok.text}</span
-							>{:else}<span class="muted">no runs yet</span>{/if}
+								class="mono"
+							>
+								{ok.text}
+							</span>{:else}<span class="muted">no runs yet</span>{/if}
 					{:else}
-						<span class="muted"
-							>Publish a version and release it to let the agent handle {s.label.toLowerCase()}.</span
-						>
+						<span class="muted">
+							Publish a version and release it to let the agent handle {s.label.toLowerCase()}.
+						</span>
 					{/if}
 					<a
 						class="ps-activity mono"
 						href="/admin/jobs/{app.job}/journey/{encodeURIComponent(s.activity)}"
-						title="Journey activity this space serves">{s.activity}</a
+						title="Journey activity this space serves"
 					>
+						{s.activity}
+					</a>
 				</footer>
 			</article>
 		{/each}
@@ -230,9 +239,9 @@
 			<p class="note">Base declares: <span class="mono">{sel.base_required.join(', ') || 'none'}</span></p>
 			{#if sel.conflict === 'base_changed'}
 				<div class="callout gap">
-					<strong>Base changed under this override</strong><span
-						>Reverting accepts the base slots and closes the conflict.</span
-					>
+					<strong>Base changed under this override</strong><span>
+						Reverting accepts the base slots and closes the conflict.
+					</span>
 				</div>
 			{/if}
 			<div class="row">
@@ -241,16 +250,20 @@
 					class="btn primary"
 					{...writeAttrs(session, 'job_designer')}
 					disabled={saving || writeAttrs(session, 'job_designer').disabled}
-					onclick={() => save(parse(slots))}>Save slots</button
+					onclick={() => save(parse(slots))}
 				>
+					Save slots
+				</button>
 				{#if sel.overridden}
 					<button
 						type="button"
 						class="btn"
 						{...writeAttrs(session, 'job_designer')}
 						disabled={saving || writeAttrs(session, 'job_designer').disabled}
-						onclick={() => save(null)}>Revert to base</button
+						onclick={() => save(null)}
 					>
+						Revert to base
+					</button>
 				{/if}
 				<button type="button" class="btn" onclick={() => (open = false)}>Cancel</button>
 			</div>

@@ -263,16 +263,16 @@
 		</div>
 
 		<div class="j21-bar" data-testid="queue-bar">
-			<label class="j21-f"
-				>State
+			<label class="j21-f">
+				State
 				<select class="input" bind:value={fState} data-testid="filter-state">
 					<option value="open">Open · {s.open}</option>
 					{#each STATES as st (st)}<option value={st}>{STATE[st].label}</option>{/each}
 					<option value="all">All</option>
 				</select>
 			</label>
-			<label class="j21-f"
-				>Assignee
+			<label class="j21-f">
+				Assignee
 				<select class="input" bind:value={fAssignee} data-testid="filter-assignee">
 					<option value="">Anyone</option>
 					<option value="none">Unassigned</option>
@@ -282,16 +282,16 @@
 					{/each}
 				</select>
 			</label>
-			<label class="j21-f"
-				>SLA
+			<label class="j21-f">
+				SLA
 				<select class="input" bind:value={fBreach} data-testid="filter-breach">
 					<option value="any">Any</option>
 					<option value="breached">Breached · {s.breached}</option>
 					<option value="at_risk">At risk · {s.at_risk}</option>
 				</select>
 			</label>
-			<label class="j21-f"
-				>Reason
+			<label class="j21-f">
+				Reason
 				<select
 					class="input"
 					data-testid="filter-reason"
@@ -299,8 +299,9 @@
 					onchange={(e) => (fReason = (e.currentTarget.value || null) as HandoverReason | null)}
 				>
 					<option value="">Any</option>
-					{#each REASONS as r (r)}<option value={r}>{REASON[r].label} · {s.byReason[r].open} open</option
-						>{/each}
+					{#each REASONS as r (r)}<option value={r}>
+							{REASON[r].label} · {s.byReason[r].open} open
+						</option>{/each}
 				</select>
 			</label>
 		</div>
@@ -316,38 +317,42 @@
 							{@const sla = slaOf(h, now)}
 							{@const c = clockText(activeClock(h, now))}
 							<tr class:j21-over={sla.breached && !isClosed(h.state)} data-testid="row-{h.id}">
-								<td
-									><a
+								<td>
+									<a
 										class="table-action mono"
 										href={rowHref(h)}
 										data-testid="open-{h.id}"
-										title="Open in the workspace">{h.id}</a
-									><span class="cell-title j21-subj">{h.subject}</span><span class="cell-sub"
-										>{customerLabel(h)} · {h.queue}</span
-									></td
-								>
+										title="Open in the workspace"
+									>
+										{h.id}
+									</a><span class="cell-title j21-subj">{h.subject}</span><span class="cell-sub">
+										{customerLabel(h)} · {h.queue}
+									</span>
+								</td>
 								<td><span class="chip {REASON[h.reason].chip}">{REASON[h.reason].label}</span></td>
 								<td><span class="chip {PRIORITY[h.priority]}">{h.priority}</span></td>
-								<td
-									><span class="chip {STATE[h.state].chip}">{STATE[h.state].label}</span><span
-										class="cell-sub">{h.assignee_name ?? 'unassigned'}</span
-									></td
-								>
+								<td>
+									<span class="chip {STATE[h.state].chip}">{STATE[h.state].label}</span><span
+										class="cell-sub"
+									>
+										{h.assignee_name ?? 'unassigned'}
+									</span>
+								</td>
 								<td>
 									<span class="chip {c.variant}" data-testid="sla-{h.id}">{c.text}</span>
-									{#if sla.breached}<span class="chip err" data-testid="breach-{h.id}">SLA breached</span
-										>{/if}
-									<span class="cell-sub"
-										>{h.first_response_at || isClosed(h.state) ? 'resolve' : 'first response'}
-										{activeClock(h, now).due ? `by ${clock(activeClock(h, now).due!)}` : ''}</span
-									>
+									{#if sla.breached}<span class="chip err" data-testid="breach-{h.id}">
+											SLA breached
+										</span>{/if}
+									<span class="cell-sub">
+										{h.first_response_at || isClosed(h.state) ? 'resolve' : 'first response'}
+										{activeClock(h, now).due ? `by ${clock(activeClock(h, now).due!)}` : ''}
+									</span>
 								</td>
 							</tr>
 						{:else}
-							<tr
-								><td colspan="5" class="muted" data-testid="queue-empty">No cases match these filters.</td
-								></tr
-							>
+							<tr>
+								<td colspan="5" class="muted" data-testid="queue-empty">No cases match these filters.</td>
+							</tr>
 						{/each}
 					</tbody>
 				</table>
@@ -396,11 +401,11 @@
 			<div class="tbl-wrap">
 				<table class="tbl" data-testid="policy-table">
 					<thead>
-						<tr
-							><th>Priority</th><th>Live · first response</th><th>Live · resolve</th><th
-								>Draft · first response (min)</th
-							><th>Draft · resolve (min)</th></tr
-						>
+						<tr>
+							<th>Priority</th><th>Live · first response</th><th>Live · resolve</th><th>
+								Draft · first response (min)
+							</th><th>Draft · resolve (min)</th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each PRIORITIES as pr (pr)}
@@ -409,26 +414,26 @@
 								<td>{p.live ? dur(p.live[pr].first_response_min) : '—'}</td>
 								<td>{p.live ? dur(p.live[pr].resolve_min) : '—'}</td>
 								{#if edit}
-									<td
-										><input
+									<td>
+										<input
 											class="input j21-num"
 											type="number"
 											min="1"
 											aria-label="Draft first response minutes, {pr}"
 											bind:value={edit[pr].first_response_min}
 											{...writeAttrs(session, 'support_manager')}
-										/></td
-									>
-									<td
-										><input
+										/>
+									</td>
+									<td>
+										<input
 											class="input j21-num"
 											type="number"
 											min="1"
 											aria-label="Draft resolve minutes, {pr}"
 											bind:value={edit[pr].resolve_min}
 											{...writeAttrs(session, 'support_manager')}
-										/></td
-									>
+										/>
+									</td>
 								{/if}
 							</tr>
 						{/each}
@@ -451,8 +456,10 @@
 					data-testid="save-policy"
 					disabled={!manager || !!editError || !!hoursErr}
 					title={!manager ? writeHint('support_manager') : (editError ?? hoursErr ?? undefined)}
-					onclick={savePolicy}>Save policy to draft</button
+					onclick={savePolicy}
 				>
+					Save policy to draft
+				</button>
 				{#if editError && manager}<span class="muted small">{editError}</span>{/if}
 				{#if p.drafted}<a class="btn" href="/chat">Test in test chat</a>
 					<a class="btn" href="{job}/release">Review &amp; publish</a>{/if}
@@ -491,8 +498,10 @@
 								type="button"
 								disabled={!mayEditStaff}
 								aria-label={`Remove ${nameOf(m)}`}
-								onclick={() => (members = members.filter((x) => x !== m))}>Remove</button
+								onclick={() => (members = members.filter((x) => x !== m))}
 							>
+								Remove
+							</button>
 						</li>
 					{/each}
 				</ul>
@@ -515,19 +524,21 @@
 					onclick={() => {
 						members = [...members, adding];
 						adding = '';
-					}}>Add</button
+					}}
 				>
+					Add
+				</button>
 			</div>
 			<div class="row">
-				<label class="j21-f"
-					>Routing for this job
+				<label class="j21-f">
+					Routing for this job
 					<select class="input" data-testid="staff-mode" bind:value={mode} disabled={!mayEditStaff}>
 						{#each Object.entries(MODE_LABEL) as [k, label] (k)}<option value={k}>{label}</option>{/each}
-					</select></label
-				>
+					</select>
+				</label>
 				{#if mode === 'round_robin'}
-					<label class="j21-f"
-						>Reassign after (seconds, 60 to 86400)
+					<label class="j21-f">
+						Reassign after (seconds, 60 to 86400)
 						<input
 							class="input j21-num"
 							type="number"
@@ -536,19 +547,19 @@
 							data-testid="staff-secs"
 							bind:value={secs}
 							disabled={!mayEditStaff}
-						/></label
-					>
+						/>
+					</label>
 				{/if}
 			</div>
 			{#if mode === 'round_robin' && !secsOk}
 				<p class="muted small" data-testid="staff-secs-error">Enter 60 to 86400 seconds.</p>
 			{/if}
 			{#if staffErr}
-				<Callout kind="err" title="Team not saved"
-					><span data-testid="staff-error"
-						><span class="mono">{staffErr.code}</span> — {staffErr.message}</span
-					></Callout
-				>
+				<Callout kind="err" title="Team not saved">
+					<span data-testid="staff-error">
+						<span class="mono">{staffErr.code}</span> — {staffErr.message}
+					</span>
+				</Callout>
 			{/if}
 			<div class="row">
 				<button
@@ -556,8 +567,10 @@
 					type="button"
 					data-testid="save-staff"
 					disabled={!mayEditStaff || staffBusy || (mode === 'round_robin' && !secsOk)}
-					onclick={saveStaff}>{staffBusy ? 'Saving…' : 'Save staff team'}</button
+					onclick={saveStaff}
 				>
+					{staffBusy ? 'Saving…' : 'Save staff team'}
+				</button>
 			</div>
 		{/snippet}
 	</LoadState>
@@ -573,13 +586,13 @@
 				<ul class="j21-team" data-testid="staff-bindings">
 					{#each workerBindings as b (b.id)}
 						<li data-binding={b.id}>
-							<span
-								><b>{b.label}</b>
+							<span>
+								<b>{b.label}</b>
 								<span class="muted">{BINDING_KIND_LABEL[b.kind] ?? b.kind}</span>
 								<span class="chip {b.enabled ? 'ok' : 'muted'}">{b.enabled ? 'enabled' : 'disabled'}</span>
-								<span class="chip {b.verified ? 'ok' : 'warn'}"
-									>{b.verified ? 'verified' : 'not verified'}</span
-								>
+								<span class="chip {b.verified ? 'ok' : 'warn'}">
+									{b.verified ? 'verified' : 'not verified'}
+								</span>
 							</span>
 							<a class="btn sm" href="{job}/channels" data-testid="staff-binding-edit">Edit</a>
 						</li>

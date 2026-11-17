@@ -77,9 +77,9 @@
 		<ol class="j17-flow" aria-label="Draft lifecycle">
 			<li class="done">
 				<span class="j17-step">1 · Draft</span>
-				<span class="j17-det"
-					>{plural(v.current.changes, 'unpublished change')} · rev {v.current.draft_rev}</span
-				>
+				<span class="j17-det">
+					{plural(v.current.changes, 'unpublished change')} · rev {v.current.draft_rev}
+				</span>
 			</li>
 			<li class="here" aria-current="step">
 				<span class="j17-step">2 · Test</span>
@@ -91,11 +91,11 @@
 			</li>
 			<li>
 				<span class="j17-step">4 · Live</span>
-				<span class="j17-det"
-					>{v.current.base_release === '—'
+				<span class="j17-det">
+					{v.current.base_release === '—'
 						? 'no release applied yet'
-						: `Production runs ${v.current.base_release}`}</span
-				>
+						: `Production runs ${v.current.base_release}`}
+				</span>
 			</li>
 		</ol>
 
@@ -167,9 +167,9 @@
 			>
 				<div class="j17-legend" aria-label="Legend">
 					{#each LEGEND as t (t)}
-						<span class="j17-key t-{t}"
-							><span class="j17-dot" aria-hidden="true">{ICON[t]}</span>{TONE_LABEL[t]}</span
-						>
+						<span class="j17-key t-{t}">
+							<span class="j17-dot" aria-hidden="true">{ICON[t]}</span>{TONE_LABEL[t]}
+						</span>
 					{/each}
 				</div>
 				<div class="tbl-wrap">
@@ -185,9 +185,9 @@
 						<tbody>
 							{#each rows as row, i (row.activity)}
 								{#if i === 0 || rows[i - 1]!.stage !== row.stage}
-									<tr class="j17-stage"
-										><th colspan={STYLES.length + 1} scope="rowgroup">{row.stage_label}</th></tr
-									>
+									<tr class="j17-stage">
+										<th colspan={STYLES.length + 1} scope="rowgroup">{row.stage_label}</th>
+									</tr>
 								{/if}
 								<tr>
 									<th scope="row" class="j17-act">
@@ -244,16 +244,17 @@
 									</div>
 									<div class="chips">
 										{#if c.untested}<span class="chip warn">not tested yet</span>
-										{:else if !c.covered}<span class="chip muted" title="Try it in the test chat"
-												>no scenario covers it</span
-											>
+										{:else if !c.covered}<span class="chip muted" title="Try it in the test chat">
+												no scenario covers it
+											</span>
 										{:else}
-											{#if c.regressions}<span class="chip err">{plural(c.regressions, 'regression')}</span
-												>{/if}
+											{#if c.regressions}<span class="chip err">
+													{plural(c.regressions, 'regression')}
+												</span>{/if}
 											{#if c.fixed}<span class="chip ok">{c.fixed} fixed</span>{/if}
-											{#if !c.regressions && !c.fixed}<span class="chip muted"
-													>{plural(c.covered, 'scenario')}, no change</span
-												>{/if}
+											{#if !c.regressions && !c.fixed}<span class="chip muted">
+													{plural(c.covered, 'scenario')}, no change
+												</span>{/if}
 										{/if}
 									</div>
 								</li>
@@ -277,23 +278,23 @@
 								<tbody>
 									{#each v.runs as r, i (r.id)}
 										<tr>
-											<td
-												>{r.id}
-												<div class="cell-sub">{when(r.at)}</div></td
-											>
-											<td
-												>rev {r.draft_rev}
+											<td>
+												{r.id}
+												<div class="cell-sub">{when(r.at)}</div>
+											</td>
+											<td>
+												rev {r.draft_rev}
 												{#if i === 0 && v.state === 'current'}<span class="chip ok">current</span>{/if}
 												<div class="cell-sub">
 													{plural(r.change_keys.length, 'change')} · #{r.draft_fp}
-												</div></td
-											>
+												</div>
+											</td>
 											<td>{r.summary.pass}/{r.summary.total}</td>
-											<td
-												><span class="chip {r.summary.regressions ? 'err' : 'ok'}"
-													>{r.summary.regressions}</span
-												></td
-											>
+											<td>
+												<span class="chip {r.summary.regressions ? 'err' : 'ok'}">
+													{r.summary.regressions}
+												</span>
+											</td>
 											<td>{r.by_name}</td>
 										</tr>
 									{/each}

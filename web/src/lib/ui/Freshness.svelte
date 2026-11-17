@@ -5,11 +5,11 @@
 </script>
 
 <div class="row">
-	<button class="btn sm" disabled={resource.refreshing} onclick={() => resource.refresh()}
-		>{resource.refreshing ? 'Refreshing…' : 'Refresh'}</button
-	><span class="muted" role="status"
-		>{resource.updatedAt
+	<button class="btn sm" disabled={resource.refreshing} onclick={() => resource.refresh()}>
+		{resource.refreshing ? 'Refreshing…' : 'Refresh'}
+	</button><span class="muted" role="status">
+		{resource.updatedAt
 			? `Last updated ${resource.updatedAt.toLocaleTimeString('en-GB', { hour12: false })}`
-			: 'Not refreshed yet'}</span
-	>
+			: 'Not refreshed yet'}
+	</span>
 </div>

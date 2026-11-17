@@ -53,21 +53,21 @@
 					{@const h = sourceHealth(s, targets, now)}
 					<button class="t9-feed" type="button" onclick={() => onopen(s)} title={HEALTH[h].hint}>
 						<span class="t9-feed-name">{s.name}</span>
-						<span class="t9-feed-meta"
-							>{typeLabel(s.type)} · {scheduleText(s.schedule)}{#if structured(s.type) && s.mapping.length}
-								· {s.mapping.length} fields → {mappedEntities(s).join(', ')}{/if}</span
-						>
+						<span class="t9-feed-meta">
+							{typeLabel(s.type)} · {scheduleText(s.schedule)}{#if structured(s.type) && s.mapping.length}
+								· {s.mapping.length} fields → {mappedEntities(s).join(', ')}{/if}
+						</span>
 						<Chip text={HEALTH[h].text} variant={HEALTH[h].variant} />
 					</button>
 				{/each}
 				{#if f.uploads.jobs}
 					<div class="t9-feed t9-upload">
 						<span class="t9-feed-name">Uploads · {f.uploads.jobs} file{f.uploads.jobs === 1 ? '' : 's'}</span>
-						{#if f.uploads.last}<span class="t9-feed-meta"
-								>last <a href={`/admin/knowledge/jobs?id=${encodeURIComponent(f.uploads.last.id)}`}
-									>{f.uploads.last.source_label}</a
-								>, {ago(f.uploads.last.created_at, now)}</span
-							>{/if}
+						{#if f.uploads.last}<span class="t9-feed-meta">
+								last <a href={`/admin/knowledge/jobs?id=${encodeURIComponent(f.uploads.last.id)}`}>
+									{f.uploads.last.source_label}
+								</a>, {ago(f.uploads.last.created_at, now)}
+							</span>{/if}
 					</div>
 				{:else if !f.sources.length}
 					<div class="t9-feed t9-upload">
@@ -79,12 +79,12 @@
 			<span class="t9-arrow" aria-hidden="true">→</span>
 			<div class="t9-col t9-store">
 				<span class="t9-col-h">Store</span>
-				<a class="mono t9-store-key" href="/admin/knowledge/stores?store={encodeURIComponent(f.store.id)}"
-					>{f.store.key}</a
-				>
-				<span class="t9-feed-meta"
-					>{f.store.label} · {fmt.n(f.store.documents)} docs · updated {ago(f.store.updated_at, now)}</span
-				>
+				<a class="mono t9-store-key" href="/admin/knowledge/stores?store={encodeURIComponent(f.store.id)}">
+					{f.store.key}
+				</a>
+				<span class="t9-feed-meta">
+					{f.store.label} · {fmt.n(f.store.documents)} docs · updated {ago(f.store.updated_at, now)}
+				</span>
 				<span class="t9-chips">
 					<Chip text={FEED[f.feed].text} variant={FEED[f.feed].variant} title={FEED[f.feed].hint} />
 					{#if st && st !== 'ok' && f.feed !== 'gap'}<Chip

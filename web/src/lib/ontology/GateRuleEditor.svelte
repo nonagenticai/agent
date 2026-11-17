@@ -102,14 +102,14 @@
 		<fieldset class="gre-vals" {disabled}>
 			<legend class="label">Answers that fire</legend>
 			{#each options as o (o.key)}
-				<label class="check"
-					><input
+				<label class="check">
+					<input
 						type="checkbox"
 						checked={values.includes(o.key)}
 						onchange={(e) => toggle(o.key, e.currentTarget.checked)}
 					/>
-					{o.label}</label
-				>
+					{o.label}
+				</label>
 			{:else}
 				<span class="muted">Options are built per case; “in” needs a fixed list.</span>
 			{/each}
@@ -118,8 +118,8 @@
 	<p class="gre-sum">
 		<span class="mono">{ruleSummary(type, next)}</span>
 		<span class="muted">
-			· an answer under the minimum confidence is unsure: it does not fire and the fail policy applies.</span
-		>
+			· an answer under the minimum confidence is unsure: it does not fire and the fail policy applies.
+		</span>
 	</p>
 	{#if err && dirty}<p class="gre-err" role="alert">{err}</p>{/if}
 	<button
@@ -127,8 +127,10 @@
 		class="btn sm primary"
 		disabled={disabled || busy || !dirty || !!err}
 		title={disabled ? (disabledReason ?? undefined) : undefined}
-		onclick={() => onsave(next)}>{saveLabel}</button
+		onclick={() => onsave(next)}
 	>
+		{saveLabel}
+	</button>
 	{#if disabled && disabledReason}<span class="muted gre-why">{disabledReason}</span>{/if}
 </div>
 

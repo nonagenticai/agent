@@ -24,9 +24,9 @@
 				{#if s.cut.length}
 					<span class="j8f-cut">
 						<span class="j8f-minus">−{s.cut.length}</span>
-						{#each s.cut as r (opLabel(r.op, r.variant))}<span class="mono j8f-op"
-								>{opLabel(r.op, r.variant)}</span
-							>{/each}
+						{#each s.cut as r (opLabel(r.op, r.variant))}<span class="mono j8f-op">
+								{opLabel(r.op, r.variant)}
+							</span>{/each}
 					</span>
 				{:else}
 					<span class="j8f-none">cuts nothing</span>

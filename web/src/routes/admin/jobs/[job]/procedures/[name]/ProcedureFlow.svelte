@@ -38,16 +38,20 @@
 				Compared with the live <button
 					type="button"
 					class="linkish mono"
-					onclick={() => onpick(compare.version)}>{compare.version}</button
-				>:
+					onclick={() => onpick(compare.version)}
+				>
+					{compare.version}
+				</button>:
 				<span class="fl-mark added">new</span> and <span class="fl-mark changed">changed</span> steps are
 				marked{diff.removed.length ? `, ${diff.removed.length} removed` : ''}.
 			{:else}
 				Same steps as the live <button
 					type="button"
 					class="linkish mono"
-					onclick={() => onpick(compare.version)}>{compare.version}</button
-				>.
+					onclick={() => onpick(compare.version)}
+				>
+					{compare.version}
+				</button>.
 			{/if}
 		</p>
 	{/if}
@@ -139,17 +143,17 @@
 	<div class="fl-ends">
 		<div class="fl-node fl-end ok">
 			<b>Resolved</b>
-			<span class="muted"
-				>The reply is built from what the steps found; the R1 post-gate checks it first.</span
-			>
+			<span class="muted">
+				The reply is built from what the steps found; the R1 post-gate checks it first.
+			</span>
 		</div>
 		<div class="fl-node fl-end hand">
 			<b>Handed over</b>
-			<span class="muted"
-				>A step fails, times out or is refused: staff pick it up in the <a href="{j}/handover"
-					>handover queue</a
-				>.</span
-			>
+			<span class="muted">
+				A step fails, times out or is refused: staff pick it up in the <a href="{j}/handover">
+					handover queue
+				</a>.
+			</span>
 		</div>
 	</div>
 

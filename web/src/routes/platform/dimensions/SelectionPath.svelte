@@ -40,9 +40,9 @@
 		<div class="pick-row">
 			<span class="dim">Departments</span>
 			<span class="chips">
-				{#each sel.selection.departments as d, i (d)}<span class="val"
-						>{d}{#if i === 0}<span class="muted"> · primary</span>{/if}</span
-					>{/each}
+				{#each sel.selection.departments as d, i (d)}<span class="val">
+						{d}{#if i === 0}<span class="muted"> · primary</span>{/if}
+					</span>{/each}
 			</span>
 		</div>
 		{#each dims as d (d.key)}

@@ -39,9 +39,9 @@
 			<li class="lay draft" class:empty={!drafts}>
 				<div class="lay-head">
 					<b>Your draft</b>
-					<span class="chip {drafts ? 'accent' : 'muted'}"
-						>{drafts === null ? '…' : drafts ? `${drafts} unpublished` : 'empty'}</span
-					>
+					<span class="chip {drafts ? 'accent' : 'muted'}">
+						{drafts === null ? '…' : drafts ? `${drafts} unpublished` : 'empty'}
+					</span>
 				</div>
 				<p class="muted">
 					Every save lands here first{draftRev !== null ? ` · draft rev ${draftRev}` : ''}. Only the test chat
@@ -90,16 +90,17 @@
 					<div>
 						<div class="lay-head">
 							<b>{s.label}</b>
-							<span class="chip {s.status === 'current' ? 'accent' : s.status === 'done' ? 'ok' : 'muted'}"
-								>{STATUS[s.status]}</span
-							>
+							<span class="chip {s.status === 'current' ? 'accent' : s.status === 'done' ? 'ok' : 'muted'}">
+								{STATUS[s.status]}
+							</span>
 						</div>
 						<p class="muted">{s.detail}</p>
 						{#if s.links.length}
 							<p class="step-links">
 								{#each s.links as l, j (l.href)}
-									<a href={l.href} class:btn={s.key === 'publish'} class:sm={s.key === 'publish'}>{l.label}</a
-									>{#if j < s.links.length - 1}<span class="muted" aria-hidden="true"> · </span>{/if}
+									<a href={l.href} class:btn={s.key === 'publish'} class:sm={s.key === 'publish'}>
+										{l.label}
+									</a>{#if j < s.links.length - 1}<span class="muted" aria-hidden="true"> · </span>{/if}
 								{/each}
 							</p>
 						{/if}

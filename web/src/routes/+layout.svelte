@@ -205,34 +205,34 @@
 	{#if app.blocked === 'not_provisioned'}
 		<div class="callout err" data-testid="blocked-not-provisioned">
 			<strong>Your account has no Agent tenant yet</strong>
-			<span
-				>You are signed in as {session.me?.display_name ?? session.user?.name}, but Agent has no tenant for
-				this account. Ask your organisation's administrator to add you, then sign in again.</span
-			>
+			<span>
+				You are signed in as {session.me?.display_name ?? session.user?.name}, but Agent has no tenant for
+				this account. Ask your organisation's administrator to add you, then sign in again.
+			</span>
 		</div>
 	{:else if app.blocked === 'tenant_suspended'}
 		<div class="callout err" data-testid="blocked-tenant-suspended">
 			<strong>{session.me?.tenant?.name ?? 'This tenant'} is suspended</strong>
-			<span
-				>Agent is switched off for this tenant: staff pages are closed and customers get the polite
-				“unavailable” reply. Contact your administrator.</span
-			>
+			<span>
+				Agent is switched off for this tenant: staff pages are closed and customers get the polite
+				“unavailable” reply. Contact your administrator.
+			</span>
 		</div>
 		{#if session.superAdmin}
 			<div class="row">
-				<button class="btn primary" type="button" onclick={() => enterSuspended()}
-					>Enter as super admin</button
-				>
+				<button class="btn primary" type="button" onclick={() => enterSuspended()}>
+					Enter as super admin
+				</button>
 				<button class="btn" type="button" onclick={() => switchTenant(null)}>Back to platform</button>
 			</div>
 		{/if}
 	{:else if app.blocked === 'tenant_archived'}
 		<div class="callout err" data-testid="blocked-tenant-archived">
 			<strong>{session.me?.tenant?.name ?? 'This tenant'} is archived</strong>
-			<span
-				>The tenant was offboarded. Archived is terminal: nobody can act in it, its licence is revoked, and
-				its knowledge data is retained.</span
-			>
+			<span>
+				The tenant was offboarded. Archived is terminal: nobody can act in it, its licence is revoked, and its
+				knowledge data is retained.
+			</span>
 		</div>
 		{#if session.superAdmin}
 			<div class="row">
@@ -247,9 +247,9 @@
 		<div class="viewas-banner" role="note" data-testid="view-as-banner">
 			<span>Viewing as: {rolesText(session.effectiveRoles)}</span>
 			<span aria-hidden="true">·</span>
-			<button class="viewas-exit" type="button" data-testid="view-as-exit" onclick={() => leaveViewAs()}
-				>Exit</button
-			>
+			<button class="viewas-exit" type="button" data-testid="view-as-exit" onclick={() => leaveViewAs()}>
+				Exit
+			</button>
 		</div>
 	{/if}
 {/snippet}
@@ -298,8 +298,10 @@
 					aria-label={narrow ? 'Open navigation' : collapsed ? 'Show navigation' : 'Hide navigation'}
 					aria-expanded={narrow ? navOpen : !collapsed}
 					aria-controls={narrow ? 'mobile-navigation' : 'main-navigation'}
-					onclick={navigationToggle}><Icon name="menu" /></button
+					onclick={navigationToggle}
 				>
+					<Icon name="menu" />
+				</button>
 				<Crumbs {crumbs} />
 				<CommandPalette {session} job={app.job} />
 				{#if !narrow}
@@ -339,10 +341,10 @@
 					{:else if access === 'pick_tenant'}
 						<div class="callout info" data-testid="pick-tenant">
 							<strong>Choose a tenant to see this page</strong>
-							<span
-								>You are a super admin in the platform view. {currentTitle ?? 'This page'} acts in one tenant: pick
-								it here.</span
-							>
+							<span>
+								You are a super admin in the platform view. {currentTitle ?? 'This page'} acts in one tenant: pick
+								it here.
+							</span>
 						</div>
 						<TenantPicker />
 					{:else if access === 'no_access'}
@@ -379,14 +381,14 @@
 							compact
 						/>
 					{/if}
-					<label class="field"
-						><span class="label">For</span>
+					<label class="field">
+						<span class="label">For</span>
 						<select class="input" bind:value={viewAsTtl}>
 							<option value={900}>15 minutes</option>
 							<option value={3600}>1 hour</option>
 							<option value={28800}>8 hours</option>
-						</select></label
-					>
+						</select>
+					</label>
 					{#if viewAsError}<p class="err-text" role="alert">{viewAsError}</p>{/if}
 					<div class="row">
 						<button
@@ -394,11 +396,13 @@
 							type="button"
 							data-testid="view-as-apply"
 							disabled={viewAsBusy || !viewAsCatalog.length}
-							onclick={() => applyViewAs()}>View as {rolesText(viewAsDraft)}</button
+							onclick={() => applyViewAs()}
 						>
-						{#if session.viewAs}<button class="btn" type="button" onclick={() => leaveViewAs()}
-								>Exit view-as</button
-							>{/if}
+							View as {rolesText(viewAsDraft)}
+						</button>
+						{#if session.viewAs}<button class="btn" type="button" onclick={() => leaveViewAs()}>
+								Exit view-as
+							</button>{/if}
 					</div>
 				</div>
 			{/if}

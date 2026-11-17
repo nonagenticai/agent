@@ -98,9 +98,9 @@
 						<a href={jobPath(app.job, `/release/${b.release.id}`)}>{releaseLabel(b.release.id)}</a>
 						<Chip text={b.release.state} variant={b.release.state === 'current' ? 'ok' : 'accent'} />
 						{#if b.release.approved_by_name && b.release.approved_at}
-							<span class="muted"
-								>approved by {b.release.approved_by_name} on {day(b.release.approved_at)}</span
-							>
+							<span class="muted">
+								approved by {b.release.approved_by_name} on {day(b.release.approved_at)}
+							</span>
 						{/if}
 					{:else}
 						<span class="muted">No release prepared yet · checking your current setup</span>
@@ -124,8 +124,10 @@
 				<ActionButton
 					primary={!c.mustFix.length}
 					disabledReason={prepareReason}
-					onclick={() => goto(jobPath(app.job, '/release'))}>{L.cut}</ActionButton
+					onclick={() => goto(jobPath(app.job, '/release'))}
 				>
+					{L.cut}
+				</ActionButton>
 				<button type="button" class="btn" onclick={() => board.refresh()}>Re-check</button>
 			</div>
 		</section>
@@ -148,8 +150,8 @@
 					</h3>
 					<p class="muted">
 						These stop a release going live<TechDetail>
-							(<span class="mono">409 release_not_ready</span>)</TechDetail
-						>. Grouped by who can fix them. <MilestoneChip
+							(<span class="mono">409 release_not_ready</span>)
+						</TechDetail>. Grouped by who can fix them. <MilestoneChip
 							milestone="M1"
 							note="M1: apply checks required settings only"
 						/>

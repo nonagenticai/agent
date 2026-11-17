@@ -72,8 +72,10 @@
 							class="btn primary sm"
 							{...superAdminAttrs(session)}
 							disabled={busy || !session.superAdmin}
-							onclick={onreseal}>Move {k.sealed} to {overview.current_kid}</button
+							onclick={onreseal}
 						>
+							Move {k.sealed} to {overview.current_kid}
+						</button>
 					{/if}
 				</article>
 			{:else}

@@ -596,25 +596,25 @@
 			<div class="tbl-wrap">
 				<table class="tbl" data-testid="bindings">
 					<thead>
-						<tr
-							><th>Channel</th><th>Side</th><th>Bound to</th><th>State</th><th aria-label="Binding actions"
-							></th></tr
-						>
+						<tr>
+							<th>Channel</th><th>Side</th><th>Bound to</th><th>State</th><th aria-label="Binding actions"
+							></th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each page.items as b (b.id)}
 							<tr data-testid="binding-row" data-id={b.id} data-kind={b.kind} data-enabled={b.enabled}>
 								<td><b>{b.label}</b><span class="cell-sub">{BINDING_KIND_LABEL[b.kind] ?? b.kind}</span></td>
-								<td data-label="Side"
-									><span class="chip {b.side === 'customer' ? 'cust' : 'work'}"
-										>{b.side === 'customer' ? 'customers' : 'staff'}</span
-									></td
-								>
-								<td data-label="Bound to"
-									><span class="mono cb-id">{b.external_id}</span><span class="cell-sub"
-										>{settingsText(b)}</span
-									></td
-								>
+								<td data-label="Side">
+									<span class="chip {b.side === 'customer' ? 'cust' : 'work'}">
+										{b.side === 'customer' ? 'customers' : 'staff'}
+									</span>
+								</td>
+								<td data-label="Bound to">
+									<span class="mono cb-id">{b.external_id}</span><span class="cell-sub">
+										{settingsText(b)}
+									</span>
+								</td>
 								<td data-label="State">
 									<span class="chip {b.enabled ? 'ok' : 'muted'}">{b.enabled ? 'enabled' : 'disabled'}</span>
 									{#if b.side === 'customer'}<span
@@ -624,24 +624,28 @@
 											title={b.env === 'prod'
 												? 'Live: customers get the released job.'
 												: 'Test: answers with the draft design until published.'}
-											>{b.env === 'prod' ? 'Live' : 'Test'}</span
-										>{/if}
-									{#if !b.verified}<span class="chip warn" data-testid="binding-unverified">not verified</span
-										>{/if}
+										>
+											{b.env === 'prod' ? 'Live' : 'Test'}
+										</span>{/if}
+									{#if !b.verified}<span class="chip warn" data-testid="binding-unverified">
+											not verified
+										</span>{/if}
 									{#if b.kind === 'telegram'}
 										{@const w = b.webhook ?? null}
 										<span
 											class="chip {w ? WEBHOOK_CHIP[w.status] : 'muted'}"
 											data-testid="binding-webhook"
-											data-status={w?.status ?? 'unknown'}>webhook {w?.status ?? 'unknown'}</span
+											data-status={w?.status ?? 'unknown'}
 										>
+											webhook {w?.status ?? 'unknown'}
+										</span>
 										<span class="cell-sub" data-testid="binding-webhook-detail">{webhookDetail(w)}</span>
 									{/if}
-									<span class="cell-sub" data-testid="binding-credential"
-										>{b.has_credential
+									<span class="cell-sub" data-testid="binding-credential">
+										{b.has_credential
 											? `own credential ${b.credential_fpr ?? ''}`.trim()
-											: 'platform credential'}</span
-									>
+											: 'platform credential'}
+									</span>
 								</td>
 								<td class="r cb-act">
 									{#if b.kind === 'web_chat'}
@@ -650,16 +654,20 @@
 											type="button"
 											data-testid="binding-snippet-toggle"
 											aria-expanded={shown === b.id}
-											onclick={() => togglePanel(b)}>Widget</button
+											onclick={() => togglePanel(b)}
 										>
+											Widget
+										</button>
 									{:else}
 										<button
 											class="btn sm"
 											type="button"
 											data-testid="binding-edit"
 											aria-expanded={gEditing === b.id}
-											onclick={() => openGeneric(b)}>Edit</button
+											onclick={() => openGeneric(b)}
 										>
+											Edit
+										</button>
 									{/if}
 									{#if b.kind === 'telegram'}
 										<button
@@ -669,8 +677,9 @@
 											disabled={!may || testing === b.id}
 											title={hint}
 											onclick={() => sendTest(b)}
-											>{testing === b.id ? 'Sending…' : 'Send test message'}</button
 										>
+											{testing === b.id ? 'Sending…' : 'Send test message'}
+										</button>
 									{/if}
 									{#if b.side === 'customer'}
 										<button
@@ -680,8 +689,9 @@
 											disabled={pub.disabled || busy === b.id}
 											title={pub.title}
 											onclick={() => setLive(b, b.env !== 'prod')}
-											>{b.env === 'prod' ? 'Unpublish' : 'Publish'}</button
 										>
+											{b.env === 'prod' ? 'Unpublish' : 'Publish'}
+										</button>
 									{/if}
 									<button
 										class="btn sm"
@@ -689,8 +699,10 @@
 										data-testid="binding-toggle"
 										disabled={!may || busy === b.id}
 										title={hint}
-										onclick={() => toggle(b)}>{b.enabled ? 'Disable' : 'Enable'}</button
+										onclick={() => toggle(b)}
 									>
+										{b.enabled ? 'Disable' : 'Enable'}
+									</button>
 									{#if confirming === b.id}
 										<span class="cb-confirm" role="group" aria-label={`Delete “${b.label}”?`}>
 											<button
@@ -698,8 +710,10 @@
 												type="button"
 												data-testid="binding-delete-confirm"
 												disabled={!may || busy === b.id}
-												onclick={() => remove(b)}>Delete binding</button
+												onclick={() => remove(b)}
 											>
+												Delete binding
+											</button>
 											<button class="btn sm" type="button" onclick={() => (confirming = null)}>Cancel</button>
 										</span>
 									{:else}
@@ -709,8 +723,10 @@
 											data-testid="binding-delete"
 											disabled={!may || busy === b.id}
 											title={hint}
-											onclick={() => (confirming = b.id)}>Delete…</button
+											onclick={() => (confirming = b.id)}
 										>
+											Delete…
+										</button>
 									{/if}
 								</td>
 							</tr>
@@ -718,9 +734,9 @@
 								<tr class="cb-verify-row">
 									<td colspan="5" data-testid="binding-test-result">
 										{#if testError?.id === b.id}
-											<span role="alert"
-												><span class="mono">{testError.code}</span> — {testError.message}</span
-											>
+											<span role="alert">
+												<span class="mono">{testError.code}</span> — {testError.message}
+											</span>
 										{:else if testResult}
 											Test message {testResult.delivered ? 'delivered' : 'not delivered'}: “{testResult.text}”
 										{/if}
@@ -738,8 +754,8 @@
 												void saveGeneric(b);
 											}}
 										>
-											<label class="field"
-												>Label
+											<label class="field">
+												Label
 												<input
 													class="input"
 													bind:value={gLabel}
@@ -749,26 +765,26 @@
 												/>
 											</label>
 											{#if b.kind === 'telegram'}
-												<label class="cb-check"
-													><input
+												<label class="cb-check">
+													<input
 														type="checkbox"
 														bind:checked={gAttCustomer}
 														data-testid="edit-attach-customer"
 														disabled={!may}
-													/> Customers can send photos and PDFs</label
-												>
-												<label class="cb-check"
-													><input
+													/> Customers can send photos and PDFs
+												</label>
+												<label class="cb-check">
+													<input
 														type="checkbox"
 														bind:checked={gAttStaff}
 														data-testid="edit-attach-staff"
 														disabled={!may}
-													/> Staff can send photos and PDFs</label
-												>
+													/> Staff can send photos and PDFs
+												</label>
 											{/if}
 											{#each settingFields(b) as f (f.key)}
-												<label class="field"
-													>{f.label}
+												<label class="field">
+													{f.label}
 													{#if f.area}
 														<textarea
 															class="input mono"
@@ -789,14 +805,14 @@
 											{/each}
 											{#if CREDENTIAL_FIELDS[b.kind].length}
 												<fieldset class="cb-cred" data-testid="edit-credential">
-													<legend
-														>Replace credential{b.has_credential
+													<legend>
+														Replace credential{b.has_credential
 															? ' — one is set; fill in the fields to replace it, leave empty to keep it'
-															: ' — none set'}</legend
-													>
+															: ' — none set'}
+													</legend>
 													{#each CREDENTIAL_FIELDS[b.kind] as f (f.key)}
-														<label class="field"
-															>{f.label}
+														<label class="field">
+															{f.label}
 															<input
 																class="input"
 																type="password"
@@ -821,8 +837,10 @@
 													type="submit"
 													data-testid="edit-save"
 													disabled={!may || gBusy || !gLabel.trim()}
-													title={hint}>{gBusy ? 'Saving…' : 'Save'}</button
+													title={hint}
 												>
+													{gBusy ? 'Saving…' : 'Save'}
+												</button>
 												<button class="btn sm" type="button" onclick={() => (gEditing = null)}>Cancel</button>
 											</div>
 										</form>
@@ -850,13 +868,15 @@
 												href={webChatDemoUrl(b)}
 												target="_blank"
 												rel="noopener"
-												data-testid="webchat-try">Try it</a
+												data-testid="webchat-try"
 											>
+												Try it
+											</a>
 											<span class="muted small">Opens the hosted test page with this widget.</span>
 										{:else}
-											<span class="muted small" data-testid="webchat-try-off"
-												>Enable this binding to try it on the hosted test page.</span
-											>
+											<span class="muted small" data-testid="webchat-try-off">
+												Enable this binding to try it on the hosted test page.
+											</span>
 										{/if}
 										{#if b.env === 'test'}
 											{#if b.settings?.identity?.mode === 'hs256' && b.has_credential}
@@ -868,8 +888,8 @@
 														void tryAsCustomer(b);
 													}}
 												>
-													<label class="field"
-														>Customer reference from your system
+													<label class="field">
+														Customer reference from your system
 														<input
 															class="input"
 															bind:value={tryRef}
@@ -883,15 +903,17 @@
 														class="btn sm"
 														type="submit"
 														data-testid="webchat-try-as"
-														disabled={!may || !tryRef.trim() || tryBusy === b.id}>Try as this customer</button
+														disabled={!may || !tryRef.trim() || tryBusy === b.id}
 													>
-													<span class="muted small"
-														>Opens the test page signed in as that customer, as your site would.</span
-													>
+														Try as this customer
+													</button>
+													<span class="muted small">
+														Opens the test page signed in as that customer, as your site would.
+													</span>
 													{#if tryError?.id === b.id}
-														<span class="small" role="alert" data-testid="webchat-try-as-error"
-															>{tryError.message}</span
-														>
+														<span class="small" role="alert" data-testid="webchat-try-as-error">
+															{tryError.message}
+														</span>
 													{/if}
 												</form>
 											{:else}
@@ -912,8 +934,8 @@
 										>
 											<fieldset class="cb-cred">
 												<legend>What the widget shows</legend>
-												<label class="field"
-													>Title ({display.title.length}/{WEBCHAT_TITLE_MAX})
+												<label class="field">
+													Title ({display.title.length}/{WEBCHAT_TITLE_MAX})
 													<input
 														class="input"
 														bind:value={display.title}
@@ -923,8 +945,8 @@
 														disabled={!may}
 													/>
 												</label>
-												<label class="field"
-													>Greeting ({display.greeting.length}/{WEBCHAT_GREETING_MAX})
+												<label class="field">
+													Greeting ({display.greeting.length}/{WEBCHAT_GREETING_MAX})
 													<textarea
 														class="input"
 														rows="2"
@@ -934,8 +956,8 @@
 														data-testid="widget-greeting"
 														disabled={!may}></textarea>
 												</label>
-												<label class="field"
-													>Colour (#rrggbb)
+												<label class="field">
+													Colour (#rrggbb)
 													<span class="row">
 														<input
 															class="input mono cb-colour"
@@ -954,8 +976,8 @@
 													</span>
 												</label>
 											</fieldset>
-											<label class="field"
-												>Websites that may show this chat (one origin per line)
+											<label class="field">
+												Websites that may show this chat (one origin per line)
 												<textarea
 													class="input mono"
 													rows="2"
@@ -964,42 +986,43 @@
 													data-testid="widget-origins"
 													disabled={!may}></textarea>
 											</label>
-											<label class="cb-check"
-												><input
+											<label class="cb-check">
+												<input
 													type="checkbox"
 													bind:checked={gAttCustomer}
 													data-testid="widget-attach-customer"
 													disabled={!may}
-												/> Customers can send photos and PDFs</label
-											>
-											<label class="cb-check"
-												><input
+												/> Customers can send photos and PDFs
+											</label>
+											<label class="cb-check">
+												<input
 													type="checkbox"
 													bind:checked={gAttStaff}
 													data-testid="widget-attach-staff"
 													disabled={!may}
-												/> Staff can send photos and PDFs</label
-											>
-											<label class="cb-check"
-												><input
+												/> Staff can send photos and PDFs
+											</label>
+											<label class="cb-check">
+												<input
 													type="checkbox"
 													bind:checked={csat}
 													data-testid="widget-csat"
 													disabled={!may}
-												/> Ask the customer for a rating (1–5) when a case closes</label
-											>
+												/> Ask the customer for a rating (1–5) when a case closes
+											</label>
 											<fieldset class="cb-cred" data-testid="widget-turnstile">
 												<legend>Bot check before a chat starts (Cloudflare Turnstile)</legend>
-												<label class="field"
-													>Turnstile
+												<label class="field">
+													Turnstile
 													<select
 														class="input"
 														bind:value={tsMode}
 														data-testid="widget-turnstile-mode"
 														disabled={!may}
 													>
-														{#each TURNSTILE_MODES as m (m.mode)}<option value={m.mode}>{m.label}</option
-															>{/each}
+														{#each TURNSTILE_MODES as m (m.mode)}<option value={m.mode}>
+																{m.label}
+															</option>{/each}
 													</select>
 												</label>
 												{#if tsMode === 'platform'}
@@ -1008,8 +1031,8 @@
 														cannot start — use your own widget there.
 													</p>
 												{:else if tsMode === 'own'}
-													<label class="field"
-														>Site key
+													<label class="field">
+														Site key
 														<input
 															class="input mono"
 															bind:value={tsSiteKey}
@@ -1018,8 +1041,8 @@
 															disabled={!may}
 														/>
 													</label>
-													<label class="field"
-														>Secret key {tsHasSecret ? '(set — leave empty to keep it)' : ''}
+													<label class="field">
+														Secret key {tsHasSecret ? '(set — leave empty to keep it)' : ''}
 														<input
 															class="input"
 															type="password"
@@ -1037,21 +1060,22 @@
 													When your site already knows who is chatting, it can hand the chat a signed proof.
 													The chat then greets the customer by name and never asks who they are.
 												</p>
-												<label class="field"
-													>Identity
+												<label class="field">
+													Identity
 													<select
 														class="input"
 														bind:value={idMode}
 														data-testid="widget-identity-mode"
 														disabled={!may}
 													>
-														{#each IDENTITY_MODES as m (m.mode)}<option value={m.mode}>{m.label}</option
-															>{/each}
+														{#each IDENTITY_MODES as m (m.mode)}<option value={m.mode}>
+																{m.label}
+															</option>{/each}
 													</select>
 												</label>
 												{#if idMode !== 'off'}
-													<label class="field"
-														>Issuer
+													<label class="field">
+														Issuer
 														<input
 															class="input"
 															bind:value={idIssuer}
@@ -1060,8 +1084,8 @@
 															disabled={!may}
 														/>
 													</label>
-													<label class="field"
-														>Sign-in URL (where a visitor who is not signed in goes; optional)
+													<label class="field">
+														Sign-in URL (where a visitor who is not signed in goes; optional)
 														<input
 															class="input"
 															bind:value={idSignIn}
@@ -1070,8 +1094,8 @@
 															disabled={!may}
 														/>
 													</label>
-													<label class="field"
-														>Session hours (1–24; empty = {IDENTITY_DEFAULT_HOURS})
+													<label class="field">
+														Session hours (1–24; empty = {IDENTITY_DEFAULT_HOURS})
 														<input
 															class="input cb-num"
 															type="number"
@@ -1086,8 +1110,8 @@
 													</label>
 												{/if}
 												{#if idMode === 'es256'}
-													<label class="field"
-														>Public keys (JWK, one or two, each with a "kid")
+													<label class="field">
+														Public keys (JWK, one or two, each with a "kid")
 														<textarea
 															class="input mono"
 															rows="6"
@@ -1104,14 +1128,14 @@
 																Save the widget with HS256 first, then make the secret.
 															</p>
 														{/if}
-														<label class="cb-check"
-															><input
+														<label class="cb-check">
+															<input
 																type="checkbox"
 																bind:checked={idRevoke}
 																data-testid="widget-identity-revoke"
 																disabled={!may}
-															/> Also sign out open identified chats</label
-														>
+															/> Also sign out open identified chats
+														</label>
 														<button
 															class="btn sm"
 															type="button"
@@ -1119,36 +1143,41 @@
 															disabled={!may || busy === b.id || b.settings?.identity?.mode !== 'hs256'}
 															title={hint}
 															onclick={() => makeSecret(b)}
-															>{b.has_credential || idSecret?.id === b.id
+														>
+															{b.has_credential || idSecret?.id === b.id
 																? 'Rotate secret'
-																: 'Generate secret'}</button
-														>
-														<span class="muted small"
-															>The old secret keeps working for 24 hours, so you can switch your server over.</span
-														>
+																: 'Generate secret'}
+														</button>
+														<span class="muted small">
+															The old secret keeps working for 24 hours, so you can switch your server over.
+														</span>
 														{#if idSecret && idSecret.id === b.id}
 															<div class="cb-once" role="alert" data-testid="widget-identity-secret-once">
 																<p class="small">
 																	<strong>Copy this secret now.</strong> It is shown only once and cannot be read
 																	again. Put it in your server, never in a web page.
 																</p>
-																<code class="mono" data-testid="widget-identity-secret-value"
-																	>{idSecret.secret}</code
-																>
+																<code class="mono" data-testid="widget-identity-secret-value">
+																	{idSecret.secret}
+																</code>
 																<span class="muted small">Key id {idSecret.kid}</span>
 																<span class="row">
 																	<button
 																		class="btn sm"
 																		type="button"
 																		data-testid="widget-identity-secret-copy"
-																		onclick={() => idSecret && copy(idSecret.secret, 'Secret')}>Copy</button
+																		onclick={() => idSecret && copy(idSecret.secret, 'Secret')}
 																	>
+																		Copy
+																	</button>
 																	<button
 																		class="btn sm"
 																		type="button"
 																		data-testid="widget-identity-secret-done"
-																		onclick={() => (idSecret = null)}>I have saved it</button
+																		onclick={() => (idSecret = null)}
 																	>
+																		I have saved it
+																	</button>
 																</span>
 															</div>
 														{/if}
@@ -1158,8 +1187,8 @@
 											<fieldset class="cb-cred">
 												<legend>Limits ({WEBCHAT_LIMIT_MIN}–{WEBCHAT_LIMIT_MAX}; empty = the default)</legend>
 												{#each WEBCHAT_LIMITS as l (l.key)}
-													<label class="field"
-														>{l.label}
+													<label class="field">
+														{l.label}
 														<input
 															class="input cb-num"
 															type="number"
@@ -1181,8 +1210,10 @@
 													type="submit"
 													data-testid="widget-save"
 													disabled={!may || busy === b.id || !!panelError}
-													title={hint ?? panelError ?? undefined}>Save widget</button
+													title={hint ?? panelError ?? undefined}
 												>
+													Save widget
+												</button>
 												{#if may && panelError}<span class="muted small" role="alert">{panelError}</span>{/if}
 											</div>
 										</form>
@@ -1199,11 +1230,13 @@
 														type="button"
 														data-testid="widget-rotate-confirm"
 														disabled={!may || busy === b.id}
-														onclick={() => rotate(b)}>Rotate key and end open chats</button
+														onclick={() => rotate(b)}
 													>
-													<button class="btn sm" type="button" onclick={() => (rotating = null)}
-														>Cancel</button
-													>
+														Rotate key and end open chats
+													</button>
+													<button class="btn sm" type="button" onclick={() => (rotating = null)}>
+														Cancel
+													</button>
 												</span>
 											{:else}
 												<button
@@ -1212,8 +1245,10 @@
 													data-testid="widget-rotate-start"
 													disabled={!may || busy === b.id}
 													title={hint}
-													onclick={() => (rotating = b.id)}>Rotate key…</button
+													onclick={() => (rotating = b.id)}
 												>
+													Rotate key…
+												</button>
 												<span class="muted small">Use it when the key leaked or the widget is abused.</span>
 											{/if}
 										</div>
@@ -1240,27 +1275,27 @@
 			void add();
 		}}
 	>
-		<label class="field"
-			>Channel
+		<label class="field">
+			Channel
 			<select class="input" bind:value={kind} data-testid="binding-kind" disabled={!may}>
 				{#each BINDING_KINDS as k (k)}<option value={k}>{BINDING_KIND_LABEL[k]}</option>{/each}
 			</select>
 		</label>
-		<label class="field"
-			>Side
+		<label class="field">
+			Side
 			<select class="input" bind:value={side} data-testid="binding-side" disabled={!may}>
-				{#each sides as s (s)}<option value={s}
-						>{s === 'customer' ? 'Customers reach the job here' : 'Staff get handovers here'}</option
-					>{/each}
+				{#each sides as s (s)}<option value={s}>
+						{s === 'customer' ? 'Customers reach the job here' : 'Staff get handovers here'}
+					</option>{/each}
 			</select>
 		</label>
-		<label class="field"
-			>Label
+		<label class="field">
+			Label
 			<input class="input" bind:value={label} data-testid="binding-label" maxlength="120" disabled={!may} />
 		</label>
 		{#if idLabel}
-			<label class="field"
-				>{idLabel}
+			<label class="field">
+				{idLabel}
 				<input class="input mono" bind:value={externalId} data-testid="binding-external-id" disabled={!may} />
 			</label>
 		{:else}
@@ -1268,8 +1303,8 @@
 		{/if}
 
 		{#if kind === 'web_chat'}
-			<label class="field"
-				>Allowed origins (one per line; empty = any)
+			<label class="field">
+				Allowed origins (one per line; empty = any)
 				<textarea
 					class="input mono"
 					rows="2"
@@ -1279,8 +1314,8 @@
 					disabled={!may}></textarea>
 			</label>
 		{:else if side === 'worker' && kind === 'helpdesk'}
-			<label class="field"
-				>Helpdesk URL
+			<label class="field">
+				Helpdesk URL
 				<input
 					class="input mono"
 					placeholder="http://frappe.example.com:8000"
@@ -1289,8 +1324,8 @@
 					disabled={!may}
 				/>
 			</label>
-			<label class="field"
-				>Service user (ticket requester when the customer has no email)
+			<label class="field">
+				Service user (ticket requester when the customer has no email)
 				<input
 					class="input mono"
 					placeholder="agent-bot@helpdesk.example.com"
@@ -1303,14 +1338,14 @@
 
 		{#if CREDENTIAL_FIELDS[kind].length}{:else if CREDENTIAL_FIELDS[kind].length}
 			<fieldset class="cb-cred">
-				<legend
-					>{credentialRequired(kind)
+				<legend>
+					{credentialRequired(kind)
 						? 'Credential (required)'
-						: "Own credential (optional — leave empty to use the platform's)"}</legend
-				>
+						: "Own credential (optional — leave empty to use the platform's)"}
+				</legend>
 				{#each CREDENTIAL_FIELDS[kind] as f (f.key)}
-					<label class="field"
-						>{f.label}
+					<label class="field">
+						{f.label}
 						<input
 							class="input"
 							type="password"
@@ -1331,8 +1366,10 @@
 				type="submit"
 				data-testid="binding-create"
 				disabled={!may || saving || !!missing}
-				title={hint ?? missing ?? undefined}>Add binding</button
+				title={hint ?? missing ?? undefined}
 			>
+				Add binding
+			</button>
 			{#if may && missing}<span class="muted small">{missing}</span>{/if}
 		</div>
 		{#if unavailable}<p class="cb-unavailable small" role="alert" data-testid="binding-unavailable">

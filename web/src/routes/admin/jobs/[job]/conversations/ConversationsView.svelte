@@ -108,30 +108,30 @@
 					<tbody>
 						{#each page.items as r (r.conversation_id)}
 							<tr data-testid="conv-row" data-id={r.conversation_id} data-owner={r.owner.owner}>
-								<td
-									><button type="button" class="table-action" onclick={() => show(r)}
-										>{r.customer_name ?? r.conversation_id}</button
-									>{#if r.party}<span class="cell-sub" data-testid="conv-party"
-											>{partyName(r.party)}{r.party.subject ? ` · ${r.party.subject}` : ''}</span
-										>{/if}{#if r.open_item_id}<span class="cell-sub"
-											><a href="{job}/handover" data-testid="open-item">{r.open_item_id}</a> open in the queue</span
-										>{/if}</td
-								>
-								<td data-label="Channel"
-									><span class="chip muted">{CHANNEL_LABEL[r.channel] ?? r.channel}</span></td
-								>
-								<td data-label="Case"
-									><span class="mono">{r.case_id ?? '—'}</span><span class="cell-sub">{r.status}</span></td
-								>
+								<td>
+									<button type="button" class="table-action" onclick={() => show(r)}>
+										{r.customer_name ?? r.conversation_id}
+									</button>{#if r.party}<span class="cell-sub" data-testid="conv-party">
+											{partyName(r.party)}{r.party.subject ? ` · ${r.party.subject}` : ''}
+										</span>{/if}{#if r.open_item_id}<span class="cell-sub">
+											<a href="{job}/handover" data-testid="open-item">{r.open_item_id}</a> open in the queue
+										</span>{/if}
+								</td>
+								<td data-label="Channel">
+									<span class="chip muted">{CHANNEL_LABEL[r.channel] ?? r.channel}</span>
+								</td>
+								<td data-label="Case">
+									<span class="mono">{r.case_id ?? '—'}</span><span class="cell-sub">{r.status}</span>
+								</td>
 								<td data-label="Answering"><OwnerChip owner={r.owner} meSub={me} /></td>
 								<td data-label="Last message">
 									{#if r.last_message}
-										<span class="cv-last"
-											>{ROLE[r.last_message.role] ?? r.last_message.role}: {r.last_message.text}</span
-										>
-										<span class="cell-sub" title={stamp(r.last_message.at_ms)}
-											>{clock(r.last_message.at_ms)}</span
-										>
+										<span class="cv-last">
+											{ROLE[r.last_message.role] ?? r.last_message.role}: {r.last_message.text}
+										</span>
+										<span class="cell-sub" title={stamp(r.last_message.at_ms)}>
+											{clock(r.last_message.at_ms)}
+										</span>
 									{:else}<span class="muted">—</span>{/if}
 								</td>
 							</tr>
@@ -152,9 +152,9 @@
 		{@const r = row}
 		<div class="stack cv-d">
 			<div class="row">
-				<a class="btn primary" href={workspaceHref(app.job, r.conversation_id)} data-testid="open-workspace"
-					>Open in workspace</a
-				>
+				<a class="btn primary" href={workspaceHref(app.job, r.conversation_id)} data-testid="open-workspace">
+					Open in workspace
+				</a>
 				{#if r.open_item_id}<a href="{job}/handover">Handover {r.open_item_id}</a>{/if}
 			</div>
 			{#if r.party}

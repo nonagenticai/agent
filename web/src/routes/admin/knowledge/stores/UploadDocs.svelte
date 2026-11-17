@@ -96,7 +96,8 @@
 		<label
 			class="btn sm"
 			title={canWrite(session, 'knowledge_manager') ? undefined : writeHint('knowledge_manager')}
-			>Choose files<input
+		>
+			Choose files<input
 				bind:this={input}
 				class="ud-input"
 				type="file"
@@ -105,11 +106,11 @@
 				disabled={!allowed}
 				aria-label="Choose files"
 				onchange={(e) => add((e.currentTarget as HTMLInputElement).files)}
-			/></label
-		>
-		<span class="muted ud-small"
-			>Up to {UPLOAD_MAX_FILES} files, {fmtBytes(UPLOAD_MAX_BYTES)} in total · {UPLOAD_TYPES.join(', ')}</span
-		>
+			/>
+		</label>
+		<span class="muted ud-small">
+			Up to {UPLOAD_MAX_FILES} files, {fmtBytes(UPLOAD_MAX_BYTES)} in total · {UPLOAD_TYPES.join(', ')}
+		</span>
 	</div>
 	{#if files.length}
 		<ul class="list-plain ud-files" data-testid="t7-upload-files">
@@ -117,9 +118,9 @@
 				<li>
 					<span class="mono">{f.name}</span>
 					<span class="muted mono">{fmtBytes(f.size)}</span>
-					<button class="btn sm" type="button" onclick={() => remove(i)} aria-label={`Remove ${f.name}`}
-						>Remove</button
-					>
+					<button class="btn sm" type="button" onclick={() => remove(i)} aria-label={`Remove ${f.name}`}>
+						Remove
+					</button>
 				</li>
 			{/each}
 		</ul>
@@ -144,8 +145,10 @@
 			type="button"
 			{...writeAttrs(session, 'knowledge_manager')}
 			disabled={!allowed || busy || !files.length || problems.length > 0}
-			onclick={upload}>{busy ? 'Uploading…' : 'Upload'}</button
+			onclick={upload}
 		>
+			{busy ? 'Uploading…' : 'Upload'}
+		</button>
 		{#if files.length}<button class="btn sm" type="button" onclick={() => (files = [])}>Clear</button>{/if}
 	</div>
 </details>

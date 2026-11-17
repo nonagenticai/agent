@@ -120,8 +120,10 @@
 			class="btn primary"
 			type="button"
 			{...writeAttrs(session, 'job_designer')}
-			onclick={() => openAdd()}>Add extension activity</button
+			onclick={() => openAdd()}
 		>
+			Add extension activity
+		</button>
 	{/snippet}
 </PageHead>
 
@@ -146,24 +148,24 @@
 					<span class="j4-pins">
 						{#each j.pins as p (p)}<span class="chip muted mono">{p}</span>{/each}
 					</span>
-					<span class="j4-desc"
-						>{t.inherited} activities in {j.stages.length} stages, messages, knowledge kinds and theme → stage priors
-						— authored by the platform, read-only here.</span
-					>
+					<span class="j4-desc">
+						{t.inherited} activities in {j.stages.length} stages, messages, knowledge kinds and theme → stage priors
+						— authored by the platform, read-only here.
+					</span>
 					{#if sa}
-						<a class="j4-link" href="/platform/journeys/{encodeURIComponent(j.industry)}"
-							>Edit the template in the Journey designer →</a
-						>
+						<a class="j4-link" href="/platform/journeys/{encodeURIComponent(j.industry)}">
+							Edit the template in the Journey designer →
+						</a>
 					{/if}
 				</div>
 				<span class="j4-arrow" aria-hidden="true">+</span>
 				<div class="j4-node refined">
 					<span class="j4-step">2 · Your refinements</span>
-					<b
-						>{t.hidden + t.extensions + t.relabelled} change{t.hidden + t.extensions + t.relabelled === 1
+					<b>
+						{t.hidden + t.extensions + t.relabelled} change{t.hidden + t.extensions + t.relabelled === 1
 							? ''
-							: 's'} to the template</b
-					>
+							: 's'} to the template
+					</b>
 					<span class="chips">
 						<span class="chip dead">{t.hidden} hidden</span>
 						<span class="chip cust">{t.extensions} extension{t.extensions === 1 ? '' : 's'}</span>
@@ -186,25 +188,25 @@
 				<div class="j4-node effective">
 					<span class="j4-step">3 · What the agent follows</span>
 					<b>{t.enabled} activities in {t.stagesInScope} stages</b>
-					<span class="j4-desc"
-						>At the next cut this compiles into the gate options: {j.themes.length} themes (GT), {gsOptions}
-						stages (GS) and {t.enabled} activities (GA).</span
-					>
+					<span class="j4-desc">
+						At the next cut this compiles into the gate options: {j.themes.length} themes (GT), {gsOptions}
+						stages (GS) and {t.enabled} activities (GA).
+					</span>
 					<a class="j4-link" href="{base}/gates">Gates →</a>
 				</div>
 				<span class="j4-arrow" aria-hidden="true">→</span>
 				<div class="j4-node live">
 					<span class="j4-step">4 · Customers</span>
 					{#if st?.live_release}
-						<b
-							>Live in <span data-testid="live-release">{releaseLabel(st.live_release.id)}</span>
-							<StatusChip status={st} /></b
-						>
-						<span class="j4-desc"
-							>{t.unreleased
+						<b>
+							Live in <span data-testid="live-release">{releaseLabel(st.live_release.id)}</span>
+							<StatusChip status={st} />
+						</b>
+						<span class="j4-desc">
+							{t.unreleased
 								? 'Customers still see the published journey; publish a release to ship your draft.'
-								: 'Customers see exactly this journey.'}</span
-						>
+								: 'Customers see exactly this journey.'}
+						</span>
 					{:else}
 						<b>Not live yet</b>
 						<span class="j4-desc">No release has been applied to this job.</span>
@@ -220,19 +222,19 @@
 						<span class="j4-big">{t.ready}<span class="muted">/{t.enabled}</span></span>
 						<span class="muted">enabled activities ready</span>
 						<Meter value={t.enabled ? t.ready / t.enabled : 0} cls={t.gaps ? 's-warn' : 's-ok'} />
-						<span class="note"
-							>Ready = every required operation is routed in test and prod (J6) and the knowledge it cites is
-							in your store (J10). Release apply refuses while a required operation is unrouted (K41).</span
-						>
+						<span class="note">
+							Ready = every required operation is routed in test and prod (J6) and the knowledge it cites is
+							in your store (J10). Release apply refuses while a required operation is unrouted (K41).
+						</span>
 					</div>
 					<div class="j4-gaps">
 						{#if gapActs.length}
 							<ul class="j4-gaplist">
 								{#each gapActs as g (g.a.key)}
 									<li>
-										<button type="button" class="linkish" onclick={() => openActivity(g.a)}
-											>{g.a.label}</button
-										>
+										<button type="button" class="linkish" onclick={() => openActivity(g.a)}>
+											{g.a.label}
+										</button>
 										<span class="muted small">{STAGE_LABEL[g.a.stage]}</span>
 										<span class="chips">
 											{#each g.gaps as x (x.what)}
@@ -242,8 +244,9 @@
 													title={x.kind === 'route'
 														? 'Route this operation on Operations & routes'
 														: 'Add documents of this kind to your knowledge store'}
-													>{x.kind === 'route' ? 'no route' : 'missing knowledge'}: {x.what}</a
 												>
+													{x.kind === 'route' ? 'no route' : 'missing knowledge'}: {x.what}
+												</a>
 											{/each}
 										</span>
 									</li>
@@ -307,13 +310,13 @@
 						<span class="j4-key idle">no conversations</span>
 						<span class="muted">· {j.outcomes.window}</span>
 					{:else}
-						<span class="muted"
-							>No live traffic yet — outcomes appear once a release is applied and customers start chatting.</span
-						>
+						<span class="muted">
+							No live traffic yet — outcomes appear once a release is applied and customers start chatting.
+						</span>
 					{/if}
-					<span class="muted"
-						>· <span class="j4-struck">struck</span> = hidden by you · “tenant” = your extension</span
-					>
+					<span class="muted">
+						· <span class="j4-struck">struck</span> = hidden by you · “tenant” = your extension
+					</span>
 				</div>
 				<JourneyGrid
 					stages={j.stages}
@@ -335,8 +338,9 @@
 						{#if st && !s.out_of_scope}
 							<span class="j4-stagemeta">
 								{#if lens === 'ready'}
-									{#if st.gaps}<span class="chip warn">{st.gaps} gap{st.gaps === 1 ? '' : 's'}</span
-										>{:else}<span class="chip ok">ready</span>{/if}
+									{#if st.gaps}<span class="chip warn">
+											{st.gaps} gap{st.gaps === 1 ? '' : 's'}
+										</span>{:else}<span class="chip ok">ready</span>{/if}
 								{:else if lens === 'refined'}
 									{st.enabled} on{st.hidden ? ` · ${st.hidden} hidden` : ''}{st.refined
 										? ` · ${st.refined} refined`
@@ -351,9 +355,9 @@
 						{@const ja = a as JobJourneyActivity}
 						{#if a.refinement !== 'hidden'}
 							{#if lens === 'ready'}
-								{#each activityGaps(ja, j.knowledge_kinds) as g (g.what)}<span class="j4-gapline"
-										>{g.kind === 'route' ? 'no route' : 'missing'}: {g.what}</span
-									>{/each}
+								{#each activityGaps(ja, j.knowledge_kinds) as g (g.what)}<span class="j4-gapline">
+										{g.kind === 'route' ? 'no route' : 'missing'}: {g.what}
+									</span>{/each}
 							{:else if lens === 'live'}
 								{@const o = outcomes.get(a.key)}
 								{#if o}{o.conversations} · {pct(containment(o))} contained{/if}
@@ -378,9 +382,9 @@
 				{#if act.refinement === 'base'}<span class="chip muted">inherited from the template</span>{/if}
 				{#if act.refinement === 'hidden'}<span class="chip dead">hidden by you</span>{/if}
 				{#if act.refinement === 'extension'}<span class="chip cust">tenant extension</span>{/if}
-				{#if act.refinement === 'relabelled'}<span class="chip work"
-						>relabelled · template: {act.base_label}</span
-					>{/if}
+				{#if act.refinement === 'relabelled'}<span class="chip work">
+						relabelled · template: {act.base_label}
+					</span>{/if}
 				{#if act.pending}<span class="chip warn">draft · not published</span>{/if}
 			</div>
 			<p class="muted">Trigger: {act.trigger || '—'}</p>
@@ -408,8 +412,11 @@
 				<div class="chips">
 					{#each act.operations as op (opLabel(op))}<span
 							class="chip {op.required ? 'accent' : 'muted'}"
-							title={op.required ? 'Required' : 'Optional'}>{opLabel(op)} {op.required ? 'R' : 'O'}</span
-						>{/each}
+							title={op.required ? 'Required' : 'Optional'}
+						>
+							{opLabel(op)}
+							{op.required ? 'R' : 'O'}
+						</span>{/each}
 				</div>
 			</section>
 
@@ -425,9 +432,9 @@
 				{/if}
 			</section>
 
-			<a class="btn" href="{base}/journey/{encodeURIComponent(act.key)}"
-				>Open use case (objects × operations, dialogue)</a
-			>
+			<a class="btn" href="{base}/journey/{encodeURIComponent(act.key)}">
+				Open use case (objects × operations, dialogue)
+			</a>
 			<fieldset class="editor-fields">
 				<legend>Refine (saved to draft, published with a release)</legend>
 				<div class="field">
@@ -439,8 +446,9 @@
 							type="button"
 							{...writeAttrs(session, 'job_designer')}
 							onclick={() => act && write(() => api().relabelJobActivity(act!.key, relabel), 'Label saved.')}
-							>Relabel</button
 						>
+							Relabel
+						</button>
 					</div>
 				</div>
 				<div class="row">
@@ -450,8 +458,9 @@
 							type="button"
 							{...writeAttrs(session, 'job_designer')}
 							onclick={() => act && write(() => api().hideJobActivity(act!.key), `${act!.label} hidden.`)}
-							>Hide activity</button
 						>
+							Hide activity
+						</button>
 					{:else if act.refinement === 'hidden' || act.refinement === 'relabelled'}
 						<button
 							class="btn"
@@ -459,8 +468,9 @@
 							{...writeAttrs(session, 'job_designer')}
 							onclick={() =>
 								act && write(() => api().restoreJobActivity(act!.key), 'Template version restored.')}
-							>{act.refinement === 'hidden' ? 'Show again' : 'Reset label'}</button
 						>
+							{act.refinement === 'hidden' ? 'Show again' : 'Reset label'}
+						</button>
 					{:else}
 						<button
 							class="btn danger"
@@ -468,8 +478,9 @@
 							{...writeAttrs(session, 'job_designer')}
 							onclick={() =>
 								act && write(() => api().removeJobExtensionActivity(act!.key), 'Extension removed.')}
-							>Remove extension</button
 						>
+							Remove extension
+						</button>
 					{/if}
 				</div>
 				{#if !can}<p class="note">{writeHint('job_designer')}</p>{/if}
@@ -524,9 +535,9 @@
 			<input id="x-trig" class="input" placeholder="“can you gift wrap it?”" bind:value={nTrigger} />
 		</div>
 		<div class="row">
-			<button class="btn primary" type="button" {...writeAttrs(session, 'job_designer')} onclick={add}
-				>Add extension</button
-			>
+			<button class="btn primary" type="button" {...writeAttrs(session, 'job_designer')} onclick={add}>
+				Add extension
+			</button>
 			<button class="btn" type="button" onclick={() => (addOpen = false)}>Cancel</button>
 		</div>
 	</div>

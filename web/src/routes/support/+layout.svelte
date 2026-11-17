@@ -501,10 +501,10 @@
 {#if denied}
 	<div class="denied" role="alert" aria-label="Support workspace">
 		<strong>Support workspace isn't available for your role</strong>
-		<span class="muted"
-			>It needs the Support agent, Support manager, Operator or Job designer role in this tenant. Ask a tenant
-			admin.</span
-		>
+		<span class="muted">
+			It needs the Support agent, Support manager, Operator or Job designer role in this tenant. Ask a tenant
+			admin.
+		</span>
 	</div>
 {:else}
 	<div class="ws {layout}" class:sel={!!selKey} data-layout={layout} data-pane={phone ? pane : undefined}>
@@ -534,8 +534,9 @@
 							aria-label="Back to inbox"
 							data-testid="back-to-inbox"
 							onclick={backToInbox}
-							><span class="flip" aria-hidden="true"><Icon name="arrow" size={18} /></span> Inbox</button
 						>
+							<span class="flip" aria-hidden="true"><Icon name="arrow" size={18} /></span> Inbox
+						</button>
 					{/if}
 					<span class="meta">
 						{#if caseLabel}<span class="case">{caseLabel}</span>{/if}
@@ -556,16 +557,20 @@
 							type="button"
 							disabled={!!resolveBlock}
 							title={resolveBlock ?? 'Resolve (E)'}
-							onclick={openResolve}>Resolve</button
+							onclick={openResolve}
 						>
+							Resolve
+						</button>
 					{:else}
 						<button
 							class="btn sm primary"
 							type="button"
 							disabled={!!takeBlock || busy}
 							title={takeBlock ?? 'Take (T)'}
-							onclick={take}>Take</button
+							onclick={take}
 						>
+							Take
+						</button>
 					{/if}
 					<div class="more">
 						<button
@@ -574,8 +579,10 @@
 							aria-label="More actions"
 							aria-haspopup="menu"
 							aria-expanded={menuOpen}
-							onclick={() => (menuOpen = !menuOpen)}>⋯</button
+							onclick={() => (menuOpen = !menuOpen)}
 						>
+							⋯
+						</button>
 						{#if menuOpen}
 							<div class="menu" role="menu" aria-label="More actions">
 								<button
@@ -586,15 +593,19 @@
 									onclick={() => {
 										menuOpen = false;
 										assignOpen = true;
-									}}>Assign…</button
+									}}
 								>
+									Assign…
+								</button>
 								<button
 									type="button"
 									role="menuitem"
 									disabled={!!handBackBlock}
 									title={handBackBlock ?? 'Hand back (H)'}
-									onclick={openHandBack}>Hand back</button
+									onclick={openHandBack}
 								>
+									Hand back
+								</button>
 								{#if !identified}<button
 										type="button"
 										role="menuitem"
@@ -604,8 +615,10 @@
 											menuOpen = false;
 											linking = true;
 											showContext();
-										}}>Link customer</button
-									>{/if}
+										}}
+									>
+										Link customer
+									</button>{/if}
 								<button
 									type="button"
 									role="menuitem"
@@ -613,8 +626,10 @@
 										menuOpen = false;
 										detailsOpen = true;
 										showContext();
-									}}>Details</button
+									}}
 								>
+									Details
+								</button>
 								<button
 									type="button"
 									role="menuitem"
@@ -623,8 +638,10 @@
 									onclick={() => {
 										menuOpen = false;
 										feedbackOpen = true;
-									}}>Give feedback</button
+									}}
 								>
+									Give feedback
+								</button>
 							</div>
 						{/if}
 					</div>
@@ -635,8 +652,10 @@
 							bind:this={customerBtn}
 							aria-haspopup="dialog"
 							aria-expanded={customerOpen}
-							onclick={toggleContext}>Customer</button
+							onclick={toggleContext}
 						>
+							Customer
+						</button>
 					{/if}
 				</div>
 				{#if lost}<p class="lost" role="alert">{lost}</p>{/if}

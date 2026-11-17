@@ -75,9 +75,9 @@
 	}
 </script>
 
-<button class="btn primary" type="button" {...superAdminAttrs(session)} onclick={start}
-	>Create connector template</button
->
+<button class="btn primary" type="button" {...superAdminAttrs(session)} onclick={start}>
+	Create connector template
+</button>
 <Drawer bind:open title="Create connector template" dirty={!created && !!(form.key || form.label)}>
 	{#if created}
 		<Callout kind="info" title="Connector template created">
@@ -150,10 +150,11 @@
 					class="input"
 					bind:value={form.wave}
 					disabled={busy}
-					><option value="v1">Customer care</option><option value="next">Next</option><option value="itsd"
-						>IT service desk</option
-					></select
 				>
+					<option value="v1">Customer care</option><option value="next">Next</option><option value="itsd">
+						IT service desk
+					</option>
+				</select>
 			</div>
 			<div class="field">
 				<label for="new-template-transport">Transport</label><select
@@ -161,12 +162,15 @@
 					class="input"
 					bind:value={form.transport}
 					disabled={busy}
-					><option value="rest">REST</option><option value="graphql">GraphQL</option><option value="soap"
-						>SOAP</option
-					><option value="graph">Microsoft Graph</option><option value="ldap">LDAP</option><option value="mcp"
-						>MCP</option
-					><option value="table">Table</option></select
 				>
+					<option value="rest">REST</option><option value="graphql">GraphQL</option><option value="soap">
+						SOAP
+					</option><option value="graph">Microsoft Graph</option><option value="ldap">LDAP</option><option
+						value="mcp"
+					>
+						MCP
+					</option><option value="table">Table</option>
+				</select>
 			</div>
 			<div class="field">
 				<label for="new-template-auth">Authentication</label><select
@@ -174,13 +178,19 @@
 					class="input"
 					bind:value={form.auth_kind}
 					disabled={busy}
-					><option value="none">None</option><option value="api_key_header">API key in header</option><option
-						value="basic">Basic</option
-					><option value="bearer_static">Static bearer token</option><option value="oauth2_client_credentials"
-						>OAuth2 client credentials</option
-					><option value="mtls">Mutual TLS</option><option value="bundle_token">Licence bundle token</option
-					></select
 				>
+					<option value="none">None</option><option value="api_key_header">API key in header</option><option
+						value="basic"
+					>
+						Basic
+					</option><option value="bearer_static">Static bearer token</option><option
+						value="oauth2_client_credentials"
+					>
+						OAuth2 client credentials
+					</option><option value="mtls">Mutual TLS</option><option value="bundle_token">
+						Licence bundle token
+					</option>
+				</select>
 			</div>
 			<div class="field">
 				<label for="new-template-auth-detail">Authentication instructions</label><textarea
@@ -218,9 +228,9 @@
 							class="input mono"
 							bind:value={schema}
 							placeholder={'[{"name":"api_key","label":"API key","secret":true}]'}
-							disabled={busy}></textarea><span class="muted"
-							>Leave blank to use the authentication method's default fields.</span
-						>
+							disabled={busy}></textarea><span class="muted">
+							Leave blank to use the authentication method's default fields.
+						</span>
 					</div>
 				</div>
 			</details>
@@ -236,9 +246,9 @@
 				The draft editor lets you add mappings and test fixtures. Publishing requires validation and passing
 				contract tests.
 			</p>
-			<button class="btn primary" type="submit" disabled={busy}
-				>{busy ? 'Creating…' : 'Create connector template draft'}</button
-			>
+			<button class="btn primary" type="submit" disabled={busy}>
+				{busy ? 'Creating…' : 'Create connector template draft'}
+			</button>
 		</form>
 	{/if}
 </Drawer>

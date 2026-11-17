@@ -186,22 +186,32 @@
 				type="button"
 				class:on={mode === 'reply'}
 				aria-pressed={mode === 'reply'}
-				onclick={() => (mode = 'reply')}>Reply</button
+				onclick={() => (mode = 'reply')}
 			>
+				Reply
+			</button>
 			<button
 				type="button"
 				class:on={mode === 'note'}
 				aria-pressed={mode === 'note'}
-				onclick={() => (mode = 'note')}>Note</button
+				onclick={() => (mode = 'note')}
 			>
+				Note
+			</button>
 		</div>
 		{#if mode === 'note'}
 			<span class="only"><Icon name="lock" size={13} /> Visible to staff only</span>
 		{/if}
 		{#if mode === 'reply' && !canReply && !answering}
-			<button class="btn sm primary take" type="button" disabled={!canTake} title={takeTitle} onclick={onTake}
-				>Take</button
+			<button
+				class="btn sm primary take"
+				type="button"
+				disabled={!canTake}
+				title={takeTitle}
+				onclick={onTake}
 			>
+				Take
+			</button>
 		{/if}
 	</div>
 	{#if picking}<CannedPicker replies={shown} {query} {active} onPick={pick} />{/if}
@@ -233,9 +243,9 @@
 					{:else if c.state === 'error'}
 						<span class="cs" role="alert">{c.error}</span>
 					{/if}
-					<button type="button" class="x" aria-label={`Remove ${c.name}`} onclick={() => drop(c)}
-						><Icon name="x" size={12} /></button
-					>
+					<button type="button" class="x" aria-label={`Remove ${c.name}`} onclick={() => drop(c)}>
+						<Icon name="x" size={12} />
+					</button>
 				</li>
 			{/each}
 		</ul>
@@ -264,11 +274,13 @@
 			aria-describedby={attachOff ? 'attach-why' : undefined}
 			title={attachOff ?? (full ? `Up to ${MAX_FILES} files per reply` : 'Attach photos or PDFs')}
 			disabled={!!attachOff || full}
-			onclick={() => picker?.click()}><Icon name="paperclip" size={15} /></button
+			onclick={() => picker?.click()}
 		>
-		{#if attachOff && writable}<span id="attach-why" class="why" title={attachOff} data-testid="attach-why"
-				>{attachOff}</span
-			>{/if}
+			<Icon name="paperclip" size={15} />
+		</button>
+		{#if attachOff && writable}<span id="attach-why" class="why" title={attachOff} data-testid="attach-why">
+				{attachOff}
+			</span>{/if}
 		<span class="count" class:over aria-live="polite">{draft.length} / {limit}</span>
 		<button class="btn primary" type="button" disabled={!writable || over || empty || blocked} onclick={send}>
 			{mode === 'note' ? 'Add note' : 'Send'}

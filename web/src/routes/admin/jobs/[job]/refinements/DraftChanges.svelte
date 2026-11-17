@@ -69,8 +69,10 @@
 						type="button"
 						disabled={wa.disabled || busy !== ''}
 						title={wa.title}
-						onclick={() => discard('all', '')}>Yes, discard all</button
+						onclick={() => discard('all', '')}
 					>
+						Yes, discard all
+					</button>
 					<button class="btn sm" type="button" onclick={() => (confirmAll = false)}>Keep</button>
 				{:else}
 					<button
@@ -78,8 +80,10 @@
 						type="button"
 						disabled={wa.disabled || busy !== ''}
 						title={wa.title}
-						onclick={() => (confirmAll = true)}>Discard all</button
+						onclick={() => (confirmAll = true)}
 					>
+						Discard all
+					</button>
 				{/if}
 			</div>
 		{/if}
@@ -90,10 +94,10 @@
 	{:else if changes.length === 0}
 		<div class="dc-empty">
 			<b>No unpublished changes.</b>
-			<span class="muted"
-				>Production runs {liveRelease ?? 'the published release'} exactly as designed. Your next save on any design
-				page starts a draft.</span
-			>
+			<span class="muted">
+				Production runs {liveRelease ?? 'the published release'} exactly as designed. Your next save on any design
+				page starts a draft.
+			</span>
 		</div>
 	{:else}
 		<ul class="dc-list">
@@ -103,18 +107,18 @@
 					<div class="dc-where">
 						{#if areaLabel(c.area) !== link.title}<span class="chip muted">{areaLabel(c.area)}</span>{/if}
 						{#if link.href}<a href={link.href}>{link.title}</a>{:else}<span>{link.title}</span>{/if}
-						{#if c.in_release}<span class="chip ok" title="Ships when {c.in_release} is applied"
-								>in {c.in_release}</span
-							>{/if}
+						{#if c.in_release}<span class="chip ok" title="Ships when {c.in_release} is applied">
+								in {c.in_release}
+							</span>{/if}
 					</div>
 					<div class="dc-what">{c.label}</div>
 					<div class="dc-diff">
-						<span class="dc-side"
-							><span class="dc-tag">Live</span><span class="mono">{c.live ?? 'not set'}</span></span
-						>
-						<span class="dc-side draft"
-							><span class="dc-tag">Draft</span><span class="mono">{c.draft ?? 'removed'}</span></span
-						>
+						<span class="dc-side">
+							<span class="dc-tag">Live</span><span class="mono">{c.live ?? 'not set'}</span>
+						</span>
+						<span class="dc-side draft">
+							<span class="dc-tag">Draft</span><span class="mono">{c.draft ?? 'removed'}</span>
+						</span>
 					</div>
 					<div class="dc-meta">
 						<span class="muted">{c.by_name} · {when(c.at)}</span>
@@ -124,8 +128,10 @@
 							aria-label="Discard {c.label}"
 							disabled={wa.disabled || busy !== ''}
 							title={wa.title ?? 'Throw this change away; the live value comes back'}
-							onclick={() => discard(c.id, c.label)}>{busy === c.id ? 'Discarding…' : 'Discard'}</button
+							onclick={() => discard(c.id, c.label)}
 						>
+							{busy === c.id ? 'Discarding…' : 'Discard'}
+						</button>
 					</div>
 				</li>
 			{/each}

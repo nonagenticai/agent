@@ -85,11 +85,11 @@
 					<li>
 						<q>{e.text}</q>
 						{#if e.ref || e.outcome}
-							<span class="j18-exmeta"
-								>{#if e.ref}<span class="mono">{e.ref}</span>{/if}{#if e.ref && e.outcome}
+							<span class="j18-exmeta">
+								{#if e.ref}<span class="mono">{e.ref}</span>{/if}{#if e.ref && e.outcome}
 									·
-								{/if}{e.outcome ?? ''}</span
-							>
+								{/if}{e.outcome ?? ''}
+							</span>
 						{/if}
 					</li>
 				{/each}
@@ -131,8 +131,10 @@
 							type="button"
 							{...writeAttrs(session, 'job_designer')}
 							disabled={!can || busy || !reason.trim()}
-							onclick={reject}>Reject proposal</button
+							onclick={reject}
 						>
+							Reject proposal
+						</button>
 						<button class="btn sm" type="button" onclick={() => (rejecting = false)}>Cancel</button>
 					</div>
 				</div>
@@ -143,15 +145,19 @@
 						type="button"
 						{...writeAttrs(session, 'job_designer')}
 						disabled={!can || busy}
-						onclick={accept}>Accept → save to draft</button
+						onclick={accept}
 					>
+						Accept → save to draft
+					</button>
 					<button
 						class="btn sm"
 						type="button"
 						{...writeAttrs(session, 'job_designer')}
 						disabled={!can || busy}
-						onclick={() => (rejecting = true)}>Reject…</button
+						onclick={() => (rejecting = true)}
 					>
+						Reject…
+					</button>
 				</div>
 				<span class="j18-note muted">Not live on accept: it runs in Test until you publish.</span>
 			{/if}
@@ -162,9 +168,9 @@
 			</span>
 		{:else if p.status === 'discarded'}
 			<span class="chip warn">draft discarded</span>
-			<span class="j18-note"
-				>Accepted {when(p.decided_at)}; the draft change was discarded before publishing.</span
-			>
+			<span class="j18-note">
+				Accepted {when(p.decided_at)}; the draft change was discarded before publishing.
+			</span>
 		{:else}
 			<ol class="j18-life" aria-label="Where this change is">
 				<li class="done">Accepted <span class="muted">{when(p.decided_at)}</span></li>

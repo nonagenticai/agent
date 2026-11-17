@@ -51,18 +51,18 @@
 </script>
 
 <div class="rd-pick">
-	<label class="field"
-		><span class="label">Older run</span>
+	<label class="field">
+		<span class="label">Older run</span>
 		<select class="input" bind:value={baseId}>
 			{#each runs as r (r.id)}<option value={r.id}>{label(r)}</option>{/each}
-		</select></label
-	>
-	<label class="field"
-		><span class="label">Newer run</span>
+		</select>
+	</label>
+	<label class="field">
+		<span class="label">Newer run</span>
 		<select class="input" bind:value={nextId}>
 			{#each runs as r (r.id)}<option value={r.id}>{label(r)}</option>{/each}
-		</select></label
-	>
+		</select>
+	</label>
 </div>
 {#if modes && base && next}
 	{#if base.id === next.id}
@@ -71,11 +71,11 @@
 		<div class="tbl-wrap ph-stack">
 			<table class="tbl" data-testid="ev-diff">
 				<thead>
-					<tr
-						><th>Mode</th><th>Metric</th><th class="r">Older</th><th class="r">Newer</th><th class="r"
-							>Change</th
-						></tr
-					>
+					<tr>
+						<th>Mode</th><th>Metric</th><th class="r">Older</th><th class="r">Newer</th><th class="r">
+							Change
+						</th>
+					</tr>
 				</thead>
 				<tbody>
 					{#each modes as m (m.mode)}
@@ -85,9 +85,9 @@
 								<td data-label="Metric">{x.label}</td>
 								<td class="r mono" data-label="Older">{num(x.key, x.base)}</td>
 								<td class="r mono" data-label="Newer">{num(x.key, x.next)}</td>
-								<td class="r mono {cls(x.key, x.delta)}" data-label="Change"
-									>{x.delta == null ? '—' : `${x.delta > 0 ? '+' : ''}${num(x.key, x.delta)}`}</td
-								>
+								<td class="r mono {cls(x.key, x.delta)}" data-label="Change">
+									{x.delta == null ? '—' : `${x.delta > 0 ? '+' : ''}${num(x.key, x.delta)}`}
+								</td>
 							</tr>
 						{/each}
 					{/each}

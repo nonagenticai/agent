@@ -124,8 +124,9 @@
 			aria-pressed={live}
 			title={live ? `Re-reads every ${LIVE_MS / 1000} s` : 'Live updates paused'}
 			onclick={() => (live = !live)}
-			><span class="j19-pulse" aria-hidden="true"></span>{live ? 'Live' : 'Paused'}</button
 		>
+			<span class="j19-pulse" aria-hidden="true"></span>{live ? 'Live' : 'Paused'}
+		</button>
 		<Freshness resource={load} />
 		<div class="seg" role="group" aria-label="Environment">
 			{#each ENVS as [id, label] (id)}
@@ -134,8 +135,10 @@
 					class="tab"
 					class:on={id === env}
 					aria-pressed={id === env}
-					onclick={() => setEnv(id)}>{label}</button
+					onclick={() => setEnv(id)}
 				>
+					{label}
+				</button>
 			{/each}
 		</div>
 	{/snippet}
@@ -155,13 +158,13 @@
 		<section class="j19-now" data-testid="needs-person" aria-labelledby="j19-now-h">
 			<header class="j19-sec-head">
 				<h2 id="j19-now-h">Needs a person now</h2>
-				<span class="muted"
-					>{people.length
+				<span class="muted">
+					{people.length
 						? `${plural(people.length, 'case')} the agent cannot move on its own`
 						: 'Nothing waits on staff'}{lastMove
 						? ` · ${plural(lastMove.n, 'case')} moved at ${lastMove.at}`
-						: ''}</span
-				>
+						: ''}
+				</span>
 			</header>
 			{#if people.length && writeAttrs(session, 'support_agent').disabled}
 				<p class="muted small" data-testid="support-roles-note">{SUPPORT_ROLES_NOTE}</p>
@@ -178,10 +181,10 @@
 									{#if p.c.env === 'test'}<Chip text="test" variant="warn" />{/if}
 								</div>
 								<span class="j19-why">{p.why}</span>
-								<span class="cell-sub"
-									>{p.c.customer_name} · {identityText(p.c.identity_level)} ·
-									<a href={activityHref(p.c.activity)}>{activityLabel(p.c.activity)}</a></span
-								>
+								<span class="cell-sub">
+									{p.c.customer_name} · {identityText(p.c.identity_level)} ·
+									<a href={activityHref(p.c.activity)}>{activityLabel(p.c.activity)}</a>
+								</span>
 							</div>
 							<div class="j19-person-side">
 								{#if p.sla}
@@ -194,8 +197,10 @@
 										class="btn sm primary"
 										href={p.c.conversation_id
 											? workspaceHref(app.job, p.c.conversation_id)
-											: caseHref(p.c.case_id)}>{p.c.conversation_id ? 'Open in workspace' : 'Open'}</a
+											: caseHref(p.c.case_id)}
 									>
+										{p.c.conversation_id ? 'Open in workspace' : 'Open'}
+									</a>
 								{:else if p.action === 'check'}
 									<a class="btn sm" href={caseHref(p.c.case_id)}>Check the timeline</a>
 								{:else}
@@ -216,10 +221,10 @@
 		<section class="j19-board-wrap" aria-labelledby="j19-board-h">
 			<header class="j19-sec-head">
 				<h2 id="j19-board-h">Who holds the open cases</h2>
-				<span class="muted"
-					>A case moves left to right as it runs: the agent works it, may wait on the customer, hands it to
-					staff, or stops.</span
-				>
+				<span class="muted">
+					A case moves left to right as it runs: the agent works it, may wait on the customer, hands it to
+					staff, or stops.
+				</span>
 			</header>
 			<div class="j19-board" data-testid="case-lanes">
 				{#each LANES as l (l.key)}
@@ -266,23 +271,23 @@
 							<p class="j19-lane-empty">None</p>
 						{/each}
 						{#if rows.length > LANE_CAP}
-							<button class="btn sm" type="button" onclick={() => showLane(FIRST_STATUS[l.key])}
-								>{rows.length - LANE_CAP} more in the list</button
-							>
+							<button class="btn sm" type="button" onclick={() => showLane(FIRST_STATUS[l.key])}>
+								{rows.length - LANE_CAP} more in the list
+							</button>
 						{/if}
 					</section>
 				{/each}
 			</div>
 			<p class="j19-runs">
-				<span
-					><strong>Production</strong> runs the release
-					<span class="mono">{fleet.production.release?.id ?? '(none yet)'}</span></span
-				>
-				<span
-					><strong>Test</strong> runs the draft{fleet.test.unpublished
+				<span>
+					<strong>Production</strong> runs the release
+					<span class="mono">{fleet.production.release?.id ?? '(none yet)'}</span>
+				</span>
+				<span>
+					<strong>Test</strong> runs the draft{fleet.test.unpublished
 						? `: ${plural(fleet.test.unpublished, 'unpublished change')}`
-						: ' (no unpublished changes)'}</span
-				>
+						: ' (no unpublished changes)'}
+				</span>
 				<span class="j19-runs-links">
 					<a href="/chat">Test in test chat</a>
 					<a href={href('/release')}>Review &amp; publish</a>
@@ -295,12 +300,12 @@
 			<header class="j19-sec-head j19-all-head">
 				<div>
 					<h2 id="j19-all-h">All cases</h2>
-					<span class="muted"
-						>Closed in the last 7 days: {cl.closed_7d.resolved} resolved · {cl.closed_7d.not_eligible} not eligible{cl
+					<span class="muted">
+						Closed in the last 7 days: {cl.closed_7d.resolved} resolved · {cl.closed_7d.not_eligible} not eligible{cl
 							.closed_7d.cancelled_offboard
 							? ` · ${cl.closed_7d.cancelled_offboard} cancelled (offboard)`
-							: ''}. Each case keeps the release it started on.</span
-					>
+							: ''}. Each case keeps the release it started on.
+					</span>
 				</div>
 				<div class="j19-filters">
 					<label class="field">
@@ -351,8 +356,10 @@
 				onclick={() => {
 					search = '';
 					void setQuery({ status: '', env: '', q: '', before: '', previous: '' });
-				}}>Clear filters</button
+				}}
 			>
+				Clear filters
+			</button>
 		{:else}
 			No cases yet. They appear when a customer (or a staff test chat) writes to this job.
 		{/if}
@@ -363,37 +370,41 @@
 			<div class="tbl-wrap">
 				<table class="tbl clickable" data-testid="cases-table">
 					<thead>
-						<tr
-							><th>Case</th><th>Request</th><th>Held by · status</th><th>Ran on</th><th>Identity</th><th
-								>Updated</th
-							></tr
-						>
+						<tr>
+							<th>Case</th><th>Request</th><th>Held by · status</th><th>Ran on</th><th>Identity</th><th>
+								Updated
+							</th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each p.items as c (c.case_id)}
 							{@const h = holderOf(c)}
 							{@const rel = releaseNote(c, fleet)}
 							<tr onclick={() => open(c.case_id)} class:j19-fresh={fresh.has(c.case_id)}>
-								<td
-									><a
+								<td>
+									<a
 										class="table-action mono"
 										data-case-link
 										href={caseHref(c.case_id)}
-										onclick={(e) => e.stopPropagation()}>{c.case_id}</a
-									><span class="cell-sub">{c.customer_name}</span></td
-								>
-								<td
-									><span class="cell-title">{c.title}</span><a
+										onclick={(e) => e.stopPropagation()}
+									>
+										{c.case_id}
+									</a><span class="cell-sub">{c.customer_name}</span>
+								</td>
+								<td>
+									<span class="cell-title">{c.title}</span><a
 										class="cell-sub j19-act"
 										href={activityHref(c.activity)}
 										title="What this activity does (J5)"
-										onclick={(e) => e.stopPropagation()}>{activityLabel(c.activity)}</a
-									></td
-								>
-								<td>
-									<span class="j19-held h-{h}"
-										>{h === 'closed' ? 'Closed' : LANES.find((l) => l.key === h)?.label}</span
+										onclick={(e) => e.stopPropagation()}
 									>
+										{activityLabel(c.activity)}
+									</a>
+								</td>
+								<td>
+									<span class="j19-held h-{h}">
+										{h === 'closed' ? 'Closed' : LANES.find((l) => l.key === h)?.label}
+									</span>
 									<Status word={STATUS_WORD[c.status]} label={STATUS_LABEL[c.status]} />
 									{#if c.alert}<Chip
 											text={c.alert}
@@ -401,13 +412,15 @@
 											title="Alert: never retried automatically"
 										/>{/if}
 									{#if c.outcome && !['ok', 'handover', c.status].includes(c.outcome)}<span
-											class="cell-sub mono">{c.outcome}</span
-										>{/if}
-									{#if c.status === 'handover'}<span class="cell-sub"
-											>{c.assignee_name ? `assigned · ${c.assignee_name}` : 'unassigned'}{c.sla
+											class="cell-sub mono"
+										>
+											{c.outcome}
+										</span>{/if}
+									{#if c.status === 'handover'}<span class="cell-sub">
+											{c.assignee_name ? `assigned · ${c.assignee_name}` : 'unassigned'}{c.sla
 												? ` · due ${when(c.sla.due_at)}`
-												: ''}</span
-										>{/if}
+												: ''}
+										</span>{/if}
 								</td>
 								<td>
 									<span class="j19-ran">
@@ -418,9 +431,9 @@
 										/>
 										{#if rel.kind === 'older'}<Chip text="older" variant="muted" title={rel.title} />{/if}
 									</span>
-									<span class="cell-sub mono" title={rel.title}
-										>{c.release_id ?? `draft rev ${c.draft_rev ?? '?'}`}</span
-									>
+									<span class="cell-sub mono" title={rel.title}>
+										{c.release_id ?? `draft rev ${c.draft_rev ?? '?'}`}
+									</span>
 									<span class="cell-sub">{c.channel === 'staff' ? 'staff test chat' : 'Telegram'}</span>
 								</td>
 								<td class="j19-id">{identityText(c.identity_level)}</td>

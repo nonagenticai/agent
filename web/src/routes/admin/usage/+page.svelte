@@ -183,11 +183,11 @@
 			<div class="tbl-wrap">
 				<table class="tbl" data-testid="usage-rows">
 					<thead>
-						<tr
-							><th>{GROUP_LABEL[r.group]}</th><th class="r">Turns</th><th class="r">Share</th><th class="r"
-								>Tokens</th
-							><th class="r">Per turn</th><th>Funding</th></tr
-						>
+						<tr>
+							<th>{GROUP_LABEL[r.group]}</th><th class="r">Turns</th><th class="r">Share</th><th class="r">
+								Tokens
+							</th><th class="r">Per turn</th><th>Funding</th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each r.rows as row (row.key)}
@@ -198,9 +198,10 @@
 								<td class="r">{fmt.n(row.tokens)}</td>
 								<td class="r">{fmt.n(tokensPerTurn(row))}</td>
 								<td>
-									{#each FUNDING.filter(([k]) => row.funding[k] > 0) as [k, label] (k)}<span class="chip ok"
-											>{label} {pct(row.funding[k], row.tokens)}</span
-										>{/each}
+									{#each FUNDING.filter(([k]) => row.funding[k] > 0) as [k, label] (k)}<span class="chip ok">
+											{label}
+											{pct(row.funding[k], row.tokens)}
+										</span>{/each}
 								</td>
 							</tr>
 						{/each}
@@ -236,8 +237,9 @@
 					<span class="kv-val">{fmt.n(r.knowledge?.ingest_jobs ?? 0)}</span>
 					<p>
 						{fmt.n(r.knowledge?.documents ?? 0)} documents · {fmt.n(r.knowledge?.pages ?? 0)} pages
-						{#if r.knowledge?.ingest_failed}· <span class="s-err">{r.knowledge.ingest_failed} failed</span
-							>{/if}
+						{#if r.knowledge?.ingest_failed}· <span class="s-err">
+								{r.knowledge.ingest_failed} failed
+							</span>{/if}
 						<a href="/admin/knowledge/jobs">Ingest jobs →</a>
 					</p>
 				</div>
@@ -247,13 +249,13 @@
 						<ul class="list-plain" data-testid="usage-generator">
 							{#each gen as g (g.id)}
 								<li>
-									<span
-										><a href="/admin/jobs/{g.job}/discovery">Run #{g.id}</a>
-										<span class="cell-sub">{g.output} · {when(g.started_at)}</span></span
-									>
-									<span class="mono nowrap"
-										>{fmt.k(g.tokens)} tok · {FUNDING.find(([k]) => k === g.funding)?.[1]}</span
-									>
+									<span>
+										<a href="/admin/jobs/{g.job}/discovery">Run #{g.id}</a>
+										<span class="cell-sub">{g.output} · {when(g.started_at)}</span>
+									</span>
+									<span class="mono nowrap">
+										{fmt.k(g.tokens)} tok · {FUNDING.find(([k]) => k === g.funding)?.[1]}
+									</span>
 								</li>
 							{/each}
 						</ul>
@@ -269,17 +271,17 @@
 			</div>
 		</Card>
 
-		<Callout kind="info" title="Counts, not prices"
-			><span
-				>Turns and tokens are counted, not priced: the billing model is out of scope here (K52) and
+		<Callout kind="info" title="Counts, not prices">
+			<span>
+				Turns and tokens are counted, not priced: the billing model is out of scope here (K52) and
 				license-authz remains the billing meter. Generator runs are no exception: their tokens are metered as
-				your usage on the same funding lanes, never as a separate bill.</span
-			></Callout
-		>
+				your usage on the same funding lanes, never as a separate bill.
+			</span>
+		</Callout>
 		{#if !r.attributed}
-			<Callout kind="gap" title="Not attributed yet"
-				><span>Rows are attributed to this tenant once its licence is on.</span></Callout
-			>
+			<Callout kind="gap" title="Not attributed yet">
+				<span>Rows are attributed to this tenant once its licence is on.</span>
+			</Callout>
 		{/if}
 	{/snippet}
 </LoadState>

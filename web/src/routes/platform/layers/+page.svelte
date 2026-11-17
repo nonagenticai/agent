@@ -236,9 +236,9 @@
 							<span class="step-n">{i + 1}</span>
 							<span class="step-title">{SCOPE_INFO[scope].title}</span>
 							<span class="step-blurb">{SCOPE_INFO[scope].blurb}</span>
-							<span class="step-foot"
-								>{group.length} layer{group.length === 1 ? '' : 's'} · {tagged} tagged</span
-							>
+							<span class="step-foot">
+								{group.length} layer{group.length === 1 ? '' : 's'} · {tagged} tagged
+							</span>
 						</button>
 					</li>
 				{/each}
@@ -252,8 +252,10 @@
 				Later steps win. There is no tenant layer: tenants refine a released job instead. Try a combination in
 				<a
 					href={selected ? compileHref(selectionOfLayer(selected, known)) : '/platform/compile'}
-					data-testid="layers-compile-link">Compile preview</a
-				>{selected && selected.scope !== 'base' && selected.scope !== 'profile'
+					data-testid="layers-compile-link"
+				>
+					Compile preview
+				</a>{selected && selected.scope !== 'base' && selected.scope !== 'profile'
 					? ` (opens with ${shortName(selected)} selected)`
 					: ''}.
 			</p>
@@ -267,8 +269,9 @@
 					: `${cat.items.length} layers, in compile order`}
 			>
 				{#snippet actions()}
-					{#if scopeFilter}<button class="table-action" onclick={() => (scopeFilter = '')}>Show all</button
-						>{/if}
+					{#if scopeFilter}<button class="table-action" onclick={() => (scopeFilter = '')}>
+							Show all
+						</button>{/if}
 				{/snippet}
 				<nav class="tree" aria-label="Layers">
 					{#each SCOPES.filter((s) => !scopeFilter || s === scopeFilter) as scope (scope)}
@@ -287,10 +290,11 @@
 										choose(layer);
 									}}
 								>
-									<span class="node-name"
-										>{shortName(layer)}{#if layer.extends}<span class="node-ext">extends {layer.extends}</span
-											>{/if}</span
-									>
+									<span class="node-name">
+										{shortName(layer)}{#if layer.extends}<span class="node-ext">
+												extends {layer.extends}
+											</span>{/if}
+									</span>
 									{#if layer.tag}<Chip text={`@${tagVersion(layer.tag)}`} variant="tool" />{:else}<Chip
 											text="draft"
 											variant="warn"
@@ -365,9 +369,9 @@
 							<div class="wide">
 								<dt>Authored by</dt>
 								<dd class="small">
-									{authorsLine || '—'}{#if summary?.last_change_at}<span class="cell-sub"
-											>last change {utc(summary.last_change_at)}</span
-										>{/if}
+									{authorsLine || '—'}{#if summary?.last_change_at}<span class="cell-sub">
+											last change {utc(summary.last_change_at)}
+										</span>{/if}
 								</dd>
 							</div>
 						</dl>
@@ -380,9 +384,9 @@
 									<div class="lin-box base-box">
 										<span class="lin-tier">base archetype</span>
 										<b>{arch?.label ?? selected.extends ?? 'none declared'}</b>
-										{#if arch}<span class="small muted"
-												>{(arch.activities ?? []).slice(0, 3).join(' · ')}</span
-											>{/if}
+										{#if arch}<span class="small muted">
+												{(arch.activities ?? []).slice(0, 3).join(' · ')}
+											</span>{/if}
 									</div>
 									<span class="lin-arrow" aria-hidden="true">→</span>
 									<div class="lin-box">
@@ -392,11 +396,11 @@
 											{@const me = arch.specialised_by.find(
 												(d) => d.industry === selected?.industry && d.key === selected?.department,
 											)}
-											<span class="small muted"
-												>{me?.areas.length
+											<span class="small muted">
+												{me?.areas.length
 													? `areas: ${me.areas.join(', ')}`
-													: 'no areas: the whole department applies'}</span
-											>
+													: 'no areas: the whole department applies'}
+											</span>
 										{/if}
 									</div>
 								</div>
@@ -418,8 +422,9 @@
 												<a
 													class="mono small"
 													href={d.layer_id ? `/platform/layers?layer=${d.layer_id}` : '/platform/layers'}
-													>industry_dept/{d.industry}/{d.key}</a
 												>
+													industry_dept/{d.industry}/{d.key}
+												</a>
 											{:else}
 												<span class="small muted">no industry department yet</span>
 											{/each}
@@ -447,10 +452,10 @@
 							{/if}
 							{#each composes as c (`${c.template.layer}@${c.template.version}`)}
 								<div class="chain" data-testid="compose-chain">
-									<a class="chain-name" href={tagHref(c.template.layer, c.template.version)}
-										>{c.template.label}
-										<span class="mono muted">{c.template.layer}@v{c.template.version}</span></a
-									>
+									<a class="chain-name" href={tagHref(c.template.layer, c.template.version)}>
+										{c.template.label}
+										<span class="mono muted">{c.template.layer}@v{c.template.version}</span>
+									</a>
 									<ol class="pins">
 										{#each c.template.pins as p (p.layer)}
 											{@const l = byLabel(cat.items, p.layer)}
@@ -461,8 +466,10 @@
 													class="pin"
 													class:mine
 													disabled={!l || mine}
-													onclick={() => l && choose(l)}>{p.layer}@v{p.version}</button
+													onclick={() => l && choose(l)}
 												>
+													{p.layer}@v{p.version}
+												</button>
 											</li>
 										{/each}
 									</ol>
@@ -490,23 +497,24 @@
 								aria-label="Filter rows by key"
 								bind:value={search}
 							/>
-							<label class="row"
-								><input type="checkbox" bind:checked={showRetired} /> Show retired revisions</label
-							>
+							<label class="row">
+								<input type="checkbox" bind:checked={showRetired} /> Show retired revisions
+							</label>
 						</div>
 						{#if kinds.length > 1}
 							<div class="kinds" role="group" aria-label="Filter by kind">
-								<button type="button" class="kind" aria-pressed={!kind} onclick={() => (kind = '')}
-									>All</button
-								>
+								<button type="button" class="kind" aria-pressed={!kind} onclick={() => (kind = '')}>
+									All
+								</button>
 								{#each kinds as [k, n] (k)}
 									<button
 										type="button"
 										class="kind"
 										aria-pressed={kind === k}
 										onclick={() => (kind = kind === k ? '' : k)}
-										>{k.replace('_', ' ')} <span>{n}</span></button
 									>
+										{k.replace('_', ' ')} <span>{n}</span>
+									</button>
 								{/each}
 							</div>
 						{/if}
@@ -531,13 +539,13 @@
 										</h3>
 										<div class="tbl-wrap">
 											<table class="tbl dense">
-												<thead
-													><tr
-														><th>Key</th><th
-															>{op === 'add' ? 'Fields' : op === 'patch' ? 'Overrides' : 'Why'}</th
-														><th class="r">Rev</th><th>Author</th><th></th></tr
-													></thead
-												>
+												<thead>
+													<tr>
+														<th>Key</th><th>
+															{op === 'add' ? 'Fields' : op === 'patch' ? 'Overrides' : 'Why'}
+														</th><th class="r">Rev</th><th>Author</th><th></th>
+													</tr>
+												</thead>
 												<tbody>
 													{#each capped as row (row.id)}
 														{@const cascade = cascadeOf(row, current)}
@@ -550,10 +558,10 @@
 														>
 															<td>
 																<code class="key">{row.key}</code>
-																<span class="cell-sub"
-																	>{row.kind.replace('_', ' ')} · {row.op} ·
-																	<span class="mono">{row.id}</span></span
-																>
+																<span class="cell-sub">
+																	{row.kind.replace('_', ' ')} · {row.op} ·
+																	<span class="mono">{row.id}</span>
+																</span>
 																{#if !row.is_current}<Chip text="retired" />{/if}
 																{#if untaggedRow(row) && selected?.tag}<Chip
 																		text="draft"
@@ -562,59 +570,59 @@
 															</td>
 															<td>
 																{#if row.op !== 'add' && ov}
-																	<span class="small"
-																		>{#if row.op === 'patch'}<strong
-																				>{Object.keys(row.fields).join(', ')}</strong
-																			>
+																	<span class="small">
+																		{#if row.op === 'patch'}<strong>
+																				{Object.keys(row.fields).join(', ')}
+																			</strong>
 																			from{:else}removes it from{/if}
 																		{#if ov.target && ov.target_row_id}<button
 																				type="button"
 																				class="table-action"
 																				onclick={() =>
 																					ov.target && ov.target_row_id && jump(ov.target, ov.target_row_id)}
-																				>{layerLabel(ov.target)}</button
-																			>{:else}<span class="op-del"
-																				>{row.op === 'patch'
+																			>
+																				{layerLabel(ov.target)}
+																			</button>{:else}<span class="op-del">
+																				{row.op === 'patch'
 																					? 'nothing: no earlier layer adds it'
-																					: 'this layer (it was added here, then retired)'}</span
-																			>{/if}</span
-																	>
+																					: 'this layer (it was added here, then retired)'}
+																			</span>{/if}
+																	</span>
 																{/if}
 																<span class="cell-sub">{fieldLine(row)}</span>
 																{#if cascade.length}
-																	<span class="cell-sub cascade" data-testid="cascade"
-																		>cascades to {cascade.length} row{cascade.length === 1 ? '' : 's'}: {cascade
+																	<span class="cell-sub cascade" data-testid="cascade">
+																		cascades to {cascade.length} row{cascade.length === 1 ? '' : 's'}: {cascade
 																			.map((c) => c.key)
-																			.join(', ')}</span
-																	>
+																			.join(', ')}
+																	</span>
 																{/if}
 																<details>
-																	<summary class="muted small"
-																		>{Object.keys(row.fields).length} field{Object.keys(row.fields).length ===
+																	<summary class="muted small">
+																		{Object.keys(row.fields).length} field{Object.keys(row.fields).length ===
 																		1
 																			? ''
-																			: 's'}</summary
-																	>
+																			: 's'}
+																	</summary>
 																	<JsonView value={row.fields} />
 																</details>
 															</td>
 															<td class="r mono">r{row.rev}</td>
-															<td class="muted"
-																>{row.author}<span class="cell-sub mono">{utc(row.created_at)}</span></td
-															>
-															<td
-																><button class="table-action" onclick={() => revisions(row)}>History</button
-																></td
-															>
+															<td class="muted">
+																{row.author}<span class="cell-sub mono">{utc(row.created_at)}</span>
+															</td>
+															<td>
+																<button class="table-action" onclick={() => revisions(row)}>History</button>
+															</td>
 														</tr>
 													{/each}
 												</tbody>
 											</table>
 										</div>
 										{#if capped.length < list.length}
-											<button type="button" class="btn more" onclick={() => (allAdds = true)}
-												>Show all {list.length} adds</button
-											>
+											<button type="button" class="btn more" onclick={() => (allAdds = true)}>
+												Show all {list.length} adds
+											</button>
 										{/if}
 									</section>
 								{/if}

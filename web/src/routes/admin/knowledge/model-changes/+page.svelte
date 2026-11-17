@@ -141,10 +141,9 @@
 			>
 				<div class="tbl-wrap">
 					<table class="tbl" data-testid="model-changes">
-						<thead
-							><tr><th>Capability</th><th>From → to</th><th>Rebuild</th><th>Jobs</th><th>Created</th></tr
-							></thead
-						>
+						<thead>
+							<tr><th>Capability</th><th>From → to</th><th>Rebuild</th><th>Jobs</th><th>Created</th></tr>
+						</thead>
 						<tbody>
 							{#each changes as ch (ch.id)}
 								<tr
@@ -165,11 +164,11 @@
 										</span>
 										{#if open(ch)}<span class="cell-sub">{open(ch)} open</span>{/if}
 									</td>
-									<td
-										><span class="cell-sub">{when(ch.created_at)}</span><span class="cell-sub"
-											>by {ch.created_by}</span
-										></td
-									>
+									<td>
+										<span class="cell-sub">{when(ch.created_at)}</span><span class="cell-sub">
+											by {ch.created_by}
+										</span>
+									</td>
 								</tr>
 							{/each}
 						</tbody>
@@ -198,9 +197,9 @@
 								<header class="mc-job-head">
 									<a class="mono" href={jobPath(j.job)}><b>{j.job}</b></a>
 									<Chip text={STATE[j.state].text} variant={STATE[j.state].variant} />
-									<span class="cell-sub"
-										>{j.live_release ? `live: ${j.live_release}` : 'never published'} · draft rev {j.draft_rev}</span
-									>
+									<span class="cell-sub">
+										{j.live_release ? `live: ${j.live_release}` : 'never published'} · draft rev {j.draft_rev}
+									</span>
 								</header>
 								<table class="tbl mc-stores">
 									<thead><tr><th>Store</th><th>Now</th><th>New</th><th>Passages</th></tr></thead>
@@ -208,11 +207,11 @@
 										{#each j.stores as st (st.store_id)}
 											<tr>
 												<td class="mono">{st.store ?? '(store gone)'}</td>
-												<td class="mono"
-													>{st.from_generation
+												<td class="mono">
+													{st.from_generation
 														? `${model(st.from_generation.models[ch.slot])} · ${st.from_generation.build}`
-														: '—'}</td
-												>
+														: '—'}
+												</td>
 												<td>
 													{#if st.to_generation}
 														<span class="mono">{model(st.to_generation.models[ch.slot])}</span>
@@ -224,26 +223,26 @@
 																	? 'err'
 																	: 'accent'}
 														/>
-														{#if st.to_generation.error}<span class="cell-sub err-text"
-																>{st.to_generation.error}</span
-															>{/if}
+														{#if st.to_generation.error}<span class="cell-sub err-text">
+																{st.to_generation.error}
+															</span>{/if}
 													{:else}<span class="muted">not rebuilt yet</span>{/if}
 												</td>
 												<td>{st.chunks == null ? '—' : fmt.n(st.chunks)}</td>
 											</tr>
 											{#if st.missing_originals.length}
-												<tr
-													><td colspan="4"
-														><span class="cell-sub warn-text" data-testid="missing-originals"
-															>No original kept for {st.missing_originals.length} document{st
-																.missing_originals.length === 1
+												<tr>
+													<td colspan="4">
+														<span class="cell-sub warn-text" data-testid="missing-originals">
+															No original kept for {st.missing_originals.length} document{st.missing_originals
+																.length === 1
 																? ''
 																: 's'}: {st.missing_originals
 																.map((d) => d.title ?? d.document_id)
-																.join(', ')}. Re-upload or re-sync them after accepting.</span
-														></td
-													></tr
-												>
+																.join(', ')}. Re-upload or re-sync them after accepting.
+														</span>
+													</td>
+												</tr>
 											{/if}
 										{/each}
 									</tbody>
@@ -256,19 +255,21 @@
 								{#if missing[key]}
 									<div class="callout gap" role="alertdialog" aria-label="Accept without originals">
 										<strong>{missing[key]!.length} document(s) have no kept original</strong>
-										<span
-											>Accepting leaves them out of the new generation until you re-upload or re-sync them:
-											{missing[key]!.map((d) => d.title ?? d.document_id).join(', ')}.</span
-										>
-										<span
-											><button
+										<span>
+											Accepting leaves them out of the new generation until you re-upload or re-sync them:
+											{missing[key]!.map((d) => d.title ?? d.document_id).join(', ')}.
+										</span>
+										<span>
+											<button
 												class="btn sm"
 												type="button"
 												{...writeAttrs(session, 'knowledge_manager')}
 												disabled={!canWrite || busy === key}
-												onclick={() => accept(ch, j, true)}>Accept anyway</button
-											></span
-										>
+												onclick={() => accept(ch, j, true)}
+											>
+												Accept anyway
+											</button>
+										</span>
 									</div>
 								{/if}
 								<div class="mc-actions">
@@ -278,8 +279,10 @@
 											type="button"
 											{...writeAttrs(session, 'knowledge_manager')}
 											disabled={!canWrite || busy === key}
-											onclick={() => rebuild(ch, j)}>{MODEL_REBUILD_LABEL[ch.rebuild]}</button
+											onclick={() => rebuild(ch, j)}
 										>
+											{MODEL_REBUILD_LABEL[ch.rebuild]}
+										</button>
 									{:else if j.state === 'reembedding'}
 										<button class="btn sm" type="button" onclick={() => show(ch.id)}>Refresh</button>
 									{/if}
@@ -291,8 +294,10 @@
 											{...writeAttrs(session, 'knowledge_manager')}
 											disabled={!canWrite || busy === key || j.state !== 'ready'}
 											title={j.state === 'ready' ? undefined : 'Rebuild first: every store must be ready.'}
-											onclick={() => accept(ch, j)}>Accept into draft</button
+											onclick={() => accept(ch, j)}
 										>
+											Accept into draft
+										</button>
 									{:else if j.state === 'accepted'}
 										<a class="btn sm" href={jobPath(j.job, '/release')}>Publish the job</a>
 									{/if}

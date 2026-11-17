@@ -38,9 +38,9 @@
 			{#each chosen as d, i (d.key)}
 				<li data-key={d.key}>
 					<span class="pos">{i + 1}</span>
-					<span class="name" title={d.note}
-						>{d.label}{#if d.extends}<span class="muted small"> · extends {d.extends}</span>{/if}</span
-					>
+					<span class="name" title={d.note}>
+						{d.label}{#if d.extends}<span class="muted small"> · extends {d.extends}</span>{/if}
+					</span>
 					{#if i === 0}<span class="primary-tag">primary</span>{/if}
 					<span class="actions">
 						{#if i > 0}
@@ -49,15 +49,19 @@
 								type="button"
 								class="btn small"
 								aria-label={`Move ${d.label} up`}
-								onclick={() => moveUp(i)}>↑</button
+								onclick={() => moveUp(i)}
 							>
+								↑
+							</button>
 						{/if}
 						<button
 							type="button"
 							class="btn small"
 							aria-label={`Remove ${d.label}`}
-							onclick={() => onchange(value.filter((k) => k !== d.key))}>Remove</button
+							onclick={() => onchange(value.filter((k) => k !== d.key))}
 						>
+							Remove
+						</button>
 					</span>
 				</li>
 			{/each}
@@ -75,8 +79,10 @@
 					class="btn small"
 					title={d.note}
 					data-key={d.key}
-					onclick={() => onchange([...value, d.key])}>+ {d.label}</button
+					onclick={() => onchange([...value, d.key])}
 				>
+					+ {d.label}
+				</button>
 			{/each}
 		</div>
 	{:else if !options.length}

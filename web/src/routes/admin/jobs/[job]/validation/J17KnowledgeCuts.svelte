@@ -113,14 +113,18 @@
 				class="btn"
 				type="button"
 				{...writeAttrs(session, 'job_designer')}
-				onclick={() => (importOpen = true)}>Import CSV</button
+				onclick={() => (importOpen = true)}
 			>
+				Import CSV
+			</button>
 			<button
 				class="btn"
 				type="button"
 				{...writeAttrs(session, 'job_designer')}
-				onclick={() => (addOpen = true)}>Add question</button
+				onclick={() => (addOpen = true)}
 			>
+				Add question
+			</button>
 		</div>
 	</div>
 
@@ -196,19 +200,19 @@
 								<tbody>
 									{#each cut.rows as r (r.id)}
 										<tr class:rej={r.verdict === 'rejected'}>
-											<td
-												><div class="cell-title">{r.question}</div>
-												<div class="cell-sub mono">{r.activity}</div></td
-											>
+											<td>
+												<div class="cell-title">{r.question}</div>
+												<div class="cell-sub mono">{r.activity}</div>
+											</td>
 											<td>{r.expected}</td>
 											<td class="mono small">{r.reference}</td>
 											<td>
 												{#if r.response}
 													{r.response}
 													<div class="chips cited">
-														{#each r.cited as c (c)}<span class="chip {c === r.reference ? 'ok' : 'warn'}"
-																>{c}</span
-															>{:else}<span class="chip err">no citation</span>{/each}
+														{#each r.cited as c (c)}<span class="chip {c === r.reference ? 'ok' : 'warn'}">
+																{c}
+															</span>{:else}<span class="chip err">no citation</span>{/each}
 													</div>
 												{:else}<span class="muted">Not run on this cut</span>{/if}
 											</td>
@@ -218,8 +222,10 @@
 														? 'ok'
 														: r.verdict === 'rejected'
 															? 'err'
-															: 'muted'}">{r.verdict}</span
+															: 'muted'}"
 												>
+													{r.verdict}
+												</span>
 												{#if r.reason}<div class="cell-sub err-text">{REASON[r.reason]}</div>{/if}
 												{#if r.judged_by}<div class="cell-sub">
 														by {r.judged_by === 'judge' ? 'LLM judge' : r.judged_by}
@@ -232,8 +238,10 @@
 															class="btn sm danger"
 															type="button"
 															aria-label="Confirm delete of question {r.question}"
-															onclick={() => removeQuestion(r)}>Delete question</button
+															onclick={() => removeQuestion(r)}
 														>
+															Delete question
+														</button>
 														<button class="btn sm" type="button" onclick={() => (deleting = '')}>Keep</button>
 													{:else}
 														<button
@@ -241,33 +249,40 @@
 															type="button"
 															aria-label="Edit question {r.question}"
 															{...writeAttrs(session, 'job_designer')}
-															onclick={() => (editing = r)}>Edit</button
+															onclick={() => (editing = r)}
 														>
+															Edit
+														</button>
 														<button
 															class="btn sm"
 															type="button"
 															aria-label="Delete question {r.question}"
 															{...writeAttrs(session, 'job_designer')}
-															onclick={() => (deleting = r.id)}>Delete</button
+															onclick={() => (deleting = r.id)}
 														>
+															Delete
+														</button>
 													{/if}
 												</div>
 												{#if r.response}
 													{#if rejecting === r.id}
 														<div class="stack tight">
 															<select class="input" aria-label="Reject reason" bind:value={reason}>
-																{#each Object.entries(REASON) as [k, l] (k)}<option value={k}>{l}</option
-																	>{/each}
+																{#each Object.entries(REASON) as [k, l] (k)}<option value={k}>
+																		{l}
+																	</option>{/each}
 															</select>
 															<div class="row">
 																<button
 																	class="btn sm danger"
 																	type="button"
-																	onclick={() => verdict(cut.release.id, r.id, 'rejected')}>Reject</button
+																	onclick={() => verdict(cut.release.id, r.id, 'rejected')}
 																>
-																<button class="btn sm" type="button" onclick={() => (rejecting = '')}
-																	>Cancel</button
-																>
+																	Reject
+																</button>
+																<button class="btn sm" type="button" onclick={() => (rejecting = '')}>
+																	Cancel
+																</button>
 															</div>
 														</div>
 													{:else}
@@ -276,14 +291,18 @@
 																class="btn sm"
 																type="button"
 																{...writeAttrs(session, 'release_manager')}
-																onclick={() => verdict(cut.release.id, r.id, 'pass')}>Pass</button
+																onclick={() => verdict(cut.release.id, r.id, 'pass')}
 															>
+																Pass
+															</button>
 															<button
 																class="btn sm"
 																type="button"
 																{...writeAttrs(session, 'release_manager')}
-																onclick={() => (rejecting = r.id)}>Reject…</button
+																onclick={() => (rejecting = r.id)}
 															>
+																Reject…
+															</button>
 														</div>
 													{/if}
 												{/if}
@@ -322,9 +341,14 @@
 		</div>
 		<p class="note">Added to the current and approved cuts; earlier cuts keep their graded set.</p>
 		<div class="row">
-			<button class="btn primary" type="button" {...writeAttrs(session, 'job_designer')} onclick={addQuestion}
-				>Add question</button
+			<button
+				class="btn primary"
+				type="button"
+				{...writeAttrs(session, 'job_designer')}
+				onclick={addQuestion}
 			>
+				Add question
+			</button>
 			<button class="btn" type="button" onclick={() => (addOpen = false)}>Cancel</button>
 		</div>
 	</div>

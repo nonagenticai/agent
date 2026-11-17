@@ -289,9 +289,9 @@
 					<span class="mono">{release ?? 'the published release'}</span>{/if}
 			{:else}Your unpublished changes{/if}
 		</span>
-		<span class="l2-mode-sub muted"
-			>draft {rev} · test systems ({prof?.test_systems ?? 'demo-retail-stub, shopify-test'})</span
-		>
+		<span class="l2-mode-sub muted">
+			draft {rev} · test systems ({prof?.test_systems ?? 'demo-retail-stub, shopify-test'})
+		</span>
 	</button>
 	<button
 		type="button"
@@ -305,17 +305,17 @@
 	>
 		<span class="l2-mode-name">Live <span class="chip warn sm">production</span></span>
 		{#if noLive}
-			<span class="l2-mode-sub"
-				><b>Not live yet</b>: this job has no release. Test the draft, then publish it.</span
-			>
+			<span class="l2-mode-sub">
+				<b>Not live yet</b>: this job has no release. Test the draft, then publish it.
+			</span>
 			<span class="l2-mode-sub muted">no production systems are reached</span>
 		{:else}
-			<span class="l2-mode-sub"
-				>The published release <span class="mono">{release ?? '—'}</span>: what {who}s get today</span
-			>
-			<span class="l2-mode-sub muted"
-				>live systems ({prof?.live_systems ?? 'shopify-prod, …'}) · writes are real</span
-			>
+			<span class="l2-mode-sub">
+				The published release <span class="mono">{release ?? '—'}</span>: what {who}s get today
+			</span>
+			<span class="l2-mode-sub muted">
+				live systems ({prof?.live_systems ?? 'shopify-prod, …'}) · writes are real
+			</span>
 		{/if}
 	</button>
 </div>
@@ -338,30 +338,31 @@
 {#if draft.value.state === 'ok' && draft.value.data.count > 0}
 	<section class="l2-play" data-testid="changes-in-play" aria-label="Unpublished changes">
 		<header>
-			<b
-				>{env === 'test' ? 'In play in this chat' : 'Not in play — Live runs without these'} · {draft.value
-					.data.count} unpublished change{draft.value.data.count === 1 ? '' : 's'}</b
-			>
-			<span class="muted"
-				>{env === 'test'
+			<b>
+				{env === 'test' ? 'In play in this chat' : 'Not in play — Live runs without these'} · {draft.value
+					.data.count} unpublished change{draft.value.data.count === 1 ? '' : 's'}
+			</b>
+			<span class="muted">
+				{env === 'test'
 					? `${changes.filter((c) => exercised.has(c.key)).length} tried in this conversation`
-					: 'switch to Draft to try them'}</span
-			>
+					: 'switch to Draft to try them'}
+			</span>
 		</header>
 		<ul>
 			{#each changes as c (c.id)}
 				{@const p = promptFor(c)}
 				{@const tried = exercised.has(c.key)}
 				<li class:tried>
-					<span class="l2-play-state" aria-label={tried ? 'tried' : 'not tried yet'}>{tried ? '✓' : '○'}</span
-					>
+					<span class="l2-play-state" aria-label={tried ? 'tried' : 'not tried yet'}>
+						{tried ? '✓' : '○'}
+					</span>
 					<span class="l2-play-main">
-						<span title="live: {c.live ?? '—'} → draft: {c.draft ?? '—'}"
-							>{c.label} <span class="chip sm">{c.page}</span></span
-						>
-						<small class="muted"
-							>{c.in_release ? `Already in ${c.in_release} (approved). ` : ''}{p.hint}</small
-						>
+						<span title="live: {c.live ?? '—'} → draft: {c.draft ?? '—'}">
+							{c.label} <span class="chip sm">{c.page}</span>
+						</span>
+						<small class="muted">
+							{c.in_release ? `Already in ${c.in_release} (approved). ` : ''}{p.hint}
+						</small>
 					</span>
 					{#if p.prompt}
 						<button
@@ -369,8 +370,10 @@
 							class="btn sm"
 							disabled={blocked}
 							title="Send as {customerEmail || 'the test customer'}"
-							onclick={() => send(p.prompt!)}>Try: “{p.prompt}”</button
+							onclick={() => send(p.prompt!)}
 						>
+							Try: “{p.prompt}”
+						</button>
 					{/if}
 				</li>
 			{/each}
@@ -409,15 +412,19 @@
 			class="chip"
 			class:ok={chat.feedStatus === 'open'}
 			class:warn={chat.feedStatus === 'retrying'}
-			role="status">Live feed: {FEED_LABEL[chat.feedStatus]}</span
+			role="status"
 		>
+			Live feed: {FEED_LABEL[chat.feedStatus]}
+		</span>
 		<button
 			class="btn sm"
 			type="button"
 			onclick={() => chat.dropFeed()}
 			disabled={chat.feedStatus !== 'open'}
-			title="Simulate a dropped connection">Drop connection</button
+			title="Simulate a dropped connection"
 		>
+			Drop connection
+		</button>
 		<button class="btn sm" type="button" onclick={restart}>New conversation</button>
 	</div>
 </div>
@@ -472,9 +479,9 @@
 						</div>
 					{:else if chat.ended}
 						<div class="cn" role="status">
-							This conversation has ended. <button class="btn sm" type="button" onclick={restart}
-								>New conversation</button
-							>
+							This conversation has ended. <button class="btn sm" type="button" onclick={restart}>
+								New conversation
+							</button>
 						</div>
 					{/if}
 					{#if csatAsk}
@@ -487,15 +494,19 @@
 										type="button"
 										aria-label="{n} of 5"
 										disabled={rating}
-										onclick={() => rate(n)}>{'★'.repeat(n)}</button
+										onclick={() => rate(n)}
 									>
+										{'★'.repeat(n)}
+									</button>
 								{/each}
 								<button
 									class="btn sm"
 									type="button"
 									disabled={rating}
-									onclick={() => (csatSkipped = [...csatSkipped, csatAsk!.case_id])}>Skip</button
+									onclick={() => (csatSkipped = [...csatSkipped, csatAsk!.case_id])}
 								>
+									Skip
+								</button>
 							</div>
 						</div>
 					{/if}
@@ -508,8 +519,10 @@
 					type="button"
 					class="chip accent qchip"
 					disabled={blocked || chat.unknown}
-					onclick={() => send(q)}>{q}</button
+					onclick={() => send(q)}
 				>
+					{q}
+				</button>
 			{/each}
 		</div>
 		<small class="muted" data-testid="chat-sim-hint">
@@ -547,8 +560,10 @@
 						title={writeAttrs(session, 'job_designer').title ??
 							(agentReplies.length ? undefined : 'Send a message and wait for the reply first')}
 						disabled={writeAttrs(session, 'job_designer').disabled || saving || !agentReplies.length}
-						onclick={saveTest}>Save test case</button
+						onclick={saveTest}
 					>
+						Save test case
+					</button>
 					<a class="btn sm" href={releaseHref}>Review &amp; publish</a>
 				</div>
 				{#if savedHere.length}
@@ -561,9 +576,9 @@
 						<li>
 							<span class="mono">{t.id}</span>
 							{t.title}
-							{#if t.stale}<span class="chip warn sm" title="The draft changed after this test was saved"
-									>re-test</span
-								>{:else}<span class="chip ok sm">tested on draft</span>{/if}
+							{#if t.stale}<span class="chip warn sm" title="The draft changed after this test was saved">
+									re-test
+								</span>{:else}<span class="chip ok sm">tested on draft</span>{/if}
 						</li>
 					{/each}
 				</ul>
@@ -588,9 +603,9 @@
 					</dd>
 					<dt>Answered by</dt>
 					<dd>
-						<span class="chip" class:warn={chat.conversation.env === 'prod'}
-							>{chat.conversation.env === 'test' ? 'draft' : 'live'} · {chat.conversation.env}</span
-						>
+						<span class="chip" class:warn={chat.conversation.env === 'prod'}>
+							{chat.conversation.env === 'test' ? 'draft' : 'live'} · {chat.conversation.env}
+						</span>
 						{chat.conversation.env === 'test'
 							? (prof?.test_systems ?? 'demo-retail-stub, shopify-test')
 							: `live systems (${prof?.live_systems ?? 'shopify-prod, …'})`}
@@ -600,15 +615,20 @@
 					<dt>Turn</dt>
 					<dd>
 						{#if chat.outbox.some((p) => p.status === 'sending')}sending…{:else if chat.awaiting}<span
-								class="chip accent">202 accepted</span
-							> reply on the live feed{:else if chat.refused}<span class="chip err">refused at gate 2</span
-							>{:else if chat.messages.length}answered{:else}waiting for the first message{/if}
+								class="chip accent"
+							>
+								202 accepted
+							</span> reply on the live feed{:else if chat.refused}<span class="chip err">
+								refused at gate 2
+							</span>{:else if chat.messages.length}answered{:else}waiting for the first message{/if}
 					</dd>
 					<dt>Cases</dt>
 					<dd>
 						{#each chat.caseIds as id (id)}<a class="mono l2-case" href={caseHref(id)}>{id}</a>{:else}<span
-								class="muted">none yet — one opens once the agent has everything it needs</span
-							>{/each}
+								class="muted"
+							>
+								none yet — one opens once the agent has everything it needs
+							</span>{/each}
 					</dd>
 				</dl>
 			{:else if chat.starting}

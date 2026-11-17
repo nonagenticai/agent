@@ -31,13 +31,14 @@
 										? 'A job stopped because this slot is empty'
 										: 'Only needed for sources that use it'}
 									href="/admin/providers?tab={s.service === 'strata_rag' ? 'knowledge' : 'ingest'}"
-									>{blocking ? 'empty · blocking' : 'not set'}</a
 								>
+									{blocking ? 'empty · blocking' : 'not set'}
+								</a>
 							{:else}
 								<span class="mono t8-model">{s.model} v{s.version}</span>
-								{#if s.drift}<a class="chip warn" href="/admin/providers?tab=ingest"
-										>v{s.drift.remote_version} waiting</a
-									>{/if}
+								{#if s.drift}<a class="chip warn" href="/admin/providers?tab=ingest">
+										v{s.drift.remote_version} waiting
+									</a>{/if}
 							{/if}
 						</li>
 					{/each}
@@ -51,9 +52,10 @@
 						<button type="button" class="chip err" onclick={() => onpick(j)}>✕ {j.source_label}</button>
 					{/each}
 					{#each l.inFlight as j (j.id)}
-						<button type="button" class="chip accent" onclick={() => onpick(j)}
-							>{j.status === 'running' ? '●' : '○'} {j.source_label}</button
-						>
+						<button type="button" class="chip accent" onclick={() => onpick(j)}>
+							{j.status === 'running' ? '●' : '○'}
+							{j.source_label}
+						</button>
 					{/each}
 				</div>
 			{/if}

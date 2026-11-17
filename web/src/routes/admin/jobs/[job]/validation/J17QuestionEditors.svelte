@@ -112,8 +112,10 @@
 				type="button"
 				{...writeAttrs(session, 'job_designer')}
 				disabled={!!problem || !Object.keys(patch).length || writeAttrs(session, 'job_designer').disabled}
-				onclick={save}>Save question</button
+				onclick={save}
 			>
+				Save question
+			</button>
 			<button class="btn" type="button" onclick={() => (editOpen = false)}>Cancel</button>
 		</div>
 	</div>
@@ -138,8 +140,10 @@
 				type="button"
 				{...writeAttrs(session, 'job_designer')}
 				disabled={!file || busy || writeAttrs(session, 'job_designer').disabled}
-				onclick={doImport}>{busy ? 'Importing…' : 'Import questions'}</button
+				onclick={doImport}
 			>
+				{busy ? 'Importing…' : 'Import questions'}
+			</button>
 			<button class="btn" type="button" onclick={() => (importOpen = false)}>Cancel</button>
 		</div>
 	</div>

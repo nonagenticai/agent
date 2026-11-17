@@ -34,9 +34,9 @@
 </script>
 
 <details class="rq" data-testid="ev-run-questions">
-	<summary
-		>Per question{missed != null ? ` · ${missed} of ${run.question_count} missed in ${focus}` : ''}</summary
-	>
+	<summary>
+		Per question{missed != null ? ` · ${missed} of ${run.question_count} missed in ${focus}` : ''}
+	</summary>
 	{#if error}
 		<p class="rq-err">Per-question results not loaded: {error}</p>
 	{:else if !full || !results}
@@ -58,14 +58,18 @@
 								{@const c = cell(i, m)}
 								<td class="r mono" data-label={m}>
 									{#if !c}—{:else if c.rank == null}<span class="s-err">miss</span>{:else}<span
-											class={c.rank === 1 ? 's-ok' : ''}>#{c.rank}</span
-										>{/if}
+											class={c.rank === 1 ? 's-ok' : ''}
+										>
+											#{c.rank}
+										</span>{/if}
 									{#if c?.leaf_hit != null}<span
 											class="rq-leaf {c.leaf_hit ? 's-ok' : 's-err'}"
 											title={c.leaf_hit
 												? 'first passage from the expected leaf'
-												: 'first passage from another store'}>{c.leaf_hit ? 'leaf ✓' : 'leaf ✗'}</span
-										>{/if}
+												: 'first passage from another store'}
+										>
+											{c.leaf_hit ? 'leaf ✓' : 'leaf ✗'}
+										</span>{/if}
 								</td>
 							{/each}
 						</tr>

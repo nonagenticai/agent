@@ -52,54 +52,54 @@
 <form class="aq" onsubmit={submit} aria-label="Add a question">
 	<fieldset disabled={!canWrite || busy}>
 		<div class="aq-row">
-			<label class="aq-f aq-key"
-				><span class="label">Key</span><input class="input mono" bind:value={key} placeholder="DR2" /></label
-			>
-			<label class="aq-f"
-				><span class="label">Point</span>
+			<label class="aq-f aq-key">
+				<span class="label">Key</span><input class="input mono" bind:value={key} placeholder="DR2" />
+			</label>
+			<label class="aq-f">
+				<span class="label">Point</span>
 				<select class="input" bind:value={point}>
-					{#each ['P1', 'P2', 'R1'] as const as p (p)}<option value={p}
-							>{p} · {RUN_POINT_LABEL[RUN_POINT[p]]}</option
-						>{/each}
-				</select></label
-			>
+					{#each ['P1', 'P2', 'R1'] as const as p (p)}<option value={p}>
+							{p} · {RUN_POINT_LABEL[RUN_POINT[p]]}
+						</option>{/each}
+				</select>
+			</label>
 		</div>
-		<label class="aq-f"
-			><span class="label">Yes/no question</span><input
+		<label class="aq-f">
+			<span class="label">Yes/no question</span><input
 				class="input"
 				bind:value={question}
 				placeholder="Does the customer …?"
-			/></label
-		>
+			/>
+		</label>
 		<label class="aq-f"><span class="label">True when</span><input class="input" bind:value={yes} /></label>
 		<label class="aq-f"><span class="label">False when</span><input class="input" bind:value={no} /></label>
 		{#if point === 'P2'}
-			<label class="aq-f"
-				><span class="label">Only before tools (blank: every tool)</span><input
+			<label class="aq-f">
+				<span class="label">Only before tools (blank: every tool)</span><input
 					class="input mono"
 					bind:value={tools}
 					placeholder="refund.issue, order.cancel"
-				/></label
-			>
+				/>
+			</label>
 		{/if}
 		<div class="aq-row">
-			<label class="aq-f"
-				><span class="label">When true</span>
+			<label class="aq-f">
+				<span class="label">When true</span>
 				<select class="input" bind:value={action}>
 					<option value="handover">Hand over</option>
 					<option value="block">Block</option>
 					<option value="annotate">Annotate</option>
-				</select></label
-			>
-			<label class="aq-f"
-				><span class="label">Fail</span>
+				</select>
+			</label>
+			<label class="aq-f">
+				<span class="label">Fail</span>
 				<select class="input" bind:value={fail}>
 					<option value="open">open</option>
 					<option value="closed">closed</option>
-				</select></label
-			>
-			<label class="aq-f"
-				><span class="label">Min confidence</span><input
+				</select>
+			</label>
+			<label class="aq-f">
+				<span class="label">Min confidence</span><input
 					class="input mono aq-n"
 					type="number"
 					step="0.05"
@@ -107,15 +107,17 @@
 					max="1"
 					placeholder="any"
 					bind:value={minConf}
-				/></label
-			>
+				/>
+			</label>
 		</div>
 		<button
 			type="submit"
 			class="btn sm primary"
 			disabled={!ready}
-			title={canWrite ? undefined : writeHint('job_designer')}>Add to draft</button
+			title={canWrite ? undefined : writeHint('job_designer')}
 		>
+			Add to draft
+		</button>
 	</fieldset>
 	{#if !canWrite}<p class="note">{writeHint('job_designer')} to add questions.</p>{/if}
 </form>

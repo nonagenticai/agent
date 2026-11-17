@@ -192,15 +192,15 @@
 							<p class="cf-src muted">
 								{#if c.raised_by_cut}
 									{plain(causeText(c) ?? 'Release')} · raised by the cut
-									<a class="mono" href={jobPath(app.job, `/release/${c.release_id}`)}
-										>{releaseLabel(c.release_id)}</a
-									>
+									<a class="mono" href={jobPath(app.job, `/release/${c.release_id}`)}>
+										{releaseLabel(c.release_id)}
+									</a>
 									that adopts it, {when(c.detected_at)} — not applied yet, so Production is unaffected
 								{:else}
 									{plain(causeText(c) ?? 'Release')} · detected when
-									<a class="mono" href={jobPath(app.job, `/release/${c.release_id}`)}
-										>{releaseLabel(c.release_id)}</a
-									>
+									<a class="mono" href={jobPath(app.job, `/release/${c.release_id}`)}>
+										{releaseLabel(c.release_id)}
+									</a>
 									was applied, {when(c.detected_at)}
 								{/if}
 							</p>
@@ -217,15 +217,15 @@
 									<thead>
 										<tr>
 											<th scope="col">Field</th>
-											<th scope="col"
-												>Template before{#if c.base_subject !== c.key}<div class="cf-sub mono">
+											<th scope="col">
+												Template before{#if c.base_subject !== c.key}<div class="cf-sub mono">
 														{plain(c.base_subject)}
-													</div>{/if}</th
-											>
+													</div>{/if}
+											</th>
 											<th scope="col">Template now</th>
-											<th scope="col" class="cf-mine-col"
-												>Yours <span class="cf-sub">· {MINE_LABEL[c.tenant_row]}</span></th
-											>
+											<th scope="col" class="cf-mine-col">
+												Yours <span class="cf-sub">· {MINE_LABEL[c.tenant_row]}</span>
+											</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -236,9 +236,9 @@
 											<tr>
 												<th scope="row">{keyLabel(r.field)}</th>
 												<td class:cf-gone={c.base_before === null}>{plain(r.before)}</td>
-												<td class:cf-moved={r.base_moved} class:cf-gone={c.base_after === null}
-													>{r.after === '—' && c.base_after === null ? 'removed' : plain(r.after)}</td
-												>
+												<td class:cf-moved={r.base_moved} class:cf-gone={c.base_after === null}>
+													{r.after === '—' && c.base_after === null ? 'removed' : plain(r.after)}
+												</td>
 												<td class:cf-differs={r.mine_differs}>{plain(r.mine)}</td>
 											</tr>
 										{/each}
@@ -246,9 +246,9 @@
 											<tr>
 												<th scope="row">{plain(c.key)}</th>
 												<td colspan="2" class="muted">child of {plain(c.base_subject)}</td>
-												<td class="cf-differs"
-													>{String(c.mine.label ?? c.key)}{c.mine.type ? ` (${c.mine.type})` : ''}</td
-												>
+												<td class="cf-differs">
+													{String(c.mine.label ?? c.key)}{c.mine.type ? ` (${c.mine.type})` : ''}
+												</td>
 											</tr>
 										{/if}
 									</tbody>
@@ -264,19 +264,19 @@
 							</div>
 
 							<div class="cf-impact">
-								<strong
-									>{c.raised_by_cut
+								<strong>
+									{c.raised_by_cut
 										? `Once ${releaseLabel(c.release_id)} is applied`
 										: stage === 'open'
 											? 'Customers right now'
-											: 'Customer effect'}.</strong
-								>
+											: 'Customer effect'}.
+								</strong>
 								{plain(c.impact?.effect ?? openEffect(c))}
 								{#if c.impact}
-									<span class="cf-n"
-										>{c.impact.conversations_30d} conversation{c.impact.conversations_30d === 1 ? '' : 's'}
-										touched this in the last 30 days</span
-									>
+									<span class="cf-n">
+										{c.impact.conversations_30d} conversation{c.impact.conversations_30d === 1 ? '' : 's'}
+										touched this in the last 30 days
+									</span>
 								{/if}
 							</div>
 
@@ -292,8 +292,10 @@
 												type="button"
 												disabled={wa.disabled || busy}
 												title={wa.title ?? CONFLICT_ACTION[op].hint}
-												onclick={() => resolve(c, op)}>{CONFLICT_ACTION[op].label}</button
+												onclick={() => resolve(c, op)}
 											>
+												{CONFLICT_ACTION[op].label}
+											</button>
 										</div>
 									{/each}
 									<div class="cf-choice">
@@ -306,8 +308,9 @@
 										<a
 											class="btn sm"
 											href={jobPath(app.job, c.kind === 'parent_missing' ? '/ontology' : c.edit_path)}
-											>{c.kind === 'parent_missing' ? 'Open ontology' : 'Open refinements'}</a
 										>
+											{c.kind === 'parent_missing' ? 'Open ontology' : 'Open refinements'}
+										</a>
 									</div>
 								</div>
 								<p class="cf-note muted">
@@ -315,16 +318,16 @@
 								</p>
 							{:else if stage === 'draft' && c.draft}
 								<div class="cf-decided" data-testid="conflict-draft">
-									<span
-										><strong>{choiceText(c.decision?.choice)}</strong>
+									<span>
+										<strong>{choiceText(c.decision?.choice)}</strong>
 										— saved to draft by {c.decision?.by_name ?? c.decision?.by}, {when(
 											c.decision?.at ?? null,
 										)}. Still open: Production keeps your refinement until a release carrying this choice is
 										applied.
 										{c.draft.in_release
 											? `It ships when ${c.draft.in_release} is applied.`
-											: 'Cut a release on Review & publish to include it.'}</span
-									>
+											: 'Cut a release on Review & publish to include it.'}
+									</span>
 									<span class="cf-decided-act">
 										<a class="btn sm" href="/chat">Test in test chat</a>
 										{#if c.draft.id}
@@ -333,12 +336,14 @@
 												type="button"
 												disabled={wa.disabled || busy}
 												title={wa.title ?? 'Throw this decision away; the conflict opens again.'}
-												onclick={() => undo(c)}>Undo decision</button
+												onclick={() => undo(c)}
 											>
+												Undo decision
+											</button>
 										{:else}
-											<span class="muted small"
-												>Already in {c.draft.in_release}; it cannot be undone there.</span
-											>
+											<span class="muted small">
+												Already in {c.draft.in_release}; it cannot be undone there.
+											</span>
 										{/if}
 									</span>
 								</div>
@@ -347,8 +352,9 @@
 									{choiceText(c.resolution)} — {c.resolved_by_name ?? c.resolved_by}, {when(
 										c.resolved_at,
 									)}{#if c.published_in}; live since
-										<a class="mono" href={jobPath(app.job, `/release/${c.published_in}`)}>{c.published_in}</a
-										>{/if}.
+										<a class="mono" href={jobPath(app.job, `/release/${c.published_in}`)}>
+											{c.published_in}
+										</a>{/if}.
 								</p>
 							{:else}
 								<p class="cf-note muted">

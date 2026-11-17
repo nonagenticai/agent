@@ -61,16 +61,20 @@
 					class="chip"
 					class:accent={filter.industry === 'all'}
 					aria-pressed={filter.industry === 'all'}
-					onclick={() => pickIndustry('all')}>All</button
+					onclick={() => pickIndustry('all')}
 				>
+					All
+				</button>
 				{#each industries as ind (ind)}
 					<button
 						type="button"
 						class="chip"
 						class:accent={filter.industry === ind}
 						aria-pressed={filter.industry === ind}
-						onclick={() => pickIndustry(ind)}>{title(ind)}</button
+						onclick={() => pickIndustry(ind)}
 					>
+						{title(ind)}
+					</button>
 				{/each}
 			</div>
 		{/if}
@@ -82,16 +86,20 @@
 					class="chip"
 					class:accent={filter.department === 'all'}
 					aria-pressed={filter.department === 'all'}
-					onclick={() => (filter.department = 'all')}>All</button
+					onclick={() => (filter.department = 'all')}
 				>
+					All
+				</button>
 				{#each departments as d (d)}
 					<button
 						type="button"
 						class="chip"
 						class:accent={filter.department === d}
 						aria-pressed={filter.department === d}
-						onclick={() => (filter.department = d)}>{title(d)}</button
+						onclick={() => (filter.department = d)}
 					>
+						{title(d)}
+					</button>
 				{/each}
 			</div>
 		{/if}

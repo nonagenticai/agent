@@ -147,36 +147,34 @@
 			<li class="j10-hop">
 				<span class="label">1 · Template needs <span class="j10-owner">inherited</span></span>
 				<b>{sum.required} required · {sum.pairs - sum.required} optional</b>
-				<span class="muted"
-					>{sum.kinds} kinds over {sum.stages} <a href={journeyHref}>journey stages</a>{sum.tenantKinds
+				<span class="muted">
+					{sum.kinds} kinds over {sum.stages} <a href={journeyHref}>journey stages</a>{sum.tenantKinds
 						? ` · ${sum.tenantKinds} added by you`
-						: ''}</span
-				>
+						: ''}
+				</span>
 			</li>
 			<li class="j10-hop" class:bad={sum.toBind.length > 0}>
 				<span class="label">2 · You bind a store <span class="j10-owner here">this page</span></span>
 				<b>{sum.requiredBound} / {sum.required} required bound</b>
-				<span class="muted"
-					>{sum.toBind.length
-						? `${sum.toBind.length} to bind below`
-						: 'every required kind has a store'}</span
-				>
+				<span class="muted">
+					{sum.toBind.length ? `${sum.toBind.length} to bind below` : 'every required kind has a store'}
+				</span>
 			</li>
 			<li class="j10-hop" class:wait={treeOk && sum.toFill.length > 0}>
 				<span class="label">3 · Store holds passages <MilestoneChip milestone="M3" /></span>
 				{#if treeOk}
 					<b>{sum.requiredCited} / {sum.required} citable</b>
-					<span class="muted" data-testid="j10-store-state"
-						>{all.length === 0
+					<span class="muted" data-testid="j10-store-state">
+						{all.length === 0
 							? 'no stores yet'
 							: sum.toFill.length
 								? `${sum.toFill.length} bound to a store not ready yet`
-								: 'in strata_rag, filled'} · <a href={storesHref}>stores</a></span
-					>
+								: 'in strata_rag, filled'} · <a href={storesHref}>stores</a>
+					</span>
 				{:else}
-					<b>—</b><span class="muted" data-testid="j10-store-state"
-						>store state unavailable · <a href={storesHref}>stores</a></span
-					>
+					<b>—</b><span class="muted" data-testid="j10-store-state">
+						store state unavailable · <a href={storesHref}>stores</a>
+					</span>
 				{/if}
 			</li>
 			<li class="j10-hop">
@@ -225,10 +223,10 @@
 		{/if}
 		{#if d.stores.length === 0}
 			<Callout kind="gap" title="No knowledge stores yet">
-				<span
-					>Lay out a store per kind on <a href={storesHref}>Knowledge stores</a> and add a source (website crawl,
-					file, datatable); then bind it here.</span
-				>
+				<span>
+					Lay out a store per kind on <a href={storesHref}>Knowledge stores</a> and add a source (website crawl,
+					file, datatable); then bind it here.
+				</span>
 			</Callout>
 		{/if}
 
@@ -291,12 +289,14 @@
 												class="btn sm"
 												{...writeAttrs(session, 'job_designer')}
 												disabled={!canWrite || saving === keyOf(r)}
-												onclick={() => bind(r, cand)}>Use {cand}</button
+												onclick={() => bind(r, cand)}
 											>
+												Use {cand}
+											</button>
 										{:else if !r.store && r.required}
-											<a class="j10-create" href={storesHref}
-												>No matching store — create one on Knowledge stores</a
-											>
+											<a class="j10-create" href={storesHref}>
+												No matching store — create one on Knowledge stores
+											</a>
 										{/if}
 										<PackPins
 											row={r}
@@ -316,12 +316,12 @@
 												title={COVERAGE[c.state].hint}
 											/>
 											{#if c.store}
-												<span class="muted j10-meta"
-													>{fmt.n(c.store.documents)} docs · {fmt.n(c.store.chunks)} passages · {ago(
+												<span class="muted j10-meta">
+													{fmt.n(c.store.documents)} docs · {fmt.n(c.store.chunks)} passages · {ago(
 														c.store.updated_at,
 														now,
-													)}</span
-												>
+													)}
+												</span>
 											{/if}
 										{/if}
 									</div>
@@ -351,11 +351,11 @@
 													title="It matches none of this job's knowledge kinds, so no search reads it."
 												/>{/if}
 										</span>
-										<span class="muted"
-											>{p.stage === '*' ? 'Every stage' : stageLabel(p.stage)} · {p.kind === '*'
+										<span class="muted">
+											{p.stage === '*' ? 'Every stage' : stageLabel(p.stage)} · {p.kind === '*'
 												? 'every kind'
-												: p.kind}</span
-										>
+												: p.kind}
+										</span>
 									</li>
 								{/each}
 							{/each}
@@ -379,9 +379,9 @@
 									</span>
 									<span class="muted">{u.store?.label ?? ''}</span>
 									<span class="j10-reads">
-										{#each u.reads as r (keyOf(r))}<a class="j10-read" href="#j10-{r.stage}"
-												>{stageLabel(r.stage)} · <span class="mono">{r.kind}</span></a
-											>{/each}
+										{#each u.reads as r (keyOf(r))}<a class="j10-read" href="#j10-{r.stage}">
+												{stageLabel(r.stage)} · <span class="mono">{r.kind}</span>
+											</a>{/each}
 									</span>
 								</li>
 							{/each}

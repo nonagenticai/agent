@@ -111,16 +111,16 @@
 		{@const depts = p.options.departments.filter((d) => d.industry === industry)}
 		<form class="stack company" data-testid="company-form" novalidate onsubmit={save}>
 			{#if !mayEdit}
-				<Callout kind="info" title="Read only"
-					><span data-testid="company-readonly"
-						>{writeHint('tenant_admin')} to change the company profile.</span
-					></Callout
-				>
+				<Callout kind="info" title="Read only">
+					<span data-testid="company-readonly">
+						{writeHint('tenant_admin')} to change the company profile.
+					</span>
+				</Callout>
 			{/if}
 			<Card title="Company profile" sub="Used when you create jobs; existing jobs keep their own selection.">
 				<fieldset class="stack" disabled={!mayEdit || saving}>
-					<label class="field"
-						><span class="label">Industry</span>
+					<label class="field">
+						<span class="label">Industry</span>
 						<select
 							class="input"
 							data-testid="company-industry"
@@ -130,39 +130,39 @@
 						>
 							<option value="unassigned">Not set yet</option>
 							{#each p.options.industries as i (i.key)}<option value={i.key}>{i.label}</option>{/each}
-						</select></label
-					>
+						</select>
+					</label>
 					<fieldset class="group" data-testid="company-departments">
 						<legend>Departments</legend>
 						{#if industry === 'unassigned'}
 							<p class="muted small">Choose an industry to see its departments.</p>
 						{:else}
 							{#each depts as d (d.key)}
-								<label class="opt inline"
-									><input
+								<label class="opt inline">
+									<input
 										type="checkbox"
 										checked={departments.includes(d.key)}
 										onchange={(e) => toggle(d.key, e.currentTarget.checked)}
 									/>
-									{d.label}</label
-								>
+									{d.label}
+								</label>
 							{:else}
 								<p class="muted small">The platform has no departments for this industry yet.</p>
 							{/each}
 						{/if}
 					</fieldset>
-					<label class="field"
-						><span class="label">Region</span>
+					<label class="field">
+						<span class="label">Region</span>
 						<select class="input" data-testid="company-region" bind:value={region}>
 							<option value="">No region</option>
 							{#each p.options.regions as r (r.key)}<option value={r.key}>{r.label}</option>{/each}
-						</select></label
-					>
+						</select>
+					</label>
 					<fieldset class="group" data-testid="company-languages">
 						<legend>Languages</legend>
 						{#each LANGS as l (l)}
-							<label class="opt inline"
-								><input
+							<label class="opt inline">
+								<input
 									type="checkbox"
 									checked={languages.includes(l)}
 									onchange={(e) =>
@@ -170,26 +170,26 @@
 											? [...languages, l]
 											: languages.filter((x) => x !== l))}
 								/>
-								{LANGUAGE_LABEL[l]}</label
-							>
+								{LANGUAGE_LABEL[l]}
+							</label>
 						{/each}
 						<p class="muted small">A new job serves these languages unless you choose others.</p>
 					</fieldset>
-					<label class="field"
-						><span class="label">Description</span>
+					<label class="field">
+						<span class="label">Description</span>
 						<textarea
 							class="input"
 							rows="3"
 							data-testid="company-description"
 							bind:value={description}
-							placeholder="What the company does, in a sentence or two"></textarea></label
-					>
+							placeholder="What the company does, in a sentence or two"></textarea>
+					</label>
 				</fieldset>
 			</Card>
 			{#if error}
 				<Callout kind="err" title="Not saved">
-					<span data-testid="company-error"
-						><span class="mono">{error.code}</span> — {error.message}
+					<span data-testid="company-error">
+						<span class="mono">{error.code}</span> — {error.message}
 						{#if error.code === 'profile_changed'}
 							<button class="btn sm" type="button" onclick={reload}>Reload</button>
 						{/if}
@@ -201,8 +201,9 @@
 					class="btn primary"
 					type="submit"
 					disabled={!mayEdit || saving || !dirty || languages.length === 0}
-					>{saving ? 'Saving…' : 'Save profile'}</button
 				>
+					{saving ? 'Saving…' : 'Save profile'}
+				</button>
 			</div>
 		</form>
 	{/snippet}

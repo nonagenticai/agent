@@ -30,9 +30,9 @@
 <section class="card vl" aria-label="Verdict log" data-testid="gate-verdict-log">
 	<header class="vl-h">
 		<h2>Verdict log</h2>
-		<span class="muted"
-			>The newest {limit} answers laya gave in this job's cases. Open a case to see the turn.</span
-		>
+		<span class="muted">
+			The newest {limit} answers laya gave in this job's cases. Open a case to see the turn.
+		</span>
 	</header>
 	<LoadState resource={res} empty="No verdicts yet: this job has no cases.">
 		{#snippet children(rows)}
@@ -67,11 +67,11 @@
 			<div class="tbl-wrap">
 				<table class="tbl dense">
 					<thead>
-						<tr
-							><th>Time</th><th>Point</th><th>Question</th><th>Answer</th><th class="r">Confidence</th><th
-								>Action</th
-							><th>Case</th></tr
-						>
+						<tr>
+							<th>Time</th><th>Point</th><th>Question</th><th>Answer</th><th class="r">Confidence</th><th>
+								Action
+							</th><th>Case</th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each shown as r (r.id)}
@@ -79,17 +79,17 @@
 								<td class="mono vl-t">{r.at.slice(5, 16).replace('T', ' ')}</td>
 								<td class="mono">{r.point}</td>
 								<td><span class="mono vl-k">{r.gate}</span> <span class="vl-qq">{r.question}</span></td>
-								<td
-									>{r.answer}{#if r.below_threshold}
-										<Chip text="below line" variant="warn" />{/if}</td
-								>
+								<td>
+									{r.answer}{#if r.below_threshold}
+										<Chip text="below line" variant="warn" />{/if}
+								</td>
 								<td class="r mono">{Math.round(r.confidence * 100)}%</td>
 								<td><Chip text={DECISION_TEXT[r.action]} variant={DECISION_VARIANT[r.action]} /></td>
-								<td
-									><a class="mono" href={jobPath(app.job, `/cases/${encodeURIComponent(r.case_id)}`)}
-										>{r.case_id}</a
-									></td
-								>
+								<td>
+									<a class="mono" href={jobPath(app.job, `/cases/${encodeURIComponent(r.case_id)}`)}>
+										{r.case_id}
+									</a>
+								</td>
 							</tr>
 						{:else}
 							<tr><td colspan="7" class="muted">No verdict matches these filters.</td></tr>

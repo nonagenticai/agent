@@ -116,10 +116,10 @@
 			<li class:hot={n.behindPins > 0}>
 				<span class="pipe-n">{n.behindPins}</span>
 				<b>Pins behind latest</b>
-				<span class="muted"
-					>{n.behindJobs} job{n.behindJobs === 1 ? '' : 's'} show the K5 base-changed badge until the tenant cuts
-					a new release.</span
-				>
+				<span class="muted">
+					{n.behindJobs} job{n.behindJobs === 1 ? '' : 's'} show the K5 base-changed badge until the tenant cuts
+					a new release.
+				</span>
 			</li>
 		</ol>
 
@@ -176,16 +176,19 @@
 											class="slot-key mono"
 											type="button"
 											onclick={() => openLayerDrawer(slot.layer!.layer_key)}
-											>{short(slot.layer.layer_key)}</button
 										>
+											{short(slot.layer.layer_key)}
+										</button>
 										<span class="slot-pin mono">
 											<a href={tagHref(slot.layer.layer_key, slot.pin.version)}>@v{slot.pin.version}</a>
 											{#if slot.pin.behind && slot.layer.latest}
 												<span aria-hidden="true">→</span>
 												<a
 													href={tagHref(slot.layer.layer_key, slot.layer.latest.version)}
-													title="Newer tag available">@v{slot.layer.latest.version}</a
+													title="Newer tag available"
 												>
+													@v{slot.layer.latest.version}
+												</a>
 											{/if}
 										</span>
 									{:else}
@@ -196,10 +199,10 @@
 						</ol>
 						<footer>
 							{#if s.behind}
-								<span
-									>Badge on. A newer tag reaches this job only through a new release cut by
-									{s.tenant_name}.</span
-								>
+								<span>
+									Badge on. A newer tag reaches this job only through a new release cut by
+									{s.tenant_name}.
+								</span>
 							{:else}
 								<span class="muted">On the latest tag of every layer it pins.</span>
 							{/if}
@@ -220,11 +223,11 @@
 							<span class="wave-num" aria-hidden="true">{w.wave ?? '·'}</span>
 							<h3 id="wave-{w.wave}">{w.label}</h3>
 							<Chip text={WAVE_CHIP[w.status][0]} variant={WAVE_CHIP[w.status][1]} />
-							<span class="muted wave-sub"
-								>{w.layers.length} layer{w.layers.length === 1 ? '' : 's'}{w.tenants.length
+							<span class="muted wave-sub">
+								{w.layers.length} layer{w.layers.length === 1 ? '' : 's'}{w.tenants.length
 									? ` · ${w.tenants.join(', ')}`
-									: ' · no tenant yet'}</span
-							>
+									: ' · no tenant yet'}
+							</span>
 						</header>
 						{#if w.layers.length === 0}
 							<p class="empty">No layers in this wave yet.</p>
@@ -233,14 +236,19 @@
 							{@const tl = layerTimeline(l)}
 							<div class="tl-row" data-layer={l.layer_key}>
 								<div class="tl-meta">
-									<button class="table-action mono" type="button" onclick={() => openLayerDrawer(l.layer_key)}
-										>{l.layer_key}</button
+									<button
+										class="table-action mono"
+										type="button"
+										onclick={() => openLayerDrawer(l.layer_key)}
 									>
+										{l.layer_key}
+									</button>
 									<span class="cell-sub">{SCOPE_LABEL[l.scope]} · {l.label}</span>
 									{#if l.generator}
-										<span class="cell-sub"
-											><Chip text="generator {l.generator.run}" variant="accent" /> {l.generator.step}</span
-										>
+										<span class="cell-sub">
+											<Chip text="generator {l.generator.run}" variant="accent" />
+											{l.generator.step}
+										</span>
 									{/if}
 								</div>
 								<ol class="track scroll-x" aria-label="{l.layer_key} tags">
@@ -254,9 +262,9 @@
 												/>{:else if node.latest}<span class="cell-sub">latest</span>{/if}
 											<span class="cell-sub">{when(node.tag.tagged_at).replace(/, \d\d:\d\d$/, '')}</span>
 											{#each node.pins as p (p.tenant_id + p.job)}
-												<span class="pin" class:behind={p.behind > 0} title="{p.job_label} · {p.job}"
-													>{p.tenant_name}{p.behind ? ` · ${p.behind} behind` : ''}</span
-												>
+												<span class="pin" class:behind={p.behind > 0} title="{p.job_label} · {p.job}">
+													{p.tenant_name}{p.behind ? ` · ${p.behind} behind` : ''}
+												</span>
 											{/each}
 										</li>
 									{/each}
@@ -269,8 +277,10 @@
 												class="btn sm"
 												type="button"
 												{...superAdminAttrs(session)}
-												onclick={() => openTag(l.layer_key)}>Tag as @v{tl.draft.next}</button
+												onclick={() => openTag(l.layer_key)}
 											>
+												Tag as @v{tl.draft.next}
+											</button>
 										</li>
 									{:else}
 										<li class="node idle">
@@ -312,11 +322,11 @@
 								/>{/if}
 							<span class="cell-sub">{t.note}</span>
 						</span>
-						<span class="muted"
-							>{when(t.tagged_at)} · {t.tagged_by_name} ·
+						<span class="muted">
+							{when(t.tagged_at)} · {t.tagged_by_name} ·
 							<span class="mono">{shortHash(t.content_hash)}</span>
-							· {t.item_count} items</span
-						>
+							· {t.item_count} items
+						</span>
 					</li>
 				{/each}
 			</ul>
@@ -331,12 +341,12 @@
 							{#each openLayer.draft_revisions as d (`${d.item.kind}:${d.item.key}:${d.item.region ?? ''}:${d.rev}`)}
 								<tr>
 									<td class="mono">r{d.rev}</td>
-									<td
-										><Chip
+									<td>
+										<Chip
 											text={d.op}
 											variant={d.op === 'add' ? 'ok' : d.op === 'tombstone' ? 'dead' : 'accent'}
-										/></td
-									>
+										/>
+									</td>
 									<td>{KIND_LABEL[d.item.kind]}</td>
 									<td class="mono">{d.item.key}</td>
 									<td>{d.item.detail}</td>
@@ -357,18 +367,18 @@
 						<tbody>
 							{#each openLayer.pins as p (p.tenant_id + p.job)}
 								<tr>
-									<td
-										>{p.tenant_name}{#if p.tenant_status !== 'active'}
-											<Chip text={p.tenant_status} variant="muted" />{/if}</td
-									>
+									<td>
+										{p.tenant_name}{#if p.tenant_status !== 'active'}
+											<Chip text={p.tenant_status} variant="muted" />{/if}
+									</td>
 									<td>{p.job_label} <span class="cell-sub mono">{p.job}</span></td>
 									<td class="mono"><a href={tagHref(openLayer.layer_key, p.version)}>@v{p.version}</a></td>
-									<td
-										>{#if p.behind}<Chip text="{p.behind} behind" variant="warn" />{:else}<Chip
+									<td>
+										{#if p.behind}<Chip text="{p.behind} behind" variant="warn" />{:else}<Chip
 												text="latest"
 												variant="ok"
-											/>{/if}</td
-									>
+											/>{/if}
+									</td>
 								</tr>
 							{/each}
 						</tbody>
@@ -395,8 +405,10 @@
 				{#each tagLayer.draft_revisions as d (`${d.item.kind}:${d.item.key}:${d.item.region ?? ''}:${d.rev}`)}
 					<li>
 						<span><Chip text={d.op} variant="accent" /> <span class="mono">{d.item.key}</span></span><span
-							class="muted">{d.item.detail}</span
+							class="muted"
 						>
+							{d.item.detail}
+						</span>
 					</li>
 				{/each}
 			</ul>
@@ -411,10 +423,10 @@
 					kind="info"
 					title="{tagLayer.pinned_jobs} job{tagLayer.pinned_jobs === 1 ? '' : 's'} will fall behind"
 				>
-					<span
-						>{tagLayer.pins.map((p) => `${p.tenant_name} (@v${p.version})`).join(', ')} keep their pin and get the
-						K5 base-changed badge. Nothing changes for them until they cut and apply a new release.</span
-					>
+					<span>
+						{tagLayer.pins.map((p) => `${p.tenant_name} (@v${p.version})`).join(', ')} keep their pin and get the
+						K5 base-changed badge. Nothing changes for them until they cut and apply a new release.
+					</span>
 				</Callout>
 			{/if}
 			<div class="field">
@@ -427,8 +439,10 @@
 					type="button"
 					{...superAdminAttrs(session)}
 					disabled={busy || !session.superAdmin}
-					onclick={tag}>Tag as @v{nextV(tagLayer)}</button
+					onclick={tag}
 				>
+					Tag as @v{nextV(tagLayer)}
+				</button>
 				<button class="btn" type="button" onclick={() => ((note = ''), (tagOpen = false))}>Cancel</button>
 			</div>
 		</div>

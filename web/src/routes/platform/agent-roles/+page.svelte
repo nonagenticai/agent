@@ -43,9 +43,9 @@
 
 <div class="split ar-bar">
 	<Seg label="Job template" items={templates} bind:active={job} />
-	<span class="muted ar-hint"
-		>Audit names a call’s principal <span class="mono">&lt;role&gt;@&lt;consumer&gt;</span>.</span
-	>
+	<span class="muted ar-hint">
+		Audit names a call’s principal <span class="mono">&lt;role&gt;@&lt;consumer&gt;</span>.
+	</span>
 </div>
 
 {#if job}<NarrowingChain {job} />{/if}

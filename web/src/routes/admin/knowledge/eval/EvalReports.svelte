@@ -33,9 +33,9 @@
 </script>
 
 <p class="muted er-meta">
-	<span class="er-verdict {run.verdict === 'PASS' ? 's-ok' : 's-err'}" data-testid="ev-verdict"
-		>{run.verdict}</span
-	>
+	<span class="er-verdict {run.verdict === 'PASS' ? 's-ok' : 's-err'}" data-testid="ev-verdict">
+		{run.verdict}
+	</span>
 	Run {run.id} · {when(run.started_at)} by {run.started_by ?? '—'} · {fmt.n(run.question_count)} questions · beam
 	{run.beam} · {fmt.ms(run.took_ms)}{run.root_id ? ` · scoped to ${run.root_id}` : ''}{prev
 		? ` · changes against ${when(prev.started_at)}`
@@ -46,17 +46,18 @@
 		<thead>
 			<tr>
 				<th>Mode</th>
-				{#each EVAL_METRICS as [k, label] (k)}<th class="r" class:er-head={k === 'recall_at_5'}>{label}</th
-					>{/each}
+				{#each EVAL_METRICS as [k, label] (k)}<th class="r" class:er-head={k === 'recall_at_5'}>
+						{label}
+					</th>{/each}
 			</tr>
 		</thead>
 		<tbody>
 			{#each run.reports as r (r.mode)}
 				<tr class:er-best={r.recall_at_5 === best}>
-					<td
-						><b>{MODE_LABEL[r.mode] ?? r.mode}</b>
-						<span class="mono muted er-small">{r.mode}</span></td
-					>
+					<td>
+						<b>{MODE_LABEL[r.mode] ?? r.mode}</b>
+						<span class="mono muted er-small">{r.mode}</span>
+					</td>
 					{#each EVAL_METRICS as [k, label] (k)}
 						{@const c = change(r.mode, k, r[k])}
 						<td class="r mono" class:er-head={k === 'recall_at_5'} data-label={label}>

@@ -21,6 +21,6 @@
 	);
 </script>
 
-<span data-testid="status-chip" data-state={status.state}
-	><Chip {text} variant={VARIANT[status.state]} /></span
->
+<span data-testid="status-chip" data-state={status.state}>
+	<Chip {text} variant={VARIANT[status.state]} />
+</span>

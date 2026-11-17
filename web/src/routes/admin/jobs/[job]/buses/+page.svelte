@@ -232,9 +232,9 @@
 					Agents here read the <strong>live release</strong> and serve real customers.
 				{/if}
 			</span>
-			<span class="mono j24-prefix" title="Every stream key of this environment starts with this prefix"
-				>{f.prefix}…</span
-			>
+			<span class="mono j24-prefix" title="Every stream key of this environment starts with this prefix">
+				{f.prefix}…
+			</span>
 		</div>
 
 		<p class="j24-verdict" data-testid="bus-verdict">
@@ -244,18 +244,18 @@
 				<strong>{rate(inRate)}</strong> messages in, <strong>{rate(outRate)}</strong> replies out (last {f.window_min}
 				min).
 				{#if behind.length}
-					<span class="j24-warn"
-						>{behind.length} hop{behind.length === 1 ? '' : 's'} falling behind: {behind
+					<span class="j24-warn">
+						{behind.length} hop{behind.length === 1 ? '' : 's'} falling behind: {behind
 							.map((h) => h.label)
-							.join(', ')}.</span
-					>
+							.join(', ')}.
+					</span>
 				{:else}
 					Every hop keeps up.
 				{/if}
 				{#if f.dead_letters}
-					<a href="#dead" class="j24-deadlink"
-						>{f.dead_letters} dead letter{f.dead_letters === 1 ? '' : 's'} to deal with ↓</a
-					>
+					<a href="#dead" class="j24-deadlink">
+						{f.dead_letters} dead letter{f.dead_letters === 1 ? '' : 's'} to deal with ↓
+					</a>
 				{/if}
 			{/if}
 		</p>
@@ -336,9 +336,9 @@
 		</div>
 		<p class="j24-legend">
 			<span><i class="sw sw-node"></i> channel / gate / agent — does the work</span>
-			<span
-				><i class="sw sw-topic"></i> topic — carries messages between them; pick one to see its streams</span
-			>
+			<span>
+				<i class="sw sw-topic"></i> topic — carries messages between them; pick one to see its streams
+			</span>
 			<span>↳ messages that leave the path here</span>
 			<span>A message that fails {MAX_DELIVERIES}× goes to <span class="mono">bus:dead</span></span>
 		</p>
@@ -350,35 +350,40 @@
 			sub="Who writes each stream, who reads it (one consumer group per agent), how deep it is and how long it keeps entries. Pending = delivered but not yet acknowledged."
 		>
 			{#snippet actions()}
-				{#if focus}<button class="btn sm" type="button" onclick={() => (focus = null)}>Show all topics</button
-					>{/if}
+				{#if focus}<button class="btn sm" type="button" onclick={() => (focus = null)}>
+						Show all topics
+					</button>{/if}
 			{/snippet}
 			<div class="tbl-wrap">
 				<table class="tbl clickable" data-testid="streams">
 					<thead>
 						<tr>
 							<th>Stream</th><th>Carries</th><th>Written by</th><th>Read by</th><th class="r">Rate</th><th
-								class="r">Length</th
-							><th>Retention</th><th>Health</th>
+								class="r"
+							>
+								Length
+							</th><th>Retention</th><th>Health</th>
 						</tr>
 					</thead>
 					<tbody>
 						{#each shown as t (t.key)}
 							{@const hs = groupsStatus(t.groups)}
 							<tr onclick={() => openTopic(t)}>
-								<td
-									><button
+								<td>
+									<button
 										type="button"
 										class="table-action cell-title"
 										onclick={(e) => {
 											e.stopPropagation();
 											void openTopic(t);
-										}}>{streamLabel(t.key)}</button
-									><span class="cell-sub"
-										><Chip text={busName(t.bus)} variant={busVariant(t.bus)} />
-										<span class="mono">{t.key}</span></span
-									></td
-								>
+										}}
+									>
+										{streamLabel(t.key)}
+									</button><span class="cell-sub">
+										<Chip text={busName(t.bus)} variant={busVariant(t.bus)} />
+										<span class="mono">{t.key}</span>
+									</span>
+								</td>
 								<td><span class="mono j24-events">{t.events.join(' · ') || '—'}</span></td>
 								<td>{t.producers.map(procName).join(', ') || '—'}</td>
 								<td>
@@ -398,10 +403,9 @@
 								</td>
 								<td class="r">{rate(t.rate_per_min)}</td>
 								<td class="r">{fmt.n(t.length)}</td>
-								<td
-									><span class="cell-sub">{env === 'test' ? 'reset with each test run' : retention(t)}</span
-									></td
-								>
+								<td>
+									<span class="cell-sub">{env === 'test' ? 'reset with each test run' : retention(t)}</span>
+								</td>
 								<td>
 									{#if t.bus === 'dead'}
 										<Status word={t.length ? 'err' : 'ok'} label={t.length ? 'Has entries' : 'Empty'} />
@@ -416,9 +420,9 @@
 														? 'Falling behind'
 														: 'Behind'}
 										/>
-										{#if t.dead}<span class="cell-sub deadc"
-												>{t.dead} dead letter{t.dead === 1 ? '' : 's'}</span
-											>{/if}
+										{#if t.dead}<span class="cell-sub deadc">
+												{t.dead} dead letter{t.dead === 1 ? '' : 's'}
+											</span>{/if}
 									{/if}
 									{#if t.note}<span class="cell-sub">{t.note}</span>{/if}
 								</td>
@@ -453,9 +457,9 @@
 						<div class="j24-reason t-{adv?.tone ?? 'muted'}">
 							<span class="j24-reason-n">{r.n}</span>
 							<span class="mono j24-reason-code">{r.code}</span>
-							{#if adv}<span class="j24-reason-what">{adv.what}</span><strong class="j24-reason-then"
-									>{adv.then}</strong
-								>{/if}
+							{#if adv}<span class="j24-reason-what">{adv.what}</span><strong class="j24-reason-then">
+									{adv.then}
+								</strong>{/if}
 						</div>
 					{/each}
 				</div>
@@ -470,16 +474,16 @@
 									{@const why = replayBlocked(admin, d.dead.reason_code)}
 									{@const corr = d.envelope.correlation_id}
 									<tr>
-										<td
-											><span class="cell-title mono">{corr}</span><span class="cell-sub"
-												>{entryTime(d.entry_id)} · <span class="mono">{d.entry_id}</span></span
-											></td
-										>
-										<td
-											><span class="cell-title"
-												>{streamLabel(d.dead.stream)} · {agentName(d.envelope.from)}</span
-											><span class="cell-sub mono">{d.dead.stream}</span></td
-										>
+										<td>
+											<span class="cell-title mono">{corr}</span><span class="cell-sub">
+												{entryTime(d.entry_id)} · <span class="mono">{d.entry_id}</span>
+											</span>
+										</td>
+										<td>
+											<span class="cell-title">
+												{streamLabel(d.dead.stream)} · {agentName(d.envelope.from)}
+											</span><span class="cell-sub mono">{d.dead.stream}</span>
+										</td>
 										<td>
 											<Chip
 												text={d.dead.reason_code}
@@ -500,22 +504,28 @@
 													onclick={() => {
 														dlSel = d;
 														dlOpen = true;
-													}}>Inspect</button
+													}}
 												>
+													Inspect
+												</button>
 												<button
 													class="btn sm"
 													type="button"
 													disabled={!!why || !!busy}
 													title={why || `Put it back on ${d.dead.stream}`}
-													onclick={() => replay(d)}>Replay</button
+													onclick={() => replay(d)}
 												>
+													Replay
+												</button>
 												<button
 													class="btn sm danger"
 													type="button"
 													disabled={!admin || !!busy}
 													title={admin ? 'Delete it from bus:dead' : writeHint('operator')}
-													onclick={() => discard(d)}>Discard</button
+													onclick={() => discard(d)}
 												>
+													Discard
+												</button>
 											</div>
 											{#if why}<span class="cell-sub">{why}</span>{/if}
 										</td>
@@ -556,21 +566,21 @@
 			<div class="tbl-wrap">
 				<table class="tbl dense">
 					<thead>
-						<tr
-							><th>Group</th><th class="r">Consumers</th><th class="r">Pending</th><th class="r">Lag</th><th
-								>Last delivered</th
-							><th></th></tr
-						>
+						<tr>
+							<th>Group</th><th class="r">Consumers</th><th class="r">Pending</th><th class="r">Lag</th><th>
+								Last delivered
+							</th><th></th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each t.groups as g (g.name)}
 							{@const why = claimBlocked(admin, g.pending)}
 							<tr>
-								<td
-									><span class="cell-title">{agentName(g.name)}</span><span class="cell-sub mono"
-										>{g.name}</span
-									></td
-								>
+								<td>
+									<span class="cell-title">{agentName(g.name)}</span><span class="cell-sub mono">
+										{g.name}
+									</span>
+								</td>
 								<td class="r">{g.consumers}</td>
 								<td class="r">{g.pending}</td>
 								<td class="r">{g.lag ?? '—'}</td>
@@ -581,8 +591,10 @@
 										type="button"
 										disabled={!!why || !!busy}
 										title={why || 'Hand entries idle 30 s or more to another consumer'}
-										onclick={() => claim(t.key, g.name)}>Claim stuck</button
+										onclick={() => claim(t.key, g.name)}
 									>
+										Claim stuck
+									</button>
 									{#if why}<span class="cell-sub">{why}</span>{/if}
 								</td>
 							</tr>
@@ -595,8 +607,10 @@
 		{#if env === 'test'}
 			<p class="muted" data-testid="test-entries-note">
 				Test entries belong to staff test chats: their cases are under <a
-					href={jobPath(app.job, '/cases?env=test')}>Cases (env = test)</a
-				>.
+					href={jobPath(app.job, '/cases?env=test')}
+				>
+					Cases (env = test)
+				</a>.
 			</p>
 		{/if}
 		{#if entriesLoading}
@@ -647,18 +661,22 @@
 				type="button"
 				disabled={!!why || !!busy}
 				title={why || `Put it back on ${d.dead.stream}`}
-				onclick={() => replay(d)}>Replay onto {streamLabel(d.dead.stream)}</button
+				onclick={() => replay(d)}
 			>
+				Replay onto {streamLabel(d.dead.stream)}
+			</button>
 			<button
 				class="btn sm danger"
 				type="button"
 				disabled={!admin || !!busy}
 				title={admin ? 'Delete it from bus:dead' : writeHint('operator')}
-				onclick={() => discard(d)}>Discard</button
+				onclick={() => discard(d)}
 			>
-			<a class="btn sm" href={jobPath(app.job, `/cases/${encodeURIComponent(d.envelope.correlation_id)}`)}
-				>Open case</a
-			>
+				Discard
+			</button>
+			<a class="btn sm" href={jobPath(app.job, `/cases/${encodeURIComponent(d.envelope.correlation_id)}`)}>
+				Open case
+			</a>
 		</div>
 		<h3>Original message</h3>
 		<JsonView value={d.envelope.payload} />

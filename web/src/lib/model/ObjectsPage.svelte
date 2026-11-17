@@ -108,12 +108,9 @@
 							['retail', 'Retail job'],
 						]}
 					/>
-					<label class="search"
-						><span class="sr">Search objects</span><input
-							bind:value={q}
-							placeholder="Search objects"
-						/></label
-					>
+					<label class="search">
+						<span class="sr">Search objects</span><input bind:value={q} placeholder="Search objects" />
+					</label>
 				{/snippet}
 				<ObjectsP9Map
 					{nodes}
@@ -176,9 +173,9 @@
 									</td>
 									<td>
 										{#each n?.layers ?? [] as l (l.layer_key)}
-											<span class="layer" title="{SCOPE_LABEL[l.scope]} layer, since @v{l.since}"
-												>{l.layer_key}</span
-											>
+											<span class="layer" title="{SCOPE_LABEL[l.scope]} layer, since @v{l.since}">
+												{l.layer_key}
+											</span>
 										{:else}
 											<span class="muted">—</span>
 										{/each}
@@ -197,21 +194,25 @@
 									<td>
 										{#if o.operation_count && mc}
 											<a href="/platform/operations?object={o.object}" class="ops">
-												{#each MODALITIES as m (m)}{#if mc[m]}<span class="op {m}">{mc[m]} {m}</span
-														>{/if}{/each}
+												{#each MODALITIES as m (m)}{#if mc[m]}<span class="op {m}">
+															{mc[m]}
+															{m}
+														</span>{/if}{/each}
 											</a>
 										{:else}<span class="muted">none</span>{/if}
 									</td>
-									<td class="r"
-										>{o.field_count}{#if o.pii_count}<span class="cell-sub"
-												><Chip text="{o.pii_count} PII" variant="warn" /></span
-											>{/if}</td
-									>
-									<td
-										>{#if o.storage_shape_of}<span class="mono">{o.storage_shape_of}</span>{:else}<span
-												class="muted">own table</span
-											>{/if}</td
-									>
+									<td class="r">
+										{o.field_count}{#if o.pii_count}<span class="cell-sub">
+												<Chip text="{o.pii_count} PII" variant="warn" />
+											</span>{/if}
+									</td>
+									<td>
+										{#if o.storage_shape_of}<span class="mono">{o.storage_shape_of}</span>{:else}<span
+												class="muted"
+											>
+												own table
+											</span>{/if}
+									</td>
 								</tr>
 							{/each}
 						</tbody>
@@ -229,9 +230,9 @@
 					<li data-folded={f.concept}>
 						<span class="concept">{f.concept}</span>
 						<span class="arrow" aria-hidden="true">→</span>
-						<span class="becomes"
-							>{f.becomes} <a class="mono" href="/platform/objects/{f.object}">{f.object}</a></span
-						>
+						<span class="becomes">
+							{f.becomes} <a class="mono" href="/platform/objects/{f.object}">{f.object}</a>
+						</span>
 						<span class="cite mono">{f.cite}</span>
 					</li>
 				{/each}

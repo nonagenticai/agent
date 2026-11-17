@@ -95,14 +95,14 @@
 	<fieldset class="group">
 		<legend>Business-model profile</legend>
 		{#each profileOptions.length ? profileOptions : o.profiles as p (p.key)}
-			<label class="opt"
-				><input type="radio" name="profile" value={p.key} bind:group={draft.profile} />
-				<span
-					><b>{p.label}</b> <span class="mono muted">{p.key}</span>{#if p.note}<br /><span class="muted small"
-							>{p.note}</span
-						>{/if}</span
-				></label
-			>
+			<label class="opt">
+				<input type="radio" name="profile" value={p.key} bind:group={draft.profile} />
+				<span>
+					<b>{p.label}</b> <span class="mono muted">{p.key}</span>{#if p.note}<br /><span class="muted small">
+							{p.note}
+						</span>{/if}
+				</span>
+			</label>
 		{/each}
 	</fieldset>
 	<div class="field">
@@ -136,14 +136,14 @@
 		</p>
 		<div class="chips-row">
 			{#each areas as a (a.key)}
-				<label class="opt inline"
-					><input
+				<label class="opt inline">
+					<input
 						type="checkbox"
 						checked={draft.areas.includes(a.key)}
 						onchange={(e) => (draft.areas = toggle(draft.areas, a.key, e.currentTarget.checked))}
 					/>
-					{a.label}</label
-				>
+					{a.label}
+				</label>
 			{:else}
 				<span class="muted small">Pick a department to see its areas.</span>
 			{/each}
@@ -156,68 +156,70 @@
 			data-testid={`sel-dim-${dim.key}`}
 			data-kind={dim.kind ?? 'dimension'}
 		>
-			<legend
-				>{dim.label} <span class="mono muted small">{dim.key}</span>{#if dim.kind === 'placeholder'}
-					<span class="ph-tag">recorded only</span>{/if}</legend
-			>
+			<legend>
+				{dim.label} <span class="mono muted small">{dim.key}</span>{#if dim.kind === 'placeholder'}
+					<span class="ph-tag">recorded only</span>{/if}
+			</legend>
 			{#if dim.note}<p class="muted small hint">{dim.note}</p>{/if}
 			<div class="chips-row">
 				{#each dim.values as v (v.key)}
-					<label class="opt inline" title={v.note}
-						><input
+					<label class="opt inline" title={v.note}>
+						<input
 							type="checkbox"
 							checked={draft.dimensions.channel.includes(v.key)}
 							onchange={(e) =>
 								(draft.dimensions.channel = toggle(draft.dimensions.channel, v.key, e.currentTarget.checked))}
 						/>
-						{v.label}{#if v.note}<span class="muted small"> — {v.note}</span>{/if}</label
-					>
+						{v.label}{#if v.note}<span class="muted small"> — {v.note}</span>{/if}
+					</label>
 				{/each}
 			</div>
 		</fieldset>
 	{/each}
 	{#each [o.dimensions.region] as dim (dim.key)}
 		<fieldset class="group placeholder" data-testid="sel-dim-region" data-kind={dim.kind ?? 'placeholder'}>
-			<legend
-				>{dim.label} <span class="mono muted small">region</span>
-				<span class="ph-tag">one value</span></legend
-			>
+			<legend>
+				{dim.label} <span class="mono muted small">region</span>
+				<span class="ph-tag">one value</span>
+			</legend>
 			<p class="muted small hint">Selects the region sub-layers (D111).</p>
 			<div class="chips-row">
-				<label class="opt inline"
-					><input
+				<label class="opt inline">
+					<input
 						type="radio"
 						name="region"
 						checked={draft.region === null}
 						onchange={() => (draft.region = null)}
 					/>
-					None</label
-				>
+					None
+				</label>
 				{#each dim.values as v (v.key)}
-					<label class="opt inline" title={v.note}
-						><input
+					<label class="opt inline" title={v.note}>
+						<input
 							type="radio"
 							name="region"
 							checked={draft.region === v.key}
 							onchange={() => (draft.region = v.key)}
 						/>
-						{v.label}{#if v.note}<span class="muted small"> — {v.note}</span>{/if}</label
-					>
+						{v.label}{#if v.note}<span class="muted small"> — {v.note}</span>{/if}
+					</label>
 				{/each}
 			</div>
 		</fieldset>
 	{/each}
 	<div class="outside" data-testid="sel-outside">
 		<strong>Not part of the selection</strong>
-		<span
-			>Data residency — a tenant setting fixed at provisioning (<a href="/admin">Tenant overview</a>).</span
-		>
-		<span
-			>Languages served — a job setting (<a
+		<span>
+			Data residency — a tenant setting fixed at provisioning (<a href="/admin">Tenant overview</a>).
+		</span>
+		<span>
+			Languages served — a job setting (<a
 				href={`${jobPath(target.job)}#job-settings`}
-				data-testid="sel-languages-link">edit the job's languages</a
-			>).</span
-		>
+				data-testid="sel-languages-link"
+			>
+				edit the job's languages
+			</a>).
+		</span>
 	</div>
 	{#if error}
 		<div class="callout err" role="alert">
@@ -225,9 +227,9 @@
 		</div>
 	{/if}
 	<div class="row">
-		<button type="submit" class="btn primary" disabled={saving || !dirty}
-			>{saving ? 'Saving…' : 'Save selection'}</button
-		>
+		<button type="submit" class="btn primary" disabled={saving || !dirty}>
+			{saving ? 'Saving…' : 'Save selection'}
+		</button>
 		<button type="button" class="btn" onclick={oncancel}>Cancel</button>
 	</div>
 </form>

@@ -328,8 +328,10 @@
 											<a
 												class="t10-up"
 												href={sysHref(i.id)}
-												title="Re-pin on the system page; re-runs the contract tests">@{up} available</a
+												title="Re-pin on the system page; re-runs the contract tests"
 											>
+												@{up} available
+											</a>
 										{/if}
 									</dd>
 									<dt>Credential</dt>
@@ -344,8 +346,9 @@
 									</dd>
 									<dt>Contract tests</dt>
 									<dd>
-										{#if t3.run === 0}<span class="muted">{i.platform ? 'platform-tested' : 'not run'}</span
-											>{:else}
+										{#if t3.run === 0}<span class="muted">
+												{i.platform ? 'platform-tested' : 'not run'}
+											</span>{:else}
 											<span class="mono">{t3.green}/{t3.run} green</span>
 											{#if t3.unverified}<span class="muted">· {t3.unverified} write unverified</span>{/if}
 										{/if}
@@ -357,10 +360,10 @@
 									<p class="t10-err"><b class="mono">{i.last_error.code}</b> {i.last_error.message}</p>
 								{/if}
 								<div class="t10-serves">
-									<span class="t10-serves-h"
-										>Serves for {jobLabel}{#if served.length}: <b>{req.length}</b> required ·
-											{opt.length} optional{/if}</span
-									>
+									<span class="t10-serves-h">
+										Serves for {jobLabel}{#if served.length}: <b>{req.length}</b> required ·
+											{opt.length} optional{/if}
+									</span>
 									{#if served.length === 0}
 										<span class="muted">No operation of this job is routed here.</span>
 									{:else}
@@ -430,18 +433,18 @@
 												value={row.required_total ? row.implements_required / row.required_total : 0}
 												cls="s-ok"
 											/>
-											<span
-												>implements <b>{row.implements_required}</b> of your {row.required_total} required ops</span
-											>
+											<span>
+												implements <b>{row.implements_required}</b> of your {row.required_total} required ops
+											</span>
 										</span>
 										{#if fills.length}
-											<span class="t10-fills"
-												>fills {#each fills as g (g)}<Chip text={g} variant="accent" />{/each}</span
-											>
+											<span class="t10-fills">
+												fills {#each fills as g (g)}<Chip text={g} variant="accent" />{/each}
+											</span>
 										{/if}
-										<span class="cell-sub"
-											>{row.implements_total} operation{row.implements_total === 1 ? '' : 's'} in total</span
-										>
+										<span class="cell-sub">
+											{row.implements_total} operation{row.implements_total === 1 ? '' : 's'} in total
+										</span>
 									{/if}
 								</td>
 								<td class="mono" data-label="Auth">{row.auth_kind}</td>
@@ -457,8 +460,10 @@
 											class="btn sm"
 											type="button"
 											{...writeAttrs(session, 'integrations_manager')}
-											onclick={() => startAdd(row)}>Add instance</button
+											onclick={() => startAdd(row)}
 										>
+											Add instance
+										</button>
 									{:else}
 										<a class="btn sm" href="/admin/connections/templates">Build a template</a>
 									{/if}
@@ -517,11 +522,11 @@
 						aria-invalid={!!urlProblem}
 						aria-describedby="sys-url-hint"
 					/>
-					<span id="sys-url-hint" class={urlProblem ? 's-err' : 'muted'}
-						>{urlProblem
+					<span id="sys-url-hint" class={urlProblem ? 's-err' : 'muted'}>
+						{urlProblem
 							? `${urlProblem.code}: ${urlProblem.message}`
-							: 'The only host this instance will ever call. Public https hosts only.'}</span
-					>
+							: 'The only host this instance will ever call. Public https hosts only.'}
+					</span>
 				</div>
 			{/if}
 			<div class="field">
@@ -538,9 +543,9 @@
 				<input id="sys-rps" class="input" inputmode="numeric" bind:value={form.max_rps} />
 			</div>
 			{#if pick.status === 'draft'}
-				<Callout kind="gap" title="Draft template"
-					>This system can serve test routes only until the template is published.</Callout
-				>
+				<Callout kind="gap" title="Draft template">
+					This system can serve test routes only until the template is published.
+				</Callout>
 			{/if}
 			<p class="muted">
 				Credential fields ({pick.credential_schema.map((f) => f.label).join(', ') || 'none'}) are set on the
@@ -548,9 +553,9 @@
 			</p>
 			{#if err}<p class="s-err" role="alert"><b class="mono">{err.code}</b> — {err.message}</p>{/if}
 			<div class="actions">
-				<button class="btn primary" type="submit" disabled={saving}
-					>{saving ? 'Adding…' : 'Add system'}</button
-				>
+				<button class="btn primary" type="submit" disabled={saving}>
+					{saving ? 'Adding…' : 'Add system'}
+				</button>
 				<button class="btn" type="button" onclick={() => (adding = false)}>Cancel</button>
 			</div>
 		</form>

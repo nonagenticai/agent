@@ -196,14 +196,15 @@
 </script>
 
 {#if !canWrite}
-	<Callout kind="info" title="Read only"
-		><span>You can view this source. Editing needs the tenant_admin role.</span></Callout
-	>
+	<Callout kind="info" title="Read only">
+		<span>You can view this source. Editing needs the tenant_admin role.</span>
+	</Callout>
 {/if}
 <fieldset class="editor" disabled={!canWrite || saving}>
 	<div class="form-grid">
-		<label class="field"><span class="label">Name</span><input class="input" bind:value={draft.name} /></label
-		>
+		<label class="field">
+			<span class="label">Name</span><input class="input" bind:value={draft.name} />
+		</label>
 		<fieldset class="field span" disabled={!!source}>
 			<legend class="label">Type</legend>
 			<div class="types">
@@ -229,81 +230,81 @@
 				</div>
 			</fieldset>
 			{#if draft.mode === 'urls'}
-				<label class="field span"
-					><span class="label">URLs, one per line</span><textarea
+				<label class="field span">
+					<span class="label">URLs, one per line</span><textarea
 						class="input mono"
 						rows="4"
-						bind:value={draft.urls}></textarea></label
-				>
+						bind:value={draft.urls}></textarea>
+				</label>
 			{:else}
-				<label class="field span"
-					><span class="label">{draft.mode === 'crawl' ? 'Start page' : 'Sitemap URL'}</span><input
+				<label class="field span">
+					<span class="label">{draft.mode === 'crawl' ? 'Start page' : 'Sitemap URL'}</span><input
 						class="input mono"
 						bind:value={draft.url}
 						placeholder="https://help.lumenloom.example/"
-					/></label
-				>
+					/>
+				</label>
 			{/if}
 			{#if draft.mode === 'crawl'}
-				<label class="field"
-					><span class="label">Link depth (1–5)</span><input
+				<label class="field">
+					<span class="label">Link depth (1–5)</span><input
 						class="input"
 						type="number"
 						min="1"
 						max="5"
 						bind:value={draft.maxDepth}
-					/></label
-				>
-				<label class="field"
-					><span class="label">Max pages (1–500)</span><input
+					/>
+				</label>
+				<label class="field">
+					<span class="label">Max pages (1–500)</span><input
 						class="input"
 						type="number"
 						min="1"
 						max="500"
 						bind:value={draft.maxPages}
-					/></label
-				>
-				<label class="field"
-					><span class="label">Allowed domains, one per line</span><textarea
+					/>
+				</label>
+				<label class="field">
+					<span class="label">Allowed domains, one per line</span><textarea
 						class="input mono"
 						rows="2"
-						bind:value={draft.allowedDomains}></textarea></label
-				>
+						bind:value={draft.allowedDomains}></textarea>
+				</label>
 			{/if}
 		{/if}
 		{#if structured(draft.type)}
-			<label class="field span"
-				><span class="label">{draft.type === 'api' ? 'Endpoint URL' : 'Table URL'}</span><input
+			<label class="field span">
+				<span class="label">{draft.type === 'api' ? 'Endpoint URL' : 'Table URL'}</span><input
 					class="input mono"
 					bind:value={draft.url}
 					placeholder="https://api.lumenloom.example/v1/promotions"
-				/></label
-			>
-			<label class="field"
-				><span class="label">Authentication</span>
+				/>
+			</label>
+			<label class="field">
+				<span class="label">Authentication</span>
 				<select class="input" bind:value={draft.authType}>
 					<option value="none">None</option>
 					<option value="bearer">Bearer token</option>
 					<option value="header">API key header</option>
-				</select></label
-			>
+				</select>
+			</label>
 			{#if draft.authType === 'header'}
-				<label class="field"
-					><span class="label">Header name</span><input
+				<label class="field">
+					<span class="label">Header name</span><input
 						class="input mono"
 						bind:value={draft.headerName}
 						placeholder="X-Api-Key"
-					/></label
-				>
+					/>
+				</label>
 			{/if}
 			{#if draft.type === 'datatable'}
-				<label class="field"
-					><span class="label">Format</span>
+				<label class="field">
+					<span class="label">Format</span>
 					<select class="input" bind:value={draft.format}>
 						<option value="csv">CSV</option>
 						<option value="xlsx">XLSX</option>
-					</select></label
-				>
+					</select>
+				</label>
 			{/if}
 		{/if}
 		{#if draft.type === 'file'}
@@ -315,12 +316,12 @@
 		{/if}
 		{#if uses}
 			<label class="field span">
-				<span class="label"
-					>Credentials {#if source?.has_credentials && !draft.clearSecret}<Chip
+				<span class="label">
+					Credentials {#if source?.has_credentials && !draft.clearSecret}<Chip
 							text={`set · ${when(source.credentials_updated_at)}`}
 							variant="ok"
-						/>{/if}</span
-				>
+						/>{/if}
+				</span>
 				<input
 					class="input mono"
 					type="password"
@@ -333,54 +334,55 @@
 				/>
 			</label>
 			{#if source?.has_credentials}
-				<label class="check"
-					><input type="checkbox" bind:checked={draft.clearSecret} /> Remove the stored credentials</label
-				>
+				<label class="check">
+					<input type="checkbox" bind:checked={draft.clearSecret} /> Remove the stored credentials
+				</label>
 			{/if}
 			<p class="cell-sub span">
 				Write-only: stored encrypted and never shown again; sent only with a test and each re-sync.
 			</p>
 		{/if}
-		<label class="field"
-			><span class="label">Target store</span>
+		<label class="field">
+			<span class="label">Target store</span>
 			<select class="input" bind:value={draft.targetStoreId}>
 				<option value="" disabled>Pick a leaf store</option>
-				{#each storeOptions as s (s.id)}<option value={s.id}
-						>{s.key}{s.strata_store_id ? '' : ' (unbound)'}</option
-					>{/each}
-			</select></label
-		>
-		<label class="field"
-			><span class="label">Language of its documents</span>
+				{#each storeOptions as s (s.id)}<option value={s.id}>
+						{s.key}{s.strata_store_id ? '' : ' (unbound)'}
+					</option>{/each}
+			</select>
+		</label>
+		<label class="field">
+			<span class="label">Language of its documents</span>
 			<select
 				class="input"
 				value={shownLanguage}
 				onchange={(e) => (draft.language = e.currentTarget.value)}
 				aria-label="Language of its documents"
 			>
-				{#each languageOptions as l (l)}<option value={l}
-						>{LANGUAGE_LABEL[l] ?? l} ({l}){l === languages[0] ? ' · job default' : ''}{languages.includes(l)
+				{#each languageOptions as l (l)}<option value={l}>
+						{LANGUAGE_LABEL[l] ?? l} ({l}){l === languages[0] ? ' · job default' : ''}{languages.includes(l)
 							? ''
-							: ' · not served'}</option
-					>{/each}
+							: ' · not served'}
+					</option>{/each}
 			</select>
 			{#if draft.language && languages.length && !languages.includes(draft.language)}<span
 					class="cell-sub warn-text"
-					>The job no longer serves {draft.language}: its documents count for no language in coverage.</span
-				>{/if}
+				>
+					The job no longer serves {draft.language}: its documents count for no language in coverage.
+				</span>{/if}
 		</label>
 		<SupersedesInput bind:value={supersedes} id="source-supersedes" />
-		<label class="field"
-			><span class="label">Schedule (cron)</span><input
+		<label class="field">
+			<span class="label">Schedule (cron)</span><input
 				class="input mono"
 				bind:value={draft.schedule}
 				placeholder="0 3 * * *"
 				disabled
 				aria-describedby="schedule-off"
-			/><span class="cell-sub" id="schedule-off" data-testid="schedule-off"
-				>Scheduled resync is switched off on this platform — use Resync now.</span
-			></label
-		>
+			/><span class="cell-sub" id="schedule-off" data-testid="schedule-off">
+				Scheduled resync is switched off on this platform — use Resync now.
+			</span>
+		</label>
 		<label class="check"><input type="checkbox" bind:checked={draft.enabled} /> Enabled</label>
 	</div>
 
@@ -392,8 +394,9 @@
 				disabled={!canWrite || testing}
 				title={why || undefined}
 				onclick={test}
-				>{testing ? 'Testing…' : draft.type === 'website' ? 'Test start page' : 'Test connection'}</button
 			>
+				{testing ? 'Testing…' : draft.type === 'website' ? 'Test start page' : 'Test connection'}
+			</button>
 		{/if}
 		{#if draft.type === 'datatable'}
 			<button
@@ -401,10 +404,12 @@
 				type="button"
 				disabled={!canWrite || previewing}
 				title={why || undefined}
-				onclick={() => previewColumns(null)}>Preview columns</button
+				onclick={() => previewColumns(null)}
 			>
-			<label class="btn file-btn" class:disabled={!canWrite || previewing} title={why || undefined}
-				>Preview from a local file
+				Preview columns
+			</button>
+			<label class="btn file-btn" class:disabled={!canWrite || previewing} title={why || undefined}>
+				Preview from a local file
 				<input
 					type="file"
 					accept=".csv,.xlsx"
@@ -414,8 +419,8 @@
 						pickPreviewFile(e.currentTarget.files);
 						e.currentTarget.value = '';
 					}}
-				/></label
-			>
+				/>
+			</label>
 		{/if}
 		<span class="muted">Tests and previews never save.</span>
 	</div>
@@ -423,17 +428,17 @@
 		<div class="callout" class:ok-box={sample.ok} class:err={!sample.ok} role="status">
 			<strong>{sample.ok ? 'Connection works' : 'Connection failed'}</strong>
 			<span>HTTP {sample.status ?? '—'} · {sample.detail}</span>
-			{#if sample.ok && sample.fields.length}<span class="muted"
-					>Discovered fields: {sample.fields.join(', ')}</span
-				>{/if}
+			{#if sample.ok && sample.fields.length}<span class="muted">
+					Discovered fields: {sample.fields.join(', ')}
+				</span>{/if}
 		</div>
 		{#if sample.sample != null}<JsonView value={sample.sample} />{/if}
 	{/if}
 	{#if preview}
 		<div class="preview-opts" data-testid="preview-options">
 			{#if preview.sheets.length > 1}
-				<label class="field"
-					><span class="label">Sheet</span>
+				<label class="field">
+					<span class="label">Sheet</span>
 					<select
 						class="input"
 						value={preview.sheet}
@@ -441,17 +446,17 @@
 						onchange={(e) => pickSheet(e.currentTarget.value)}
 					>
 						{#each preview.sheets as sh (sh)}<option value={sh}>{sh}</option>{/each}
-					</select></label
-				>
+					</select>
+				</label>
 			{/if}
-			<label class="check"
-				><input
+			<label class="check">
+				<input
 					type="checkbox"
 					checked={draft.headerRow}
 					disabled={!canWrite || previewing}
 					onchange={(e) => toggleHeader(e.currentTarget.checked)}
-				/> First row names the columns</label
-			>
+				/> First row names the columns
+			</label>
 		</div>
 		<p class="muted">
 			{preview.file}{previewFile ? ` (local, ${fileSize(previewFile.size)})` : ''}{preview.sheet
@@ -460,15 +465,15 @@
 		</p>
 		<div class="tbl-wrap">
 			<table class="tbl dense">
-				<thead
-					><tr
-						>{#each preview.columns as c (c)}<th>{c}</th>{/each}</tr
-					></thead
-				>
+				<thead>
+					<tr>
+						{#each preview.columns as c (c)}<th>{c}</th>{/each}
+					</tr>
+				</thead>
 				<tbody>
-					{#each preview.rows as r, i (i)}<tr
-							>{#each preview.columns as c (c)}<td class="mono">{r[c] ?? ''}</td>{/each}</tr
-						>{/each}
+					{#each preview.rows as r, i (i)}<tr>
+							{#each preview.columns as c (c)}<td class="mono">{r[c] ?? ''}</td>{/each}
+						</tr>{/each}
 				</tbody>
 			</table>
 		</div>
@@ -494,8 +499,10 @@
 			? '422 unknown_attribute — mapping rejected'
 			: failure.code === 'invalid_schedule'
 				? 'The stored schedule is not a valid cron'
-				: 'Refused'}><span>{failure.message} ({failure.code})</span></Callout
+				: 'Refused'}
 	>
+		<span>{failure.message} ({failure.code})</span>
+	</Callout>
 {/if}
 <div class="actions">
 	<button
@@ -503,31 +510,35 @@
 		type="button"
 		disabled={!canWrite || saving || errors.length > 0}
 		title={why || undefined}
-		onclick={save}>{saving ? 'Saving…' : source ? 'Save' : 'Add source'}</button
+		onclick={save}
 	>
+		{saving ? 'Saving…' : source ? 'Save' : 'Add source'}
+	</button>
 	{#if source}
 		<button
 			class="btn danger"
 			type="button"
 			disabled={!canWrite}
 			title={why || undefined}
-			onclick={() => (confirmDelete = true)}>Delete</button
+			onclick={() => (confirmDelete = true)}
 		>
+			Delete
+		</button>
 	{/if}
 </div>
 {#if confirmDelete && source}
 	<div class="callout err" role="alertdialog" aria-label="Delete source">
 		<strong>Delete {source.name}?</strong>
-		<span
-			>{purge
+		<span>
+			{purge
 				? 'Its documents are deleted from strata_rag too.'
-				: 'Its documents stay in the store; only the settings and run history go.'}</span
-		>
+				: 'Its documents stay in the store; only the settings and run history go.'}
+		</span>
 		<label class="check"><input type="checkbox" bind:checked={purge} /> Also delete its documents</label>
-		<span
-			><button class="btn sm danger" type="button" onclick={remove}>Delete source</button>
-			<button class="btn sm" type="button" onclick={() => (confirmDelete = false)}>Keep it</button></span
-		>
+		<span>
+			<button class="btn sm danger" type="button" onclick={remove}>Delete source</button>
+			<button class="btn sm" type="button" onclick={() => (confirmDelete = false)}>Keep it</button>
+		</span>
 	</div>
 {/if}
 

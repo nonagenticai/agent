@@ -228,8 +228,10 @@
 			class="btn primary"
 			type="button"
 			{...writeAttrs(session, 'knowledge_manager')}
-			onclick={ensureMissing}>Create missing stores</button
+			onclick={ensureMissing}
 		>
+			Create missing stores
+		</button>
 	{/snippet}
 </PageHead>
 
@@ -243,36 +245,34 @@
 		<li class="t7-hop" class:bad={sum.gapKinds.length > 0}>
 			<span class="label">1 · Job needs</span>
 			<b>{sum.required} required kinds</b>
-			<span class="muted"
-				>{sum.requiredCovered} covered{sum.gapKinds.length ? ` · ${sum.gapKinds.length} missing` : ''} ·
-				<a href={kindsHref}>{jobLabel}</a></span
-			>
+			<span class="muted">
+				{sum.requiredCovered} covered{sum.gapKinds.length ? ` · ${sum.gapKinds.length} missing` : ''} ·
+				<a href={kindsHref}>{jobLabel}</a>
+			</span>
 		</li>
 		<li class="t7-hop">
 			<span class="label">2 · Store layout</span>
 			<b>{sum.leaves} stores</b>
-			<span class="muted"
-				>in {sum.groups} group{sum.groups === 1 ? '' : 's'} · laid out here <MilestoneChip
-					milestone="M1"
-				/></span
-			>
+			<span class="muted">
+				in {sum.groups} group{sum.groups === 1 ? '' : 's'} · laid out here <MilestoneChip milestone="M1" />
+			</span>
 		</li>
 		<li class="t7-hop" class:bad={unbound.length > 0} class:wait={sum.ensuring > 0}>
 			<span class="label">3 · strata_rag</span>
 			<b>{sum.bound} of {items.length} created</b>
-			<span class="muted"
-				><span title="Your tenant's data residency, set at provisioning (D59)"
-					>region {regionText} (tenant residency)</span
-				>{sum.ensuring ? ` · ${sum.ensuring} being created` : ''}
-				<MilestoneChip milestone="M3" /></span
-			>
+			<span class="muted">
+				<span title="Your tenant's data residency, set at provisioning (D59)">
+					region {regionText} (tenant residency)
+				</span>{sum.ensuring ? ` · ${sum.ensuring} being created` : ''}
+				<MilestoneChip milestone="M3" />
+			</span>
 		</li>
 		<li class="t7-hop" class:wait={sum.stale.length > 0}>
 			<span class="label">4 · Content</span>
 			<b>{fmt.n(sum.documents)} documents</b>
-			<span class="muted"
-				>{fmt.n(sum.passages)} passages · from <a href={sourcesHref}>sources</a> and uploads</span
-			>
+			<span class="muted">
+				{fmt.n(sum.passages)} passages · from <a href={sourcesHref}>sources</a> and uploads
+			</span>
 		</li>
 		<li class="t7-hop">
 			<span class="label">5 · Agent search</span>
@@ -285,14 +285,15 @@
 		<Callout
 			kind="gap"
 			title={`${unbound.length} store${unbound.length === 1 ? '' : 's'} laid out but not created in strata_rag`}
-			><span
-				><span class="mono">{unbound.map((s) => s.key).join(', ')}</span>: search skips
+		>
+			<span>
+				<span class="mono">{unbound.map((s) => s.key).join(', ')}</span>: search skips
 				{unbound.length === 1 ? 'it' : 'them'} until strata_rag has created {unbound.length === 1
 					? 'it'
 					: 'them'}. “Create missing stores” queues one <span class="mono">store_ensure</span> each; progress
-				shows on the Knowledge row of the <a href="/admin">overview</a>.</span
-			></Callout
-		>
+				shows on the Knowledge row of the <a href="/admin">overview</a>.
+			</span>
+		</Callout>
 	{/if}
 
 	<Card
@@ -324,9 +325,9 @@
 							{#each st.kinds as k (k.row.kind)}
 								<li title={`${k.row.description} ${COVERAGE[k.state].hint}`}>
 									{#if k.store}
-										<button type="button" class="t7-kind mono" onclick={() => show(k.store!)}
-											>{k.row.kind}</button
-										>
+										<button type="button" class="t7-kind mono" onclick={() => show(k.store!)}>
+											{k.row.kind}
+										</button>
 									{:else}
 										<span class="t7-kind mono">{k.row.kind}</span>
 									{/if}
@@ -350,10 +351,10 @@
 								<span>
 									<Chip text={COVERAGE[f.state].text} variant={COVERAGE[f.state].variant} />
 									<b class="mono">{f.row.kind}</b>
-									<span class="muted"
-										>{f.row.required ? 'required' : 'optional'} in {f.stages.map(stageLabel).join(', ')}
-										· {COVERAGE[f.state].hint}</span
-									>
+									<span class="muted">
+										{f.row.required ? 'required' : 'optional'} in {f.stages.map(stageLabel).join(', ')}
+										· {COVERAGE[f.state].hint}
+									</span>
 								</span>
 								<span class="t7-fix-act">
 									{#if f.state === 'no_store' || f.state === 'missing_store'}
@@ -364,17 +365,19 @@
 												class="btn sm"
 												type="button"
 												{...writeAttrs(session, 'knowledge_manager')}
-												onclick={() => draftStore(f.row.kind)}>Create store</button
+												onclick={() => draftStore(f.row.kind)}
 											>
+												Create store
+											</button>
 										{/if}
 									{:else if f.state === 'unbound'}
 										<span class="muted">Create missing stores ↑</span>
 									{:else if f.state === 'ensuring'}
 										<a class="btn sm" href="/admin">Watch progress</a>
 									{:else if f.state === 'empty' || f.state === 'stale'}
-										<a class="btn sm" href={sourcesHref}
-											>{f.state === 'empty' ? 'Add a source' : 'Re-sync its source'}</a
-										>
+										<a class="btn sm" href={sourcesHref}>
+											{f.state === 'empty' ? 'Add a source' : 'Re-sync its source'}
+										</a>
 									{/if}
 								</span>
 							</li>
@@ -388,10 +391,10 @@
 				{/if}
 				{#if niceToHave.length}
 					<details class="t7-optional">
-						<summary
-							>{niceToHave.length} optional kind{niceToHave.length === 1 ? '' : 's'} without a store
-							<span class="muted mono">{niceToHave.map((f) => f.row.kind).join(', ')}</span></summary
-						>
+						<summary>
+							{niceToHave.length} optional kind{niceToHave.length === 1 ? '' : 's'} without a store
+							<span class="muted mono">{niceToHave.map((f) => f.row.kind).join(', ')}</span>
+						</summary>
 						{@render fixList(niceToHave, 't7-fixes-optional')}
 					</details>
 				{/if}
@@ -423,12 +426,12 @@
 							aria-pressed={sel?.id === node.id}
 							onclick={() => pick(node)}
 						>
-							<span class="kn-name"
-								>{#if node.kind === 'group'}<span class="t7-glyph" aria-hidden="true">▾</span>{/if}
+							<span class="kn-name">
+								{#if node.kind === 'group'}<span class="t7-glyph" aria-hidden="true">▾</span>{/if}
 								<span>{node.label}</span>
 								<span class="mono muted">{node.key}</span>
-								{#if node.kind === 'group'}<span class="muted t7-small">group</span>{/if}</span
-							>
+								{#if node.kind === 'group'}<span class="muted t7-small">group</span>{/if}
+							</span>
 							<span class="meta">
 								{#if node.ensuring}<Chip
 										text="ensuring"
@@ -449,9 +452,9 @@
 								{/if}
 							</span>
 							{#if uses.length}
-								<span class="kn-uses muted t7-small"
-									>answers {[...new Set(uses.map((u) => stageLabel(u.stage)))].join(' · ')}</span
-								>
+								<span class="kn-uses muted t7-small">
+									answers {[...new Set(uses.map((u) => stageLabel(u.stage)))].join(' · ')}
+								</span>
 							{:else if node.kind === 'leaf' && kindRows.length}
 								<span class="kn-uses muted t7-small">not bound to a kind in this job</span>
 							{/if}
@@ -466,40 +469,42 @@
 					in strata_rag via <span class="mono">store_ensure</span>, then fills from a source.
 				</p>
 				<form class="form-grid new-store" onsubmit={create}>
-					<label class="field"
-						><span class="label">Key</span><input
+					<label class="field">
+						<span class="label">Key</span><input
 							class="input mono"
 							bind:value={form.key}
 							placeholder="policy.gift_cards"
-						/></label
-					>
-					<label class="field"
-						><span class="label">Label</span><input
+						/>
+					</label>
+					<label class="field">
+						<span class="label">Label</span><input
 							class="input"
 							bind:value={form.label}
 							placeholder="Gift cards"
-						/></label
-					>
-					<label class="field"
-						><span class="label">Kind</span>
+						/>
+					</label>
+					<label class="field">
+						<span class="label">Kind</span>
 						<select class="input" bind:value={form.kind}>
 							<option value="leaf">Leaf (holds documents)</option>
 							<option value="group">Group (holds stores)</option>
-						</select></label
-					>
-					<label class="field"
-						><span class="label">Parent</span>
+						</select>
+					</label>
+					<label class="field">
+						<span class="label">Parent</span>
 						<select class="input" bind:value={form.parent_id}>
 							<option value="">None (top level)</option>
 							{#each groups as g (g.id)}<option value={g.id}>{g.key}</option>{/each}
-						</select></label
-					>
+						</select>
+					</label>
 					<button
 						class="btn"
 						type="submit"
 						{...writeAttrs(session, 'knowledge_manager')}
-						disabled={!canWrite || !form.key.trim() || !form.label.trim()}>Create store</button
+						disabled={!canWrite || !form.key.trim() || !form.label.trim()}
 					>
+						Create store
+					</button>
 				</form>
 			</details>
 		</Card>
@@ -510,20 +515,20 @@
 					<ol class="t7-chain" aria-label="This store's chain">
 						<li class="ok"><span class="label">Layout</span><span>{sel.kind}</span></li>
 						<li class={sel.strata_store_id ? 'ok' : sel.ensuring ? 'wait' : 'bad'}>
-							<span class="label">strata_rag</span><span class="mono"
-								>{sel.strata_store_id ?? (sel.ensuring ? 'being created' : 'not created')}</span
-							>
+							<span class="label">strata_rag</span><span class="mono">
+								{sel.strata_store_id ?? (sel.ensuring ? 'being created' : 'not created')}
+							</span>
 						</li>
 						<li class={sel.region ? 'ok' : 'wait'}>
-							<span class="label">Region</span><span
-								>{sel.region ? `${REGION_LABEL[sel.region]} · tenant data residency` : 'not pinned'}</span
-							>
+							<span class="label">Region</span><span>
+								{sel.region ? `${REGION_LABEL[sel.region]} · tenant data residency` : 'not pinned'}
+							</span>
 						</li>
 						{#if sel.kind === 'leaf'}
 							<li class={sel.documents ? (selState === 'stale' ? 'wait' : 'ok') : 'bad'}>
-								<span class="label">Content</span><span
-									>{fmt.n(sel.documents)} docs · {fmt.n(sel.chunks)} passages</span
-								>
+								<span class="label">Content</span><span>
+									{fmt.n(sel.documents)} docs · {fmt.n(sel.chunks)} passages
+								</span>
 							</li>
 						{/if}
 					</ol>
@@ -550,8 +555,10 @@
 							class="btn sm danger"
 							type="button"
 							{...writeAttrs(session, 'knowledge_manager')}
-							onclick={() => (confirmStore = true)}>Delete store</button
+							onclick={() => (confirmStore = true)}
 						>
+							Delete store
+						</button>
 					</div>
 					{#if sel.kind === 'leaf'}
 						{#key sel.id}<UploadDocs store={sel} ondone={refreshAll} />{/key}
@@ -559,16 +566,15 @@
 					{#if confirmStore}
 						<div class="callout err" role="alertdialog" aria-label="Delete store">
 							<strong>Delete {sel.key}?</strong>
-							<span
-								>The store and its documents are deleted from strata_rag{selNeeded.length
+							<span>
+								The store and its documents are deleted from strata_rag{selNeeded.length
 									? `, and ${selNeeded.length} journey kind${selNeeded.length === 1 ? '' : 's'} lose their source`
-									: ''}. A group must be empty first.</span
-							>
-							<span
-								><button class="btn sm danger" type="button" onclick={removeStore}>Delete store</button>
-								<button class="btn sm" type="button" onclick={() => (confirmStore = false)}>Keep it</button
-								></span
-							>
+									: ''}. A group must be empty first.
+							</span>
+							<span>
+								<button class="btn sm danger" type="button" onclick={removeStore}>Delete store</button>
+								<button class="btn sm" type="button" onclick={() => (confirmStore = false)}>Keep it</button>
+							</span>
 						</div>
 					{/if}
 				{/if}
@@ -576,12 +582,12 @@
 					<div class="callout err" role="alertdialog" aria-label="Delete document">
 						<strong>Delete {confirmDoc.title}?</strong>
 						<span>It is removed from strata_rag and no longer found by search.</span>
-						<span
-							><button class="btn sm danger" type="button" onclick={() => removeDoc(confirmDoc!)}
-								>Delete document</button
-							>
-							<button class="btn sm" type="button" onclick={() => (confirmDoc = null)}>Keep it</button></span
-						>
+						<span>
+							<button class="btn sm danger" type="button" onclick={() => removeDoc(confirmDoc!)}>
+								Delete document
+							</button>
+							<button class="btn sm" type="button" onclick={() => (confirmDoc = null)}>Keep it</button>
+						</span>
 					</div>
 				{/if}
 				<h3 class="t7-h3">Documents</h3>
@@ -603,23 +609,25 @@
 					<ul class="list-plain" data-testid="store-docs">
 						{#each docs.items as d (d.id)}
 							<li>
-								<span
-									>{d.title}<span class="cell-sub mono">{d.source} · added {ago(d.added_at, now)}</span></span
-								>
+								<span>
+									{d.title}<span class="cell-sub mono">{d.source} · added {ago(d.added_at, now)}</span>
+								</span>
 								<span class="muted mono">{fmt.n(d.chunks)} passages</span>
 								<button
 									class="btn sm"
 									type="button"
 									{...writeAttrs(session, 'knowledge_manager')}
-									onclick={() => (confirmDoc = d)}>Delete</button
+									onclick={() => (confirmDoc = d)}
 								>
+									Delete
+								</button>
 							</li>
 						{/each}
 					</ul>
 					{#if docs.next}
-						<button class="btn sm" type="button" disabled={loadingMore} onclick={more}
-							>{loadingMore ? 'Loading…' : `Load more (${fmt.n(sel?.documents ?? 0)} in total)`}</button
-						>
+						<button class="btn sm" type="button" disabled={loadingMore} onclick={more}>
+							{loadingMore ? 'Loading…' : `Load more (${fmt.n(sel?.documents ?? 0)} in total)`}
+						</button>
 					{/if}
 				{/if}
 			</Card>

@@ -54,9 +54,9 @@
 		</div>
 		<div class="chips">
 			<Chip text={t.status} variant={STATUS_CHIP[t.status]} />
-			{#if t.residency}<span title="Data residency (D59): pins stores, LLM providers and logs"
-					><Chip text={`data in ${t.residency.toUpperCase()}`} variant="tool" /></span
-				>{/if}
+			{#if t.residency}<span title="Data residency (D59): pins stores, LLM providers and logs">
+					<Chip text={`data in ${t.residency.toUpperCase()}`} variant="tool" />
+				</span>{/if}
 			{#if pf?.stage === 'provisioning'}<Chip text="provisioning" variant="warn" />{/if}
 		</div>
 	</header>
@@ -76,11 +76,11 @@
 				{:else}
 					—
 				{/if}
-				<span class="tc-sub"
-					>{t.users} member{t.users === 1 ? '' : 's'}{pf && pf.members.disabled
+				<span class="tc-sub">
+					{t.users} member{t.users === 1 ? '' : 's'}{pf && pf.members.disabled
 						? ` · ${pf.members.disabled} disabled`
-						: ''}</span
-				>
+						: ''}
+				</span>
 			</dd>
 		</div>
 		<div>
@@ -154,20 +154,20 @@
 							<Chip text="on latest" variant="ok" />
 						{/if}
 						{#if j.generator && (j.generator.status === 'running' || j.generator.status === 'blocked')}
-							<a href={`/platform/generator/${j.generator.run}`} class="tc-chiplink"
-								><Chip
+							<a href={`/platform/generator/${j.generator.run}`} class="tc-chiplink">
+								<Chip
 									text={`run #${j.generator.run} · ${j.generator.step}`}
 									variant={j.generator.status === 'blocked' ? 'warn' : 'tool'}
-								/></a
-							>
+								/>
+							</a>
 						{/if}
 					</span>
 					{#if j.cases_7d !== null && j.cases_7d > 0}
-						<span class="tc-sub tc-cases"
-							>{j.cases_7d.toLocaleString('en-GB')} cases · 7 d{j.containment_7d !== null
+						<span class="tc-sub tc-cases">
+							{j.cases_7d.toLocaleString('en-GB')} cases · 7 d{j.containment_7d !== null
 								? ` · ${Math.round(j.containment_7d * 100)}% contained`
-								: ''}</span
-						>
+								: ''}
+						</span>
 					{/if}
 				</div>
 			{/each}
@@ -183,9 +183,9 @@
 	{/if}
 
 	<footer class="tc-foot">
-		<span class="tc-sub"
-			>Created {utc(t.created_at)}{t.suspended_at ? ` · suspended ${utc(t.suspended_at)}` : ''}</span
-		>
+		<span class="tc-sub">
+			Created {utc(t.created_at)}{t.suspended_at ? ` · suspended ${utc(t.suspended_at)}` : ''}
+		</span>
 		<div class="actions tc-actions">
 			<button class="btn sm" disabled={busy} onclick={onactin}>Act in tenant</button>
 			{#if t.status === 'active'}
@@ -193,22 +193,28 @@
 					class="btn sm"
 					{...superAdminAttrs(session)}
 					disabled={busy || !session.superAdmin}
-					onclick={() => onstatus('suspended')}>Suspend</button
+					onclick={() => onstatus('suspended')}
 				>
+					Suspend
+				</button>
 			{:else}
 				<button
 					class="btn sm"
 					{...superAdminAttrs(session)}
 					disabled={busy || !session.superAdmin}
-					onclick={() => onstatus('active')}>Resume</button
+					onclick={() => onstatus('active')}
 				>
+					Resume
+				</button>
 			{/if}
 			<button
 				class="btn sm danger"
 				{...superAdminAttrs(session)}
 				aria-label={`Offboard ${t.name}`}
-				onclick={onoffboard}>Offboard</button
+				onclick={onoffboard}
 			>
+				Offboard
+			</button>
 		</div>
 	</footer>
 </article>

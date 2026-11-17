@@ -183,13 +183,13 @@
 />
 
 {#if !canWrite}
-	<Callout kind="info" title="Read only"
-		><span
-			>You can see every member, but inviting, changing roles and disabling need the Tenant admin role{session.viewAs
+	<Callout kind="info" title="Read only">
+		<span>
+			You can see every member, but inviting, changing roles and disabling need the Tenant admin role{session.viewAs
 				? ' (you are viewing as fewer roles)'
-				: ''}. The controls stay visible, disabled.</span
-		></Callout
-	>
+				: ''}. The controls stay visible, disabled.
+		</span>
+	</Callout>
 {/if}
 
 <div class="t3-top">
@@ -227,9 +227,9 @@
 		<ol class="t3-flow" aria-label="From portal login to Agent">
 			<li>
 				<b>Portal account</b>
-				<span class="cell-sub"
-					>One login for every nonagentic app (Keycloak portal realm). Not managed here.</span
-				>
+				<span class="cell-sub">
+					One login for every nonagentic app (Keycloak portal realm). Not managed here.
+				</span>
 			</li>
 			<li class="here">
 				<b>Membership in {tenantName}</b>
@@ -237,9 +237,9 @@
 			</li>
 			<li>
 				<b>Agent</b>
-				<span class="cell-sub"
-					><a href="/console">Console</a>, <a href="/chat">Test chat</a> and the admin pages.</span
-				>
+				<span class="cell-sub">
+					<a href="/console">Console</a>, <a href="/chat">Test chat</a> and the admin pages.
+				</span>
 			</li>
 		</ol>
 	</div>
@@ -248,33 +248,33 @@
 		{#snippet actions()}<MilestoneChip milestone="M2" />{/snippet}
 		<form class="t3-add" onsubmit={invite}>
 			<fieldset class="t3-fields" disabled={!canWrite || busy}>
-				<label class="field"
-					><span class="label">E-mail</span><input
+				<label class="field">
+					<span class="label">E-mail</span><input
 						class="input"
 						type="email"
 						autocomplete="off"
 						bind:value={email}
 						placeholder="name@lumenloom.example"
-					/></label
-				>
-				<label class="field"
-					><span class="label">First name</span><input
+					/>
+				</label>
+				<label class="field">
+					<span class="label">First name</span><input
 						class="input"
 						autocomplete="off"
 						maxlength="80"
 						required
 						bind:value={firstName}
-					/></label
-				>
-				<label class="field"
-					><span class="label">Last name</span><input
+					/>
+				</label>
+				<label class="field">
+					<span class="label">Last name</span><input
 						class="input"
 						autocomplete="off"
 						maxlength="80"
 						required
 						bind:value={lastName}
-					/></label
-				>
+					/>
+				</label>
 				<RoleSetEditor {catalog} bind:value={inviteRoles} name="invite" compact />
 			</fieldset>
 			<div class="t3-actions">
@@ -283,8 +283,9 @@
 					type="submit"
 					{...writeAttrs(session, 'tenant_admin')}
 					disabled={!canWrite || busy || !email.trim() || !firstName.trim() || !lastName.trim()}
-					>Send invite</button
 				>
+					Send invite
+				</button>
 				{#if lastInvite}<span class="muted" role="status">202 · invite sent to {lastInvite}</span>{/if}
 			</div>
 			<p class="cell-sub">
@@ -292,9 +293,9 @@
 			</p>
 		</form>
 		<div class="t3-secondary">
-			<button class="t3-link" type="button" aria-expanded={bySub} onclick={() => (bySub = !bySub)}
-				>{bySub ? '▾' : '▸'} Already has a portal account? Add by ID</button
-			>
+			<button class="t3-link" type="button" aria-expanded={bySub} onclick={() => (bySub = !bySub)}>
+				{bySub ? '▾' : '▸'} Already has a portal account? Add by ID
+			</button>
 			<MilestoneChip milestone="M1" />
 		</div>
 		{#if bySub}
@@ -303,15 +304,15 @@
 					Enter their Keycloak subject (sub). They become active at once; no e-mail is sent.
 				</p>
 				<fieldset class="t3-fields two" disabled={!canWrite || busy}>
-					<label class="field"
-						><span class="label">Keycloak subject (sub)</span><input
+					<label class="field">
+						<span class="label">Keycloak subject (sub)</span><input
 							class="input mono"
 							autocomplete="off"
 							spellcheck="false"
 							bind:value={sub}
 							placeholder="noor-el-amrani"
-						/></label
-					>
+						/>
+					</label>
 				</fieldset>
 				<RoleSetEditor
 					{catalog}
@@ -325,8 +326,10 @@
 						class="btn"
 						type="submit"
 						{...writeAttrs(session, 'tenant_admin')}
-						disabled={!canWrite || busy || !sub.trim()}>Add user</button
+						disabled={!canWrite || busy || !sub.trim()}
 					>
+						Add user
+					</button>
 				</div>
 			</form>
 		{/if}
@@ -369,9 +372,9 @@
 							<span><b>{sum.admins + sum.users}</b> can sign in</span>
 							{#if sum.invited}<span><b>{sum.invited}</b> invite pending</span>{/if}
 							{#if sum.disabled}<span><b>{sum.disabled}</b> disabled</span>{/if}
-							{#if sum.quiet}<span class="warn"
-									><b>{sum.quiet}</b> quiet ≥ {QUIET_DAYS} d — consider disabling</span
-								>{/if}
+							{#if sum.quiet}<span class="warn">
+									<b>{sum.quiet}</b> quiet ≥ {QUIET_DAYS} d — consider disabling
+								</span>{/if}
 						</p>
 					</div>
 					<Seg
@@ -388,11 +391,11 @@
 				<div class="tbl-wrap">
 					<table class="tbl t3-tbl" data-testid="tenant-users">
 						<thead>
-							<tr
-								><th>Member</th><th>Roles</th><th>State</th><th>Last activity</th><th>Added</th><th
+							<tr>
+								<th>Member</th><th>Roles</th><th>State</th><th>Last activity</th><th>Added</th><th
 									aria-label="Member actions"
-								></th></tr
-							>
+								></th>
+							</tr>
 						</thead>
 						<tbody>
 							{#each rows as u (u.sub)}
@@ -400,15 +403,16 @@
 								{@const a = acts.get(u.sub)}
 								<tr data-sub={u.sub} data-state={st} class:disabled={st === 'disabled'}>
 									<td class="t3-member">
-										<span class="t3-avatar" class:admin={u.roles.includes('tenant_admin')} aria-hidden="true"
-											>{initials(u.display_name)}</span
-										>
-										<span
-											><b>{u.display_name}</b>{#if u.sub === me}<span class="chip accent t3-you">you</span
-												>{/if}<span class="cell-sub">{u.email}{u.title ? ` · ${u.title}` : ''}</span><span
-												class="cell-sub mono">{u.sub}</span
-											></span
-										>
+										<span class="t3-avatar" class:admin={u.roles.includes('tenant_admin')} aria-hidden="true">
+											{initials(u.display_name)}
+										</span>
+										<span>
+											<b>{u.display_name}</b>{#if u.sub === me}<span class="chip accent t3-you">
+													you
+												</span>{/if}<span class="cell-sub">
+												{u.email}{u.title ? ` · ${u.title}` : ''}
+											</span><span class="cell-sub mono">{u.sub}</span>
+										</span>
 									</td>
 									<td data-label="Roles" class="t3-roles-cell">
 										{#if editing === u.sub}
@@ -427,8 +431,10 @@
 													class="btn sm primary"
 													type="button"
 													disabled={busy || sameSet(draftRoles, u.roles)}
-													onclick={() => saveRoles(u)}>Save roles</button
+													onclick={() => saveRoles(u)}
 												>
+													Save roles
+												</button>
 												<button class="btn sm" type="button" onclick={() => (editing = null)}>Cancel</button>
 											</div>
 										{:else}
@@ -448,8 +454,10 @@
 													: st === 'disabled'
 														? 'Enable the user first'
 														: undefined}
-												onclick={() => startEdit(u)}>Change roles</button
+												onclick={() => startEdit(u)}
 											>
+												Change roles
+											</button>
 										{/if}
 										{#if lastAdmin(u)}<span class="cell-sub">Last admin — protected</span>{/if}
 									</td>
@@ -459,11 +467,11 @@
 											<span class="cell-sub">since {shortDate(u.disabled_at)} · history kept</span>
 										{:else if st === 'invited'}
 											<Chip text="invited" variant="cust" title="Invite sent; not accepted yet" />
-											<span class="cell-sub"
-												>sent {shortDate(u.invited_at)}{a?.invite_expires_at
+											<span class="cell-sub">
+												sent {shortDate(u.invited_at)}{a?.invite_expires_at
 													? ` · expires ${shortDate(a.invite_expires_at)}`
-													: ''}</span
-											>
+													: ''}
+											</span>
 										{:else}
 											<Chip text="active" variant="ok" />
 										{/if}
@@ -473,9 +481,9 @@
 											<span class="muted">not signed in yet</span>
 										{:else if a}
 											<span class:t3-quiet={isQuiet(st, a, now)}>{ago(a.last_seen_at, now)}</span>
-											{#if a.last_surface}<span class="cell-sub"
-													>{SURFACE_LABEL[a.last_surface]} · {a.sign_ins_30d} sign-ins / 30 d</span
-												>{/if}
+											{#if a.last_surface}<span class="cell-sub">
+													{SURFACE_LABEL[a.last_surface]} · {a.sign_ins_30d} sign-ins / 30 d
+												</span>{/if}
 											{#if isQuiet(st, a, now)}<Chip text="quiet" variant="warn" />{/if}
 										{:else}
 											<span class="muted">—</span>
@@ -483,8 +491,9 @@
 									</td>
 									<td data-label="Added">
 										{#if a?.added_via}
-											<span>{ORIGIN_LABEL[a.added_via]}{a.added_by_name ? ` by ${a.added_by_name}` : ''}</span
-											>
+											<span>
+												{ORIGIN_LABEL[a.added_via]}{a.added_by_name ? ` by ${a.added_by_name}` : ''}
+											</span>
 											<span class="cell-sub">{shortDate(a.added_at)}</span>
 										{:else}
 											<span>{shortDate(u.created_at)}</span>
@@ -497,16 +506,20 @@
 												type="button"
 												{...writeAttrs(session, 'tenant_admin')}
 												disabled={!canWrite || busy}
-												onclick={() => enable(u)}>Enable</button
+												onclick={() => enable(u)}
 											>
+												Enable
+											</button>
 										{:else}
 											<button
 												class="btn sm danger"
 												type="button"
 												disabled={!canWrite || busy || lastAdmin(u) || u.sub === me}
 												title={why(u)}
-												onclick={() => disable(u)}>Disable</button
+												onclick={() => disable(u)}
 											>
+												Disable
+											</button>
 										{/if}
 									</td>
 								</tr>

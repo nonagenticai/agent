@@ -90,18 +90,20 @@
 				<tbody>
 					{#each rows as r (r.kind + r.key)}
 						<tr class="c-{r.change}">
-							<td class="g"
-								><span class="glyph" title={r.change} aria-label={r.change}>{CHANGE[r.change].glyph}</span
-								><span class="sr">{r.change}</span></td
-							>
+							<td class="g">
+								<span class="glyph" title={r.change} aria-label={r.change}>
+									{CHANGE[r.change].glyph}
+								</span><span class="sr">{r.change}</span>
+							</td>
 							<td>
 								<span class="mono">{r.key}</span>
 								<span class="cell-sub">{KIND_LABEL[r.kind]}{r.label !== r.key ? ` · ${r.label}` : ''}</span>
 							</td>
 							<td>
 								{#if r.before !== null}<span class="before">{r.before}</span>{/if}
-								{#if r.before !== null && r.after !== null}<span class="arrow" aria-hidden="true">→</span
-									>{/if}
+								{#if r.before !== null && r.after !== null}<span class="arrow" aria-hidden="true">
+										→
+									</span>{/if}
 								{#if r.after !== null}<span class="after">{r.after}</span>{/if}
 							</td>
 						</tr>
@@ -122,20 +124,20 @@
 	{#snippet actions()}
 		{#if loaded}
 			{@const idx = loaded.versions.indexOf(loaded.tag.version)}
-			{#if idx > 0}<a class="btn" href={tagHref(layer, loaded.versions[idx - 1]!)}
-					>← @v{loaded.versions[idx - 1]}</a
-				>{/if}
-			{#if idx < loaded.versions.length - 1}<a class="btn" href={tagHref(layer, loaded.versions[idx + 1]!)}
-					>@v{loaded.versions[idx + 1]} →</a
-				>{/if}
+			{#if idx > 0}<a class="btn" href={tagHref(layer, loaded.versions[idx - 1]!)}>
+					← @v{loaded.versions[idx - 1]}
+				</a>{/if}
+			{#if idx < loaded.versions.length - 1}<a class="btn" href={tagHref(layer, loaded.versions[idx + 1]!)}>
+					@v{loaded.versions[idx + 1]} →
+				</a>{/if}
 			{#if loaded.retired_versions?.includes(loaded.tag.version)}
-				<button class="btn" type="button" disabled={retireBusy} onclick={() => setRetired(false)}
-					>Restore</button
-				>
+				<button class="btn" type="button" disabled={retireBusy} onclick={() => setRetired(false)}>
+					Restore
+				</button>
 			{:else}
-				<button class="btn" type="button" disabled={retireBusy} onclick={() => setRetired(true)}
-					>Retire</button
-				>
+				<button class="btn" type="button" disabled={retireBusy} onclick={() => setRetired(true)}>
+					Retire
+				</button>
 			{/if}
 		{/if}
 		<a class="btn" href="/platform/templates">All templates</a>
@@ -171,9 +173,9 @@
 					<p class="note">{d.tag.note}</p>
 					<p class="byline">
 						Tagged by {d.tag.tagged_by_name} · {when(d.tag.tagged_at)} · {d.items.length} items ·
-						{#if isLatest}<b class="ok-t">latest tag</b>{:else}<b class="warn-t"
-								>{latest - d.tag.version} tag{latest - d.tag.version === 1 ? '' : 's'} behind latest</b
-							>
+						{#if isLatest}<b class="ok-t">latest tag</b>{:else}<b class="warn-t">
+								{latest - d.tag.version} tag{latest - d.tag.version === 1 ? '' : 's'} behind latest
+							</b>
 							(<a href={tagHref(layer, latest)}>@v{latest}</a>){/if}
 						{#if d.layer.rollout_wave != null}· rollout wave {d.layer.rollout_wave} ({d.layer
 								.rollout_label}){/if}
@@ -220,9 +222,9 @@
 										<Chip text="past this tag" variant="muted" />
 									{/if}
 									{#if cu}
-										<span class="cell-sub"
-											>to @v{cu.to}: +{cu.added} ~{cu.changed} −{cu.removed} on next re-point + cut</span
-										>
+										<span class="cell-sub">
+											to @v{cu.to}: +{cu.added} ~{cu.changed} −{cu.removed} on next re-point + cut
+										</span>
 									{:else if p.behind === 0}
 										<span class="cell-sub">on the latest tag</span>
 									{/if}
@@ -272,9 +274,9 @@
 							onchange={(e) =>
 								loadCompare(e.currentTarget.value === '' ? null : Number(e.currentTarget.value))}
 						>
-							<option value=""
-								>{d.previous === null ? 'nothing (first tag)' : `@v${d.previous} (previous)`}</option
-							>
+							<option value="">
+								{d.previous === null ? 'nothing (first tag)' : `@v${d.previous} (previous)`}
+							</option>
 							{#each d.versions.filter((v) => v !== d.tag.version && v !== d.previous) as v (v)}
 								<option value={v}>@v{v}</option>
 							{/each}

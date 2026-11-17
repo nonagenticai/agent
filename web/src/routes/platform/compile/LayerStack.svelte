@@ -32,18 +32,20 @@
 							<a href={layerHref(l.label)} class="mono" title="Open this layer in Layers">{l.label}</a>
 							{#if l.tag}<span class="chip">{l.tag.split('@')[1]}</span>{:else}<span
 									class="chip proposed"
-									title="Current revisions, not yet in a template tag">untagged</span
-								>{/if}
+									title="Current revisions, not yet in a template tag"
+								>
+									untagged
+								</span>{/if}
 						</div>
 						<span class="because">{l.because}</span>
 						<span class="ops" aria-label="Rows applied">
 							{#if l.ops.add}<span class="op add" title="rows that add an item">+{l.ops.add}</span>{/if}
-							{#if l.ops.patch}<span class="op patch" title="rows that patch an earlier item"
-									>~{l.ops.patch}</span
-								>{/if}
-							{#if l.ops.tombstone}<span class="op tomb" title="rows that remove an earlier item"
-									>×{l.ops.tombstone}</span
-								>{/if}
+							{#if l.ops.patch}<span class="op patch" title="rows that patch an earlier item">
+									~{l.ops.patch}
+								</span>{/if}
+							{#if l.ops.tombstone}<span class="op tomb" title="rows that remove an earlier item">
+									×{l.ops.tombstone}
+								</span>{/if}
 						</span>
 					</div>
 				{:else}

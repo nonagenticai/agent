@@ -54,8 +54,10 @@
 						class="l2t-turn"
 						class:on={i === idx}
 						aria-pressed={i === idx}
-						onclick={() => (picked = i)}>{i + 1}</button
+						onclick={() => (picked = i)}
 					>
+						{i + 1}
+					</button>
 				{/each}
 			</div>
 		{/if}
@@ -70,11 +72,9 @@
 		{@const t = cur.t}
 		<p class="l2t-q">
 			<span class="muted">Reply {idx + 1} to</span> “{cur.ask}”
-			<span class="chip" class:accent={t.design === 'draft'} class:warn={t.design === 'live'}
-				>{t.design === 'draft'
-					? `draft ${formatDraftRev(t.draft_rev, t.draft_fp)}`
-					: `live ${t.release_id}`}</span
-			>
+			<span class="chip" class:accent={t.design === 'draft'} class:warn={t.design === 'live'}>
+				{t.design === 'draft' ? `draft ${formatDraftRev(t.draft_rev, t.draft_fp)}` : `live ${t.release_id}`}
+			</span>
 		</p>
 
 		{#if t.differs.length}
@@ -102,9 +102,9 @@
 						<span class="mono l2t-key">{g.gate}</span>
 						<span class="l2t-main">
 							<b>{g.label}</b>
-							{#if g.other_label}<span class="l2t-other"
-									>{t.design === 'draft' ? 'live' : 'draft'}: {g.other_label}</span
-								>{/if}
+							{#if g.other_label}<span class="l2t-other">
+									{t.design === 'draft' ? 'live' : 'draft'}: {g.other_label}
+								</span>{/if}
 							<small class="muted">{g.question}</small>
 						</span>
 					</li>
@@ -114,8 +114,8 @@
 
 		<h3>
 			Procedure{#if t.activity}<span class="muted">
-					· {t.activity.label} <span class="mono">{t.activity.key}</span></span
-				>{/if}
+					· {t.activity.label} <span class="mono">{t.activity.key}</span>
+				</span>{/if}
 		</h3>
 		<ol class="l2t-steps">
 			{#each t.steps as s, i (i)}
@@ -131,9 +131,9 @@
 			<ul class="l2t-rows">
 				{#each t.ops as o, i (i)}
 					<li>
-						<span class="l2t-dot" class:bad={o.state !== 'ok'} aria-hidden="true"
-							>{o.state === 'ok' ? '✓' : '✕'}</span
-						>
+						<span class="l2t-dot" class:bad={o.state !== 'ok'} aria-hidden="true">
+							{o.state === 'ok' ? '✓' : '✕'}
+						</span>
 						<span class="l2t-main">
 							<span class="mono">{o.operation}</span>
 							<small class="muted">{o.instance_id} · {o.code} · {o.latency_ms} ms</small>
@@ -148,15 +148,15 @@
 			<ul class="l2t-rows">
 				{#each t.checks as c (c.id)}
 					<li>
-						<span class="l2t-dot" class:bad={c.verdict === 'fail'} aria-hidden="true"
-							>{VERDICT_ICON[c.verdict]}</span
-						>
+						<span class="l2t-dot" class:bad={c.verdict === 'fail'} aria-hidden="true">
+							{VERDICT_ICON[c.verdict]}
+						</span>
 						<span class="l2t-main">
 							<b>{c.id} {c.label}</b> <span class="muted">{c.verdict}</span>
 							<small>{c.detail}</small>
-							{#if c.other_detail}<span class="l2t-other"
-									>{t.design === 'draft' ? 'live' : 'draft'}: {c.other_detail}</span
-								>{/if}
+							{#if c.other_detail}<span class="l2t-other">
+									{t.design === 'draft' ? 'live' : 'draft'}: {c.other_detail}
+								</span>{/if}
 						</span>
 					</li>
 				{/each}
@@ -173,9 +173,9 @@
 			{@const pc = platformCite(s)}
 			{#if pc}
 				<div class="chips l2t-platform" data-testid="trail-platform-cite">
-					{#if pc.href}<a class="chip accent" href={pc.href} target="_blank" rel="noopener noreferrer"
-							>{pc.text}</a
-						>{:else}<span class="chip accent">{pc.text}</span>{/if}
+					{#if pc.href}<a class="chip accent" href={pc.href} target="_blank" rel="noopener noreferrer">
+							{pc.text}
+						</a>{:else}<span class="chip accent">{pc.text}</span>{/if}
 					<small class="muted">{s.title}{pc.licence ? ` · ${pc.licence}` : ''}</small>
 				</div>
 			{/if}
@@ -185,9 +185,9 @@
 		<ul class="l2t-rows">
 			{#each t.post_checks as p (p.key)}
 				<li>
-					<span class="l2t-dot" class:bad={p.verdict === 'fail'} aria-hidden="true"
-						>{VERDICT_ICON[p.verdict]}</span
-					>
+					<span class="l2t-dot" class:bad={p.verdict === 'fail'} aria-hidden="true">
+						{VERDICT_ICON[p.verdict]}
+					</span>
 					<span class="l2t-main">{p.label} <small class="muted">{p.detail}</small></span>
 				</li>
 			{/each}

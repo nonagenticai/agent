@@ -55,9 +55,10 @@
 					<span class="gf-sub">{s.sub}</span>
 					<span class="gf-count">
 						<b>{qs.length}</b>
-						{qs.length === 1 ? 'question' : 'questions'}{#if closed}<span class="gf-closed"
-								><Lock /> {closed} fail closed</span
-							>{/if}
+						{qs.length === 1 ? 'question' : 'questions'}{#if closed}<span class="gf-closed">
+								<Lock />
+								{closed} fail closed
+							</span>{/if}
 					</span>
 				</button>
 			{:else}

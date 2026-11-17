@@ -233,9 +233,9 @@
 	{#snippet actions()}
 		<a class="btn" href="/platform/tenants">All tenants</a>
 		{#if detail && !archived}
-			<button class="btn" onclick={actIn} title="Switch into this tenant as super_admin (audited)"
-				>Act in tenant</button
-			>
+			<button class="btn" onclick={actIn} title="Switch into this tenant as super_admin (audited)">
+				Act in tenant
+			</button>
 		{/if}
 	{/snippet}
 </PageHead>
@@ -293,16 +293,16 @@
 							<ul class="p2-src-list">
 								<li><span>Workspace row</span><span class="mono">{d.tenant.status}</span></li>
 								<li>
-									<span>People</span><span class="mono"
-										>{active.length} active{d.users.length > active.length
+									<span>People</span><span class="mono">
+										{active.length} active{d.users.length > active.length
 											? ` · ${d.users.length - active.length} disabled`
-											: ''}</span
-									>
+											: ''}
+									</span>
 								</li>
 								<li>
-									<span>Agent licence</span><span class="mono"
-										>{d.licence?.kid ? `v2:${d.licence.kid} sealed` : 'none'}</span
-									>
+									<span>Agent licence</span><span class="mono">
+										{d.licence?.kid ? `v2:${d.licence.kid} sealed` : 'none'}
+									</span>
 								</li>
 								<li><span>Jobs</span><span class="mono">{d.jobs.length}</span></li>
 								<li data-testid="p2-residency">
@@ -389,8 +389,10 @@
 														r.id,
 														() => api().platformRetryProvision(r.tenant_id, r.id),
 														`${TARGET_LABEL[r.target]} ${r.op} queued again.`,
-													)}>Retry</button
+													)}
 											>
+												Retry
+											</button>
 											<button
 												class="btn sm"
 												{...w}
@@ -400,8 +402,10 @@
 														r.id,
 														() => api().platformCancelProvision(r.tenant_id, r.id),
 														`${TARGET_LABEL[r.target]} ${r.op} cancelled.`,
-													)}>Cancel</button
+													)}
 											>
+												Cancel
+											</button>
 										</span>
 									{/if}
 								</li>
@@ -465,9 +469,10 @@
 														? ` · ${Math.round(pj.containment_7d * 100)}% contained`
 														: ''}{/if}
 												{#if pj.generator}
-													· <a href={`/platform/generator/${pj.generator.run}`}
-														>generator run #{pj.generator.run} {pj.generator.status}</a
-													>
+													· <a href={`/platform/generator/${pj.generator.run}`}>
+														generator run #{pj.generator.run}
+														{pj.generator.status}
+													</a>
 												{/if}
 											</span>
 										{/if}
@@ -490,11 +495,11 @@
 				>
 					<div class="tbl-wrap">
 						<table class="tbl">
-							<thead
-								><tr
-									><th>User</th><th>Roles</th><th>State</th><th><span class="sr-only">Actions</span></th></tr
-								></thead
-							>
+							<thead>
+								<tr>
+									<th>User</th><th>Roles</th><th>State</th><th><span class="sr-only">Actions</span></th>
+								</tr>
+							</thead>
 							<tbody>
 								{#each d.users as u (u.sub)}
 									<tr class:disabled={!!u.disabled_at} data-testid="user-row">
@@ -502,12 +507,12 @@
 											<span class="cell-title">{u.display_name}</span>
 											<span class="cell-sub">{u.title ?? ''} · {u.email}</span>
 										</td>
-										<td
-											><Chip
+										<td>
+											<Chip
 												text={rolesText(u.roles)}
 												variant={u.roles.includes('tenant_admin') ? 'accent' : 'muted'}
-											/></td
-										>
+											/>
+										</td>
 										<td>
 											{#if u.disabled_at}<Chip text={`disabled ${u.disabled_at.slice(0, 10)}`} />
 											{:else if u.invited_at}<Chip text="invited" variant="warn" />
@@ -515,9 +520,9 @@
 										</td>
 										<td class="r">
 											{#if u.disabled_at && !archived}
-												<button class="btn sm" {...superAdminAttrs(session)} onclick={() => openRehome(u)}
-													>Re-home…</button
-												>
+												<button class="btn sm" {...superAdminAttrs(session)} onclick={() => openRehome(u)}>
+													Re-home…
+												</button>
 											{/if}
 										</td>
 									</tr>
@@ -559,16 +564,16 @@
 								<div>
 									{#if d.tenant.status === 'active'}
 										<b>Suspend</b>
-										<span class="cell-sub"
-											>Members get 403 <code>tenant_suspended</code>; the edge refuses customer turns with a
-											polite unavailable text. rag/ingest are untouched. You can still act in it.</span
-										>
+										<span class="cell-sub">
+											Members get 403 <code>tenant_suspended</code>; the edge refuses customer turns with a
+											polite unavailable text. rag/ingest are untouched. You can still act in it.
+										</span>
 									{:else}
 										<b>Resume</b>
-										<span class="cell-sub"
-											>Suspended since {utc(d.tenant.suspended_at)}. Resuming re-adds the job scopes; the
-											verdict turns active on its next refresh (≤ 60 s).</span
-										>
+										<span class="cell-sub">
+											Suspended since {utc(d.tenant.suspended_at)}. Resuming re-adds the job scopes; the
+											verdict turns active on its next refresh (≤ 60 s).
+										</span>
 									{/if}
 								</div>
 								{#if d.tenant.status === 'active'}
@@ -581,8 +586,10 @@
 												'status',
 												() => api().setTenantStatus(d.tenant.id, 'suspended'),
 												`${d.tenant.name} suspended.`,
-											)}>Suspend</button
+											)}
 									>
+										Suspend
+									</button>
 								{:else}
 									<button
 										class="btn"
@@ -593,19 +600,21 @@
 												'status',
 												() => api().setTenantStatus(d.tenant.id, 'active'),
 												`${d.tenant.name} resumed.`,
-											)}>Resume</button
+											)}
 									>
+										Resume
+									</button>
 								{/if}
 							</li>
 							<li>
 								<div>
 									<b>Support auto-assignment</b>
-									<span class="cell-sub"
-										>Round-robin hands each queued handover to whoever is online on the Support workspace.
+									<span class="cell-sub">
+										Round-robin hands each queued handover to whoever is online on the Support workspace.
 										{d.tenant.support_auto_assign
 											? 'On: the workspace’s own routing setting decides.'
-											: 'Off (the default): nothing is assigned automatically, whatever the workspace’s routing setting says.'}</span
-									>
+											: 'Off (the default): nothing is assigned automatically, whatever the workspace’s routing setting says.'}
+									</span>
 								</div>
 								<button
 									class="btn"
@@ -616,17 +625,19 @@
 											'autoassign',
 											() => api().setTenantSupportAutoAssign(d.tenant.id, !d.tenant.support_auto_assign),
 											`Support auto-assignment ${d.tenant.support_auto_assign ? 'switched off' : 'switched on'} for ${d.tenant.name}.`,
-										)}>{d.tenant.support_auto_assign ? 'Turn off' : 'Turn on'}</button
+										)}
 								>
+									{d.tenant.support_auto_assign ? 'Turn off' : 'Turn on'}
+								</button>
 							</li>
 							<li>
 								<div>
 									<b>Attachment storage</b>
-									<span class="cell-sub"
-										>Photos and PDFs the workspace may keep, in MB. Empty = the platform default ({Math.round(
+									<span class="cell-sub">
+										Photos and PDFs the workspace may keep, in MB. Empty = the platform default ({Math.round(
 											(d.tenant.attachment_quota_default_bytes ?? 1073741824) / 1048576,
-										)} MB). The workspace admin sees this read-only.</span
-									>
+										)} MB). The workspace admin sees this read-only.
+									</span>
 								</div>
 								<span class="row">
 									<input
@@ -649,19 +660,21 @@
 												'quota',
 												() => api().setTenantAttachmentQuota(d.tenant.id, quotaBytes),
 												`Attachment storage updated for ${d.tenant.name}.`,
-											)}>Save</button
+											)}
 									>
+										Save
+									</button>
 								</span>
 							</li>
 							<li>
 								<div>
 									<b>Offboard</b>
-									<span class="cell-sub"
-										>Revokes the agent licence, archives the workspace for good, disables all {d.users.filter(
+									<span class="cell-sub">
+										Revokes the agent licence, archives the workspace for good, disables all {d.users.filter(
 											(u) => !u.disabled_at,
 										).length} active users and queues licence revokes for rag/ingest. Their data is
-										<em>retained</em>, so the report is never complete.</span
-									>
+										<em>retained</em>, so the report is never complete.
+									</span>
 								</div>
 								<button class="btn danger" {...w} onclick={() => (offboardOpen = true)}>Offboard…</button>
 							</li>
@@ -721,13 +734,15 @@
 										'reseal',
 										() => api().resealTenantLicence(d.tenant.id),
 										'Licence token resealed under the current key.',
-									)}>Reseal</button
+									)}
 							>
+								Reseal
+							</button>
 						{/if}
 						{#if d.licence}
-							<button class="btn sm" {...w} disabled={w.disabled || reissuing} onclick={openReissue}
-								>Re-issue…</button
-							>
+							<button class="btn sm" {...w} disabled={w.disabled || reissuing} onclick={openReissue}>
+								Re-issue…
+							</button>
 						{/if}
 					{/snippet}
 					{#if d.licence}
@@ -771,9 +786,9 @@
 						<p class="empty">No licence.</p>
 					{/if}
 					<p class="note">
-						Keyring, reseal of every tenant and the bundle: <a href="/platform/licensing"
-							>Licensing &amp; keys</a
-						>.
+						Keyring, reseal of every tenant and the bundle: <a href="/platform/licensing">
+							Licensing &amp; keys
+						</a>.
 					</p>
 				</Card>
 
@@ -793,20 +808,20 @@
 										<span class="mono">{e.action}</span>
 										<span class="muted"> · {e.resource_id}</span>
 										{#if g.count > 1}<Chip text={`× ${g.count}`} />{/if}
-										<span class="cell-sub"
-											>{g.count > 1 ? `${utc(g.last.at)} → ${utc(e.at)}` : utc(e.at)} · {e.actor_id}{e.actor_type ===
+										<span class="cell-sub">
+											{g.count > 1 ? `${utc(g.last.at)} → ${utc(e.at)}` : utc(e.at)} · {e.actor_id}{e.actor_type ===
 											'system'
 												? ' (system)'
-												: ''}{e.ok ? '' : ' · failed'}</span
-										>
+												: ''}{e.ok ? '' : ' · failed'}
+										</span>
 									</div>
 								</li>
 							{/each}
 						</ol>
 						{#if historyRows.length > 8}
-							<button class="btn sm" onclick={() => (allHistory = !allHistory)}
-								>{allHistory ? 'Show recent' : `Show all ${historyRows.length} entries`}</button
-							>
+							<button class="btn sm" onclick={() => (allHistory = !allHistory)}>
+								{allHistory ? 'Show recent' : `Show all ${historyRows.length} entries`}
+							</button>
 						{/if}
 					{:else}
 						<p class="empty">No lifecycle events recorded.</p>
@@ -837,13 +852,11 @@
 				kind={reissued.status === 'reissued' ? 'info' : 'gap'}
 				title={reissued.status === 'reissued' ? 'Re-issued' : 'Pending'}
 			>
-				<span data-testid="reissue-result"
-					>{#if reissued.status === 'reissued'}New licence <span class="mono">{reissued.new_licence_id}</span
-						>; {reissued.old_licence_id} revoked.{:else}Old licence {reissued.old_licence_id} revoke {reissued.old_revoke};
-						the provisioning tick finishes the re-issue{reissued.code
-							? ` (${reissued.code})`
-							: ''}.{/if}</span
-				>
+				<span data-testid="reissue-result">
+					{#if reissued.status === 'reissued'}New licence <span class="mono">{reissued.new_licence_id}</span>; {reissued.old_licence_id}
+						revoked.{:else}Old licence {reissued.old_licence_id} revoke {reissued.old_revoke}; the
+						provisioning tick finishes the re-issue{reissued.code ? ` (${reissued.code})` : ''}.{/if}
+				</span>
 			</Callout>
 		{/if}
 		{#if reissueError}<Callout kind="err" title={reissueError.code}>{reissueError.message}</Callout>{/if}
@@ -851,9 +864,9 @@
 			{#if reissued}
 				<button class="btn" type="button" onclick={() => (reissueOpen = false)}>Close</button>
 			{:else}
-				<button class="btn danger" type="submit" {...w} disabled={w.disabled || reissuing}
-					>{reissuing ? 'Re-issuing…' : 'Re-issue licence'}</button
-				>
+				<button class="btn danger" type="submit" {...w} disabled={w.disabled || reissuing}>
+					{reissuing ? 'Re-issuing…' : 'Re-issue licence'}
+				</button>
 			{/if}
 		</div>
 	</form>
@@ -866,9 +879,9 @@
 			<label for="tpl">Template tag</label>
 			<select id="tpl" class="input" bind:value={template}>
 				{#each templates as t (`${t.layer}@v${t.version}`)}
-					<option value={`${t.layer}@v${t.version}`}
-						>{t.layer}@v{t.version} — {t.label}{t.status === 'draft' ? ' (draft)' : ''}</option
-					>
+					<option value={`${t.layer}@v${t.version}`}>
+						{t.layer}@v{t.version} — {t.label}{t.status === 'draft' ? ' (draft)' : ''}
+					</option>
 				{/each}
 			</select>
 		</div>
@@ -893,9 +906,9 @@
 </Drawer>
 
 <Drawer bind:open={rehomeOpen} title={rehomeUser ? `Re-home ${rehomeUser.display_name}` : 'Re-home user'}>
-	{#snippet sub()}<span
-			>Moves a disabled user to another tenant as an observer (no role); audited as user.rehome in both.</span
-		>{/snippet}
+	{#snippet sub()}<span>
+			Moves a disabled user to another tenant as an observer (no role); audited as user.rehome in both.
+		</span>{/snippet}
 	<form class="stack" onsubmit={rehome}>
 		<div class="field">
 			<label for="rehome-target">New home tenant</label>
@@ -905,9 +918,9 @@
 			</select>
 		</div>
 		<div class="actions">
-			<button class="btn primary" type="submit" {...superAdminAttrs(session)} disabled={!rehomeTarget}
-				>Re-home</button
-			>
+			<button class="btn primary" type="submit" {...superAdminAttrs(session)} disabled={!rehomeTarget}>
+				Re-home
+			</button>
 		</div>
 	</form>
 </Drawer>

@@ -459,25 +459,27 @@
 />
 
 {#if !writer}
-	<Callout kind="info" title="Read only"
-		>You can review the draft, releases and conflicts. Approving, going live and editing the selection:
+	<Callout kind="info" title="Read only">
+		You can review the draft, releases and conflicts. Approving, going live and editing the selection:
 		{writeHint('release_manager').toLowerCase()}. Discarding and restoring draft changes:
-		{writeHint('job_designer').toLowerCase()}.</Callout
-	>
+		{writeHint('job_designer').toLowerCase()}.
+	</Callout>
 {/if}
 
 {#if status.value.state === 'ok'}
 	{@const s = status.value.data}
 	{#if s.selection_error}
-		<Callout kind="err" title="Selection error"
-			>{s.selection_error} Edit the selection before approving.
+		<Callout kind="err" title="Selection error">
+			{s.selection_error} Edit the selection before approving.
 			<button
 				class="btn sm"
 				type="button"
 				{...wa}
-				onclick={() => ((editorDirty = false), (editorOpen = true))}>Fix the selection</button
-			></Callout
-		>
+				onclick={() => ((editorDirty = false), (editorOpen = true))}
+			>
+				Fix the selection
+			</button>
+		</Callout>
 	{/if}
 	<p class="j14-editsel">
 		<button
@@ -486,8 +488,10 @@
 			data-testid="edit-selection-main"
 			disabled={wa.disabled || target.value.state !== 'ok'}
 			title={wa.title}
-			onclick={() => ((editorDirty = false), (editorOpen = true))}>Edit selection</button
+			onclick={() => ((editorDirty = false), (editorOpen = true))}
 		>
+			Edit selection
+		</button>
 		<span class="muted small">Profile, industry, departments, areas, channels and region of this job.</span>
 	</p>
 	<div class="j14-status" data-testid="release-status">
@@ -502,9 +506,9 @@
 					: 'The selection or the platform layers compile to a different bundle'}
 			/>
 		{/if}
-		{#if s.draft_hash}<span class="muted small"
-				>Draft compiles to <TechDetail><span class="mono">{s.draft_hash}</span></TechDetail></span
-			>{/if}
+		{#if s.draft_hash}<span class="muted small">
+				Draft compiles to <TechDetail><span class="mono">{s.draft_hash}</span></TechDetail>
+			</span>{/if}
 	</div>
 {/if}
 
@@ -548,8 +552,10 @@
 					onclick={() => {
 						refusal = null;
 						refreshAll();
-					}}>Reload the selection</button
+					}}
 				>
+					Reload the selection
+				</button>
 			{/if}
 			<button class="btn sm" type="button" onclick={() => (refusal = null)}>Dismiss</button>
 		</div>
@@ -627,12 +633,12 @@
 											{#if unc}<Chip text={unc.text} variant="warn" title={unc.title} />{/if}
 										</div>
 										<div class="j14-diff">
-											<span class="j14-side live"
-												><span class="j14-tag">Live</span>{plain(d.live ?? 'not set')}</span
-											>
-											<span class="j14-side draft"
-												><span class="j14-tag">Draft</span>{plain(d.draft ?? 'removed')}</span
-											>
+											<span class="j14-side live">
+												<span class="j14-tag">Live</span>{plain(d.live ?? 'not set')}
+											</span>
+											<span class="j14-side draft">
+												<span class="j14-tag">Draft</span>{plain(d.draft ?? 'removed')}
+											</span>
 										</div>
 										<div class="j14-change-foot muted small">
 											{d.by_name} · {when(d.at)}
@@ -642,8 +648,10 @@
 												type="button"
 												disabled={wd.disabled || busy}
 												title={wd.title ?? 'Throw this change away; the live value stays'}
-												onclick={() => discard(d)}>Discard</button
+												onclick={() => discard(d)}
 											>
+												Discard
+											</button>
 										</div>
 									</li>
 								{/each}
@@ -670,10 +678,10 @@
 													data-testid="adopt-{u.layer}"
 													onchange={(e) => toggleAdopt(u.layer, e.currentTarget.checked)}
 												/>
-												<span
-													><b>Adopt v{u.latest} in this release</b> — optional. Conflicts it raises with your
-													changes show up below after you approve; Production keeps v{u.pinned} until you go live.</span
-												>
+												<span>
+													<b>Adopt v{u.latest} in this release</b> — optional. Conflicts it raises with your
+													changes show up below after you approve; Production keeps v{u.pinned} until you go live.
+												</span>
 											</label>
 										{/if}
 									</li>
@@ -712,9 +720,9 @@
 						<div class="j14-tsum" data-testid="test-evidence" data-state={ev.state}>
 							<span class="j14-tc ok"><b>{ev.counts.tested}</b> tested</span>
 							<span class="j14-tc warn" class:zero={!ev.counts.stale}><b>{ev.counts.stale}</b> stale</span>
-							<span class="j14-tc err" class:zero={!ev.counts.not_tested}
-								><b>{ev.counts.not_tested}</b> not tested</span
-							>
+							<span class="j14-tc err" class:zero={!ev.counts.not_tested}>
+								<b>{ev.counts.not_tested}</b> not tested
+							</span>
 						</div>
 						<p class="small j14-tsrc">
 							<b>{L.validation_grid}:</b>
@@ -741,8 +749,8 @@
 								<li data-test-change={x.change.id} data-state={x.state}>
 									<Chip text={TEST_CHIP[x.state][0]} variant={TEST_CHIP[x.state][1]} />
 									<span class="j14-tests-label">{plain(x.change.label)}</span>
-									<span class="muted small j14-tests-by"
-										>{x.scenarios
+									<span class="muted small j14-tests-by">
+										{x.scenarios
 											? `${x.scenarios} scenario${x.scenarios === 1 ? '' : 's'}`
 											: 'no scenario'}{x.regressions
 											? ` · ${x.regressions} regression${x.regressions === 1 ? '' : 's'}`
@@ -750,26 +758,26 @@
 											? ` · ${x.cases} test case${x.cases === 1 ? '' : 's'}`
 											: ''}{x.stale_cases
 											? ` · ${x.stale_cases} stale test case${x.stale_cases === 1 ? '' : 's'}`
-											: ''}</span
-									>
+											: ''}
+									</span>
 								</li>
 							{/each}
 						</ul>
 						{#if ev.unexercised.length}
 							<div class="j14-untested" data-testid="test-unexercised">
-								<strong
-									>No test exercised {ev.unexercised.length === 1
+								<strong>
+									No test exercised {ev.unexercised.length === 1
 										? 'this change'
-										: `these ${ev.unexercised.length} changes`}:</strong
-								>
+										: `these ${ev.unexercised.length} changes`}:
+								</strong>
 								<ul>
 									{#each ev.unexercised as d (d.id)}<li>{plain(d.label)}</li>{/each}
 								</ul>
-								<span class="small"
-									>Try {ev.unexercised.length === 1 ? 'it' : 'them'} in the <a href="/chat">test chat</a>
+								<span class="small">
+									Try {ev.unexercised.length === 1 ? 'it' : 'them'} in the <a href="/chat">test chat</a>
 									and save the conversation as a test case, or add a scenario in the
-									<a href={jobPath(app.job, '/validation')}>test suite</a>.</span
-								>
+									<a href={jobPath(app.job, '/validation')}>test suite</a>.
+								</span>
 							</div>
 						{/if}
 					{/if}
@@ -833,11 +841,11 @@
 				<div class="j14-rel waiting" class:blocked={blockers > 0} data-testid="release-waiting">
 					<span class="j14-eyebrow">Approved, waiting</span>
 					<a class="j14-rel-id" href={jobPath(app.job, `/release/${w.id}`)}>{releaseLabel(w.id)}</a>
-					<span class="muted small"
-						>by {w.approved_by ? (w.names[w.approved_by] ?? w.approved_by) : '—'} · {when(
+					<span class="muted small">
+						by {w.approved_by ? (w.names[w.approved_by] ?? w.approved_by) : '—'} · {when(
 							w.approved_at,
-						)}{#if w.draft_count}&nbsp;· {w.draft_count} draft changes{/if}</span
-					>
+						)}{#if w.draft_count}&nbsp;· {w.draft_count} draft changes{/if}
+					</span>
 					{#if blockers > 0}
 						<Chip text="Blocked by {blockers} {blockers === 1 ? 'item' : 'items'} to fix" variant="err" />
 					{:else}
@@ -850,11 +858,11 @@
 				<div class="j14-rel live" data-testid="release-live">
 					<span class="j14-eyebrow">Live in Production</span>
 					<a class="j14-rel-id" href={jobPath(app.job, `/release/${c.id}`)}>{releaseLabel(c.id)}</a>
-					<span class="muted small"
-						>since {when(c.last_applied_at ?? c.released_at)}{#if c.snapshot_places != null}
+					<span class="muted small">
+						since {when(c.last_applied_at ?? c.released_at)}{#if c.snapshot_places != null}
 							· snapshot of {c.snapshot_places} design places{/if} · {c.counts.context_spaces ?? 0} spaces ·
-						{c.counts.activities ?? 0} activities · {c.counts.gates ?? 0} gates</span
-					>
+						{c.counts.activities ?? 0} activities · {c.counts.gates ?? 0} gates
+					</span>
 				</div>
 			{/if}
 		</div>
@@ -879,8 +887,10 @@
 							data-testid="restore-all"
 							disabled={wd.disabled || busy}
 							title={wd.title ?? 'Put them back in the draft (not live until published)'}
-							onclick={() => restore('all')}>Restore {gone.length} to draft</button
+							onclick={() => restore('all')}
 						>
+							Restore {gone.length} to draft
+						</button>
 					{/snippet}
 					<ul class="j14-changes" data-testid="rolled-back">
 						{#each gone as c (c.id)}
@@ -899,8 +909,10 @@
 										type="button"
 										disabled={wd.disabled || busy}
 										title={wd.title ?? 'Put this change back in the draft'}
-										onclick={() => restore([c.id])}>Restore to draft</button
+										onclick={() => restore([c.id])}
 									>
+										Restore to draft
+									</button>
 								</div>
 							</li>
 						{/each}
@@ -922,10 +934,10 @@
 					<div class="tbl-wrap">
 						<table class="tbl" data-testid="release-history">
 							<thead>
-								<tr
-									><th>Release</th><th>State</th><th>Approved</th><th>Went live</th><th aria-label="Actions"
-									></th></tr
-								>
+								<tr>
+									<th>Release</th><th>State</th><th>Approved</th><th>Went live</th><th aria-label="Actions"
+									></th>
+								</tr>
 							</thead>
 							<tbody>
 								{#each page.items as r (r.id)}
@@ -967,8 +979,10 @@
 														(blockers > 0
 															? `Fix ${blockers} go-live blocker${blockers === 1 ? '' : 's'}`
 															: undefined)}
-													onclick={() => applyRow(r, false)}>Go live</button
+													onclick={() => applyRow(r, false)}
 												>
+													Go live
+												</button>
 											{:else if r.state === 'applied_earlier'}
 												<button
 													class="btn sm"
@@ -977,8 +991,9 @@
 													title="See what customers lose and get back, then confirm"
 													data-testid="rollback-{r.id}"
 													onclick={() => openRollback(r.id)}
-													>{r.rolled_back ? 'Apply again…' : 'Roll back to this…'}</button
 												>
+													{r.rolled_back ? 'Apply again…' : 'Roll back to this…'}
+												</button>
 											{:else}
 												<span class="muted small">Running now</span>
 											{/if}
@@ -1013,9 +1028,9 @@
 						</li>
 					{/each}
 				</ul>
-				<button class="btn sm" type="button" onclick={() => (tab = 'changes')}
-					>Choose on the Changes tab</button
-				>
+				<button class="btn sm" type="button" onclick={() => (tab = 'changes')}>
+					Choose on the Changes tab
+				</button>
 			{:else}
 				<div class="empty" data-testid="template-updates-empty">
 					Your agent runs the latest template versions.
@@ -1034,8 +1049,10 @@
 					type="button"
 					disabled={wa.disabled || target.value.state !== 'ok'}
 					title={wa.title}
-					onclick={() => ((editorDirty = false), (editorOpen = true))}>Edit selection</button
+					onclick={() => ((editorDirty = false), (editorOpen = true))}
 				>
+					Edit selection
+				</button>
 			{/snippet}
 			<LoadState resource={target}>
 				{#snippet children(t)}
@@ -1069,8 +1086,8 @@
 										.map((v) => label(dim.values, v))
 										.join(', ') || 'none'}
 									{#if dim.kind === 'placeholder'}<span class="muted small">
-											· recorded, selects nothing</span
-										>{/if}
+											· recorded, selects nothing
+										</span>{/if}
 								</dd>
 							{/each}
 							<dt>Last edited</dt>

@@ -90,14 +90,14 @@
 									<span class="rm-arrow" aria-hidden="true">→</span>
 									<span class="rm-model">
 										{#if r.model}<span class="mono">{r.model}</span>{:else}<span class="rm-none">—</span>{/if}
-										<span class="cell-sub"
-											>{[
+										<span class="cell-sub">
+											{[
 												r.region ?? (r.provider ? 'region not declared' : ''),
 												r.tokens_30d != null ? `${compact(r.tokens_30d)} tokens / 30 d` : '',
 											]
 												.filter(Boolean)
-												.join(' · ')}</span
-										>
+												.join(' · ')}
+										</span>
 									</span>
 									<span class="rm-state">
 										<Chip text={r.status} variant={STATE_CHIP[r.state]} />
@@ -113,10 +113,10 @@
 
 		<p class="rm-legend">
 			{#each fundingOrder as f (f)}
-				<span class="rm-legend-item"
-					><Chip text={FUNDING[f].label} variant={FUNDING[f].variant} />
-					<span>{FUNDING[f].hint}</span></span
-				>
+				<span class="rm-legend-item">
+					<Chip text={FUNDING[f].label} variant={FUNDING[f].variant} />
+					<span>{FUNDING[f].hint}</span>
+				</span>
 			{/each}
 		</p>
 	</div>

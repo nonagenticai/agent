@@ -56,16 +56,18 @@
 			class="table-action"
 			onclick={build}
 			disabled={busy}
-			data-testid="completeness-build">{busy ? 'Building…' : rows ? 'Rebuild' : 'Build matrix'}</button
+			data-testid="completeness-build"
 		>
+			{busy ? 'Building…' : rows ? 'Rebuild' : 'Build matrix'}
+		</button>
 		{#if rows}
-			<label class="small"
-				><input type="checkbox" bind:checked={onlyViolations} /> Only layers with violations</label
-			>
-			<span class="small muted" data-testid="completeness-totals"
-				>{totals.ok} of {totals.judged} layers ok · {totals.empty} required kinds empty · {totals.misplaced} kinds
-				above job level</span
-			>
+			<label class="small">
+				<input type="checkbox" bind:checked={onlyViolations} /> Only layers with violations
+			</label>
+			<span class="small muted" data-testid="completeness-totals">
+				{totals.ok} of {totals.judged} layers ok · {totals.empty} required kinds empty · {totals.misplaced} kinds
+				above job level
+			</span>
 		{/if}
 	</div>
 	<p class="legend small muted">
@@ -101,19 +103,20 @@
 								{/if}
 							</th>
 							{#each r.cells as c (c.kind)}
-								<td class="num"
-									><span class="cell {c.state}" title={cellTitle(c.kind, c)}
-										>{#if c.state === 'misplaced'}{c.count}✗{:else if c.state === 'none'}·{:else}{c.count}{/if}</span
-									>{#if c.violation}<span class="sr-only">
-											— {c.state === 'empty' ? 'required, empty' : 'above job level'}</span
-										>{/if}</td
-								>
+								<td class="num">
+									<span class="cell {c.state}" title={cellTitle(c.kind, c)}>
+										{#if c.state === 'misplaced'}{c.count}✗{:else if c.state === 'none'}·{:else}{c.count}{/if}
+									</span>{#if c.violation}<span class="sr-only">
+											— {c.state === 'empty' ? 'required, empty' : 'above job level'}
+										</span>{/if}
+								</td>
 							{/each}
 							<td class="verdict" class:ok={r.ok && r.judged}>{r.verdict}</td>
 						</tr>
 					{:else}
-						<tr><td colspan={MATRIX_COLUMNS.length + 2} class="muted">No layer violates the contract.</td></tr
-						>
+						<tr>
+							<td colspan={MATRIX_COLUMNS.length + 2} class="muted">No layer violates the contract.</td>
+						</tr>
 					{/each}
 				</tbody>
 			</table>

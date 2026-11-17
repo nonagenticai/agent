@@ -88,9 +88,13 @@
 			aria-controls="user-menu-panel"
 			aria-label="Account menu: {displayName}, {roleLabel}"
 			onclick={() => (open = !open)}
-			><span class="avatar" aria-hidden="true">{initials}</span><span class="um-name">{displayName}</span
-			><span class="um-role">{roleLabel}</span></button
 		>
+			<span class="avatar" aria-hidden="true">{initials}</span><span class="um-name">{displayName}</span><span
+				class="um-role"
+			>
+				{roleLabel}
+			</span>
+		</button>
 	{/if}
 	{#if shown}
 		<div id="user-menu-panel" class="um-panel" data-testid="user-menu-panel">
@@ -100,22 +104,22 @@
 					<span>{roleLabel}</span>
 				</p>
 			{/if}
-			<button class="um-item" type="button" data-testid="theme-toggle" onclick={ontheme}
-				><Icon name={dark ? 'sun' : 'moon'} size={16} /><span
-					>{dark ? 'Switch to light mode' : 'Switch to dark mode'}</span
-				></button
-			>
-			<label class="um-item um-check"
-				><input
+			<button class="um-item" type="button" data-testid="theme-toggle" onclick={ontheme}>
+				<Icon name={dark ? 'sun' : 'moon'} size={16} /><span>
+					{dark ? 'Switch to light mode' : 'Switch to dark mode'}
+				</span>
+			</button>
+			<label class="um-item um-check">
+				<input
 					type="checkbox"
 					checked={prefs.showTech}
 					onchange={(e) => setShowTech(e.currentTarget.checked)}
-				/><span>Show technical details</span></label
-			>
+				/><span>Show technical details</span>
+			</label>
 			{#if session.superAdmin}
-				<a class="um-item" href="/platform" data-testid="platform-studio" onclick={() => leave(() => {})}
-					><Icon name="layers" size={16} /><span>Platform studio</span></a
-				>
+				<a class="um-item" href="/platform" data-testid="platform-studio" onclick={() => leave(() => {})}>
+					<Icon name="layers" size={16} /><span>Platform studio</span>
+				</a>
 			{/if}
 			{#if session.member && !session.superAdmin}
 				<button
@@ -123,14 +127,18 @@
 					type="button"
 					data-testid="view-as-open"
 					title="Preview the app with fewer of your roles"
-					onclick={() => leave(onviewas)}><span>View as…</span></button
+					onclick={() => leave(onviewas)}
 				>
+					<span>View as…</span>
+				</button>
 				{#if session.viewAs}<button
 						class="um-item"
 						type="button"
 						data-testid="view-as-leave"
-						onclick={() => leave(onleaveviewas)}><span>Exit view-as</span></button
-					>{/if}
+						onclick={() => leave(onleaveviewas)}
+					>
+						<span>Exit view-as</span>
+					</button>{/if}
 			{/if}
 			{#if session.superAdmin}
 				<button
@@ -140,43 +148,48 @@
 					aria-expanded={devOpen}
 					aria-controls="user-menu-dev"
 					onclick={() => (devOpen = !devOpen)}
-					><span>Developer</span><i aria-hidden="true" class:open={devOpen}></i></button
 				>
+					<span>Developer</span><i aria-hidden="true" class:open={devOpen}></i>
+				</button>
 				{#if devOpen}
 					<div id="user-menu-dev" class="um-dev" data-testid="developer-menu">
-						<label class="um-item um-check"
-							><input
+						<label class="um-item um-check">
+							<input
 								type="checkbox"
 								checked={prefs.showMilestones}
 								onchange={(e) => setShowMilestones(e.currentTarget.checked)}
-							/><span>Show build milestones</span></label
-						>
+							/><span>Show build milestones</span>
+						</label>
 						{#if session.member}
 							<button
 								class="um-item"
 								type="button"
 								data-testid="view-as-open"
 								title="Preview the app with fewer of your roles"
-								onclick={() => leave(onviewas)}><span>View as…</span></button
+								onclick={() => leave(onviewas)}
 							>
+								<span>View as…</span>
+							</button>
 						{/if}
 						{#if session.viewAs}<button
 								class="um-item"
 								type="button"
 								data-testid="view-as-leave"
-								onclick={() => leave(onleaveviewas)}><span>Exit view-as</span></button
-							>{/if}
-						{#each dev as d (d.id)}
-							<a class="um-item" href={d.href} onclick={() => leave(() => {})}
-								><Icon name={d.icon} size={16} /><span>{d.label}</span></a
+								onclick={() => leave(onleaveviewas)}
 							>
+								<span>Exit view-as</span>
+							</button>{/if}
+						{#each dev as d (d.id)}
+							<a class="um-item" href={d.href} onclick={() => leave(() => {})}>
+								<Icon name={d.icon} size={16} /><span>{d.label}</span>
+							</a>
 						{/each}
 					</div>
 				{/if}
 			{/if}
-			<button class="um-item" type="button" data-testid="sign-out" onclick={() => leave(() => void logout())}
-				><span>Sign out</span></button
-			>
+			<button class="um-item" type="button" data-testid="sign-out" onclick={() => leave(() => void logout())}>
+				<span>Sign out</span>
+			</button>
 		</div>
 	{/if}
 </div>

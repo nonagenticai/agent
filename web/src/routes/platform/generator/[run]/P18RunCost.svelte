@@ -25,9 +25,9 @@
 		<span class="p18-big">{tokens(r.cost.tokens)}</span>
 		<span class="muted">tokens</span>
 		<span class="chip ok">{FUNDING_LABEL[r.cost.funding]}</span>
-		<span class="chip {tenant ? 'cust' : 'tool'}"
-			>{tenant ? `usage of ${r.tenant_name}` : 'platform usage'}</span
-		>
+		<span class="chip {tenant ? 'cust' : 'tool'}">
+			{tenant ? `usage of ${r.tenant_name}` : 'platform usage'}
+		</span>
 	</div>
 	<p class="p18-costline" data-testid="cost-line"><b>Usage:</b> {costLine(r)}</p>
 	{#if rows.length}
@@ -38,9 +38,9 @@
 					<tr>
 						<td>
 							{stepName(row.step)}
-							<span class="p18-cbar" aria-hidden="true"
-								><span style:width="{(row.tokens / max) * 100}%"></span></span
-							>
+							<span class="p18-cbar" aria-hidden="true">
+								<span style:width="{(row.tokens / max) * 100}%"></span>
+							</span>
 						</td>
 						<td class="r mono">{tokens(row.tokens)}</td>
 						<td class="r mono">{row.calls}</td>

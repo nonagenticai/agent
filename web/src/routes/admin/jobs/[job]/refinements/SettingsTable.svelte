@@ -51,11 +51,11 @@
 			<div class="tbl-wrap">
 				<table class="tbl" data-testid="job-settings">
 					<thead>
-						<tr
-							><th>Setting</th><th>Base (release)</th><th>Yours</th><th>Draft · test chat runs</th><th
+						<tr>
+							<th>Setting</th><th>Base (release)</th><th>Yours</th><th>Draft · test chat runs</th><th
 								aria-label="Actions"
-							></th></tr
-						>
+							></th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each KEYS as k}
@@ -99,8 +99,10 @@
 											run(
 												() => api().saveJobSettingOverride({ [k]: drafts[k]!.trim() }),
 												`Saved your ${k} to draft — live when you publish.`,
-											)}>Save</button
+											)}
 									>
+										Save
+									</button>
 									<button
 										class="btn sm"
 										type="button"
@@ -113,8 +115,10 @@
 											run(
 												() => api().saveJobSettingOverride({ [k]: null }),
 												`Hid ${k}. Saved to draft — live when you publish.`,
-											)}>Hide</button
+											)}
 									>
+										Hide
+									</button>
 									<button
 										class="btn sm"
 										type="button"
@@ -124,8 +128,10 @@
 											run(
 												() => api().revertJobSettingOverride(k),
 												`Reverted ${k} to the base value. Saved to draft — live when you publish.`,
-											)}>Revert</button
+											)}
 									>
+										Revert
+									</button>
 								</td>
 							</tr>
 						{/each}

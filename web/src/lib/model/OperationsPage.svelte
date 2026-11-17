@@ -270,11 +270,11 @@
 			aria-pressed={sideFx === r.effect}
 			onclick={() => (sideFx = sideFx === r.effect ? 'all' : r.effect)}
 		>
-			<span class="rung-head"
-				><span class="fx-badge">{r.effect}</span><b>{r.label}</b><span class="cnt"
-					>{effectCounts[r.effect]}</span
-				></span
-			>
+			<span class="rung-head">
+				<span class="fx-badge">{r.effect}</span><b>{r.label}</b><span class="cnt">
+					{effectCounts[r.effect]}
+				</span>
+			</span>
 			<span class="rung-adds">{r.adds}</span>
 		</button>
 	{/each}
@@ -291,8 +291,9 @@
 			<select id="op-object" class="input" bind:value={objectF}>
 				<option value="">All objects</option>
 				{#each objects as o (o.object)}<option value={o.object}>{o.label}</option>{/each}
-				{#if objectF && !objects.some((o) => o.object === objectF)}<option value={objectF}>{objectF}</option
-					>{/if}
+				{#if objectF && !objects.some((o) => o.object === objectF)}<option value={objectF}>
+						{objectF}
+					</option>{/if}
 			</select>
 		</div>
 		<div class="field">
@@ -326,10 +327,9 @@
 		<div class="checks">
 			<label><input type="checkbox" bind:checked={retailOnly} /> In the retail job</label>
 			<label><input type="checkbox" bind:checked={builtinOnly} /> Built-ins only</label>
-			<label title="Connector-routed operations no platform connector template implements"
-				><input type="checkbox" bind:checked={unimplementedOnly} disabled={!templates} /> No connector
-				template{#if templates}&nbsp;({gapCount}){/if}</label
-			>
+			<label title="Connector-routed operations no platform connector template implements">
+				<input type="checkbox" bind:checked={unimplementedOnly} disabled={!templates} /> No connector template{#if templates}&nbsp;({gapCount}){/if}
+			</label>
 			<button class="btn sm" type="button" onclick={clear}>Clear filters</button>
 		</div>
 	</div>
@@ -337,9 +337,9 @@
 
 <LoadState resource={res}>
 	{#snippet empty()}
-		No operation matches these filters. <button class="table-action" type="button" onclick={clear}
-			>Clear filters</button
-		>
+		No operation matches these filters. <button class="table-action" type="button" onclick={clear}>
+			Clear filters
+		</button>
 	{/snippet}
 	{#snippet children(page)}
 		{@const items = visible(page.items)}
@@ -360,8 +360,10 @@
 					Every operation here has a connector template. <button
 						class="table-action"
 						type="button"
-						onclick={() => (unimplementedOnly = false)}>Show all</button
+						onclick={() => (unimplementedOnly = false)}
 					>
+						Show all
+					</button>
 				</p>
 			{:else if view === 'map'}
 				{@const rows = operationMatrix(
@@ -395,13 +397,12 @@
 											onclick={() => open(h)}
 										>
 											<span class="fx-dot" aria-hidden="true"></span>
-											<span class="verb"
-												>{h.verb}{#if h.variant !== '*'}<span class="vv">{'{'}{h.variant}{'}'}</span
-													>{/if}</span
-											>
-											{#if g.variants.length && h.variant === '*'}<span class="plus"
-													>+{g.variants.length}</span
-												>{/if}
+											<span class="verb">
+												{h.verb}{#if h.variant !== '*'}<span class="vv">{'{'}{h.variant}{'}'}</span>{/if}
+											</span>
+											{#if g.variants.length && h.variant === '*'}<span class="plus">
+													+{g.variants.length}
+												</span>{/if}
 											{#if h.builtin}<span class="tag">built-in</span>{/if}
 											{#if h.retail}<span class="ro" class:req={h.retail === 'R'}>{h.retail}</span>{/if}
 										</button>
@@ -439,34 +440,36 @@
 										<button
 											class="table-action mono"
 											type="button"
-											onclick={(e) => (e.stopPropagation(), open(o))}>{o.key}</button
+											onclick={(e) => (e.stopPropagation(), open(o))}
 										>
-										{#if o.variant !== '*'}<span class="cell-sub"
-												>{o.discriminator?.field} = {o.discriminator?.value} · {o.overridden.length} override{o
+											{o.key}
+										</button>
+										{#if o.variant !== '*'}<span class="cell-sub">
+												{o.discriminator?.field} = {o.discriminator?.value} · {o.overridden.length} override{o
 													.overridden.length === 1
 													? ''
-													: 's'}</span
-											>{/if}
+													: 's'}
+											</span>{/if}
 									</td>
-									<td class:inh={inh('modality')}
-										>{o.modality}{#if o.is_derive}
-											<Chip text="derive" variant="tool" />{/if}</td
-									>
-									<td class="mono" class:inh={inh('identity_level')}
-										>{o.identity_level}{#if !inh('identity_level') && o.variant !== '*'}
-											●{/if}</td
-									>
-									<td class:inh={inh('side_effect')}
-										><Chip
+									<td class:inh={inh('modality')}>
+										{o.modality}{#if o.is_derive}
+											<Chip text="derive" variant="tool" />{/if}
+									</td>
+									<td class="mono" class:inh={inh('identity_level')}>
+										{o.identity_level}{#if !inh('identity_level') && o.variant !== '*'}
+											●{/if}
+									</td>
+									<td class:inh={inh('side_effect')}>
+										<Chip
 											text={o.side_effect}
 											variant={EFFECT_VARIANT[o.side_effect]}
 											title={EFFECT_LABEL[o.side_effect]}
-										/></td
-									>
-									<td class="mono" class:inh={inh('idempotency')}
-										>{o.idempotency}{#if !inh('idempotency') && o.variant !== '*'}
-											●{/if}</td
-									>
+										/>
+									</td>
+									<td class="mono" class:inh={inh('idempotency')}>
+										{o.idempotency}{#if !inh('idempotency') && o.variant !== '*'}
+											●{/if}
+									</td>
 									<td class:inh={inh('confirm_back')}>{o.confirm_back ? 'yes' : '—'}</td>
 									<td class="mono" class:inh={inh('verify_read')}>{o.verify_read ?? '—'}</td>
 									<td>
@@ -476,12 +479,12 @@
 												variant="err"
 											/>{/if}
 									</td>
-									<td
-										>{#if o.retail}<Chip
+									<td>
+										{#if o.retail}<Chip
 												text={o.retail}
 												variant={o.retail === 'R' ? 'cust' : 'muted'}
-											/>{:else}<span class="muted">—</span>{/if}</td
-									>
+											/>{:else}<span class="muted">—</span>{/if}
+									</td>
 								</tr>
 							{/each}
 						</tbody>
@@ -520,13 +523,13 @@
 					<ul>
 						{#each errors.filter((e) => !e.escalate) as e (e.code)}
 							<li>
-								<span class="mono"
-									>{e.code}{e.code === 'invalid_state'
+								<span class="mono">
+									{e.code}{e.code === 'invalid_state'
 										? ':<status>'
 										: e.code === 'ineligible'
 											? ':<rule>'
-											: ''}</span
-								>{#if e.retryable}<Chip text="retryable" variant="muted" />{/if}
+											: ''}
+								</span>{#if e.retryable}<Chip text="retryable" variant="muted" />{/if}
 								<span class="muted">{e.description}</span>
 							</li>
 						{/each}
@@ -578,8 +581,10 @@
 							class="btn sm"
 							class:on={f.key === o.key}
 							aria-pressed={f.key === o.key}
-							onclick={() => open(f)}>{f.variant === '*' ? `${f.object}.${f.verb}` : `{${f.variant}}`}</button
+							onclick={() => open(f)}
 						>
+							{f.variant === '*' ? `${f.object}.${f.verb}` : `{${f.variant}}`}
+						</button>
 					{/each}
 				</div>
 			{/if}
@@ -609,9 +614,9 @@
 						</p>
 					{:else if tr.kind === 'create'}
 						<div class="flow">
-							<span class="st new">new</span><span class="arr">→</span><span class="st"
-								>{tr.initial ?? 'created'}</span
-							>
+							<span class="st new">new</span><span class="arr">→</span><span class="st">
+								{tr.initial ?? 'created'}
+							</span>
 						</div>
 						<p class="muted">Creates a {objectLabel(o.object).toLowerCase()} record.</p>
 					{:else if tr.kind === 'data'}
@@ -620,8 +625,9 @@
 						<ul class="moves" data-testid="op-transition">
 							{#each tr.moves as m (m.from + m.to)}
 								<li class="flow">
-									<span class="st">{m.from}</span><span class="arr">→</span><span class="st to">{m.to}</span
-									>{#if m.guard}<Chip text="guard {m.guard}" variant="warn" />{/if}
+									<span class="st">{m.from}</span><span class="arr">→</span><span class="st to">
+										{m.to}
+									</span>{#if m.guard}<Chip text="guard {m.guard}" variant="warn" />{/if}
 								</li>
 							{/each}
 						</ul>
@@ -653,17 +659,17 @@
 					<div>
 						<h3>Inputs</h3>
 						<div class="chips">
-							{#each o.input_fields as f (f)}<Chip text={f} variant="muted" />{:else}<span class="muted"
-									>none</span
-								>{/each}
+							{#each o.input_fields as f (f)}<Chip text={f} variant="muted" />{:else}<span class="muted">
+									none
+								</span>{/each}
 						</div>
 					</div>
 					<div>
 						<h3>Returns</h3>
 						<div class="chips">
-							{#each o.output_fields as f (f)}<Chip text={f} variant="muted" />{:else}<span class="muted"
-									>none</span
-								>{/each}
+							{#each o.output_fields as f (f)}<Chip text={f} variant="muted" />{:else}<span class="muted">
+									none
+								</span>{/each}
 						</div>
 					</div>
 				</section>
@@ -696,9 +702,9 @@
 								</ul>
 							{:else}
 								<Callout kind="gap" title="No connector template">
-									<span
-										>Tenants can only route it to a fallback: agent cases, a deep link, or not offered.</span
-									>
+									<span>
+										Tenants can only route it to a fallback: agent cases, a deep link, or not offered.
+									</span>
 								</Callout>
 							{/if}
 						{/if}
@@ -730,11 +736,11 @@
 			{:else if tab === 'attrs'}
 				{#if o.variant !== '*'}
 					<Callout kind="info" title="Variant of {o.object}.{o.verb}">
-						<span
-							>Discriminator <span class="mono">{o.discriminator?.field} = {o.discriminator?.value}</span>.
+						<span>
+							Discriminator <span class="mono">{o.discriminator?.field} = {o.discriminator?.value}</span>.
 							Overrides {o.overridden.map((k) => ATTR_LABEL[k]).join(', ') || 'nothing'}; everything else
-							comes from <span class="mono">{o.object}.{o.verb}</span>.</span
-						>
+							comes from <span class="mono">{o.object}.{o.verb}</span>.
+						</span>
 					</Callout>
 				{/if}
 				<table class="tbl dense" data-testid="op-attrs">
@@ -746,8 +752,10 @@
 								<td class="mono">{attrText(o, key)}</td>
 								<td>
 									{#if o.variant !== '*' && ATTR_KEYS.includes(key)}{#if o.inherited.includes(key)}<span
-												class="muted">inherited from *</span
-											>{:else}<Chip text="override" variant="accent" />{/if}{/if}
+												class="muted"
+											>
+												inherited from *
+											</span>{:else}<Chip text="override" variant="accent" />{/if}{/if}
 								</td>
 							</tr>
 						{/each}

@@ -99,20 +99,24 @@
 						class:err-text={why.variant === 'err'}
 						class:warn-text={why.variant === 'warn'}
 						title={why.title}
-						data-testid="pack-pin-why">{why.chip}</span
-					>{/if}
+						data-testid="pack-pin-why"
+					>
+						{why.chip}
+					</span>{/if}
 				{#if p.excluded_by}<a class="flag" href="/admin/knowledge/platform">manage</a>{/if}
-				{#if typeof p.leaves === 'number' && !why}<span class="flag" title="Leaf stores a search names"
-						>{p.leaves} store{p.leaves === 1 ? '' : 's'}</span
-					>{/if}
+				{#if typeof p.leaves === 'number' && !why}<span class="flag" title="Leaf stores a search names">
+						{p.leaves} store{p.leaves === 1 ? '' : 's'}
+					</span>{/if}
 				{#if p.newer && !p.tombstoned}
 					<button
 						type="button"
 						class="btn sm"
 						{disabled}
 						title="Re-pin to the newer version (saved to draft)"
-						onclick={() => repin(p.pin, p.newer!)}>newer: {p.newer}</button
+						onclick={() => repin(p.pin, p.newer!)}
 					>
+						newer: {p.newer}
+					</button>
 				{/if}
 				{#if fromTemplate || p.tombstoned}
 					<button
@@ -122,8 +126,10 @@
 						title={p.tombstoned
 							? 'Search this pack again for this kind (saved to draft)'
 							: 'Hide this template pin for this job only (saved to draft); other jobs keep it'}
-						onclick={() => toggleHidden(p)}>{p.tombstoned ? 'Restore' : 'Hide for this job'}</button
+						onclick={() => toggleHidden(p)}
 					>
+						{p.tombstoned ? 'Restore' : 'Hide for this job'}
+					</button>
 				{/if}
 				{#if !p.tombstoned}
 					<button
@@ -131,8 +137,10 @@
 						class="btn sm ghost"
 						aria-label="Unpin {p.pin} from {row.kind}"
 						{disabled}
-						onclick={() => remove(p.pin)}>×</button
+						onclick={() => remove(p.pin)}
 					>
+						×
+					</button>
 				{/if}
 			</span>
 		{/each}

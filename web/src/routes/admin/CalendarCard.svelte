@@ -69,14 +69,14 @@
 >
 	{#snippet actions()}
 		{#if cal.value.state === 'ok' && cal.value.data.drafted.length}
-			<span data-testid="calendar-drafted"
-				><Chip
+			<span data-testid="calendar-drafted">
+				<Chip
 					text="draft · {cal.value.data.drafted.length} job{cal.value.data.drafted.length === 1
 						? ''
 						: 's'} to publish"
 					variant="warn"
-				/></span
-			>
+				/>
+			</span>
 		{/if}
 	{/snippet}
 	<LoadState resource={cal}>
@@ -121,8 +121,10 @@
 										type="button"
 										aria-label="Remove holiday {i + 1}"
 										onclick={() => edit?.holidays.splice(i, 1)}
-										{...attrs}>×</button
+										{...attrs}
 									>
+										×
+									</button>
 								</li>
 							{/each}
 						</ul>
@@ -130,17 +132,19 @@
 						<p class="muted small">No holidays.</p>
 					{/if}
 					<div class="row">
-						<button class="btn sm" type="button" data-testid="calendar-add" onclick={addHoliday} {...attrs}
-							>+ Holiday</button
-						>
+						<button class="btn sm" type="button" data-testid="calendar-add" onclick={addHoliday} {...attrs}>
+							+ Holiday
+						</button>
 						<button
 							class="btn primary sm"
 							type="button"
 							data-testid="calendar-save"
 							disabled={!manager || !!error || saving}
 							title={!manager ? writeHint('support_manager') : (error ?? undefined)}
-							onclick={save}>Save to draft</button
+							onclick={save}
 						>
+							Save to draft
+						</button>
 						{#if error && manager}<span class="muted small" data-testid="calendar-error">{error}</span>{/if}
 					</div>
 				{/if}
