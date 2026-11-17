@@ -52,7 +52,8 @@ zip = { version = "9.5.1", default-features = false, features = ["deflate-flate2
 [dev-dependencies]
 http-body-util = "0.1.5"
 libc = "0.2.191"
-rsa = { version = "0.9.10", features = ["std"] }
+rand = "0.10"
+rsa = { version = "0.10.0", features = ["std"] }
 testcontainers-modules = { version = "0.15.0", features = ["postgres", "redis"] }
 tower = { version = "0.5.3", features = ["util"] }
 

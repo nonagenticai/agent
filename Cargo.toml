@@ -6,9 +6,6 @@ members = ["crates/agent-api", "crates/agent-model"]
 license = "Apache-2.0"
 
 # RSA key generation in test binaries is minutes at opt-level 0.
-[profile.dev.package.num-bigint-dig]
-opt-level = 3
-
 [profile.dev.package.rsa]
 opt-level = 3
 
