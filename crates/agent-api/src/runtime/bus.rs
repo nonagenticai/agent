@@ -346,6 +346,11 @@ impl ConsumeOptions {
     }
 }
 
+/// Per-command Redis response budget. The `redis` crate defaults to 500 ms, which a cross-site round trip
+/// (mf1 → worker3) exceeds often enough to fail ~0.5% of the 5 s deadline sweep. Bounded on purpose: long
+/// enough to absorb uplink jitter, short enough that a real stall still shows.
+pub const RESPONSE_TIMEOUT: Duration = Duration::from_secs(2);
+
 #[derive(Clone)]
 pub struct Bus {
     client: Client,
@@ -372,10 +377,10 @@ impl std::fmt::Debug for Bus {
 impl Bus {
     /// Connect now (the runtime processes: no Redis, no work). The error never contains the URL.
     pub async fn connect(url: &str, prefix: &str) -> Result<Self> {
-        Self::connect_with_config(url, prefix, ConnectionManagerConfig::new()).await
+        Self::connect_with_response_timeout(url, prefix, RESPONSE_TIMEOUT).await
     }
 
-    /// [`Bus::connect`] with a per-command response timeout other than the redis crate's default (500 ms).
+    /// [`Bus::connect`] with a per-command response timeout other than [`RESPONSE_TIMEOUT`].
     pub async fn connect_with_response_timeout(
         url: &str,
         prefix: &str,
@@ -403,6 +408,7 @@ impl Bus {
         let client = Client::open(url).context("REDIS_URL is not a valid redis URL")?;
         let cfg = ConnectionManagerConfig::new()
             .set_connection_timeout(Some(Duration::from_secs(2)))
+            .set_response_timeout(Some(RESPONSE_TIMEOUT))
             .set_number_of_retries(2);
         let conn = ConnectionManager::new_lazy_with_config(client.clone(), cfg)
             .context("set up the Redis connection (REDIS_URL)")?;

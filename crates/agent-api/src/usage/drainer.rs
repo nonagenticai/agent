@@ -18,7 +18,7 @@
 use std::time::Duration;
 
 use anyhow::Context;
-use redis::aio::ConnectionManager;
+use redis::aio::{ConnectionManager, ConnectionManagerConfig};
 use serde_json::Value;
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -248,7 +248,11 @@ pub fn spawn(st: AppState) -> Option<tokio::task::JoinHandle<()>> {
     Some(tokio::spawn(async move {
         let mut conn = loop {
             let c = match redis::Client::open(m.redis_url.as_str()) {
-                Ok(client) => ConnectionManager::new(client).await,
+                Ok(client) => {
+                    let cfg = ConnectionManagerConfig::new()
+                        .set_response_timeout(Some(crate::runtime::bus::RESPONSE_TIMEOUT));
+                    ConnectionManager::new_with_config(client, cfg).await
+                }
                 Err(e) => Err(e),
             };
             match c {
