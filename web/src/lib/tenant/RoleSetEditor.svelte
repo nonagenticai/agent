@@ -36,12 +36,12 @@
 </script>
 
 <fieldset class="rse" class:compact {disabled} data-testid="role-set-{name}">
-	<legend class="label"
-		>{legend}
-		{#if value.length === 0}<span class="rse-observer" data-testid="role-set-observer"
-				>Observer — reads everything, changes nothing</span
-			>{/if}</legend
-	>
+	<legend class="label">
+		{legend}
+		{#if value.length === 0}<span class="rse-observer" data-testid="role-set-observer">
+				Observer — reads everything, changes nothing
+			</span>{/if}
+	</legend>
 	{#each catalog as r (r.key)}
 		{@const off =
 			(only !== null && !only.includes(r.key)) || (locked.includes(r.key) && value.includes(r.key))}
@@ -59,9 +59,9 @@
 				disabled={off}
 				onchange={(e) => toggle(r.key, e.currentTarget.checked)}
 			/>
-			<span class="rse-text"
-				><b>{r.label}</b>{#if !compact}<span class="cell-sub">{r.description}</span>{/if}</span
-			>
+			<span class="rse-text">
+				<b>{r.label}</b>{#if !compact}<span class="cell-sub">{r.description}</span>{/if}
+			</span>
 		</label>
 	{/each}
 </fieldset>

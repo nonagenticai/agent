@@ -157,18 +157,18 @@
 				<div class="field">
 					<label for="ent-ind">Industry</label>
 					<input id="ent-ind" class="input" list="onto-industries" bind:value={draft.industry} />
-					<datalist id="onto-industries"
-						>{#each industries as i (i)}<option value={i}></option>{/each}</datalist
-					>
+					<datalist id="onto-industries">
+						{#each industries as i (i)}<option value={i}></option>{/each}
+					</datalist>
 				</div>
 			{/if}
 			{#if draft.scope === 'industry_dept'}
 				<div class="field">
 					<label for="ent-dep">Department</label>
 					<input id="ent-dep" class="input" list="onto-departments" bind:value={draft.department} />
-					<datalist id="onto-departments"
-						>{#each distinct(entities, 'department') as d (d)}<option value={d}></option>{/each}</datalist
-					>
+					<datalist id="onto-departments">
+						{#each distinct(entities, 'department') as d (d)}<option value={d}></option>{/each}
+					</datalist>
 				</div>
 			{/if}
 			<div class="field">
@@ -191,23 +191,25 @@
 										{#each TYPES as t (t)}<option value={t}>{t}</option>{/each}
 									</select>
 								</td>
-								<td class="c"
-									><input
+								<td class="c">
+									<input
 										type="checkbox"
 										aria-label="Attribute {i + 1} is personal data"
 										bind:checked={a.pii}
-									/></td
-								>
-								<td
-									><input class="input" aria-label="Attribute {i + 1} synonyms" bind:value={a.synonyms} /></td
-								>
+									/>
+								</td>
+								<td>
+									<input class="input" aria-label="Attribute {i + 1} synonyms" bind:value={a.synonyms} />
+								</td>
 								<td>
 									<button
 										type="button"
 										class="btn sm"
 										aria-label="Remove attribute {i + 1}"
-										onclick={() => draft.attributes.splice(i, 1)}>Remove</button
+										onclick={() => draft.attributes.splice(i, 1)}
 									>
+										Remove
+									</button>
 								</td>
 							</tr>
 						{:else}
@@ -216,9 +218,9 @@
 					</tbody>
 				</table>
 			</div>
-			<button type="button" class="btn sm add-attr" onclick={() => draft.attributes.push(blankAttr())}
-				>Add attribute</button
-			>
+			<button type="button" class="btn sm add-attr" onclick={() => draft.attributes.push(blankAttr())}>
+				Add attribute
+			</button>
 		</div>
 
 		{#if !draft.object_key}
@@ -240,8 +242,9 @@
 				class="btn primary"
 				{...writeAttrs(session, 'job_designer')}
 				disabled={saving || writeAttrs(session, 'job_designer').disabled}
-				>{saving ? 'Saving…' : 'Create entity'}</button
 			>
+				{saving ? 'Saving…' : 'Create entity'}
+			</button>
 			<button type="button" class="btn" onclick={() => (open = false)}>Cancel</button>
 		</div>
 	</form>

@@ -138,8 +138,10 @@
 			title={canWrite
 				? 'You have read these questions and accept them as they are. Saved to draft; changes nothing.'
 				: writeHint('job_designer')}
-			onclick={markReviewed}>Mark gates reviewed</button
+			onclick={markReviewed}
 		>
+			Mark gates reviewed
+		</button>
 		<a class="btn" href="/admin/jobs/{app.job}/cases">Verdicts per case</a>
 	{/snippet}
 </PageHead>
@@ -190,20 +192,20 @@
 													aria-label="Open {q.key}: {q.question}"
 													onclick={() => show(q.key)}
 												>
-													<span class="jg-key mono"
-														>{q.key}{#if q.safety}<Lock />{/if}</span
-													>
+													<span class="jg-key mono">
+														{q.key}{#if q.safety}<Lock />{/if}
+													</span>
 													<span class="jg-body">
 														<span class="jg-question">{q.question}</span>
 														<span class="jg-rule">
 															<span class="mono">{ruleText(q)}</span> → {q.effect}
 														</span>
-														<span class="jg-rule mono"
-															>{RUN_POINT_LABEL[RUN_POINT[q.point]].toLowerCase()} · {ruleSummary(
+														<span class="jg-rule mono">
+															{RUN_POINT_LABEL[RUN_POINT[q.point]].toLowerCase()} · {ruleSummary(
 																q.type,
 																q.rule,
-															)} → {q.action} · fail {q.fail}</span
-														>
+															)} → {q.action} · fail {q.fail}
+														</span>
 														<span class="jg-chips">
 															{#if q.origin === 'tenant'}
 																<Chip
@@ -234,28 +236,28 @@
 													</span>
 													<span class="jg-week">
 														{#each top(q) as t (t.label)}
-															<span class="jg-bar"
-																><span class="jg-bar-l">{t.label}</span><span class="meter"
-																	><i class="s-cust" style="width:{t.pct * 100}%"></i></span
-																><span class="mono">{Math.round(t.pct * 100)}%</span></span
-															>
+															<span class="jg-bar">
+																<span class="jg-bar-l">{t.label}</span><span class="meter">
+																	<i class="s-cust" style="width:{t.pct * 100}%"></i>
+																</span><span class="mono">{Math.round(t.pct * 100)}%</span>
+															</span>
 														{:else}
-															<span class="muted"
-																>{q.generated_from?.startsWith('run time') && q.stats.verdicts_7d
+															<span class="muted">
+																{q.generated_from?.startsWith('run time') && q.stats.verdicts_7d
 																	? 'options built per case'
-																	: ''}</span
-															>
+																	: ''}
+															</span>
 														{/each}
 														<span class="jg-acted">
 															<span class:hot={q.safety && (acted(q) ?? 0) > 0}>{actedText(q)}</span>
 															{#if q.stats.fail_open || q.stats.fail_closed}
-																<span class="warm"
-																	>{q.stats.fail_open + q.stats.fail_closed} outage{q.stats.fail_open +
+																<span class="warm">
+																	{q.stats.fail_open + q.stats.fail_closed} outage{q.stats.fail_open +
 																		q.stats.fail_closed ===
 																	1
 																		? ''
-																		: 's'}</span
-																>
+																		: 's'}
+																</span>
 															{/if}
 														</span>
 													</span>

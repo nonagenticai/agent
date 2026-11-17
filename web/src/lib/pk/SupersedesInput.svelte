@@ -40,15 +40,17 @@
 	<label class="label" for={id}>Replaces platform topics</label>
 	<div class="sup-box" class:off={disabled}>
 		{#each value as k (k)}
-			<span class="chip accent sup-tag mono"
-				>{k}<button
+			<span class="chip accent sup-tag mono">
+				{k}<button
 					type="button"
 					class="sup-x"
 					aria-label="Remove topic {k}"
 					{disabled}
-					onclick={() => remove(k)}>×</button
-				></span
-			>
+					onclick={() => remove(k)}
+				>
+					×
+				</button>
+			</span>
 		{/each}
 		<input
 			{id}
@@ -61,10 +63,10 @@
 			aria-label="Replaces platform topics"
 		/>
 	</div>
-	<span class="cell-sub"
-		>Platform text with these topic keys is left out when this text is searched with it: up to {MAX_SUPERSEDES}
-		keys of a-z, 0-9 and _ . / -.</span
-	>
+	<span class="cell-sub">
+		Platform text with these topic keys is left out when this text is searched with it: up to {MAX_SUPERSEDES}
+		keys of a-z, 0-9 and _ . / -.
+	</span>
 	{#if error}<span class="cell-sub sup-err" role="alert">{error}</span>{/if}
 </div>
 

@@ -11,6 +11,8 @@
 		class="chip muted"
 		data-testid="auto-chip"
 		title="Assigned automatically (round-robin)"
-		aria-label="Assigned automatically (round-robin)">Auto</span
+		aria-label="Assigned automatically (round-robin)"
 	>
+		Auto
+	</span>
 {/if}

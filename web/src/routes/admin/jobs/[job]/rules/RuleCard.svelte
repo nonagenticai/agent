@@ -47,11 +47,12 @@
 		</div>
 		<p class="j9rule-meta small muted">
 			{r.tenant_authored ? 'Authored for this job ·' : 'Slot from'}
-			{#if layer && superAdmin}<a class="mono" href={tagHref(layer.layer, layer.v)}>{r.slot_layer}</a
-				>{:else}<span class="mono">{r.slot_layer ?? 'the job template'}</span>{/if}
-			{#if r.slot_release}· shipped in <a class="mono" href="{base}/release/{r.slot_release}"
-					>{r.slot_release}</a
-				>{/if}
+			{#if layer && superAdmin}<a class="mono" href={tagHref(layer.layer, layer.v)}>
+					{r.slot_layer}
+				</a>{:else}<span class="mono">{r.slot_layer ?? 'the job template'}</span>{/if}
+			{#if r.slot_release}· shipped in <a class="mono" href="{base}/release/{r.slot_release}">
+					{r.slot_release}
+				</a>{/if}
 		</p>
 	</header>
 
@@ -59,8 +60,10 @@
 		<p class="j9rule-statement" data-testid="rule-statement">
 			{#each parts as p, i (i)}{#if 'text' in p}{p.text}{:else if p.value === null}<mark
 						class="j9-unset"
-						title="{p.label}: not set">{p.label.toLowerCase()} — not set</mark
-					>{:else}<mark class="j9-val" title={p.label}>{withUnit(p.value, p.unit)}</mark>{/if}{/each}
+						title="{p.label}: not set"
+					>
+						{p.label.toLowerCase()} — not set
+					</mark>{:else}<mark class="j9-val" title={p.label}>{withUnit(p.value, p.unit)}</mark>{/if}{/each}
 		</p>
 	{/if}
 
@@ -77,10 +80,10 @@
 				<tbody>
 					{#each r.values as v (v.key)}
 						<tr>
-							<td
-								>{v.label}
-								<div class="muted small">{v.hint}</div></td
-							>
+							<td>
+								{v.label}
+								<div class="muted small">{v.hint}</div>
+							</td>
 							<td>
 								{#if v.value === null}<span class="j9-ph">not set</span>
 								{:else}<b>{withUnit(v.value, v.unit)}</b>{/if}
@@ -114,22 +117,28 @@
 						type="button"
 						disabled={wa.disabled}
 						title={wa.title}
-						onclick={() => ondefinition?.(r)}>Edit definition</button
-					>{/if}
+						onclick={() => ondefinition?.(r)}
+					>
+						Edit definition
+					</button>{/if}
 				<button
 					class="btn sm primary"
 					type="button"
 					disabled={wa.disabled || !r.values.length}
 					title={wa.title}
-					onclick={() => onvalues(r)}>Set values</button
+					onclick={() => onvalues(r)}
 				>
+					Set values
+				</button>
 				<button
 					class="btn sm"
 					type="button"
 					disabled={wa.disabled}
 					title={wa.title}
-					onclick={() => onpassage(r)}>{r.passage ? 'Change passage' : 'Link policy passage'}</button
+					onclick={() => onpassage(r)}
 				>
+					{r.passage ? 'Change passage' : 'Link policy passage'}
+				</button>
 			</div>
 		</section>
 		{#if r.facts?.length}
@@ -145,9 +154,9 @@
 					{#each r.uses as u (u.activity + u.step)}
 						<li>
 							<a href="{base}/journey/{encodeURIComponent(u.activity)}">{u.activity_label}</a>
-							{#if u.procedure}→ <a class="mono" href="{base}/procedures/{encodeURIComponent(u.procedure)}"
-									>{u.procedure}</a
-								>{/if}
+							{#if u.procedure}→ <a class="mono" href="{base}/procedures/{encodeURIComponent(u.procedure)}">
+									{u.procedure}
+								</a>{/if}
 							<div class="small muted">{u.step}</div>
 						</li>
 					{/each}

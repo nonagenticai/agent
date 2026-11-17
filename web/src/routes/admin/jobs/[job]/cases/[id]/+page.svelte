@@ -152,9 +152,9 @@
 >
 	{#snippet actions()}
 		<a class="btn" href={jobPath(app.job, '/cases')}>All cases</a>
-		<a class="btn" href={jobPath(app.job, `/operation-calls?case_id=${encodeURIComponent(id)}`)}
-			>Operation calls</a
-		>
+		<a class="btn" href={jobPath(app.job, `/operation-calls?case_id=${encodeURIComponent(id)}`)}>
+			Operation calls
+		</a>
 	{/snippet}
 </PageHead>
 
@@ -173,11 +173,11 @@
 			<div class="story-main">
 				<div class="story-who">
 					<Status word={STATUS_WORD[c.status]} label={STATUS_LABEL[c.status]} />
-					<span class="muted"
-						>{c.customer_name} · {CHANNEL_LABEL[c.channel] ?? c.channel} · identity {IDENTITY[
+					<span class="muted">
+						{c.customer_name} · {CHANNEL_LABEL[c.channel] ?? c.channel} · identity {IDENTITY[
 							c.identity_level
-						] ?? c.identity_level} · {stamp(c.started_at)}</span
-					>
+						] ?? c.identity_level} · {stamp(c.started_at)}
+					</span>
 				</div>
 				<h2 class="story-title">{c.title}</h2>
 				<p class="story-end"><b>{ending.headline}.</b> {ending.why}</p>
@@ -186,13 +186,13 @@
 						<li class="path-step fam-{t.worst ?? 'none'}">
 							<a href="#turn-{t.n}">
 								<span class="path-n">{t.n}</span>
-								<span class="path-txt"
-									>{t.qualified
+								<span class="path-txt">
+									{t.qualified
 										? (t.qualified.activity.split(':')[1] ?? t.qualified.activity).replaceAll('_', ' ')
 										: t.opener
 											? 'follow-up'
-											: 'start'}</span
-								>
+											: 'start'}
+								</span>
 							</a>
 						</li>
 					{/each}
@@ -210,19 +210,21 @@
 				</div>
 				{#if c.release_id}<a
 						class="mono ranon-rel"
-						href={jobPath(app.job, `/release/${encodeURIComponent(c.release_id)}`)}>{c.release_id}</a
-					>{:else}<span class="mono ranon-rel">draft</span>{/if}
-				{#if c.env === 'prod' && liveRelease}
-					<span class="cell-sub"
-						>{liveRelease === c.release_id
-							? 'still the live release'
-							: `superseded — live now: ${liveRelease}`}</span
+						href={jobPath(app.job, `/release/${encodeURIComponent(c.release_id)}`)}
 					>
+						{c.release_id}
+					</a>{:else}<span class="mono ranon-rel">draft</span>{/if}
+				{#if c.env === 'prod' && liveRelease}
+					<span class="cell-sub">
+						{liveRelease === c.release_id
+							? 'still the live release'
+							: `superseded — live now: ${liveRelease}`}
+					</span>
 				{/if}
 				{#if c.draft_rev != null}<div class="revs">
-						<span title="The draft revision this test-environment case ran on (D63)"
-							>draft rev <b>{c.draft_rev}</b></span
-						>
+						<span title="The draft revision this test-environment case ran on (D63)">
+							draft rev <b>{c.draft_rev}</b>
+						</span>
 					</div>{/if}
 				<p class="cell-sub">
 					{c.env === 'prod'
@@ -286,16 +288,19 @@
 								type="button"
 								{...writeAttrs(session, 'operator')}
 								disabled={!operator || busy}
-								onclick={() => record(task.call.call_id, task.call.op, 'landed')}>It went through</button
+								onclick={() => record(task.call.call_id, task.call.op, 'landed')}
 							>
+								It went through
+							</button>
 							<button
 								class="btn"
 								type="button"
 								{...writeAttrs(session, 'operator')}
 								disabled={!operator || busy}
 								onclick={() => record(task.call.call_id, task.call.op, 'not_landed')}
-								>It did not go through</button
 							>
+								It did not go through
+							</button>
 						</div>
 						{#if !operator}<span class="cell-sub" data-testid="support-roles-note">{OPERATOR_NOTE}</span>{/if}
 					</div>
@@ -312,8 +317,10 @@
 							<a
 								class="btn sm primary"
 								href={workspaceHref(app.job, c.conversation_id)}
-								data-testid="open-workspace">Open in workspace</a
+								data-testid="open-workspace"
 							>
+								Open in workspace
+							</a>
 						{/snippet}
 						<div class="conv-pane">
 							<ConversationPane
@@ -335,9 +342,9 @@
 							<li class="turn" id="turn-{t.n}">
 								<div class="turn-head">
 									<span class="turn-n">Turn {t.n}</span>
-									{#if t.opener}<span class="mono muted"
-											>{offset(c.started_at, t.opener.at)} · {clock(t.opener.at)}</span
-										>{/if}
+									{#if t.opener}<span class="mono muted">
+											{offset(c.started_at, t.opener.at)} · {clock(t.opener.at)}
+										</span>{/if}
 									{#if t.qualified}
 										<Chip text={t.qualified.activity} variant="accent" title="Qualified activity" />
 										<span class="cell-sub mono">{t.qualified.object} · {t.qualified.modality}</span>
@@ -355,11 +362,11 @@
 									<!-- the messages themselves are the conversation card's (one transcript) -->
 									{#if t.opener?.msg_id && d.timeline.some((e) => e.kind === 'operation' && e.confirm_ref === t.opener?.msg_id)}
 										<li class="tl-row msg" data-kind="message">
-											<span class="cell-sub"
-												>The customer’s message was used as confirm-back (<span class="mono"
-													>{t.opener.msg_id}</span
-												>)</span
-											>
+											<span class="cell-sub">
+												The customer’s message was used as confirm-back (<span class="mono">
+													{t.opener.msg_id}
+												</span>)
+											</span>
 										</li>
 									{/if}
 									{#each t.steps as e, i (i)}
@@ -374,32 +381,34 @@
 															word={e.verdict === 'pass' ? 'ok' : e.verdict === 'block' ? 'err' : 'warn'}
 															label={e.verdict}
 														/>
-														{#if low}<span class="cell-sub"
-																>lowest {low.label} {low.confidence.toFixed(2)}</span
-															>{/if}
+														{#if low}<span class="cell-sub">
+																lowest {low.label}
+																{low.confidence.toFixed(2)}
+															</span>{/if}
 													</summary>
 													<div class="tbl-wrap verdicts-wrap">
 														<table class="tbl dense verdicts">
-															<thead
-																><tr><th>Q</th><th>Question</th><th>Verdict</th><th>Confidence</th></tr
-																></thead
-															>
+															<thead>
+																<tr><th>Q</th><th>Question</th><th>Verdict</th><th>Confidence</th></tr>
+															</thead>
 															<tbody>
 																{#each e.verdicts as v (v.key)}
 																	<tr>
 																		<td class="mono">{v.key}</td>
 																		<td>{v.label}</td>
-																		<td class="mono"
-																			>{v.value}{#if v.below_threshold}
-																				<Chip text="below threshold" variant="warn" />{/if}</td
-																		>
-																		<td
-																			><span class="conf"
-																				><Meter value={v.confidence} cls={confClass(v.confidence)} /><span
-																					class="mono">{v.confidence.toFixed(2)}</span
-																				></span
-																			></td
-																		>
+																		<td class="mono">
+																			{v.value}{#if v.below_threshold}
+																				<Chip text="below threshold" variant="warn" />{/if}
+																		</td>
+																		<td>
+																			<span class="conf">
+																				<Meter value={v.confidence} cls={confClass(v.confidence)} /><span
+																					class="mono"
+																				>
+																					{v.confidence.toFixed(2)}
+																				</span>
+																			</span>
+																		</td>
 																	</tr>
 																{/each}
 															</tbody>
@@ -412,10 +421,10 @@
 										{:else if e.kind === 'qualified'}
 											<li class="tl-row mech" data-kind="qualified">
 												<span class="k">Understood</span>
-												<span
-													><b>{activityLabel(e.activity)}</b> on <b>{e.object}</b> ({e.modality})
-													<span class="cell-sub mono">· space {e.context_space}</span></span
-												>
+												<span>
+													<b>{activityLabel(e.activity)}</b> on <b>{e.object}</b> ({e.modality})
+													<span class="cell-sub mono">· space {e.context_space}</span>
+												</span>
 												<div class="chips">
 													{#each Object.entries(e.slots) as [k, v] (k)}<Chip text="{k}: {v ?? '—'}" />{/each}
 												</div>
@@ -423,12 +432,12 @@
 										{:else if e.kind === 'knowledge'}
 											<li class="tl-row mech" data-kind="knowledge">
 												<span class="k">Looked up</span>
-												<span
-													>“{e.query}” in <span class="mono">{e.store}</span> → {e.passages.length} passage{e
+												<span>
+													“{e.query}” in <span class="mono">{e.store}</span> → {e.passages.length} passage{e
 														.passages.length === 1
 														? ''
-														: 's'}</span
-												>
+														: 's'}
+												</span>
 												<ol class="passages">
 													{#each e.passages as p (p.title)}
 														<li>
@@ -462,32 +471,33 @@
 													/>
 												</div>
 												<div class="op-facts">
-													{#if e.step}<span
-															>step {e.step.n} of
+													{#if e.step}<span>
+															step {e.step.n} of
 															<span class="mono">{e.step.procedure}@{e.step.version}</span>
-															· {e.step.name}</span
-														>{/if}
-													<span
-														>outcome <span class="mono">{e.outcome}</span
-														>{#if fam !== 'ok'}{#if oc.code !== e.outcome}
-																→ <span class="mono">{oc.code}</span>{/if} — {oc.meaning}{/if}</span
-													>
+															· {e.step.name}
+														</span>{/if}
+													<span>
+														outcome <span class="mono">
+															{e.outcome}
+														</span>{#if fam !== 'ok'}{#if oc.code !== e.outcome}
+																→ <span class="mono">{oc.code}</span>{/if} — {oc.meaning}{/if}
+													</span>
 													{#if conf}<span class="ok-txt">✓ confirm-back: customer said “{conf.text}”</span>
-													{:else if e.confirm_ref}<span
-															>confirm_ref <span class="mono">{e.confirm_ref}</span></span
-														>{/if}
-													{#if e.object_change}<span
-															><b>{e.object_change.object} {e.object_change.ref}</b>: {e.object_change.from ??
-																'new'} → {e.object_change.to ?? '? (unknown)'}</span
-														>{/if}
+													{:else if e.confirm_ref}<span>
+															confirm_ref <span class="mono">{e.confirm_ref}</span>
+														</span>{/if}
+													{#if e.object_change}<span>
+															<b>{e.object_change.object} {e.object_change.ref}</b>: {e.object_change.from ??
+																'new'} → {e.object_change.to ?? '? (unknown)'}
+														</span>{/if}
 													{#if e.detail}<span class="cell-sub">{e.detail}</span>{/if}
 												</div>
 												<details class="op-more">
 													<summary class="cell-sub">call details</summary>
 													<div class="op-grid">
-														<span class="label">Route</span><span class="mono"
-															>{e.route} → {e.instance ?? '—'}</span
-														>
+														<span class="label">Route</span><span class="mono">
+															{e.route} → {e.instance ?? '—'}
+														</span>
 														<span class="label">Template</span><span class="mono">{e.template ?? '—'}</span>
 														<span class="label">Latency</span><span class="mono">{fmt.ms(e.latency_ms)}</span>
 														<span class="label">Call</span><span class="mono">{e.call_id}</span>
@@ -521,10 +531,10 @@
 										{:else if e.kind === 'state'}
 											<li class="tl-row mech" data-kind="state">
 												<span class="k">Case</span>
-												<span
-													><b>→ {STATUS_LABEL[e.status]}</b>
-													{e.note}{#if e.by}<span class="muted"> · {e.by}</span>{/if}</span
-												>
+												<span>
+													<b>→ {STATUS_LABEL[e.status]}</b>
+													{e.note}{#if e.by}<span class="muted"> · {e.by}</span>{/if}
+												</span>
 											</li>
 										{:else if e.kind === 'alert'}
 											<li class="tl-row mech alert" data-kind="alert">
@@ -559,9 +569,9 @@
 								: 'Nobody has taken it yet.'}
 							{#if c.sla}<span class="muted">SLA {c.sla.hours} h · due {stamp(c.sla.due_at)}</span>{/if}
 						</p>
-						{#if c.conversation_id}<a class="btn primary" href={workspaceHref(app.job, c.conversation_id)}
-								>Work it in the workspace</a
-							>{/if}
+						{#if c.conversation_id}<a class="btn primary" href={workspaceHref(app.job, c.conversation_id)}>
+								Work it in the workspace
+							</a>{/if}
 					{:else if ['resolved', 'not_eligible', 'cancelled_offboard'].includes(c.status)}
 						<p class="muted small">The case is closed; nothing to hand over.</p>
 					{:else if handoverOpen}
@@ -570,9 +580,9 @@
 							<input class="input" bind:value={reason} placeholder="e.g. customer prefers a phone call" />
 						</label>
 						<div class="actions">
-							<button class="btn primary" type="button" disabled={busy || !admin} onclick={handOver}
-								>Hand over to staff</button
-							>
+							<button class="btn primary" type="button" disabled={busy || !admin} onclick={handOver}>
+								Hand over to staff
+							</button>
 							<button class="btn" type="button" onclick={() => (handoverOpen = false)}>Cancel</button>
 						</div>
 					{:else}
@@ -580,10 +590,13 @@
 							class="btn"
 							type="button"
 							{...writeAttrs(session, 'support_agent')}
-							onclick={() => (handoverOpen = true)}>Hand over…</button
+							onclick={() => (handoverOpen = true)}
 						>
-						{#if !admin}<span class="cell-sub" data-testid="support-roles-note">{SUPPORT_ROLES_NOTE}</span
-							>{/if}
+							Hand over…
+						</button>
+						{#if !admin}<span class="cell-sub" data-testid="support-roles-note">
+								{SUPPORT_ROLES_NOTE}
+							</span>{/if}
 					{/if}
 				</Card>
 
@@ -592,9 +605,9 @@
 						<ul class="plain">
 							{#each procs as p (p.procedure + p.version)}
 								<li>
-									<a class="mono" href={jobPath(app.job, `/procedures/${encodeURIComponent(p.procedure)}`)}
-										>{p.procedure}@{p.version}</a
-									>
+									<a class="mono" href={jobPath(app.job, `/procedures/${encodeURIComponent(p.procedure)}`)}>
+										{p.procedure}@{p.version}
+									</a>
 									<span class="cell-sub">steps {p.steps.join(', ')}</span>
 								</li>
 							{/each}

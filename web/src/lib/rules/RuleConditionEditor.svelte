@@ -40,8 +40,8 @@
 
 <fieldset class="condition">
 	<legend>{path}</legend>
-	<label
-		>Match
+	<label>
+		Match
 		<select
 			class="input"
 			aria-label="{path} match"
@@ -55,20 +55,22 @@
 	</label>
 	{#if condition.kind === 'compare'}
 		<div class="row">
-			<label
-				>Read as<select
+			<label>
+				Read as<select
 					class="input"
 					aria-label="{path} read as"
 					value={condition.left.kind}
 					onchange={(e) => leftKind(e.currentTarget.value)}
 				>
 					<option value="fact">Fact value</option><option value="days_since">Days since date</option><option
-						value="months_since">Months since date</option
+						value="months_since"
 					>
-				</select></label
-			>
-			<label
-				>Fact<select
+						Months since date
+					</option>
+				</select>
+			</label>
+			<label>
+				Fact<select
 					class="input"
 					aria-label="{path} fact"
 					value={keyOf(condition.left)}
@@ -78,56 +80,58 @@
 					}}
 					required
 				>
-					<option value="">Choose fact</option>{#each facts as f, i (i)}<option value={f.key}
-							>{f.label || f.key}</option
-						>{/each}
-				</select></label
-			>
-			<label
-				>Comparison<select class="input" aria-label="{path} comparison" bind:value={condition.op}>
-					<option value="eq">equals</option><option value="ne">does not equal</option><option value="lt"
-						>less than</option
-					><option value="lte">at most</option><option value="gt">greater than</option><option value="gte"
-						>at least</option
-					><option value="in">is in list</option><option value="not_in">is not in list</option>
-				</select></label
-			>
+					<option value="">Choose fact</option>{#each facts as f, i (i)}<option value={f.key}>
+							{f.label || f.key}
+						</option>{/each}
+				</select>
+			</label>
+			<label>
+				Comparison<select class="input" aria-label="{path} comparison" bind:value={condition.op}>
+					<option value="eq">equals</option><option value="ne">does not equal</option><option value="lt">
+						less than
+					</option><option value="lte">at most</option><option value="gt">greater than</option><option
+						value="gte"
+					>
+						at least
+					</option><option value="in">is in list</option><option value="not_in">is not in list</option>
+				</select>
+			</label>
 		</div>
 		<div class="row">
-			<label
-				>Compare with<select
+			<label>
+				Compare with<select
 					class="input"
 					aria-label="{path} compare with"
 					value={condition.right.kind}
 					onchange={(e) => rightKind(e.currentTarget.value)}
 				>
-					<option value="literal">Fixed value</option><option value="value" disabled={!values.length}
-						>Your threshold</option
-					>
-				</select></label
-			>
+					<option value="literal">Fixed value</option><option value="value" disabled={!values.length}>
+						Your threshold
+					</option>
+				</select>
+			</label>
 			{#if condition.right.kind === 'literal'}
-				<label
-					>Value<input
+				<label>
+					Value<input
 						class="input"
 						aria-label="{path} value"
 						maxlength="280"
 						bind:value={condition.right.value}
-					/></label
-				>
+					/>
+				</label>
 			{:else if 'key' in condition.right}
-				<label
-					>Threshold<select
+				<label>
+					Threshold<select
 						class="input"
 						aria-label="{path} threshold"
 						bind:value={condition.right.key}
 						required
 					>
-						<option value="">Choose threshold</option>{#each values as v, i (i)}<option value={v.key}
-								>{v.label || v.key}</option
-							>{/each}
-					</select></label
-				>
+						<option value="">Choose threshold</option>{#each values as v, i (i)}<option value={v.key}>
+								{v.label || v.key}
+							</option>{/each}
+					</select>
+				</label>
 			{/if}
 		</div>
 	{:else}
@@ -145,8 +149,10 @@
 				disabled={condition.conditions.length === 1}
 				onclick={() => {
 					if (condition.kind !== 'compare') condition.conditions.splice(i, 1);
-				}}>Remove {path}.{i + 1}</button
+				}}
 			>
+				Remove {path}.{i + 1}
+			</button>
 		{/each}
 		<button
 			type="button"
@@ -154,8 +160,10 @@
 			disabled={condition.conditions.length >= 16}
 			onclick={() => {
 				if (condition.kind !== 'compare') condition.conditions.push(compare());
-			}}>Add condition to {path}</button
+			}}
 		>
+			Add condition to {path}
+		</button>
 	{/if}
 </fieldset>
 

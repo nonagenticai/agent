@@ -94,9 +94,9 @@
 							<span class="p17-arrow" aria-hidden="true">→</span>
 							<span class="p17-can">
 								<Chip text={s.canonical} variant={stateOk(s.canonical) ? 'accent' : 'warn'} />
-								{#if !stateOk(s.canonical)}<span class="cell-sub"
-										>not a state of {op.object} — an error outcome</span
-									>{/if}
+								{#if !stateOk(s.canonical)}<span class="cell-sub">
+										not a state of {op.object} — an error outcome
+									</span>{/if}
 							</span>
 						</li>
 					{/each}
@@ -145,18 +145,18 @@
 				<dd>
 					<span class="mono">{idempotencyLabel(op.idempotency)}</span>
 					{#if idemRefused}<Chip text="refused for {op.side_effect}" variant="err" />{/if}
-					<span class="cell-sub"
-						>{write
+					<span class="cell-sub">
+						{write
 							? 'A retried write must not happen twice: the step key travels in a header, or a search for it runs before the create.'
-							: 'Reads are naturally idempotent.'}</span
-					>
+							: 'Reads are naturally idempotent.'}
+					</span>
 				</dd>
 				<dt>verify_read</dt>
 				<dd>
 					<span class="mono">{op.verify_read ?? (write ? '— (confirm-back only)' : 'n/a (read)')}</span>
-					{#if write}<span class="cell-sub"
-							>After a timeout the write is <span class="mono">unknown_outcome</span> until this read confirms it.</span
-						>{/if}
+					{#if write}<span class="cell-sub">
+							After a timeout the write is <span class="mono">unknown_outcome</span> until this read confirms it.
+						</span>{/if}
 				</dd>
 				{#if op.op_kind === 'hosted_payment_link'}
 					<dt>Payment</dt>
@@ -170,10 +170,10 @@
 			{#if op.fixtures.length === 0}<p class="muted">No fixtures recorded yet — T1 cannot run.</p>{:else}
 				{#each op.fixtures as fx (fx.name)}
 					<details class="p17-fx">
-						<summary
-							><span class="mono">{fx.status || 'timeout'}</span>
-							{fx.name} <span class="muted">→ {fx.outcome}</span></summary
-						>
+						<summary>
+							<span class="mono">{fx.status || 'timeout'}</span>
+							{fx.name} <span class="muted">→ {fx.outcome}</span>
+						</summary>
 						<JsonView value={fx.body} />
 					</details>
 				{/each}

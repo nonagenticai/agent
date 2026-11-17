@@ -247,16 +247,18 @@
 			sub="Solid arrows are operations the agent may run; dashed arrows are what the system of record does. Pick a status or a verb."
 		>
 			{#snippet actions()}
-				<button class="btn sm" type="button" {...superAdminAttrs(session)} onclick={() => editState(null)}
-					>Add state</button
-				>
+				<button class="btn sm" type="button" {...superAdminAttrs(session)} onclick={() => editState(null)}>
+					Add state
+				</button>
 				{#if d.states.length}
 					<button
 						class="btn sm"
 						type="button"
 						{...superAdminAttrs(session)}
-						onclick={() => editTransition(null, d)}>Add transition</button
+						onclick={() => editTransition(null, d)}
 					>
+						Add transition
+					</button>
 				{/if}
 			{/snippet}
 			{#if d.states.length === 0}
@@ -276,8 +278,10 @@
 							class="vbtn"
 							class:on={!selVerb}
 							aria-pressed={!selVerb}
-							onclick={() => (selVerb = null)}>All</button
+							onclick={() => (selVerb = null)}
 						>
+							All
+						</button>
 						{#each d.verbs as v (v.verb)}
 							<button
 								type="button"
@@ -287,8 +291,10 @@
 								onclick={() => {
 									selVerb = selVerb === v.verb ? null : v.verb;
 									selState = null;
-								}}>{v.verb}</button
+								}}
 							>
+								{v.verb}
+							</button>
 						{/each}
 					</div>
 					<label class="check"><input type="checkbox" bind:checked={showEvents} /> Backend events</label>
@@ -349,9 +355,9 @@
 										</dd>
 									{/if}
 								</dl>
-								<a class="small" href="/platform/operations?q={encodeURIComponent(v.verb)}"
-									>Open {v.verb} in the operations catalogue</a
-								>
+								<a class="small" href="/platform/operations?q={encodeURIComponent(v.verb)}">
+									Open {v.verb} in the operations catalogue
+								</a>
 							{/if}
 						{:else}
 							{@const focus = focusOf(d)}
@@ -366,8 +372,10 @@
 										class="btn sm"
 										type="button"
 										{...superAdminAttrs(session)}
-										onclick={() => editState(st)}>Edit state</button
+										onclick={() => editState(st)}
 									>
+										Edit state
+									</button>
 								</div>
 								<div class="chips">
 									{#if st.initial}<Chip text="initial" variant="accent" />{/if}
@@ -399,9 +407,9 @@
 										{#each f.events as e (e.verb)}
 											<div>{shortVerb(e.verb)} → {labelOf(d, e.to)}</div>
 										{:else}
-											<span class="muted"
-												>{st.terminal ? 'never — terminal' : 'no backend event from here'}</span
-											>
+											<span class="muted">
+												{st.terminal ? 'never — terminal' : 'no backend event from here'}
+											</span>
 										{/each}
 									</dd>
 									{#if sys.length}
@@ -427,21 +435,23 @@
 						{:else}
 							<div class="tbl-wrap">
 								<table class="matrix" data-testid="verb-errors">
-									<caption class="sr-only"
-										>Every status without a transition row for the verb yields invalid_state:&lt;status&gt; —
-										complete by construction.</caption
-									>
+									<caption class="sr-only">
+										Every status without a transition row for the verb yields invalid_state:&lt;status&gt; —
+										complete by construction.
+									</caption>
 									<thead>
 										<tr>
 											<th scope="col">Verb</th>
 											{#each d.states as s (s.status)}
-												<th scope="col" class:sel={s.status === focusOf(d) && !selVerb}
-													><button
+												<th scope="col" class:sel={s.status === focusOf(d) && !selVerb}>
+													<button
 														type="button"
 														class="colbtn"
-														onclick={() => ((selState = s.status), (selVerb = null))}>{s.label}</button
-													></th
-												>
+														onclick={() => ((selState = s.status), (selVerb = null))}
+													>
+														{s.label}
+													</button>
+												</th>
 											{/each}
 										</tr>
 									</thead>
@@ -452,21 +462,23 @@
 													<button
 														type="button"
 														class="colbtn mono"
-														onclick={() => ((selVerb = row.verb), (selState = null))}>{row.verb}</button
+														onclick={() => ((selVerb = row.verb), (selState = null))}
 													>
+														{row.verb}
+													</button>
 													<span class="sr-only">runs from {row.allowed_from.join(', ')}</span>
 												</th>
 												{#each row.cells as c (c.status)}
 													{#if c.to}
-														<td class="yes" title="{row.verb} from {c.status} → {c.to}"
-															>{c.to === c.status ? '↺' : '→'}<span class="to"
-																>{c.to === c.status ? 'stays' : labelOf(d, c.to)}</span
-															></td
-														>
+														<td class="yes" title="{row.verb} from {c.status} → {c.to}">
+															{c.to === c.status ? '↺' : '→'}<span class="to">
+																{c.to === c.status ? 'stays' : labelOf(d, c.to)}
+															</span>
+														</td>
 													{:else}
-														<td class="no" title="invalid_state:{c.status}"
-															>✕<span class="sr-only">invalid_state:{c.status}</span></td
-														>
+														<td class="no" title="invalid_state:{c.status}">
+															✕<span class="sr-only">invalid_state:{c.status}</span>
+														</td>
 													{/if}
 												{/each}
 											</tr>
@@ -515,15 +527,16 @@
 								class="btn sm"
 								type="button"
 								{...superAdminAttrs(session)}
-								onclick={() => editField(null)}>Add field</button
+								onclick={() => editField(null)}
 							>
+								Add field
+							</button>
 						</div>
 						<div class="tbl-wrap">
 							<table class="tbl" data-testid="object-fields">
-								<thead
-									><tr><th>Field</th><th>Type</th><th>Values / target</th><th>Description</th><th></th></tr
-									></thead
-								>
+								<thead>
+									<tr><th>Field</th><th>Type</th><th>Values / target</th><th>Description</th><th></th></tr>
+								</thead>
 								<tbody>
 									{#each d.fields as f (f.field)}
 										<tr>
@@ -540,14 +553,16 @@
 												{:else if f.ref}<a class="mono" href="/platform/objects/{f.ref}">→ {f.ref}</a>{/if}
 											</td>
 											<td class="muted">{f.description}</td>
-											<td
-												><button
+											<td>
+												<button
 													class="btn sm"
 													type="button"
 													{...superAdminAttrs(session)}
-													onclick={() => editField(f)}>Edit</button
-												></td
-											>
+													onclick={() => editField(f)}
+												>
+													Edit
+												</button>
+											</td>
 										</tr>
 									{/each}
 								</tbody>
@@ -560,13 +575,13 @@
 							<ul class="rels" data-testid="object-relations">
 								{#each d.relations as r (r.subject + r.predicate + r.object)}
 									<li>
-										<a class="mono" class:self={r.subject === object} href="/platform/objects/{r.subject}"
-											>{r.subject}</a
-										>
+										<a class="mono" class:self={r.subject === object} href="/platform/objects/{r.subject}">
+											{r.subject}
+										</a>
 										<span class="pred">{r.predicate} <span class="mono muted">{r.cardinality}</span></span>
-										<a class="mono" class:self={r.object === object} href="/platform/objects/{r.object}"
-											>{r.object}</a
-										>
+										<a class="mono" class:self={r.object === object} href="/platform/objects/{r.object}">
+											{r.object}
+										</a>
 									</li>
 								{/each}
 							</ul>
@@ -590,14 +605,16 @@
 														{#if s.terminal}<Chip text="terminal" variant="dead" />{/if}
 														{#if !s.canonical}<Chip text="non-canonical" variant="muted" />{/if}
 													</td>
-													<td
-														><button
+													<td>
+														<button
 															class="btn sm"
 															type="button"
 															{...superAdminAttrs(session)}
-															onclick={() => editState(s)}>Edit</button
-														></td
-													>
+															onclick={() => editState(s)}
+														>
+															Edit
+														</button>
+													</td>
 												</tr>
 											{/each}
 										</tbody>
@@ -622,14 +639,18 @@
 																class="btn sm"
 																type="button"
 																{...superAdminAttrs(session)}
-																onclick={() => editTransition(t, d)}>Edit</button
+																onclick={() => editTransition(t, d)}
 															>
+																Edit
+															</button>
 															<button
 																class="btn sm danger"
 																type="button"
 																{...superAdminAttrs(session)}
-																onclick={() => removeTransition(t)}>Remove</button
+																onclick={() => removeTransition(t)}
 															>
+																Remove
+															</button>
 														</td>
 													</tr>
 												{/each}
@@ -644,29 +665,30 @@
 					{:else}
 						<div class="tbl-wrap">
 							<table class="tbl" data-testid="object-operations">
-								<thead
-									><tr
-										><th>Operation</th><th>Modality</th><th>Effect</th><th>Id</th><th>Retail job</th><th
-											>Errors</th
-										></tr
-									></thead
-								>
+								<thead>
+									<tr>
+										<th>Operation</th><th>Modality</th><th>Effect</th><th>Id</th><th>Retail job</th><th>
+											Errors
+										</th>
+									</tr>
+								</thead>
 								<tbody>
 									{#each d.operations as o (o.key)}
 										<tr>
-											<td
-												><a class="mono" href="/platform/operations?q={encodeURIComponent(o.key)}">{o.key}</a
-												><span class="cell-sub">{o.description}</span></td
-											>
+											<td>
+												<a class="mono" href="/platform/operations?q={encodeURIComponent(o.key)}">
+													{o.key}
+												</a><span class="cell-sub">{o.description}</span>
+											</td>
 											<td>{o.modality}{o.is_derive ? ' · derive' : ''}</td>
 											<td><Chip text={o.side_effect} variant={EFFECT_VARIANT[o.side_effect]} /></td>
 											<td class="mono">{o.identity_level}</td>
 											<td>{o.retail ?? '—'}</td>
-											<td class="muted"
-												>{o.error_states
+											<td class="muted">
+												{o.error_states
 													.filter((e) => e.startsWith('invalid_state') || e.startsWith('ineligible'))
-													.join(', ') || '—'}</td
-											>
+													.join(', ') || '—'}
+											</td>
 										</tr>
 									{/each}
 								</tbody>
@@ -723,8 +745,9 @@
 						/>
 					</div>
 				{/if}
-				<label class="check"><input type="checkbox" bind:checked={fieldForm.pii} /> Personal data (PII)</label
-				>
+				<label class="check">
+					<input type="checkbox" bind:checked={fieldForm.pii} /> Personal data (PII)
+				</label>
 				<label class="check"><input type="checkbox" bind:checked={fieldForm.required} /> Required</label>
 				<div class="field">
 					<label for="f-desc">Description</label>
@@ -764,12 +787,12 @@
 						<input id="s-label" class="input" bind:value={stateForm.label} />
 					</div>
 				</div>
-				<label class="check"
-					><input type="checkbox" bind:checked={stateForm.terminal} /> Terminal (no way out)</label
-				>
-				<label class="check"
-					><input type="checkbox" bind:checked={stateForm.canonical} /> Canonical (connectors map onto it)</label
-				>
+				<label class="check">
+					<input type="checkbox" bind:checked={stateForm.terminal} /> Terminal (no way out)
+				</label>
+				<label class="check">
+					<input type="checkbox" bind:checked={stateForm.canonical} /> Canonical (connectors map onto it)
+				</label>
 				{#if stateNew}
 					<p class="muted">
 						A new state is an <span class="mono">invalid_state</span> error for every verb until you add a transition
@@ -807,9 +830,9 @@
 					<datalist id="t-verbs">
 						{#each [...new Set(d.transitions.map((t) => t.verb))] as v (v)}<option value={v}></option>{/each}
 					</datalist>
-					<span class="muted hint"
-						>“{object}.&lt;verb&gt;” for an operation, “backend:&lt;event&gt;” for a system event.</span
-					>
+					<span class="muted hint">
+						“{object}.&lt;verb&gt;” for an operation, “backend:&lt;event&gt;” for a system event.
+					</span>
 				</div>
 				<div class="form-grid">
 					<div class="field">

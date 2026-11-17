@@ -150,9 +150,9 @@
 			}}
 		>
 			<input class="input" aria-label="Job name" bind:value={nameDraft} maxlength="120" />
-			<button class="btn primary sm" type="submit" disabled={nameBusy || !nameDraft.trim()}
-				>{nameBusy ? 'Saving…' : 'Save name'}</button
-			>
+			<button class="btn primary sm" type="submit" disabled={nameBusy || !nameDraft.trim()}>
+				{nameBusy ? 'Saving…' : 'Save name'}
+			</button>
 			<button class="btn sm" type="button" onclick={() => (renaming = false)}>Cancel</button>
 		</form>
 	{:else}
@@ -163,11 +163,13 @@
 			type="button"
 			disabled={!mayRename}
 			title={mayRename ? undefined : writeHint('tenant_admin')}
-			onclick={startRename}>Rename</button
+			onclick={startRename}
 		>
+			Rename
+		</button>
 	{/if}
-	<label class="j1-aud"
-		>Serves
+	<label class="j1-aud">
+		Serves
 		<select
 			class="input"
 			data-testid="job-audience"
@@ -179,8 +181,8 @@
 		>
 			<option value="customers">Customers</option>
 			<option value="employees">Employees</option>
-		</select></label
-	>
+		</select>
+	</label>
 	<span class="muted small" data-testid="job-region-shown">Region <b>{jobRegion ?? 'none'}</b></span>
 </section>
 
@@ -217,9 +219,9 @@
 				{:else}
 					<div class="j1-open">
 						<b class="j1-big" data-testid="open-cases">{openTotal}</b>
-						<span class="muted"
-							>open · {customers} with customers{#if c.staff_tests}, {c.staff_tests} staff tests{/if}</span
-						>
+						<span class="muted">
+							open · {customers} with customers{#if c.staff_tests}, {c.staff_tests} staff tests{/if}
+						</span>
 					</div>
 					<div class="j1-bar" role="img" aria-label="Open cases by holder">
 						{#each lanes.filter((l) => l.count && l.key !== 'failed') as l (l.key)}
@@ -249,10 +251,10 @@
 							<b>{p.alerts}</b><span>outcome unknown</span>
 						</a>
 						<a href={href('/agents')} class:hot={p.agents.behind > 0}>
-							<b>{p.agents.ok}/{p.agents.total}</b><span
-								>specialists healthy{#if p.agents.behind}
-									· {p.agents.behind} behind{/if}</span
-							>
+							<b>{p.agents.ok}/{p.agents.total}</b><span>
+								specialists healthy{#if p.agents.behind}
+									· {p.agents.behind} behind{/if}
+							</span>
 						</a>
 						<a href={href('/buses?tab=dead')} class:hot={p.dead_letters > 0}>
 							<b>{p.dead_letters}</b><span>{L.dead_letters.toLowerCase()}</span>
@@ -264,10 +266,10 @@
 							<ul class="list-plain">
 								{#each p.failing_ops as f (f.op)}
 									<li>
-										<a href={href(`/operation-calls?op=${encodeURIComponent(f.op)}`)}
-											><span class="mono">{f.op}</span>
-											<span class="cell-sub mono">{f.instance ?? ''}</span></a
-										>
+										<a href={href(`/operation-calls?op=${encodeURIComponent(f.op)}`)}>
+											<span class="mono">{f.op}</span>
+											<span class="cell-sub mono">{f.instance ?? ''}</span>
+										</a>
 										<span class="mono j1-rate">{fmt.pct(f.rate, 0)} of {fmt.n(f.calls)}</span>
 									</li>
 								{/each}
@@ -288,8 +290,9 @@
 		{#if langs}
 			<p class="muted j1-line" data-testid="j1-languages">
 				Serves <b>{langs.live.map(langName).join(', ') || 'no language'}</b>{#if langs.unpublished}
-					· draft <a href="#job-settings">{langs.draft.map(langName).join(', ')}</a
-					>{/if}{#if o.kpis.containment != null}
+					· draft <a href="#job-settings">
+						{langs.draft.map(langName).join(', ')}
+					</a>{/if}{#if o.kpis.containment != null}
 					· {fmt.pct(o.kpis.containment, 0)} finished without a person (30 d){/if}
 				· <a href="#job-settings" data-testid="j1-edit-languages">Edit languages</a>
 			</p>
@@ -303,9 +306,9 @@
 			sub="Template layers and your refinements reach customers only when a release is cut, approved and applied."
 		>
 			{#snippet actions()}
-				<a class="btn sm" href={href('/release')}
-					>{o.current_release ? 'Release history & apply' : 'Approve a release'}</a
-				>
+				<a class="btn sm" href={href('/release')}>
+					{o.current_release ? 'Release history & apply' : 'Approve a release'}
+				</a>
 			{/snippet}
 			<ol class="j1-flow" aria-label="Release pipeline">
 				{#each flow as n (n.key)}
@@ -339,11 +342,10 @@
 					<ul class="list-plain j1-pins">
 						{#each o.pins ?? [] as pin (pin.layer)}
 							<li>
-								<span
-									>{layerLabel(`${pin.layer}@v${pin.pinned}`)}
-									<TechDetail><span class="mono">{layerName(pin.layer)}@v{pin.pinned}</span></TechDetail
-									></span
-								>
+								<span>
+									{layerLabel(`${pin.layer}@v${pin.pinned}`)}
+									<TechDetail><span class="mono">{layerName(pin.layer)}@v{pin.pinned}</span></TechDetail>
+								</span>
 								{#if pin.latest != null}
 									<Chip
 										text="Base changed since your release"
@@ -468,12 +470,12 @@
 							{#each changes.slice(0, 7) as c (c.id)}
 								<li>
 									<span class="mono j1-when">{when(c.at)}</span>
-									<span class="j1-change"
-										><b>{c.who}</b>
+									<span class="j1-change">
+										<b>{c.who}</b>
 										{plain(c.what)} <span class="mono">{plain(c.object)}</span>
 										{#if c.failed}<Chip text="failed" variant="err" />{/if}
-										{#if c.unreleased}<Chip text="not live yet" variant="accent" />{/if}</span
-									>
+										{#if c.unreleased}<Chip text="not live yet" variant="accent" />{/if}
+									</span>
 									<span class="j1-sec">{c.section}</span>
 								</li>
 							{/each}
@@ -486,11 +488,11 @@
 				<ul class="list-plain j1-health">
 					{#each o.health as h (h.name)}
 						<li>
-							<span
-								><span class="cell-title">{h.name}</span>{#if h.detail}<span class="cell-sub mono"
-										>{plain(h.detail)}</span
-									>{/if}</span
-							>
+							<span>
+								<span class="cell-title">{h.name}</span>{#if h.detail}<span class="cell-sub mono">
+										{plain(h.detail)}
+									</span>{/if}
+							</span>
 							<Status
 								word={h.status === 'unconfigured' ? 'draft' : h.status}
 								label={HEALTH_LABEL[h.status]}

@@ -264,13 +264,11 @@
 					onchange={(e) => goto((e.currentTarget as HTMLSelectElement).value)}
 				>
 					{#each list.value.data.items as i (`${i.industry}:${i.department ?? ''}`)}
-						<option value={journeyHref(i)}
-							>{i.label}{i.department
+						<option value={journeyHref(i)}>
+							{i.label}{i.department
 								? ` / ${i.department_label ?? i.department.replaceAll('_', ' ')}`
-								: ''}{i.status === 'not_started' ? ' — not started' : ''}{i.red
-								? ` — ${i.red} red`
-								: ''}</option
-						>
+								: ''}{i.status === 'not_started' ? ' — not started' : ''}{i.red ? ` — ${i.red} red` : ''}
+						</option>
 					{/each}
 				</select>
 			</label>
@@ -295,22 +293,21 @@
 	{#if list.value.state === 'ok'}
 		<Card title="Industries">
 			<table class="tbl">
-				<thead
-					><tr
-						><th>Industry</th><th>Status</th><th>Tag</th><th class="r">Activities</th><th class="r">Red</th
-						></tr
-					></thead
-				>
+				<thead>
+					<tr>
+						<th>Industry</th><th>Status</th><th>Tag</th><th class="r">Activities</th><th class="r">Red</th>
+					</tr>
+				</thead>
 				<tbody>
 					{#each list.value.data.items as i (`${i.industry}:${i.department ?? ''}`)}
 						<tr>
-							<td
-								><a href={journeyHref(i)}
-									>{i.label}{i.department
+							<td>
+								<a href={journeyHref(i)}>
+									{i.label}{i.department
 										? ` / ${i.department_label ?? i.department.replaceAll('_', ' ')}`
-										: ''}</a
-								></td
-							>
+										: ''}
+								</a>
+							</td>
 							<td><span class="chip {STATUS_CHIP[i.status]}">{i.status.replace('_', ' ')}</span></td>
 							<td class="mono">{i.tag ?? '—'}</td>
 							<td class="r">{i.activities}</td>
@@ -344,8 +341,9 @@
 							{#if j.draft_rev}<span
 									class="chip warn"
 									title="Edits since the tag; a new tag needs a generator Package step"
-									>draft rev {j.draft_rev}</span
-								>{/if}
+								>
+									draft rev {j.draft_rev}
+								</span>{/if}
 						</div>
 						<p class="lede">
 							The customer journey of this industry, designed once. Every job of the industry derives its gate
@@ -354,9 +352,9 @@
 						</p>
 						<div class="row muted small">
 							{j.activities.length} activities · updated {j.updated_at.slice(0, 16).replace('T', ' ')} by {j.updated_by}
-							{#if j.source_run}· drafted by <a href="/platform/generator/{j.source_run}"
-									>generator run #{j.source_run}</a
-								>{/if}
+							{#if j.source_run}· drafted by <a href="/platform/generator/{j.source_run}">
+									generator run #{j.source_run}
+								</a>{/if}
 						</div>
 					</div>
 				</Card>
@@ -372,9 +370,9 @@
 									<span class="d-from">{o.from}</span>
 									<span class="d-count"><b>{o.count}</b><small>{o.detail}</small></span>
 									<span class="d-arrow" aria-hidden="true">→</span>
-									<span class="d-to"
-										>{#if o.href}<a href={o.href}>{o.becomes}</a>{:else}{o.becomes}{/if}</span
-									>
+									<span class="d-to">
+										{#if o.href}<a href={o.href}>{o.becomes}</a>{:else}{o.becomes}{/if}
+									</span>
 								</li>
 							{/each}
 						</ol>
@@ -384,18 +382,18 @@
 						<div class="verdict {red.length ? 'bad' : 'good'}" data-testid="verdict">
 							{#if red.length}
 								<b>Tagging blocked</b>
-								<span
-									>{red.length} red item{red.length === 1 ? '' : 's'} — fill the cells below, or mark the stage
-									out of scope.</span
-								>
+								<span>
+									{red.length} red item{red.length === 1 ? '' : 's'} — fill the cells below, or mark the stage out
+									of scope.
+								</span>
 							{:else}
 								<b>Grid complete</b>
-								<span
-									>{#if j.draft_rev}Draft rev {j.draft_rev} is ready to tag as
+								<span>
+									{#if j.draft_rev}Draft rev {j.draft_rev} is ready to tag as
 										<code>{nextTag}</code>.{:else if j.tag}No edits since <code>{j.tag}</code>; jobs pinned to
 										it are current.{:else}Ready for its first tag
-										<code>{nextTag}</code>.{/if}</span
-								>
+										<code>{nextTag}</code>.{/if}
+								</span>
 							{/if}
 						</div>
 						<ul class="rules" data-testid="findings">
@@ -403,19 +401,19 @@
 								<li class="rule {r.status}">
 									<span class="r-mark" aria-hidden="true">{RULE_MARK[r.status]}</span>
 									<span class="r-body">
-										<span class="r-title"
-											><span class="mono muted">{r.rule}</span>
+										<span class="r-title">
+											<span class="mono muted">{r.rule}</span>
 											{r.title}
-											<span class="chip {RULE_CHIP[r.status][1]}">{RULE_CHIP[r.status][0]}</span></span
-										>
+											<span class="chip {RULE_CHIP[r.status][1]}">{RULE_CHIP[r.status][0]}</span>
+										</span>
 										{#each r.findings.filter((f) => f.severity === 'red') as f, fi (`${fi}:${f.message}`)}
 											<span class="r-find">
 												{f.message}
 												{#if f.stage}
 													{@const st = j.stages.find((s) => s.key === f.stage)}
-													{#if st}<button type="button" class="btn sm" onclick={() => openStage(st)}
-															>Edit stage</button
-														>{/if}
+													{#if st}<button type="button" class="btn sm" onclick={() => openStage(st)}>
+															Edit stage
+														</button>{/if}
 												{/if}
 											</span>
 										{/each}
@@ -432,8 +430,9 @@
 							{:else if j.draft_rev || !j.tag}
 								<a class="btn primary" href="/platform/generator">Package as {nextTag}</a>
 							{:else}
-								<span class="btn" aria-disabled="true" title="No edits since {j.tag}">Nothing to package</span
-								>
+								<span class="btn" aria-disabled="true" title="No edits since {j.tag}">
+									Nothing to package
+								</span>
 							{/if}
 							<a class="btn" href="/platform/templates">Template tags</a>
 						</div>
@@ -459,16 +458,16 @@
 								aria-label="Stage {l.label}: {l.activities} activities, {l.operations} operations, {l.required} required"
 							>
 								<span class="ld-name">{l.label}</span>
-								<span class="ld-bar" aria-hidden="true"
-									><i style="width:{(l.operations / maxOps) * 100}%"></i><i
+								<span class="ld-bar" aria-hidden="true">
+									<i style="width:{(l.operations / maxOps) * 100}%"></i><i
 										class="req"
 										style="width:{(l.required / maxOps) * 100}%"
-									></i></span
-								>
-								<span class="ld-num"
-									>{#if l.out_of_scope}out of scope{:else}{l.activities} act · {l.operations} ops ({l.required}
-										R){#if l.red}&nbsp;· red{/if}{/if}</span
-								>
+									></i>
+								</span>
+								<span class="ld-num">
+									{#if l.out_of_scope}out of scope{:else}{l.activities} act · {l.operations} ops ({l.required}
+										R){#if l.red}&nbsp;· red{/if}{/if}
+								</span>
 							</button>
 						{/each}
 					</div>
@@ -507,13 +506,15 @@
 						>
 							{#snippet rowHeader(t)}
 								{@const sum = priorRowSum(j, t.key)}
-								<span class="cell-title">{t.label}</span><span class="cell-sub"
-									>escalation {t.escalation_weight} ·
+								<span class="cell-title">{t.label}</span><span class="cell-sub">
+									escalation {t.escalation_weight} ·
 									<span
 										class={sum === 1 ? '' : 's-warn'}
-										title={sum === 1 ? undefined : 'Row should sum to 1'}>Σ {sum}</span
-									></span
-								>
+										title={sum === 1 ? undefined : 'Row should sum to 1'}
+									>
+										Σ {sum}
+									</span>
+								</span>
 							{/snippet}
 							{#snippet colHeader(s)}{s.label}{/snippet}
 							{#snippet cell(t, s)}
@@ -555,10 +556,10 @@
 							<label for="st-syn">Synonyms (comma separated)</label>
 							<input id="st-syn" class="input" bind:value={sSyn} />
 						</div>
-						<label class="row"
-							><input type="checkbox" bind:checked={sOos} /> Out of scope for this industry (rule 4 passes without
-							activities)</label
-						>
+						<label class="row">
+							<input type="checkbox" bind:checked={sOos} /> Out of scope for this industry (rule 4 passes without
+							activities)
+						</label>
 						{#if stage.key === 'change' || stage.key === 'exit'}
 							<p class="note">The label “{stage.label}” is owner-vetoable (K48, one word).</p>
 						{/if}
@@ -579,8 +580,8 @@
 							<span class="muted">Trigger: {act.trigger || '—'}</span>
 							{#if act.description}<span data-testid="act-description"> · {act.description}</span>{/if}
 							{#if act.also_in_stages.length}<span class="muted">
-									· also in {act.also_in_stages.join(', ')}</span
-								>{/if}
+									· also in {act.also_in_stages.join(', ')}
+								</span>{/if}
 						</p>
 						<h3>Operations</h3>
 						{#if act.operations.length}
@@ -589,8 +590,10 @@
 									<span
 										class="chip {o.required ? 'accent' : 'muted'}"
 										title="{OPS[o.op]?.modality} · {OPS[o.op]?.effect} · level {OPS[o.op]?.id}"
-										>{opLabel(o)} {o.required ? 'R' : 'O'}</span
 									>
+										{opLabel(o)}
+										{o.required ? 'R' : 'O'}
+									</span>
 								{/each}
 							</div>
 						{:else}
@@ -598,10 +601,9 @@
 						{/if}
 						<h3>Business objects</h3>
 						<table class="tbl dense">
-							<thead
-								><tr><th>Object</th><th>Role</th><th>Field subset</th><th>Required inputs</th><th></th></tr
-								></thead
-							>
+							<thead>
+								<tr><th>Object</th><th>Role</th><th>Field subset</th><th>Required inputs</th><th></th></tr>
+							</thead>
 							<tbody>
 								{#each act.objects as o (o.object)}
 									<tr>
@@ -609,16 +611,14 @@
 										<td>{o.role}</td>
 										<td>{o.fields.join(', ')}</td>
 										<td>{o.required_inputs.join(', ') || '—'}</td>
-										<td
-											><button class="btn sm" type="button" onclick={() => unbind(o.object)}>Unbind</button
-											></td
-										>
+										<td>
+											<button class="btn sm" type="button" onclick={() => unbind(o.object)}>Unbind</button>
+										</td>
 									</tr>
 								{:else}
-									<tr
-										><td colspan="5" class="muted">No objects bound — the stage’s objects cell turns red.</td
-										></tr
-									>
+									<tr>
+										<td colspan="5" class="muted">No objects bound — the stage’s objects cell turns red.</td>
+									</tr>
 								{/each}
 							</tbody>
 						</table>
@@ -643,9 +643,10 @@
 								<span class="label">Field subset</span>
 								<div class="chips">
 									{#each fieldsFor as f (f)}
-										<label class="chip muted"
-											><input type="checkbox" value={f} bind:group={bFields} /> {f}</label
-										>
+										<label class="chip muted">
+											<input type="checkbox" value={f} bind:group={bFields} />
+											{f}
+										</label>
 									{/each}
 								</div>
 							</div>
@@ -676,9 +677,9 @@
 							<legend>Move to another stage</legend>
 							<div class="row">
 								<select class="input" bind:value={moveTo} aria-label="Target stage">
-									{#each STAGE_KEYS.filter((k) => k !== act?.stage) as k (k)}<option value={k}
-											>{STAGE_LABEL[k]}</option
-										>{/each}
+									{#each STAGE_KEYS.filter((k) => k !== act?.stage) as k (k)}<option value={k}>
+											{STAGE_LABEL[k]}
+										</option>{/each}
 								</select>
 								<button class="btn" type="button" onclick={move}>Move</button>
 							</div>

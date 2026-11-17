@@ -44,11 +44,11 @@
 {#if targets.length === 0}
 	<div class="callout gap" role="note">
 		<strong>No ontology attributes yet</strong>
-		<span
-			>Mapped fields need an Entity.attribute target. <a href={jobPath(app.job, '/ontology')}
-				>Define them in the ontology</a
-			> first.</span
-		>
+		<span>
+			Mapped fields need an Entity.attribute target. <a href={jobPath(app.job, '/ontology')}>
+				Define them in the ontology
+			</a> first.
+		</span>
 	</div>
 {/if}
 <div class="tbl-wrap">
@@ -58,15 +58,15 @@
 			{#each rows as m, i (i)}
 				{@const bad = unknownTarget(m, targets)}
 				<tr class:bad>
-					<td
-						><input
+					<td>
+						<input
 							class="input mono"
 							list={listId}
 							bind:value={m.source_field}
 							aria-label="Source field"
 							{disabled}
-						/></td
-					>
+						/>
+					</td>
 					<td>
 						<select
 							class="input"
@@ -78,45 +78,47 @@
 						>
 							<option value="">Pick an attribute</option>
 							{#if bad}<option value={target(m)}>{target(m)} (unknown)</option>{/if}
-							{#each targets as o (`${o.entity}.${o.attribute}`)}<option value={`${o.entity}.${o.attribute}`}
-									>{o.entity}.{o.attribute}{o.pii ? ' (PII)' : ''} · {o.type}</option
-								>{/each}
+							{#each targets as o (`${o.entity}.${o.attribute}`)}<option value={`${o.entity}.${o.attribute}`}>
+									{o.entity}.{o.attribute}{o.pii ? ' (PII)' : ''} · {o.type}
+								</option>{/each}
 						</select>
-						{#if bad}<span class="cell-sub err-text"
-								>Not in this job's ontology: the API refuses it (422 unknown_attribute).</span
-							>{/if}
+						{#if bad}<span class="cell-sub err-text">
+								Not in this job's ontology: the API refuses it (422 unknown_attribute).
+							</span>{/if}
 					</td>
-					<td class="r"
-						><button
+					<td class="r">
+						<button
 							type="button"
 							class="btn sm"
 							{disabled}
 							title={why}
-							onclick={() => (rows = rows.filter((_, j) => j !== i))}>Remove</button
-						></td
-					>
+							onclick={() => (rows = rows.filter((_, j) => j !== i))}
+						>
+							Remove
+						</button>
+					</td>
 				</tr>
 			{:else}
-				<tr
-					><td colspan="3" class="muted"
-						>No fields mapped yet.{fields.length
+				<tr>
+					<td colspan="3" class="muted">
+						No fields mapped yet.{fields.length
 							? ''
-							: ' Test the connection (or preview columns) to discover the fields.'}</td
-					></tr
-				>
+							: ' Test the connection (or preview columns) to discover the fields.'}
+					</td>
+				</tr>
 			{/each}
 		</tbody>
 	</table>
 </div>
-<datalist id={listId}
-	>{#each fields as f (f)}<option value={f}></option>{/each}</datalist
->
+<datalist id={listId}>
+	{#each fields as f (f)}<option value={f}></option>{/each}
+</datalist>
 <div class="actions">
 	<button type="button" class="btn sm" {disabled} title={why} onclick={add}>Add mapping</button>
 	{#if unmapped > 0}
-		<button type="button" class="btn sm" {disabled} title={why} onclick={mapAll}
-			>Map all {unmapped} field{unmapped === 1 ? '' : 's'}</button
-		>
+		<button type="button" class="btn sm" {disabled} title={why} onclick={mapAll}>
+			Map all {unmapped} field{unmapped === 1 ? '' : 's'}
+		</button>
 	{/if}
 	{#if note}<span class="muted" role="status">{note}</span>{/if}
 </div>

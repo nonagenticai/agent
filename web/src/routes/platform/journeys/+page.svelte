@@ -51,12 +51,13 @@
 			{#if g.started.length}
 				<div class="tbl-wrap">
 					<table class="tbl" data-testid="journey-index">
-						<thead
-							><tr
-								><th>Industry</th><th>Status</th><th>Tag</th><th>Departments</th><th class="r">Activities</th
-								><th class="r">Red</th></tr
-							></thead
-						>
+						<thead>
+							<tr>
+								<th>Industry</th><th>Status</th><th>Tag</th><th>Departments</th><th class="r">
+									Activities
+								</th><th class="r">Red</th>
+							</tr>
+						</thead>
 						<tbody>
 							{#each g.started as i (i.industry)}
 								<tr data-testid="industry-{i.industry}">
@@ -69,8 +70,10 @@
 												<a
 													class="chip {STATUS_CHIP[d.status]}"
 													href={d.href}
-													title="{d.status}{d.red ? ` · ${d.red} red` : ''}">{d.label}</a
-												>{' '}
+													title="{d.status}{d.red ? ` · ${d.red} red` : ''}"
+												>
+													{d.label}
+												</a>{' '}
 											{/each}
 										{:else}<span class="muted">—</span>{/if}
 									</td>

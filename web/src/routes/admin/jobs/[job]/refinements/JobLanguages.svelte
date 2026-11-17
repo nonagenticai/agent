@@ -82,15 +82,15 @@
 					{#each v.options as o (o.key)}
 						{@const on = cur.includes(o.key)}
 						<li class="opt" class:on>
-							<label
-								><input
+							<label>
+								<input
 									type="checkbox"
 									checked={on}
 									disabled={wa.disabled || busy}
 									onchange={(e) => (picked = toggle(cur, o.key, e.currentTarget.checked))}
 								/>
-								<b>{o.label}</b> <span class="mono muted">{o.key}</span></label
-							>
+								<b>{o.label}</b> <span class="mono muted">{o.key}</span>
+							</label>
 							<Chip text={KNOW[o.knowledge]!.text} variant={KNOW[o.knowledge]!.variant} />
 							{#if on && cur[0] === o.key}
 								<span class="def">default reply language</span>
@@ -99,8 +99,10 @@
 									type="button"
 									class="table-action"
 									{...wa}
-									onclick={() => (picked = makeDefault(cur, o.key))}>Make default</button
+									onclick={() => (picked = makeDefault(cur, o.key))}
 								>
+									Make default
+								</button>
 							{/if}
 						</li>
 					{/each}
@@ -117,8 +119,10 @@
 						class="btn primary sm"
 						{...wa}
 						disabled={wa.disabled || busy || !dirty || !cur.length}
-						onclick={() => save(cur)}>{busy ? 'Saving…' : 'Save to draft'}</button
+						onclick={() => save(cur)}
 					>
+						{busy ? 'Saving…' : 'Save to draft'}
+					</button>
 					{#if dirty}<button type="button" class="btn sm" onclick={() => (picked = null)}>Cancel</button>{/if}
 					<a class="small" href="/chat">Test in test chat</a>
 				</div>

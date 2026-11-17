@@ -53,10 +53,10 @@
 			onchange={(e) => add(e.currentTarget.files)}
 		/>
 	</label>
-	<span class="cell-sub"
-		>Up to {MAX_UPLOAD_FILES} files, 50 MB in all · PDF, DOCX, PPTX, ODT, RTF, HTML, TXT, MD · the whole set replaces
-		the previous run's documents</span
-	>
+	<span class="cell-sub">
+		Up to {MAX_UPLOAD_FILES} files, 50 MB in all · PDF, DOCX, PPTX, ODT, RTF, HTML, TXT, MD · the whole set replaces
+		the previous run's documents
+	</span>
 	{#if files.length}
 		<ul class="files" aria-label="Chosen files">
 			{#each files as f (f.name)}
@@ -68,22 +68,24 @@
 						type="button"
 						aria-label={`Remove ${f.name}`}
 						{disabled}
-						onclick={() => (files = files.filter((x) => x !== f))}>Remove</button
+						onclick={() => (files = files.filter((x) => x !== f))}
 					>
+						Remove
+					</button>
 				</li>
 			{/each}
 		</ul>
-		<span class="cell-sub" data-testid="upload-total"
-			>{files.length} file{files.length === 1 ? '' : 's'} · {fileSize(check.total)} of 50 MB</span
-		>
+		<span class="cell-sub" data-testid="upload-total">
+			{files.length} file{files.length === 1 ? '' : 's'} · {fileSize(check.total)} of 50 MB
+		</span>
 	{/if}
 	{#each check.errors as e (e)}<span class="err-text" role="alert">{e}</span>{/each}
 	{#if check.unsupported.length}
-		<span class="warn-text"
-			>strata_ingest does not read {check.unsupported.join(', ')}: {check.unsupported.length === 1
+		<span class="warn-text">
+			strata_ingest does not read {check.unsupported.join(', ')}: {check.unsupported.length === 1
 				? 'it is'
-				: 'they are'} reported as refused and the run fails, keeping the earlier documents.</span
-		>
+				: 'they are'} reported as refused and the run fails, keeping the earlier documents.
+		</span>
 	{/if}
 </div>
 

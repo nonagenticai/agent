@@ -115,18 +115,18 @@
 		<div class="p19-dest p19-there">
 			<span class="p19-branch">yes</span>
 			<span class="p19-k">That tenant's Audit log</span>
-			<span class="p19-s"
-				>tenant.create · suspend / resume / offboard · <b>tenant.switch</b> (you acting in a tenant) · user.* ·
-				release.* — readable by its members</span
-			>
+			<span class="p19-s">
+				tenant.create · suspend / resume / offboard · <b>tenant.switch</b> (you acting in a tenant) · user.* · release.*
+				— readable by its members
+			</span>
 		</div>
 		<div class="p19-dest p19-here">
 			<span class="p19-branch">no</span>
 			<span class="p19-k">Platform audit — this page</span>
-			<span class="p19-s"
-				>signups · failed creates and imports · unresolved invites · key reseals · catalogue edits —
-				super_admin only</span
-			>
+			<span class="p19-s">
+				signups · failed creates and imports · unresolved invites · key reseals · catalogue edits —
+				super_admin only
+			</span>
 		</div>
 	</div>
 </section>
@@ -203,9 +203,9 @@
 			<option value="">Anyone</option>
 			{#if sum.value.state === 'ok'}
 				{#each sum.value.data.actors as a (a.actor_id)}
-					<option value={a.actor_id}
-						>{a.actor_name || a.actor_id} ({a.actor_type === 'user' ? 'person' : 'system'}, {a.count})</option
-					>
+					<option value={a.actor_id}>
+						{a.actor_name || a.actor_id} ({a.actor_type === 'user' ? 'person' : 'system'}, {a.count})
+					</option>
 				{/each}
 			{/if}
 		</select>
@@ -271,19 +271,19 @@
 										</div>
 										<p class="p19-sent">{sentence(e)}</p>
 										<div class="p19-meta">
-											<span
-												>by <b>{actorLabel(e)}</b>
-												<span class="p19-faint"
-													>{e.actor_type === 'user' ? 'person' : 'system client'}{e.actor_name
+											<span>
+												by <b>{actorLabel(e)}</b>
+												<span class="p19-faint">
+													{e.actor_type === 'user' ? 'person' : 'system client'}{e.actor_name
 														? ` · ${e.actor_id}`
-														: ''}</span
-												></span
-											>
+														: ''}
+												</span>
+											</span>
 											<a href={obj.href} data-testid="audit-object">{obj.label} →</a>
 											{#if threadKey(e)}
-												<button type="button" class="linkish" onclick={() => sameSubject(e)}
-													>all for this subject</button
-												>
+												<button type="button" class="linkish" onclick={() => sameSubject(e)}>
+													all for this subject
+												</button>
 											{/if}
 										</div>
 										<details class="p19-det">
@@ -307,8 +307,10 @@
 <p class="note">
 	Looking for what you did inside a tenant — acting in it, suspending it, re-homing a user, cutting a release?
 	Those events are in that tenant's own Audit log under your user id: pick the tenant from <a
-		href="/platform/tenants">Tenants</a
-	>, then open Audit log.
+		href="/platform/tenants"
+	>
+		Tenants
+	</a>, then open Audit log.
 </p>
 
 <style>

@@ -100,11 +100,12 @@
 			<b>Secret of “{created.key.label}” — shown this once.</b>
 			<code class="mono">{created.secret}</code>
 			<span class="row">
-				<button class="btn sm primary" type="button" onclick={() => copy(created!.secret)}>Copy secret</button
-				>
-				<button class="btn sm" type="button" data-testid="api-key-dismiss" onclick={dismiss}
-					>I stored it</button
-				>
+				<button class="btn sm primary" type="button" onclick={() => copy(created!.secret)}>
+					Copy secret
+				</button>
+				<button class="btn sm" type="button" data-testid="api-key-dismiss" onclick={dismiss}>
+					I stored it
+				</button>
 			</span>
 			<span class="muted small">The snippets on this page use it until you dismiss it.</span>
 		</div>
@@ -117,8 +118,8 @@
 			void create();
 		}}
 	>
-		<label class="field"
-			>Label
+		<label class="field">
+			Label
 			<input
 				class="input"
 				bind:value={label}
@@ -128,8 +129,8 @@
 				disabled={!may}
 			/>
 		</label>
-		<label class="field"
-			>Expires (optional)
+		<label class="field">
+			Expires (optional)
 			<input
 				class="input"
 				type="date"
@@ -144,8 +145,10 @@
 			type="submit"
 			data-testid="api-key-create"
 			disabled={!may || saving || !label.trim()}
-			title={hint}>Create key</button
+			title={hint}
 		>
+			Create key
+		</button>
 	</form>
 
 	{#if may}
@@ -159,11 +162,11 @@
 			<div class="tbl-wrap">
 				<table class="tbl" data-testid="api-key-list">
 					<thead>
-						<tr
-							><th>Label</th><th>Key</th><th>Created</th><th>Last used</th><th>Expires</th><th>State</th><th
+						<tr>
+							<th>Label</th><th>Key</th><th>Created</th><th>Last used</th><th>Expires</th><th>State</th><th
 								aria-label="Key actions"
-							></th></tr
-						>
+							></th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each res.value.data.items as k (k.id)}
@@ -173,11 +176,13 @@
 								<td data-label="Created">{stamp(k.created_at)}</td>
 								<td data-label="Last used">{k.last_used_at ? stamp(k.last_used_at) : 'never'}</td>
 								<td data-label="Expires">{k.expires_at ? stamp(k.expires_at) : 'never'}</td>
-								<td data-label="State"
-									><span class="chip {STATE_CHIP[k.state] ?? 'muted'}">{k.state}</span>{#if k.revoked_at}<span
-											class="cell-sub">{stamp(k.revoked_at)}</span
-										>{/if}</td
-								>
+								<td data-label="State">
+									<span class="chip {STATE_CHIP[k.state] ?? 'muted'}">{k.state}</span>{#if k.revoked_at}<span
+											class="cell-sub"
+										>
+											{stamp(k.revoked_at)}
+										</span>{/if}
+								</td>
 								<td class="r">
 									{#if k.state !== 'revoked'}
 										{#if confirming === k.id}
@@ -187,19 +192,23 @@
 													type="button"
 													data-testid="api-key-revoke-confirm"
 													disabled={busy === k.id}
-													onclick={() => revoke(k)}>Revoke — callers get 401</button
+													onclick={() => revoke(k)}
 												>
-												<button class="btn sm" type="button" onclick={() => (confirming = null)}
-													>Cancel</button
-												>
+													Revoke — callers get 401
+												</button>
+												<button class="btn sm" type="button" onclick={() => (confirming = null)}>
+													Cancel
+												</button>
 											</span>
 										{:else}
 											<button
 												class="btn sm danger"
 												type="button"
 												data-testid="api-key-revoke"
-												onclick={() => (confirming = k.id)}>Revoke…</button
+												onclick={() => (confirming = k.id)}
 											>
+												Revoke…
+											</button>
 										{/if}
 									{/if}
 								</td>

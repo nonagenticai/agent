@@ -212,10 +212,10 @@
 										{#if a.kind === 'drift'}
 											<strong>{a.title}</strong>
 										{:else}
-											<strong
-												><a class="mono" href={href(a)}>{a.key}<span class="muted">@{a.version}</span></a> —
-												{a.title}</strong
-											>
+											<strong>
+												<a class="mono" href={href(a)}>{a.key}<span class="muted">@{a.version}</span></a> —
+												{a.title}
+											</strong>
 										{/if}
 										<span class="cell-sub">{a.detail}</span>
 									</div>
@@ -230,13 +230,18 @@
 						{#if a.kind === 'publishable'}
 							{@const t = o.templates.find((x) => x.key === a.key && x.version === a.version)}
 							{#if t && t.t2.status !== 'green'}
-								<button class="btn sm" type="button" disabled={busy !== ''} onclick={() => runT2(a)}
-									>{busy === `t2:${tplId(a)}` ? 'Running…' : 'Run T2'}</button
-								>
+								<button class="btn sm" type="button" disabled={busy !== ''} onclick={() => runT2(a)}>
+									{busy === `t2:${tplId(a)}` ? 'Running…' : 'Run T2'}
+								</button>
 							{:else}
-								<button class="btn sm primary" type="button" disabled={busy !== ''} onclick={() => publish(a)}
-									>{busy === `pub:${tplId(a)}` ? 'Publishing…' : 'Publish'}</button
+								<button
+									class="btn sm primary"
+									type="button"
+									disabled={busy !== ''}
+									onclick={() => publish(a)}
 								>
+									{busy === `pub:${tplId(a)}` ? 'Publishing…' : 'Publish'}
+								</button>
 							{/if}
 						{:else}
 							<a class="btn sm" href={href(a)}>Open</a>
@@ -292,9 +297,11 @@
 								<thead>
 									<tr>
 										<th>Template</th>
-										<th title="Required (object, verb) pairs of {job?.label ?? 'the job'} this version serves"
-											>Covers {job ? `(${job.label})` : ''}</th
+										<th
+											title="Required (object, verb) pairs of {job?.label ?? 'the job'} this version serves"
 										>
+											Covers {job ? `(${job.label})` : ''}
+										</th>
 										<th>Status mapping</th>
 										<th>Tests</th>
 										<th>Pinned by</th>
@@ -309,41 +316,39 @@
 										<tr>
 											<td class="p16-tpl">
 												<a class="cell-title mono" href={href(t)}>{t.key}@{t.version}</a>
-												<span class="cell-sub"
-													>{t.label} · {t.system_class}{#if t.platform_connector}
-														· <Chip text="platform" variant="accent" />{/if}</span
-												>
+												<span class="cell-sub">
+													{t.label} · {t.system_class}{#if t.platform_connector}
+														· <Chip text="platform" variant="accent" />{/if}
+												</span>
 												<span class="cell-sub p16-meta">
 													{t.transport}{t.alt_transport ? ` + ${t.alt_transport}` : ''} · {AUTH[t.auth_kind]}
 													· {rateLimitText(t.rate_limit_model).toLowerCase()} · {t.vendor_api_pin}
 													{#if t.webhooks.length}
-														<span title={t.webhooks.map((w) => `${w.topic} — ${w.signature}`).join('\n')}
-															>· {t.webhooks.length} webhook{t.webhooks.length > 1 ? 's' : ''}
-															<Chip text="inert" variant="muted" /></span
-														>
+														<span title={t.webhooks.map((w) => `${w.topic} — ${w.signature}`).join('\n')}>
+															· {t.webhooks.length} webhook{t.webhooks.length > 1 ? 's' : ''}
+															<Chip text="inert" variant="muted" />
+														</span>
 													{/if}
 												</span>
 											</td>
 											<td class="p16-cov" data-label="Covers">
 												{#if c?.any}
 													<span class="mono">any</span>
-													<span class="cell-sub"
-														>base of {c.bases_of.length} tenant template{c.bases_of.length === 1
-															? ''
-															: 's'}</span
-													>
+													<span class="cell-sub">
+														base of {c.bases_of.length} tenant template{c.bases_of.length === 1 ? '' : 's'}
+													</span>
 												{:else if rc}
-													<span class="p16-bar" aria-hidden="true"
-														><i style="width:{(rc.covered / rc.total) * 100}%"></i><i
+													<span class="p16-bar" aria-hidden="true">
+														<i style="width:{(rc.covered / rc.total) * 100}%"></i><i
 															class="p"
 															style="width:{(rc.partial / rc.total) * 100}%"
-														></i></span
-													>
+														></i>
+													</span>
 													<span class="mono">{rc.covered}/{rc.total}</span>
-													<span class="cell-sub"
-														>required{rc.partial ? ` · ${rc.partial} partial` : ''} · {t.implements.length}
-														op{t.implements.length === 1 ? '' : 's'} total</span
-													>
+													<span class="cell-sub">
+														required{rc.partial ? ` · ${rc.partial} partial` : ''} · {t.implements.length}
+														op{t.implements.length === 1 ? '' : 's'} total
+													</span>
 												{/if}
 											</td>
 											<td data-label="Status map">
@@ -366,22 +371,22 @@
 												{/if}
 											</td>
 											<td data-label="Tests">
-												<span class="chips"
-													><TierChip tier="T1" result={t.t1} /><TierChip tier="T2" result={t.t2} /></span
-												>
+												<span class="chips">
+													<TierChip tier="T1" result={t.t1} /><TierChip tier="T2" result={t.t2} />
+												</span>
 											</td>
 											<td class="p16-pins" data-label="Pinned by">
 												{#if c && c.pinned_by.length}
 													{#each [...new Set(c.pinned_by.map((p) => p.tenant))] as tn (tn)}
-														<span class="cell-sub"
-															>{tn}
-															<span class="mono"
-																>{c.pinned_by
+														<span class="cell-sub">
+															{tn}
+															<span class="mono">
+																{c.pinned_by
 																	.filter((p) => p.tenant === tn)
 																	.map((p) => p.env)
-																	.join(' · ')}</span
-															></span
-														>
+																	.join(' · ')}
+															</span>
+														</span>
 													{/each}
 												{:else}
 													<span class="muted">none</span>
@@ -396,8 +401,9 @@
 															type="button"
 															disabled={busy !== ''}
 															onclick={() => runT2(t)}
-															>{busy === `t2:${tplId(t)}` ? 'Running…' : 'Run T2'}</button
 														>
+															{busy === `t2:${tplId(t)}` ? 'Running…' : 'Run T2'}
+														</button>
 													{/if}
 													{#if t.status === 'draft'}
 														<button
@@ -408,8 +414,9 @@
 																? `Will be refused: ${c.publish_blockers.join('; ')}`
 																: 'Publish — immutable from then on'}
 															onclick={() => publish(t)}
-															>{busy === `pub:${tplId(t)}` ? 'Publishing…' : 'Publish'}</button
 														>
+															{busy === `pub:${tplId(t)}` ? 'Publishing…' : 'Publish'}
+														</button>
 													{/if}
 												</span>
 											</td>
@@ -476,9 +483,9 @@
 					{#snippet cell(r, c)}
 						{#if c.any}<span class="muted" title="declared per tenant template">any</span>
 						{:else if c.implements.includes(r.key)}<span class="s-ok" aria-label="implements">●</span>
-						{:else if serves(c, r.key)}<span class="s-accent" title="served by the unqualified operation"
-								>via *</span
-							>
+						{:else if serves(c, r.key)}<span class="s-accent" title="served by the unqualified operation">
+								via *
+							</span>
 						{:else}<span class="s-muted" aria-label="not implemented">·</span>{/if}
 					{/snippet}
 				</MatrixTable>
@@ -503,11 +510,11 @@
 											<Status word={v.status} />
 										</span>
 									</div>
-									<span class="cell-sub"
-										>{v.vendor_api_pin}{v.published_at
+									<span class="cell-sub">
+										{v.vendor_api_pin}{v.published_at
 											? ` · published ${v.published_at.slice(0, 10)}`
-											: ' · not published'}</span
-									>
+											: ' · not published'}
+									</span>
 									{#if c && c.pinned_by.length}
 										<span class="chips p16-pinchips">
 											{#each c.pinned_by as p (p.tenant_id + p.instance_id)}
@@ -519,19 +526,19 @@
 											{/each}
 										</span>
 										{#if newerActive}
-											<span class="cell-sub s-warn"
-												>a newer active version exists — tenants re-point on their system page</span
-											>
+											<span class="cell-sub s-warn">
+												a newer active version exists — tenants re-point on their system page
+											</span>
 										{/if}
 									{:else}
 										<span class="cell-sub">no tenant pins this version</span>
 									{/if}
 									{#if c && c.bases_of.length}
-										<span class="cell-sub"
-											>Base of {c.bases_of
+										<span class="cell-sub">
+											Base of {c.bases_of
 												.map((b) => `${b.key}@${b.version} (${b.tenant}, ${b.status})`)
-												.join(', ')}</span
-										>
+												.join(', ')}
+										</span>
 									{/if}
 								</li>
 							{/each}

@@ -257,14 +257,16 @@
 									class="btn sm ghost"
 									class:on={picked === t.s.id}
 									aria-pressed={picked === t.s.id}
-									onclick={() => (picked = t.s.id)}>{t.s.name}</button
+									onclick={() => (picked = t.s.id)}
 								>
+									{t.s.name}
+								</button>
 							{:else}
 								<b>{t.s.name}</b>
 							{/if}
-							<span class="muted pkc-small"
-								>{t.s.kind}{typeof t.s.chunk_count === 'number' ? ` · ${t.s.chunk_count} chunks` : ''}</span
-							>
+							<span class="muted pkc-small">
+								{t.s.kind}{typeof t.s.chunk_count === 'number' ? ` · ${t.s.chunk_count} chunks` : ''}
+							</span>
 						</li>
 					{/each}
 				</ul>
@@ -276,9 +278,9 @@
 				<option value="">(root)</option>
 				{#each tree as t (t.s.id)}<option value={t.s.id}>{'· '.repeat(t.depth)}{t.s.name}</option>{/each}
 			</select>
-			<button class="btn sm" type="submit" {...sa} disabled={sa.disabled || !storeName.trim()}
-				>Create store</button
-			>
+			<button class="btn sm" type="submit" {...sa} disabled={sa.disabled || !storeName.trim()}>
+				Create store
+			</button>
 		</form>
 	</Card>
 
@@ -297,17 +299,20 @@
 							{@const prov = provOf(d)}
 							<li>
 								<b>{d.title ?? d.source}</b>
-								<span class="pkc-small muted"
-									>{topicsOf(d).join(', ') || 'no topics'}{prov ? ` · ${provenanceText(prov)}` : ''}</span
-								>
+								<span class="pkc-small muted">
+									{topicsOf(d).join(', ') || 'no topics'}{prov ? ` · ${provenanceText(prov)}` : ''}
+								</span>
 								{#if prov?.source_url}<a
 										class="pkc-small mono"
 										href={prov.source_url}
 										rel="noopener noreferrer"
-										target="_blank">{prov.source_url}</a
-									>{/if}
-								<button class="btn sm ghost" type="button" {...sa} onclick={() => removeDoc(d)}>Delete</button
-								>
+										target="_blank"
+									>
+										{prov.source_url}
+									</a>{/if}
+								<button class="btn sm ghost" type="button" {...sa} onclick={() => removeDoc(d)}>
+									Delete
+								</button>
 							</li>
 						{/each}
 					</ul>
@@ -318,51 +323,43 @@
 				<p class="muted" role="status">Loading…</p>
 			{/if}
 			<form class="pkc-form" onsubmit={ingest} data-testid="pkc-doc-form">
-				<label class="field"><span class="label">Title</span><input class="input" bind:value={title} /></label
-				>
-				<label class="field span"
-					><span class="label">Text</span><textarea class="input" rows="6" bind:value={text}
-					></textarea></label
-				>
-				<label class="field span"
-					><span class="label">Topic keys (comma separated)</span><input
+				<label class="field">
+					<span class="label">Title</span><input class="input" bind:value={title} />
+				</label>
+				<label class="field span">
+					<span class="label">Text</span><textarea class="input" rows="6" bind:value={text}></textarea>
+				</label>
+				<label class="field span">
+					<span class="label">Topic keys (comma separated)</span><input
 						class="input mono"
 						bind:value={topics}
 						placeholder="returns.window, eu.withdrawal"
-					/><span class="cell-sub">A tenant's own text replaces platform text by these keys (1–32).</span
-					></label
-				>
-				<label class="field span"
-					><span class="label">Source URL</span><input
+					/><span class="cell-sub">A tenant's own text replaces platform text by these keys (1–32).</span>
+				</label>
+				<label class="field span">
+					<span class="label">Source URL</span><input
 						class="input mono"
 						type="url"
 						bind:value={sourceUrl}
 						placeholder="https://"
-					/></label
-				>
-				<label class="field"
-					><span class="label">Licence</span><input
+					/>
+				</label>
+				<label class="field">
+					<span class="label">Licence</span><input
 						class="input mono"
 						list="pkc-licences"
 						bind:value={license}
 						aria-label="Licence"
-					/><datalist id="pkc-licences"
-						>{#each PLATFORM_LICENSE_HINTS as l (l)}<option value={l}></option>{/each}</datalist
-					><span class="cell-sub">strata refuses a licence it does not allow.</span></label
-				>
-				<label class="field"
-					><span class="label">Retrieved</span><input
-						class="input"
-						type="date"
-						bind:value={retrieved}
-					/></label
-				>
-				<label class="field"
-					><span class="label">Source id (optional)</span><input
-						class="input mono"
-						bind:value={sourceId}
-					/></label
-				>
+					/><datalist id="pkc-licences">
+						{#each PLATFORM_LICENSE_HINTS as l (l)}<option value={l}></option>{/each}
+					</datalist><span class="cell-sub">strata refuses a licence it does not allow.</span>
+				</label>
+				<label class="field">
+					<span class="label">Retrieved</span><input class="input" type="date" bind:value={retrieved} />
+				</label>
+				<label class="field">
+					<span class="label">Source id (optional)</span><input class="input mono" bind:value={sourceId} />
+				</label>
 				{#if tried && docErrors.length}
 					<ul class="pkc-errs span" role="alert">
 						{#each docErrors as m (m)}<li>{m}</li>{/each}
@@ -396,16 +393,16 @@
 								<td class="right pkc-actions">
 									<button class="btn sm ghost" type="button" onclick={() => showStores(p)}>Stores</button>
 									{#if st === 'draft'}
-										<button class="btn sm" type="button" {...sa} onclick={() => lifecycle(p, 'publish')}
-											>Publish</button
-										>
+										<button class="btn sm" type="button" {...sa} onclick={() => lifecycle(p, 'publish')}>
+											Publish
+										</button>
 									{:else if st === 'published'}
-										<button class="btn sm" type="button" {...sa} onclick={() => (refFor = p)}
-											>Reference…</button
-										>
-										<button class="btn sm ghost" type="button" {...sa} onclick={() => lifecycle(p, 'retire')}
-											>Retire</button
-										>
+										<button class="btn sm" type="button" {...sa} onclick={() => (refFor = p)}>
+											Reference…
+										</button>
+										<button class="btn sm ghost" type="button" {...sa} onclick={() => lifecycle(p, 'retire')}>
+											Retire
+										</button>
 									{/if}
 								</td>
 							</tr>
@@ -430,9 +427,9 @@
 					{#each storesOf.data.stores as x (x.id)}
 						<li>
 							<span class="mono">{x.path.join(' / ')}</span>
-							<span class="muted"
-								>{x.kind} · {x.chunk_count} chunks{x.embed_model ? ` · ${x.embed_model}` : ''}</span
-							>
+							<span class="muted">
+								{x.kind} · {x.chunk_count} chunks{x.embed_model ? ` · ${x.embed_model}` : ''}
+							</span>
 						</li>
 					{/each}
 				</ul>
@@ -447,37 +444,33 @@
 		<div class="pkc-ref" data-testid="pkc-ref">
 			<h3>Reference <span class="mono">{refFor.key}@{refFor.version}</span> from a template layer</h3>
 			<div class="pkc-inline">
-				<label class="field"
-					><span class="label">Layer</span><input
+				<label class="field">
+					<span class="label">Layer</span><input
 						class="input mono"
 						list="pkc-layers"
 						bind:value={layer}
 						aria-label="Layer"
-					/><datalist id="pkc-layers"
-						>{#each layerChoices as c (c.key)}<option value={c.key}>{c.label}</option>{/each}</datalist
-					></label
-				>
-				<label class="field"
-					><span class="label">Stage</span><select class="input" bind:value={stage} aria-label="Stage">
+					/><datalist id="pkc-layers">
+						{#each layerChoices as c (c.key)}<option value={c.key}>{c.label}</option>{/each}
+					</datalist>
+				</label>
+				<label class="field">
+					<span class="label">Stage</span><select class="input" bind:value={stage} aria-label="Stage">
 						<option value="*">* every stage</option>
 						{#each STAGES as [k, l] (k)}<option value={k}>{l}</option>{/each}
-					</select></label
-				>
-				<label class="field"
-					><span class="label">Kind</span><input
-						class="input mono"
-						bind:value={kind}
-						aria-label="Kind"
-					/></label
-				>
+					</select>
+				</label>
+				<label class="field">
+					<span class="label">Kind</span><input class="input mono" bind:value={kind} aria-label="Kind" />
+				</label>
 			</div>
 			<div class="row">
-				<button class="btn primary sm" type="button" {...sa} onclick={() => reference('reference')}
-					>Reference + tag</button
-				>
-				<button class="btn sm" type="button" {...sa} onclick={() => reference('unreference')}
-					>Remove reference + tag</button
-				>
+				<button class="btn primary sm" type="button" {...sa} onclick={() => reference('reference')}>
+					Reference + tag
+				</button>
+				<button class="btn sm" type="button" {...sa} onclick={() => reference('unreference')}>
+					Remove reference + tag
+				</button>
 				<button class="btn sm ghost" type="button" onclick={() => (refFor = null)}>Close</button>
 			</div>
 			<p class="muted pkc-small">
@@ -510,10 +503,13 @@
 			class="btn sm"
 			type="submit"
 			{...sa}
-			disabled={sa.disabled || !packKey.trim() || packKeyBad || !packStore}>Register draft</button
+			disabled={sa.disabled || !packKey.trim() || packKeyBad || !packStore}
 		>
-		{#if packKeyBad}<span class="err-text pkc-small">1–6 segments of a-z, 0-9, _ or -, separated by /</span
-			>{/if}
+			Register draft
+		</button>
+		{#if packKeyBad}<span class="err-text pkc-small">
+				1–6 segments of a-z, 0-9, _ or -, separated by /
+			</span>{/if}
 	</form>
 </Card>
 

@@ -26,9 +26,9 @@
 		<li class="tm-step">
 			<span class="tm-k">Tested</span>
 			<strong>T1 · T2</strong>
-			<span class="tm-d"
-				>T1 recorded fixtures in CI · T2 live vendor sandbox, weekly + per vendor release</span
-			>
+			<span class="tm-d">
+				T1 recorded fixtures in CI · T2 live vendor sandbox, weekly + per vendor release
+			</span>
 		</li>
 		<li class="tm-step">
 			<span class="tm-k">Published</span>

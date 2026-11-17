@@ -174,18 +174,18 @@
 	>
 		<div class="drawer-head">
 			{#if back}
-				<button class="icon-btn back-btn" type="button" aria-label={closeLabel} onclick={requestClose}
-					><span class="flip"><Icon name="arrow" /></span></button
-				>
+				<button class="icon-btn back-btn" type="button" aria-label={closeLabel} onclick={requestClose}>
+					<span class="flip"><Icon name="arrow" /></span>
+				</button>
 			{/if}
 			<div>
 				<h2 class="drawer-title" id={titleId}>{title}</h2>
 				<div class="drawer-sub">{@render sub?.()}</div>
 			</div>
 			{#if !back}
-				<button class="icon-btn" type="button" aria-label={closeLabel} onclick={requestClose}
-					><Icon name="x" /></button
-				>
+				<button class="icon-btn" type="button" aria-label={closeLabel} onclick={requestClose}>
+					<Icon name="x" />
+				</button>
 			{/if}
 		</div>
 		{#if confirming}

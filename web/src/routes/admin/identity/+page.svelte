@@ -132,8 +132,10 @@
 				data-testid="new-procedure"
 				disabled={!mayEdit}
 				title={mayEdit ? undefined : writeHint('tenant_admin')}
-				onclick={() => start(defs, null)}>New procedure</button
+				onclick={() => start(defs, null)}
 			>
+				New procedure
+			</button>
 		{/if}
 	{/snippet}
 </PageHead>
@@ -141,9 +143,9 @@
 <LoadState resource={res} empty="No identity procedures yet. Create one to reuse a sign-in across jobs.">
 	{#snippet children(d)}
 		{#if !mayEdit}
-			<Callout kind="info" title="Read only"
-				><span>{writeHint('tenant_admin')} to change identity procedures.</span></Callout
-			>
+			<Callout kind="info" title="Read only">
+				<span>{writeHint('tenant_admin')} to change identity procedures.</span>
+			</Callout>
 		{/if}
 		<ul class="stack" data-testid="procedures">
 			{#each d.procedures as p (p.id)}
@@ -156,11 +158,11 @@
 										<span class="mono">{s.op}</span>
 										{#if Object.keys(s.outputs).length}
 											→ writes
-											<span class="mono"
-												>{Object.values(s.outputs)
+											<span class="mono">
+												{Object.values(s.outputs)
 													.map((o) => o.key)
-													.join(', ')}</span
-											>
+													.join(', ')}
+											</span>
 										{/if}
 									</li>
 								{:else}
@@ -176,16 +178,18 @@
 									: ' Not attached to any job yet.'}
 							</p>
 							<div class="row">
-								<button class="btn sm" type="button" disabled={!mayEdit} onclick={() => start(d.defs, p)}
-									>{mayEdit ? 'Edit' : 'View'}</button
-								>
+								<button class="btn sm" type="button" disabled={!mayEdit} onclick={() => start(d.defs, p)}>
+									{mayEdit ? 'Edit' : 'View'}
+								</button>
 								<button
 									class="btn sm"
 									type="button"
 									disabled={!mayEdit}
 									title={p.jobs ? 'A job still uses it: detach it first' : undefined}
-									onclick={() => remove(p)}>Delete</button
+									onclick={() => remove(p)}
 								>
+									Delete
+								</button>
 							</div>
 							{#if deleteErr?.id === p.id}
 								<p class="s-err small" role="alert" data-testid="delete-error">{deleteErr.message}</p>
@@ -206,31 +210,26 @@
 				}}
 			>
 				<fieldset class="stack" disabled={!mayEdit || saving}>
-					<label class="field"
-						><span class="label">Name</span>
-						<input
-							class="input"
-							aria-label="Procedure name"
-							placeholder="Acme sign-in"
-							bind:value={name}
-						/></label
-					>
-					<label class="field"
-						><span class="label">Description</span>
+					<label class="field">
+						<span class="label">Name</span>
+						<input class="input" aria-label="Procedure name" placeholder="Acme sign-in" bind:value={name} />
+					</label>
+					<label class="field">
+						<span class="label">Description</span>
 						<textarea class="input" rows="2" aria-label="Procedure description" bind:value={description}
-						></textarea></label
-					>
-					<label class="field"
-						><span class="label">What this procedure establishes</span>
+						></textarea>
+					</label>
+					<label class="field">
+						<span class="label">What this procedure establishes</span>
 						<select class="input" aria-label="Identity strength" bind:value={strength}>
 							<option value="identified">Identified — we know who they are</option>
 							<option value="verified">Verified — the procedure proved it (e.g. a one-time code)</option>
 						</select>
-						<span class="muted small"
-							>Identified: the conversation knows the person. Verified: the platform also treats them as a
-							verified customer (their orders and other customer data can be read).</span
-						></label
-					>
+						<span class="muted small">
+							Identified: the conversation knows the person. Verified: the platform also treats them as a
+							verified customer (their orders and other customer data can be read).
+						</span>
+					</label>
 					{#each steps as s, i (s.id)}
 						<section class="stack" data-testid="step-{i}">
 							<div class="row">
@@ -247,8 +246,10 @@
 								<button
 									class="btn sm"
 									type="button"
-									onclick={() => (steps = steps.filter((x) => x.id !== s.id))}>Remove step</button
+									onclick={() => (steps = steps.filter((x) => x.id !== s.id))}
 								>
+									Remove step
+								</button>
 							</div>
 							{#if s.op}
 								<DeclEditor
@@ -263,17 +264,17 @@
 					<button class="btn" type="button" data-testid="add-step" onclick={addStep}>Add a step</button>
 				</fieldset>
 				{#if err}
-					<Callout kind="err" title="Not saved"
-						><span role="alert" data-testid="procedure-error"
-							>{err.message} <span class="mono muted">{err.code}</span></span
-						></Callout
-					>
+					<Callout kind="err" title="Not saved">
+						<span role="alert" data-testid="procedure-error">
+							{err.message} <span class="mono muted">{err.code}</span>
+						</span>
+					</Callout>
 				{/if}
 				{#if problem}<p class="muted small">{problem}</p>{/if}
 				<div class="row">
-					<button class="btn primary" type="submit" disabled={!mayEdit || saving || problem !== null}
-						>Save procedure</button
-					>
+					<button class="btn primary" type="submit" disabled={!mayEdit || saving || problem !== null}>
+						Save procedure
+					</button>
 					<button class="btn" type="button" onclick={() => (open = false)}>Cancel</button>
 				</div>
 			</form>

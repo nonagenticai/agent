@@ -14,9 +14,9 @@
 </script>
 
 <div class="p18-hint field" data-testid="draft-hint">
-	<label for="p18-hint"
-		>Hint for the next draft <span class="muted">(optional, not kept in the audit trail)</span></label
-	>
+	<label for="p18-hint">
+		Hint for the next draft <span class="muted">(optional, not kept in the audit trail)</span>
+	</label>
 	<textarea
 		id="p18-hint"
 		class="input"
@@ -27,15 +27,15 @@
 		bind:value></textarea>
 	<div class="p18-hint-foot">
 		{#if st.over}
-			<span class="p18-hint-err" role="alert"
-				>The hint is {-st.left} characters over the {HINT_MAX} limit.</span
-			>
+			<span class="p18-hint-err" role="alert">
+				The hint is {-st.left} characters over the {HINT_MAX} limit.
+			</span>
 		{:else if error}
 			<span class="p18-hint-err" role="alert">{error}</span>
 		{/if}
-		<span class="mono p18-hint-count" class:over={st.over} data-testid="hint-count"
-			>{st.length}/{HINT_MAX}</span
-		>
+		<span class="mono p18-hint-count" class:over={st.over} data-testid="hint-count">
+			{st.length}/{HINT_MAX}
+		</span>
 	</div>
 </div>
 

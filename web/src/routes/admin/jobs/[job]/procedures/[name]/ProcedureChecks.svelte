@@ -48,27 +48,26 @@
 		{#if steps.length}
 			<div class="tbl-wrap">
 				<table class="tbl dense">
-					<thead
-						><tr
-							><th>#</th><th>Step</th><th>Before</th><th>After</th><th>Performed by</th><th>Max per case</th
-							></tr
-						></thead
-					>
+					<thead>
+						<tr>
+							<th>#</th><th>Step</th><th>Before</th><th>After</th><th>Performed by</th><th>Max per case</th>
+						</tr>
+					</thead>
 					<tbody>
 						{#each steps as s (s.step_number)}
 							<tr>
 								<td class="r">{s.step_number}</td>
 								<td>{s.name}</td>
-								<td
-									>{#each s.preconditions ?? [] as c (c.id)}<div class="mono">
+								<td>
+									{#each s.preconditions ?? [] as c (c.id)}<div class="mono">
 											{conditionText(c)}
-										</div>{:else}<span class="muted">—</span>{/each}</td
-								>
-								<td
-									>{#each s.postconditions ?? [] as c (c.id)}<div class="mono">
+										</div>{:else}<span class="muted">—</span>{/each}
+								</td>
+								<td>
+									{#each s.postconditions ?? [] as c (c.id)}<div class="mono">
 											{conditionText(c)}
-										</div>{:else}<span class="muted">—</span>{/each}</td
-								>
+										</div>{:else}<span class="muted">—</span>{/each}
+								</td>
 								<td>{s.performed_by ?? 'procedure'}</td>
 								<td class="r">{takesCap(s.side_effect) ? (s.max_per_case ?? 1) : '—'}</td>
 							</tr>

@@ -51,15 +51,9 @@
 	</div>
 	{#each NODES as n, i (n.key)}
 		<div class="lc-edge" aria-hidden="true">
-			<span class="lc-edge-label"
-				>{i === 0
-					? 'provision down'
-					: i === 1
-						? 'outbox drained'
-						: i === 2
-							? 'suspend ⇄ resume'
-							: 'offboard'}</span
-			>
+			<span class="lc-edge-label">
+				{i === 0 ? 'provision down' : i === 1 ? 'outbox drained' : i === 2 ? 'suspend ⇄ resume' : 'offboard'}
+			</span>
 			<span class="lc-arrow">{i === 2 ? '⇄' : '→'}</span>
 		</div>
 		<button

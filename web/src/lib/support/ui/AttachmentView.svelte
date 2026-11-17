@@ -111,9 +111,9 @@
 				<img src={url} alt={att.display_name} />
 				<div class="acts">
 					<span class="nm">{att.display_name}</span>
-					<a class="btn sm" href={url} download={att.display_name}
-						><Icon name="download" size={14} /> Download</a
-					>
+					<a class="btn sm" href={url} download={att.display_name}>
+						<Icon name="download" size={14} /> Download
+					</a>
 					<button class="btn sm" type="button" bind:this={closeBtn} onclick={close}>Close</button>
 				</div>
 			</div>

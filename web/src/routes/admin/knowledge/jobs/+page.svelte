@@ -278,19 +278,19 @@
 <LiveNote what="Ingest jobs are the data plane: retries, cancellations and deletions apply at once." />
 
 {#if missing}
-	<Callout kind="gap" title="Job not found"
-		>No ingest job <span class="mono">{missing}</span> here; it may have been deleted. Documents it indexed stay
-		in their knowledge store.</Callout
-	>
+	<Callout kind="gap" title="Job not found">
+		No ingest job <span class="mono">{missing}</span> here; it may have been deleted. Documents it indexed stay
+		in their knowledge store.
+	</Callout>
 {/if}
 
 <div class="stack t8">
 	{#if all.value.state === 'ok'}
 		<p class="t8-summary" data-testid="ingest-summary">
 			<span><b>{allJobs.length}</b> jobs</span>
-			<span class:t8-bad={failed.length > 0}
-				><b>{failed.length}</b> need{failed.length === 1 ? 's' : ''} you</span
-			>
+			<span class:t8-bad={failed.length > 0}>
+				<b>{failed.length}</b> need{failed.length === 1 ? 's' : ''} you
+			</span>
 			<span><b>{inFlight.length}</b> in flight</span>
 			<span><b>{fmt.n(docsIndexed)}</b> documents indexed</span>
 			<span><b>{eur(cost)}</b> metered · <a href="/admin/usage">Usage</a></span>
@@ -314,13 +314,13 @@
 					{@const a = failureAdvice(j, slotItems)}
 					<li>
 						<div class="t8-needs-head">
-							<button type="button" class="table-action" onclick={() => show(j)}
-								><b>{j.source_label}</b></button
-							>
+							<button type="button" class="table-action" onclick={() => show(j)}>
+								<b>{j.source_label}</b>
+							</button>
 							<StageTrack job={j} />
-							<span class="muted"
-								>→ <span class="mono">{storeKey(j.store_id)}</span> · {when(j.created_at)}</span
-							>
+							<span class="muted">
+								→ <span class="mono">{storeKey(j.store_id)}</span> · {when(j.created_at)}
+							</span>
 						</div>
 						<p class="t8-cause">
 							Stopped at <b>{STAGES.find((s) => s.key === a.stage)?.label ?? '—'}</b>: {a.cause}
@@ -337,8 +337,10 @@
 									type="button"
 									disabled={!canWrite || !a.retryReady}
 									title={retryTitle(j, a.retryReady)}
-									onclick={() => act('retry', j.id)}>Retry</button
+									onclick={() => act('retry', j.id)}
 								>
+									Retry
+								</button>
 								<span class="muted">re-runs only the steps that did not finish.</span>
 							</li>
 						</ol>
@@ -362,22 +364,22 @@
 	<Card title="All jobs" sub="Newest first. Each cell of the track is one stage.">
 		{#snippet actions()}
 			<div class="t8-filters">
-				<label class="field"
-					><span class="label">Status</span>
+				<label class="field">
+					<span class="label">Status</span>
 					<select class="input" bind:value={status}>
 						<option value="">All</option>
 						{#each STATUSES as s (s)}<option value={s}>{s}</option>{/each}
-					</select></label
-				>
-				<label class="field"
-					><span class="label">Store</span>
+					</select>
+				</label>
+				<label class="field">
+					<span class="label">Store</span>
 					<select class="input" bind:value={store}>
 						<option value="">All</option>
-						{#each storeItems.filter((s) => s.kind === 'leaf') as s (s.id)}<option value={s.id}
-								>{s.key}</option
-							>{/each}
-					</select></label
-				>
+						{#each storeItems.filter((s) => s.kind === 'leaf') as s (s.id)}<option value={s.id}>
+								{s.key}
+							</option>{/each}
+					</select>
+				</label>
 			</div>
 		{/snippet}
 		<LoadState
@@ -390,24 +392,26 @@
 				<div class="tbl-wrap ph-stack">
 					<table class="tbl clickable t8-table" data-testid="ingest-jobs">
 						<thead>
-							<tr
-								><th>Source</th><th>Pipeline</th><th>Status</th><th>Feeds store</th><th class="r"
-									>Documents</th
-								><th class="r">Cost</th><th>Started</th></tr
-							>
+							<tr>
+								<th>Source</th><th>Pipeline</th><th>Status</th><th>Feeds store</th><th class="r">
+									Documents
+								</th><th class="r">Cost</th><th>Started</th>
+							</tr>
 						</thead>
 						<tbody>
 							{#each pg.items as j (j.id)}
 								<tr data-job={j.id} onclick={() => show(j)}>
-									<td
-										><button
+									<td>
+										<button
 											class="table-action"
 											type="button"
-											onclick={(e) => (e.stopPropagation(), show(j))}>{j.source_label}</button
-										><span class="cell-sub"
-											>{j.source_kind}{j.pages ? ` · ${pagesSummary(j.pages)}` : ''}</span
-										></td
-									>
+											onclick={(e) => (e.stopPropagation(), show(j))}
+										>
+											{j.source_label}
+										</button><span class="cell-sub">
+											{j.source_kind}{j.pages ? ` · ${pagesSummary(j.pages)}` : ''}
+										</span>
+									</td>
 									<td data-label="Pipeline"><StageTrack job={j} /></td>
 									<td data-label="Status">
 										<Chip text={j.status} variant={variant(j.status)} />
@@ -416,11 +420,11 @@
 									<td class="mono" data-label="Feeds store">{storeKey(j.store_id)}</td>
 									<td class="r" data-label="Documents">{active(j) ? '—' : fmt.n(j.documents)}</td>
 									<td class="r" data-label="Cost">{eur(j.cost_eur)}</td>
-									<td data-label="Started"
-										><span class="mono">{when(j.created_at)}</span><span class="cell-sub"
-											>{j.created_by}{j.finished_at ? ` · ${took(j.created_at, j.finished_at)}` : ''}</span
-										></td
-									>
+									<td data-label="Started">
+										<span class="mono">{when(j.created_at)}</span><span class="cell-sub">
+											{j.created_by}{j.finished_at ? ` · ${took(j.created_at, j.finished_at)}` : ''}
+										</span>
+									</td>
 								</tr>
 							{/each}
 						</tbody>
@@ -436,11 +440,11 @@
 		<div class="stack">
 			<p class="row">
 				<Chip text={cur.status} variant={variant(cur.status)} />
-				<span class="muted"
-					>{cur.source_kind} · started {when(cur.created_at)} by {cur.created_by}{cur.finished_at
+				<span class="muted">
+					{cur.source_kind} · started {when(cur.created_at)} by {cur.created_by}{cur.finished_at
 						? ` · took ${took(cur.created_at, cur.finished_at)}`
-						: ''}</span
-				>
+						: ''}
+				</span>
 			</p>
 			<dl class="t8-facts">
 				<div>
@@ -467,42 +471,42 @@
 			</dl>
 			{#if cur.status === 'cancelling'}
 				<div data-testid="ingest-cancelling">
-					<Callout kind="gap" title="Cancelling"
-						>The worker is finishing the step in progress ({cur.steps
+					<Callout kind="gap" title="Cancelling">
+						The worker is finishing the step in progress ({cur.steps
 							.filter((s) => s.status === 'running')
 							.map((s) => s.kind)
 							.join(', ') || 'last step'}); nothing after it runs. It becomes cancelled when that step ends;
-						it can be deleted then.</Callout
-					>
+						it can be deleted then.
+					</Callout>
 				</div>
 			{/if}
 			{#if deletingId === cur.id}
 				<div data-testid="ingest-deleting">
-					<Callout kind="gap" title="Deleting…"
-						>Removing its staged files, then the job. Documents it indexed stay in <span class="mono"
-							>{curStore}</span
-						>.</Callout
-					>
+					<Callout kind="gap" title="Deleting…">
+						Removing its staged files, then the job. Documents it indexed stay in <span class="mono">
+							{curStore}
+						</span>.
+					</Callout>
 				</div>
 			{:else if cur.status === 'deleting'}
 				{@const err = deleteError?.id === cur.id ? deleteError : null}
 				<div data-testid="ingest-delete-unfinished">
-					<Callout kind="err" title="Delete did not finish"
-						>{#if err}<span class="mono">{err.code}</span>: {sentence(err.message)}{' '}{/if}The job stays
+					<Callout kind="err" title="Delete did not finish">
+						{#if err}<span class="mono">{err.code}</span>: {sentence(err.message)}{' '}{/if}The job stays
 						<b>deleting</b>: its record is kept, but some of its staged files may already be gone, so it can
 						no longer be retried or cancelled. Retry delete to finish it; documents it indexed stay in
-						<span class="mono">{curStore}</span>.</Callout
-					>
+						<span class="mono">{curStore}</span>.
+					</Callout>
 				</div>
 			{/if}
 			{#if cur.pages}<p class="cell-sub">Page jobs: {pagesSummary(cur.pages)}</p>{/if}
 			{#if cur.error}
-				<Callout kind="err" title={cur.error.code}
-					><span
-						>{cur.error.message}
-						{#if advice?.fix}<a href={advice.fix.href}>{advice.fix.label}</a>, then retry.{/if}</span
-					></Callout
-				>
+				<Callout kind="err" title={cur.error.code}>
+					<span>
+						{cur.error.message}
+						{#if advice?.fix}<a href={advice.fix.href}>{advice.fix.label}</a>, then retry.{/if}
+					</span>
+				</Callout>
 			{/if}
 			<StageTrack job={cur} labels />
 			<ol class="t8-steps" aria-label="Steps by stage">
@@ -525,11 +529,11 @@
 						{#each steps as st, i (i)}
 							<div class="t8-step">
 								<span>{st.kind}</span>
-								<span class="mono muted"
-									>{st.slot
+								<span class="mono muted">
+									{st.slot
 										? `${st.slot} · ${st.provider ? `${st.provider} · ${st.model}` : 'no provider'}${st.slot_version ? ` v${st.slot_version}` : ''}`
-										: 'built-in'}</span
-								>
+										: 'built-in'}
+								</span>
 								<Chip text={st.status} variant={variant(st.status)} />
 								{#if attemptNote(st)}<span class="cell-sub">{attemptNote(st)}</span>{/if}
 								{#if st.error}<span class="cell-sub t8-err">{st.error.code}: {st.error.message}</span>{/if}
@@ -554,25 +558,25 @@
 					{#if confirm === 'cancel'}
 						<span>{cancelEffect(cur)} Work already done stays.</span>
 					{:else}
-						<span
-							>Removes the job, its steps and its staged files (the uploaded original, figures, page images,
+						<span>
+							Removes the job, its steps and its staged files (the uploaded original, figures, page images,
 							audio segments){cur.source_kind === 'crawl' || cur.source_kind === 'sitemap'
 								? ', and its page jobs'
-								: ''}. This cannot be undone.</span
-						>
-						<span
-							><b>Documents it already indexed stay</b> in the knowledge store
+								: ''}. This cannot be undone.
+						</span>
+						<span>
+							<b>Documents it already indexed stay</b> in the knowledge store
 							<span class="mono">{curStore}</span>{cur.documents
 								? ` (${fmt.n(cur.documents)} document${cur.documents === 1 ? '' : 's'})`
-								: ''}; delete them on <a href="/admin/knowledge/stores">Stores</a> if they should go too.</span
-						>
+								: ''}; delete them on <a href="/admin/knowledge/stores">Stores</a> if they should go too.
+						</span>
 					{/if}
-					<span
-						><button class="btn sm danger" type="button" onclick={() => act(confirm!)}
-							>{confirm === 'cancel' ? 'Cancel job' : 'Delete job'}</button
-						>
-						<button class="btn sm" type="button" onclick={() => (confirm = null)}>Keep</button></span
-					>
+					<span>
+						<button class="btn sm danger" type="button" onclick={() => act(confirm!)}>
+							{confirm === 'cancel' ? 'Cancel job' : 'Delete job'}
+						</button>
+						<button class="btn sm" type="button" onclick={() => (confirm = null)}>Keep</button>
+					</span>
 				</div>
 			{/if}
 			<div class="actions">
@@ -581,28 +585,28 @@
 					type="button"
 					disabled={!canWrite || !!actionBlock(cur, 'retry') || (advice ? !advice.retryReady : false)}
 					title={retryTitle(cur, advice ? advice.retryReady : true)}
-					onclick={() => act('retry')}>Retry</button
+					onclick={() => act('retry')}
 				>
+					Retry
+				</button>
 				<button
 					class="btn"
 					type="button"
 					disabled={!canWrite || !!actionBlock(cur, 'cancel')}
 					title={!canWrite ? writeHint('knowledge_manager') : (actionBlock(cur, 'cancel') ?? undefined)}
 					onclick={() => (confirm = 'cancel')}
-					>{cur.status === 'cancelling' ? 'Cancelling…' : 'Cancel job'}</button
 				>
+					{cur.status === 'cancelling' ? 'Cancelling…' : 'Cancel job'}
+				</button>
 				<button
 					class="btn danger"
 					type="button"
 					disabled={!canWrite || !!actionBlock(cur, 'delete') || deletingId === cur.id}
 					title={!canWrite ? writeHint('knowledge_manager') : (actionBlock(cur, 'delete') ?? undefined)}
 					onclick={() => (cur!.status === 'deleting' ? act('delete') : (confirm = 'delete'))}
-					>{deletingId === cur.id
-						? 'Deleting…'
-						: cur.status === 'deleting'
-							? 'Retry delete'
-							: 'Delete'}</button
 				>
+					{deletingId === cur.id ? 'Deleting…' : cur.status === 'deleting' ? 'Retry delete' : 'Delete'}
+				</button>
 			</div>
 		</div>
 	{/if}

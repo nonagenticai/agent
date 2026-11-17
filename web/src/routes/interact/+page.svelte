@@ -434,9 +434,9 @@
 	<div class="ia-snip">
 		<div class="ia-snip-head">
 			<h4>{s.title}</h4>
-			<button class="btn sm" type="button" onclick={() => copy(s.id, s.code)}
-				>{copied === s.id ? 'Copied' : 'Copy'}</button
-			>
+			<button class="btn sm" type="button" onclick={() => copy(s.id, s.code)}>
+				{copied === s.id ? 'Copied' : 'Copy'}
+			</button>
 		</div>
 		<pre><code>{s.code}</code></pre>
 	</div>
@@ -479,10 +479,10 @@
 			</select>
 		</div>
 		<label class="ia-check"><input type="checkbox" bind:checked={streamOn} /> Stream replies</label>
-		<label class="ia-check"
-			><input type="checkbox" checked={autoplay} onchange={(e) => setAutoplay(e.currentTarget.checked)} /> Play
-			voice replies</label
-		>
+		<label class="ia-check">
+			<input type="checkbox" checked={autoplay} onchange={(e) => setAutoplay(e.currentTarget.checked)} /> Play voice
+			replies
+		</label>
 		<button class="btn sm" type="button" onclick={clearChat} disabled={!msgs.length}>New conversation</button>
 	</div>
 
@@ -561,9 +561,9 @@
 				{#if stoppable}
 					<button class="btn" type="button" onclick={stop}>Stop</button>
 				{:else}
-					<button class="btn primary" type="submit" disabled={busy || !text.trim() || rec !== 'idle'}
-						>Send</button
-					>
+					<button class="btn primary" type="submit" disabled={busy || !text.trim() || rec !== 'idle'}>
+						Send
+					</button>
 				{/if}
 				<button
 					class="btn ia-mic"
@@ -579,19 +579,19 @@
 					onclick={keyClick}
 					oncontextmenu={(e) => e.preventDefault()}
 				>
-					<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"
-						><path
+					<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+						<path
 							d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM5 11a7 7 0 0 0 14 0M12 18v3"
 							fill="none"
 							stroke="currentColor"
 							stroke-width="2"
 							stroke-linecap="round"
-						/></svg
-					>
+						/>
+					</svg>
 					{#if rec === 'recording'}
-						<span class="ia-level" aria-hidden="true"
-							><span style:width="{Math.round(level * 100)}%"></span></span
-						>
+						<span class="ia-level" aria-hidden="true">
+							<span style:width="{Math.round(level * 100)}%"></span>
+						</span>
 						<span class="mono">{recSeconds}s</span>
 					{:else if rec === 'starting'}
 						<span>Mic…</span>
@@ -639,30 +639,34 @@
 						{#if s.id === 'curl-webhook'}
 							<div class="ia-secret">
 								{#if secret.state === 'ok'}
-									<code class="mono" aria-label="Webhook signing secret"
-										>{secret.shown ? secret.value : maskSecret(secret.value)}</code
-									>
+									<code class="mono" aria-label="Webhook signing secret">
+										{secret.shown ? secret.value : maskSecret(secret.value)}
+									</code>
 									<button
 										class="btn sm"
 										type="button"
 										onclick={() => {
 											if (secret.state === 'ok') secret.shown = !secret.shown;
-										}}>{secret.shown ? 'Hide' : 'Reveal'}</button
+										}}
 									>
+										{secret.shown ? 'Hide' : 'Reveal'}
+									</button>
 									<button
 										class="btn sm"
 										type="button"
 										onclick={() => secret.state === 'ok' && copy('webhook-secret', secret.value)}
-										>{copied === 'webhook-secret' ? 'Copied' : 'Copy secret'}</button
 									>
+										{copied === 'webhook-secret' ? 'Copied' : 'Copy secret'}
+									</button>
 								{:else}
 									<button
 										class="btn sm"
 										type="button"
 										onclick={loadSecret}
 										disabled={secret.state === 'loading' || !jobKey}
-										>{secret.state === 'loading' ? 'Loading…' : 'Show signing secret'}</button
 									>
+										{secret.state === 'loading' ? 'Loading…' : 'Show signing secret'}
+									</button>
 									{#if secret.state === 'error'}
 										<span class="ia-secret-err" role="alert">{secret.message}</span>
 									{/if}

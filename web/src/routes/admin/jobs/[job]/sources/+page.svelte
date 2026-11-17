@@ -120,8 +120,10 @@
 			class="btn primary"
 			type="button"
 			{...writeAttrs(session, 'knowledge_manager')}
-			onclick={() => edit(null)}>Add source</button
+			onclick={() => edit(null)}
 		>
+			Add source
+		</button>
 	{/snippet}
 </PageHead>
 
@@ -243,45 +245,43 @@
 				<div class="tbl-wrap">
 					<table class="tbl clickable" data-testid="sources">
 						<thead>
-							<tr
-								><th>Source</th><th>Fills store</th><th>Mapping</th><th>Last run</th><th class="r"
-									>Documents</th
-								><th>Schedule</th></tr
-							>
+							<tr>
+								<th>Source</th><th>Fills store</th><th>Mapping</th><th>Last run</th><th class="r">
+									Documents
+								</th><th>Schedule</th>
+							</tr>
 						</thead>
 						<tbody>
 							{#each page.items as s (s.id)}
 								{@const bad = s.mapping.filter((m) => unknownTarget(m, targetItems))}
 								{@const h = sourceHealth(s, targetItems, now)}
 								<tr data-source={s.id} onclick={() => edit(s)}>
-									<td
-										><button
+									<td>
+										<button
 											class="table-action"
 											type="button"
-											onclick={(e) => (e.stopPropagation(), edit(s))}>{s.name}</button
-										><span class="cell-sub"
-											>{typeLabel(s.type)} · {LANGUAGE_LABEL[s.language] ?? s.language}{s.has_credentials
-												? ' · credentials set'
-												: ''}{!s.enabled ? ' · disabled' : ''}</span
+											onclick={(e) => (e.stopPropagation(), edit(s))}
 										>
-										{#if h !== 'ok'}<span class="cell-sub"
-												><Chip
-													text={HEALTH[h].text}
-													variant={HEALTH[h].variant}
-													title={HEALTH[h].hint}
-												/></span
-											>{/if}</td
-									>
+											{s.name}
+										</button><span class="cell-sub">
+											{typeLabel(s.type)} · {LANGUAGE_LABEL[s.language] ?? s.language}{s.has_credentials
+												? ' · credentials set'
+												: ''}{!s.enabled ? ' · disabled' : ''}
+										</span>
+										{#if h !== 'ok'}<span class="cell-sub">
+												<Chip text={HEALTH[h].text} variant={HEALTH[h].variant} title={HEALTH[h].hint} />
+											</span>{/if}
+									</td>
 									<td class="mono">{storeKey(s.target_store_id)}</td>
 									<td>
 										{#if structured(s.type)}
 											{s.mapping.length} field{s.mapping.length === 1 ? '' : 's'}
-											{#if bad.length}<span class="cell-sub"
-													><Chip text={`${bad.length} unknown attribute`} variant="err" /></span
-												>{/if}
-										{:else}<span class="muted"
-												>{s.type === 'file' ? 'uploaded files' : 'pages'}, no mapping</span
-											>{/if}
+											{#if bad.length}<span class="cell-sub">
+													<Chip text={`${bad.length} unknown attribute`} variant="err" />
+												</span>{/if}
+										{:else}<span class="muted">
+												{s.type === 'file' ? 'uploaded files' : 'pages'}, no mapping
+											</span>{/if}
 									</td>
 									<td>
 										{#if s.last_run}
@@ -290,13 +290,16 @@
 											{#each s.last_run.ingest_job_ids.slice(0, 2) as id (id)}<a
 													class="cell-sub"
 													href={`/admin/knowledge/jobs?id=${encodeURIComponent(id)}`}
-													onclick={(e) => e.stopPropagation()}>ingest job {id}</a
-												>{/each}
-											{#if s.last_run.ingest_job_ids.length > 2}<span class="cell-sub"
-													>+{s.last_run.ingest_job_ids.length - 2} more</span
-												>{/if}
-											{#if s.last_run.error}<span class="cell-sub t9-err">{errorText(s.last_run.error)}</span
-												>{/if}
+													onclick={(e) => e.stopPropagation()}
+												>
+													ingest job {id}
+												</a>{/each}
+											{#if s.last_run.ingest_job_ids.length > 2}<span class="cell-sub">
+													+{s.last_run.ingest_job_ids.length - 2} more
+												</span>{/if}
+											{#if s.last_run.error}<span class="cell-sub t9-err">
+													{errorText(s.last_run.error)}
+												</span>{/if}
 										{:else}<span class="muted">Not synced yet</span>{/if}
 									</td>
 									<td class="r">{s.last_run ? fmt.n(s.last_run.documents) : '—'}</td>

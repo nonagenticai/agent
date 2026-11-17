@@ -115,15 +115,19 @@
 					onclick={() => {
 						label = a.label;
 						renaming = !renaming;
-					}}>Rename</button
+					}}
 				>
+					Rename
+				</button>
 				{#if a.refinement !== 'hidden'}
 					<button
 						class="btn"
 						type="button"
 						{...writeAttrs(session, 'job_designer')}
-						onclick={() => openCard(d)}>Edit card</button
+						onclick={() => openCard(d)}
 					>
+						Edit card
+					</button>
 				{/if}
 				{#if u?.lineage.some((l) => l.kind === 'tenant' && l.card === 'refined')}
 					<button
@@ -134,8 +138,10 @@
 							write(
 								() => api().resetJobUseCaseCard(a.key),
 								'Saved to draft: template card restored. Test it, then publish.',
-							)}>Reset to template</button
+							)}
 					>
+						Reset to template
+					</button>
 				{/if}
 				{#if a.refinement === 'hidden'}
 					<button
@@ -146,8 +152,10 @@
 							write(
 								() => api().restoreJobActivity(a.key),
 								`Saved to draft: ${a.label} shown again. Test it, then publish.`,
-							)}>Show again</button
+							)}
 					>
+						Show again
+					</button>
 				{:else if a.refinement !== 'extension'}
 					<button
 						class="btn danger"
@@ -157,8 +165,10 @@
 							write(
 								() => api().hideJobActivity(a.key),
 								`Saved to draft: ${a.label} hidden. Test it, then publish.`,
-							)}>Hide activity</button
+							)}
 					>
+						Hide activity
+					</button>
 				{/if}
 			{/snippet}
 		</PageHead>
@@ -166,14 +176,16 @@
 		<div class="stack">
 			<div class="row">
 				<span class="chip {a.actor === 'customer' ? 'cust' : 'work'}">{a.actor} activity</span>
-				{#if a.refinement === 'hidden'}<span class="chip dead">hidden by you — not offered to customers</span
-					>{/if}
+				{#if a.refinement === 'hidden'}<span class="chip dead">
+						hidden by you — not offered to customers
+					</span>{/if}
 				{#if a.refinement === 'extension'}<span class="chip cust">your extension</span>{/if}
-				{#if a.refinement === 'relabelled'}<span class="chip work">renamed · template “{a.base_label}”</span
-					>{/if}
-				{#if u?.pending.length}<span class="chip warn" data-testid="draft-badge"
-						>draft · {u.pending.length} unpublished change{u.pending.length === 1 ? '' : 's'}</span
-					>{/if}
+				{#if a.refinement === 'relabelled'}<span class="chip work">
+						renamed · template “{a.base_label}”
+					</span>{/if}
+				{#if u?.pending.length}<span class="chip warn" data-testid="draft-badge">
+						draft · {u.pending.length} unpublished change{u.pending.length === 1 ? '' : 's'}
+					</span>{/if}
 				{#if a.also_in_stages.length}<span class="muted">Also in {a.also_in_stages.join(', ')}</span>{/if}
 			</div>
 
@@ -231,9 +243,9 @@
 						<textarea class="input" rows="4" bind:value={cDialogue}></textarea>
 					</label>
 					<div class="row">
-						<button class="btn primary" type="submit" {...writeAttrs(session, 'job_designer')}
-							>Save card</button
-						>
+						<button class="btn primary" type="submit" {...writeAttrs(session, 'job_designer')}>
+							Save card
+						</button>
 						<button class="btn" type="button" onclick={() => (editingCard = false)}>Cancel</button>
 					</div>
 				</form>
@@ -255,9 +267,9 @@
 						<input class="input" bind:value={label} />
 					</label>
 					<div class="row">
-						<button class="btn primary" type="submit" {...writeAttrs(session, 'job_designer')}
-							>Save label</button
-						>
+						<button class="btn primary" type="submit" {...writeAttrs(session, 'job_designer')}>
+							Save label
+						</button>
 						{#if a.refinement === 'relabelled'}
 							<button
 								class="btn"
@@ -265,8 +277,9 @@
 								{...writeAttrs(session, 'job_designer')}
 								onclick={() =>
 									write(() => api().restoreJobActivity(a.key), 'Saved to draft: template label restored.')}
-								>Use template label “{a.base_label}”</button
 							>
+								Use template label “{a.base_label}”
+							</button>
 						{/if}
 						<button class="btn" type="button" onclick={() => (renaming = false)}>Cancel</button>
 					</div>
@@ -300,12 +313,12 @@
 							<span class="j5-k">Last 30 days</span>
 							{#if u?.live}
 								<b>{u.live.cases.toLocaleString('en')} cases</b>
-								<span class="cell-sub"
-									>{pct(u.live.contained, u.live.cases)} handled without a person · {pct(
+								<span class="cell-sub">
+									{pct(u.live.contained, u.live.cases)} handled without a person · {pct(
 										u.live.escalated,
 										u.live.cases,
-									)} handed over</span
-								>
+									)} handed over
+								</span>
 							{:else}
 								<b>No traffic</b>
 								<span class="cell-sub">No conversations about it yet.</span>
@@ -333,9 +346,9 @@
 								<b>Draft, not published:</b>
 								{#each u.pending as p, i (p.at + i)}{i ? '; ' : ''}{p.what} ({when(p.at)}){/each}.
 								{#if u.live_vs_draft}<div class="j5-diff" data-testid="live-vs-draft">
-										<span>Live: <b>{u.live_vs_draft.live}</b></span><span
-											>Draft: <b>{u.live_vs_draft.draft}</b></span
-										>
+										<span>Live: <b>{u.live_vs_draft.live}</b></span><span>
+											Draft: <b>{u.live_vs_draft.draft}</b>
+										</span>
 									</div>{/if}
 								<div class="row j5-draft-actions">
 									<a class="btn sm" href="/chat">Test in test chat</a>
@@ -345,8 +358,9 @@
 						{/if}
 						<p class="j5-more">
 							Routes per system: <a href="{base}/operations">Operations &amp; routes</a>
-							{#if isSuperAdmin(session)}· Template: <a href="/platform/journeys/retail">journey designer</a
-								>{/if}
+							{#if isSuperAdmin(session)}· Template: <a href="/platform/journeys/retail">
+									journey designer
+								</a>{/if}
 						</p>
 					{/if}
 				</Card>
@@ -366,9 +380,9 @@
 					{#if u?.outcomes.length}
 						<div class="row j5-outcomes">
 							{#each u.outcomes as o (o.code)}
-								<span class="chip {o.code === 'ok' ? 'ok' : o.code.startsWith('open:') ? 'muted' : 'warn'}"
-									>{o.code} × {o.count}</span
-								>
+								<span class="chip {o.code === 'ok' ? 'ok' : o.code.startsWith('open:') ? 'muted' : 'warn'}">
+									{o.code} × {o.count}
+								</span>
 							{/each}
 						</div>
 					{/if}
@@ -379,11 +393,11 @@
 								{#each u.recent_cases as c (c.case_id)}
 									<tr>
 										<td class="mono"><a href="{base}/cases/{c.case_id}">{c.case_id}</a></td>
-										<td
-											>{c.title}<span class="cell-sub"
-												>{when(c.started_at)} · {c.env} · id {c.identity_level}</span
-											></td
-										>
+										<td>
+											{c.title}<span class="cell-sub">
+												{when(c.started_at)} · {c.env} · id {c.identity_level}
+											</span>
+										</td>
 										<td class="mono">{c.outcome ?? c.status}</td>
 									</tr>
 								{/each}
@@ -397,13 +411,9 @@
 					<div class="dialogue" data-testid="dialogue">
 						{#each d.sample_dialogue as t, i (i)}
 							<div class="turn {t.from}">
-								<span class="j5-who"
-									>{t.from === 'agent'
-										? 'Agent'
-										: t.from === 'customer'
-											? 'Customer'
-											: 'Gates / operations'}</span
-								>
+								<span class="j5-who">
+									{t.from === 'agent' ? 'Agent' : t.from === 'customer' ? 'Customer' : 'Gates / operations'}
+								</span>
 								<p>{t.text}</p>
 							</div>
 						{/each}
@@ -421,8 +431,9 @@
 							<span class="mono"><b>{o.object}</b></span>
 							<span class="chip {o.role === 'subject' ? 'accent' : 'muted'}">{o.role}</span>
 							<span class="muted">{o.fields.join(' · ')}</span>
-							{#if o.required_inputs.length}<span class="chip warn">needs {o.required_inputs.join(', ')}</span
-								>{/if}
+							{#if o.required_inputs.length}<span class="chip warn">
+									needs {o.required_inputs.join(', ')}
+								</span>{/if}
 						</li>
 					{:else}
 						<li class="muted">No objects.</li>
@@ -445,20 +456,19 @@
 								{#each d.operations as o (opLabel(o))}
 									<tr>
 										<td class="mono">{opLabel(o)}<span class="cell-sub">{o.modality}</span></td>
-										<td
-											><span class="chip {o.required ? 'accent' : 'muted'}">{o.required ? 'R' : 'O'}</span
-											></td
-										>
+										<td>
+											<span class="chip {o.required ? 'accent' : 'muted'}">{o.required ? 'R' : 'O'}</span>
+										</td>
 										<td>{EFFECT_TEXT[o.side_effect]}</td>
 										<td class="mono">{o.identity_level}</td>
 										{#each o.routes as r (r.env)}
 											<td>
-												<span class="chip {o.required && r.kind === 'unrouted' ? 'err' : ROUTE_CHIP[r.kind]}"
-													>{routeText(r)}</span
-												>
-												{#if r.kind === 'instance' && !r.contract_tested}<span class="cell-sub j5-warn"
-														>write unverified</span
-													>{/if}
+												<span class="chip {o.required && r.kind === 'unrouted' ? 'err' : ROUTE_CHIP[r.kind]}">
+													{routeText(r)}
+												</span>
+												{#if r.kind === 'instance' && !r.contract_tested}<span class="cell-sub j5-warn">
+														write unverified
+													</span>{/if}
 											</td>
 										{/each}
 									</tr>
@@ -496,9 +506,9 @@
 						{#each d.knowledge_kinds as k (k.kind)}
 							<li>
 								<span class="mono">{k.kind}</span>
-								{#if k.present}<span class="chip ok">in {k.store}</span>{:else}<span class="chip warn"
-										>missing{k.required ? ' · required' : ''}</span
-									>{/if}
+								{#if k.present}<span class="chip ok">in {k.store}</span>{:else}<span class="chip warn">
+										missing{k.required ? ' · required' : ''}
+									</span>{/if}
 								<span class="cell-sub">{k.description}</span>
 							</li>
 						{:else}

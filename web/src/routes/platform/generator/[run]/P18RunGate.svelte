@@ -36,15 +36,15 @@
 			<ul class="p18-findings" data-testid="run-findings">
 				{#each r.findings as f, fi (`${fi}:${f.message}`)}
 					<li class={f.severity}>
-						<span class="chip {f.severity === 'red' ? 'err' : 'warn'}"
-							>{f.severity === 'red' ? `rule ${f.rule}` : f.severity}</span
-						>
+						<span class="chip {f.severity === 'red' ? 'err' : 'warn'}">
+							{f.severity === 'red' ? `rule ${f.rule}` : f.severity}
+						</span>
 						<span class="p18-msg">{f.message}</span>
 						{#if f.rule === 4 && f.stage && open}
 							{@const st = f.stage}
-							<button class="btn sm" type="button" onclick={() => onscope(st, stageLabel(st))}
-								>Mark out of scope</button
-							>
+							<button class="btn sm" type="button" onclick={() => onscope(st, stageLabel(st))}>
+								Mark out of scope
+							</button>
 						{/if}
 					</li>
 				{/each}

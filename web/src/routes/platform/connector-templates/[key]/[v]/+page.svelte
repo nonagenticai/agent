@@ -286,24 +286,24 @@
 						<button class="btn sm" type="button" disabled={busy} onclick={runT2}>Run T2 sandbox</button>
 					{/if}
 					{#if t.status === 'draft'}
-						<button class="btn sm" type="button" disabled={busy} onclick={() => openEditor(null)}
-							>Add operation</button
-						>
-						<button class="btn sm primary" type="button" disabled={busy} onclick={publish}
-							>Publish @{v}</button
-						>
+						<button class="btn sm" type="button" disabled={busy} onclick={() => openEditor(null)}>
+							Add operation
+						</button>
+						<button class="btn sm primary" type="button" disabled={busy} onclick={publish}>
+							Publish @{v}
+						</button>
 					{:else}
-						<button class="btn sm" type="button" disabled={busy} onclick={newDraft}
-							>Start a new draft version</button
-						>
+						<button class="btn sm" type="button" disabled={busy} onclick={newDraft}>
+							Start a new draft version
+						</button>
 						{#if t.status === 'active'}
-							<button class="btn sm" type="button" disabled={busy} onclick={() => setRetired(true)}
-								>Retire</button
-							>
+							<button class="btn sm" type="button" disabled={busy} onclick={() => setRetired(true)}>
+								Retire
+							</button>
 						{:else if t.status === 'retired'}
-							<button class="btn sm" type="button" disabled={busy} onclick={() => setRetired(false)}
-								>Restore</button
-							>
+							<button class="btn sm" type="button" disabled={busy} onclick={() => setRetired(false)}>
+								Restore
+							</button>
 						{/if}
 					{/if}
 				</div>
@@ -363,9 +363,9 @@
 					<dt>Credential</dt>
 					<dd>
 						{#if t.credential_schema.length === 0}
-							<span class="muted"
-								>None — {t.platform_connector ? 'minted or in-app by Agent' : 'none needed'}.</span
-							>
+							<span class="muted">
+								None — {t.platform_connector ? 'minted or in-app by Agent' : 'none needed'}.
+							</span>
 						{:else}
 							<ul class="p17-creds">
 								{#each t.credential_schema as f (f.name)}
@@ -426,33 +426,33 @@
 		<section id="p17-ops" class="p17-explorer" aria-label="Operations">
 			<div class="p17-flow" aria-label="How one call is translated">
 				<div class="p17-box">
-					<span class="label">Agent</span><b>canonical operation</b><span class="cell-sub"
-						>object.verb + canonical inputs</span
-					>
+					<span class="label">Agent</span><b>canonical operation</b><span class="cell-sub">
+						object.verb + canonical inputs
+					</span>
 				</div>
 				<span class="p17-to" aria-hidden="true"></span>
 				<div class="p17-box tpl">
-					<span class="label">@{v}</span><b>request template</b><span class="cell-sub"
-						>slots, secret, idempotency key</span
-					>
+					<span class="label">@{v}</span><b>request template</b><span class="cell-sub">
+						slots, secret, idempotency key
+					</span>
 				</div>
 				<span class="p17-to" aria-hidden="true"></span>
 				<div class="p17-box ven">
-					<span class="label">{t.vendor}</span><b>{t.transport} API</b><span class="cell-sub"
-						>{t.vendor_api_pin}</span
-					>
+					<span class="label">{t.vendor}</span><b>{t.transport} API</b><span class="cell-sub">
+						{t.vendor_api_pin}
+					</span>
 				</div>
 				<span class="p17-to" aria-hidden="true"></span>
 				<div class="p17-box tpl">
-					<span class="label">@{v}</span><b>field · status · fault maps</b><span class="cell-sub"
-						>JSONPath, enum, error code</span
-					>
+					<span class="label">@{v}</span><b>field · status · fault maps</b><span class="cell-sub">
+						JSONPath, enum, error code
+					</span>
 				</div>
 				<span class="p17-to" aria-hidden="true"></span>
 				<div class="p17-box">
-					<span class="label">Agent</span><b>canonical result</b><span class="cell-sub"
-						>or a typed error from the taxonomy</span
-					>
+					<span class="label">Agent</span><b>canonical result</b><span class="cell-sub">
+						or a typed error from the taxonomy
+					</span>
 				</div>
 			</div>
 
@@ -563,9 +563,9 @@
 					<label for="op-path">Path</label><input id="op-path" class="input mono" bind:value={draft.path} />
 				</div>
 				<div class="field">
-					<label for="op-req"
-						>Request template ({'{{canonical.field}}'}, {'{{env.id}}'}, {'{{step.idempotency_key}}'})</label
-					>
+					<label for="op-req">
+						Request template ({'{{canonical.field}}'}, {'{{env.id}}'}, {'{{step.idempotency_key}}'})
+					</label>
 					<textarea id="op-req" class="input" rows="5" bind:value={draft.request}></textarea>
 				</div>
 				<div class="form-grid">
@@ -612,16 +612,18 @@
 						<div class="map-row">
 							<input class="input mono" aria-label="System path {i + 1}" bind:value={f.path} />
 							<input class="input mono" aria-label="Canonical field {i + 1}" bind:value={f.field} />
-							<button class="btn sm" type="button" onclick={() => draft?.field_map.splice(i, 1)}
-								>Remove</button
-							>
+							<button class="btn sm" type="button" onclick={() => draft?.field_map.splice(i, 1)}>
+								Remove
+							</button>
 						</div>
 					{/each}
 					<button
 						class="btn sm"
 						type="button"
-						onclick={() => draft?.field_map.push({ path: '$.', field: '' })}>Add mapping</button
+						onclick={() => draft?.field_map.push({ path: '$.', field: '' })}
 					>
+						Add mapping
+					</button>
 				</div>
 				<div class="field">
 					<label for="op-fixtures">Recorded response fixtures (JSON array)</label>
@@ -638,9 +640,9 @@
 				</div>
 				{#if editErr}<p class="s-err" role="alert">{editErr}</p>{/if}
 				<div class="actions">
-					<button class="btn primary" type="button" disabled={busy || !dirty} onclick={saveOp}
-						>Save operation</button
-					>
+					<button class="btn primary" type="button" disabled={busy || !dirty} onclick={saveOp}>
+						Save operation
+					</button>
 					<button class="btn" type="button" onclick={() => (editing = false)}>Cancel</button>
 				</div>
 			{/if}

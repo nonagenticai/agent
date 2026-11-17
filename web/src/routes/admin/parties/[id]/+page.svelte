@@ -59,11 +59,11 @@
 								<tr>
 									<td>{channelLabel(i.channel)}</td>
 									<td data-label="Identity"><span class="mono pt-sub">{i.subject}</span></td>
-									<td data-label="Verified"
-										><span class="chip {i.verified ? 'ok' : 'muted'}"
-											>{i.verified ? 'verified' : 'not verified'}</span
-										></td
-									>
+									<td data-label="Verified">
+										<span class="chip {i.verified ? 'ok' : 'muted'}">
+											{i.verified ? 'verified' : 'not verified'}
+										</span>
+									</td>
 									<td data-label="First seen">{stamp(i.first_seen_at)}</td>
 									<td data-label="Last seen">{stamp(i.last_seen_at)}</td>
 								</tr>
@@ -85,10 +85,11 @@
 						<tbody>
 							{#each p.cases as c (c.job + c.case_id)}
 								<tr>
-									<td
-										><a class="mono" href="/admin/jobs/{c.job}/cases/{c.case_id}">{c.case_id}</a
-										>{#if c.title}<span class="cell-sub">{c.title}</span>{/if}</td
-									>
+									<td>
+										<a class="mono" href="/admin/jobs/{c.job}/cases/{c.case_id}">
+											{c.case_id}
+										</a>{#if c.title}<span class="cell-sub">{c.title}</span>{/if}
+									</td>
 									<td data-label="Job">{c.job}</td>
 									<td data-label="Channel">{channelLabel(c.channel)}</td>
 									<td data-label="Status">{c.status}</td>

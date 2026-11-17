@@ -70,8 +70,8 @@
 			{#each refs as r (`${r.stage}|${r.kind}|${r.pack}`)}
 				<li>
 					<span class="mono">{r.pack}</span>{#if r.version !== null}<span class="muted">
-							v{r.version}</span
-						>{/if}
+							v{r.version}
+						</span>{/if}
 					<span class="muted">· {stageLabel(r.stage)} · {kindLabel(r.kind)}</span>
 					<button
 						class="btn sm ghost"
@@ -79,8 +79,10 @@
 						{...sa}
 						disabled={busy || disabled}
 						onclick={() => remove(r)}
-						aria-label="Remove {r.pack} from {layer}">Remove</button
+						aria-label="Remove {r.pack} from {layer}"
 					>
+						Remove
+					</button>
 				</li>
 			{/each}
 		</ul>
@@ -88,31 +90,27 @@
 		<p class="muted">No knowledge on this layer yet.</p>
 	{/if}
 	<form class="lk-add" onsubmit={attach}>
-		<label class="field"
-			><span class="label">Pack</span><select class="input" bind:value={pin} aria-label="Pack for {layer}">
+		<label class="field">
+			<span class="label">Pack</span><select class="input" bind:value={pin} aria-label="Pack for {layer}">
 				<option value="">Choose a published pack…</option>
-				{#each usable as p (`${p.key}@${p.version}`)}<option value="{p.key}@{p.version}"
-						>{p.key} v{p.version}</option
-					>{/each}
-			</select></label
-		>
-		<label class="field"
-			><span class="label">Stage</span><select
-				class="input"
-				bind:value={stage}
-				aria-label="Stage for {layer}"
-			>
+				{#each usable as p (`${p.key}@${p.version}`)}<option value="{p.key}@{p.version}">
+						{p.key} v{p.version}
+					</option>{/each}
+			</select>
+		</label>
+		<label class="field">
+			<span class="label">Stage</span><select class="input" bind:value={stage} aria-label="Stage for {layer}">
 				<option value="*">Every stage</option>
 				{#each STAGES as [k, l] (k)}<option value={k}>{l}</option>{/each}
-			</select></label
-		>
-		<label class="field"
-			><span class="label">Kind</span><input
+			</select>
+		</label>
+		<label class="field">
+			<span class="label">Kind</span><input
 				class="input mono"
 				bind:value={kind}
 				aria-label="Knowledge kind for {layer}"
-			/></label
-		>
+			/>
+		</label>
 		<button class="btn sm primary" type="submit" {...sa} disabled={busy || disabled || !pin}>Attach</button>
 	</form>
 	{#if !usable.length}

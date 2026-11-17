@@ -177,8 +177,10 @@
 							class="t4-name"
 							class:on={actor === a.actor_id}
 							aria-pressed={actor === a.actor_id}
-							onclick={() => pickActor(a.actor_id)}>{a.actor_name || a.actor_id} · {a.count}</button
+							onclick={() => pickActor(a.actor_id)}
 						>
+							{a.actor_name || a.actor_id} · {a.count}
+						</button>
 					{:else}
 						<span class="t4-faint">none</span>
 					{/each}
@@ -236,10 +238,11 @@
 					aria-pressed={family === f.family}
 					title={def?.blurb}
 					onclick={() => pickFamily(f.family)}
-					>{famLabel(f.family)} <span class="t4-faint">{f.count}</span>{#if f.open}<span class="t4-bad">
-							· {f.open} open</span
-						>{/if}</button
 				>
+					{famLabel(f.family)} <span class="t4-faint">{f.count}</span>{#if f.open}<span class="t4-bad">
+							· {f.open} open
+						</span>{/if}
+				</button>
 			{/each}
 		</div>
 	{:else if sum.value.state === 'ok'}
@@ -278,8 +281,9 @@
 			<option value="">All jobs</option>
 			{#each app.jobs as j (j.key)}<option value={j.key}>{j.label}</option>{/each}
 		</select>
-		{#if narrowed || view !== 'changes'}<button class="btn sm" type="button" onclick={clear}>Clear</button
-			>{/if}
+		{#if narrowed || view !== 'changes'}<button class="btn sm" type="button" onclick={clear}>
+				Clear
+			</button>{/if}
 	</div>
 
 	{#if cur.state === 'loading'}

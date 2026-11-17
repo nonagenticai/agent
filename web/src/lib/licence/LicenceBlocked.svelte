@@ -46,8 +46,10 @@
 		type="button"
 		data-testid="licence-retry"
 		disabled={busy}
-		onclick={() => onRetry()}>{busy ? 'Checking…' : 'Try again'}</button
+		onclick={() => onRetry()}
 	>
+		{busy ? 'Checking…' : 'Try again'}
+	</button>
 	{#if backToPlatform}
 		<button class="btn" type="button" onclick={() => backToPlatform?.()}>Back to platform</button>
 	{/if}

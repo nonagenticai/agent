@@ -51,11 +51,11 @@
 			<tr>
 				<th>Activity</th>
 				{#each roles as r (r.role)}
-					<th class="c" class:off={!r.enabled}
-						>{ROLE_LABEL[r.role]}{#if !r.enabled}<span class="j8m-off"> · off</span>{/if}<span class="j8m-max"
-							>max {r.max_side_effect}</span
-						></th
-					>
+					<th class="c" class:off={!r.enabled}>
+						{ROLE_LABEL[r.role]}{#if !r.enabled}<span class="j8m-off"> · off</span>{/if}<span class="j8m-max">
+							max {r.max_side_effect}
+						</span>
+					</th>
 				{/each}
 				<th>Procedure that runs</th>
 			</tr>
@@ -92,9 +92,9 @@
 											<span class="j8m-n">off</span>
 										{:else}
 											<span class="j8m-n">{c.callable}<span class="j8m-of">/{c.expected}</span></span>
-											<span class="j8m-bar" aria-hidden="true"
-												><i style="width:{c.expected ? (100 * c.callable) / c.expected : 0}%"></i></span
-											>
+											<span class="j8m-bar" aria-hidden="true">
+												<i style="width:{c.expected ? (100 * c.callable) / c.expected : 0}%"></i>
+											</span>
 										{/if}
 										{#if c.narrowed}<span class="j8m-flag" title="Narrowed by this tenant">✂</span>{/if}
 									</button>

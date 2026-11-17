@@ -44,9 +44,9 @@
 		<a class="stage" href={jobPath(job, '/release')} data-stage="build">
 			<span class="k">Build</span>
 			<b>{next && next.changes > 0 ? plural(next.changes, 'change') : 'No changes'}</b>
-			<span class="s"
-				>{next && next.changes > 0 ? 'not in a release yet' : 'everything is in the live release'}</span
-			>
+			<span class="s">
+				{next && next.changes > 0 ? 'not in a release yet' : 'everything is in the live release'}
+			</span>
 		</a>
 	</li>
 	<li>
@@ -68,24 +68,24 @@
 					<Chip text="Up to date" variant="muted" />
 				{/if}
 			</b>
-			<span class="s"
-				>{next && next.blockers > 0
+			<span class="s">
+				{next && next.blockers > 0
 					? "next release can't go live yet"
 					: next
 						? 'next release can go live'
-						: 'nothing to release'}</span
-			>
+						: 'nothing to release'}
+			</span>
 		</a>
 	</li>
 	<li>
 		<a class="stage cur" href={jobPath(job)} data-stage="live" aria-current="step">
 			<span class="k">Live</span>
 			<b><StatusChip {status} /></b>
-			<span class="s"
-				>{status.live_release
+			<span class="s">
+				{status.live_release
 					? `${releaseLabel(status.live_release.id)}, live since ${when(status.live_release.since)}`
-					: L.not_live_for_customers}</span
-			>
+					: L.not_live_for_customers}
+			</span>
 		</a>
 	</li>
 </ol>

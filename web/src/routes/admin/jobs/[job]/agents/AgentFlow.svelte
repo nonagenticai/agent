@@ -44,11 +44,11 @@
 							{#if a.consumers}· {a.per_min ?? 0}/min{/if}
 						</span>
 						{#if h.word === 'warn' || h.word === 'err'}
-							<span class="j23-why"
-								>{[a.lag ? `${a.lag} waiting` : '', a.pending ? `${a.pending} unfinished` : '']
+							<span class="j23-why">
+								{[a.lag ? `${a.lag} waiting` : '', a.pending ? `${a.pending} unfinished` : '']
 									.filter(Boolean)
-									.join(' · ')}</span
-							>
+									.join(' · ')}
+							</span>
 						{/if}
 						{#if a.kind === 'runner'}<MilestoneChip milestone="M4" note="operation runner" />{/if}
 					</button>

@@ -327,8 +327,9 @@
 							type="button"
 							aria-expanded={!!open[l.key]}
 							onclick={() => (open[l.key] = !open[l.key])}
-							>{open[l.key] ? 'Show fewer' : `Show all ${l.rows.length}`}</button
 						>
+							{open[l.key] ? 'Show fewer' : `Show all ${l.rows.length}`}
+						</button>
 					{/if}
 				{/if}
 			{/each}
@@ -357,14 +358,14 @@
 					</form>
 					{#if linkError}<p class="err" role="alert">{linkError}</p>{/if}
 					{#each found as p (p.id)}
-						<button class="btn sm pick" type="button" {...linkAttrs} onclick={() => link(p)}
-							>Pick {p.display_name ?? 'this customer'}</button
-						>
+						<button class="btn sm pick" type="button" {...linkAttrs} onclick={() => link(p)}>
+							Pick {p.display_name ?? 'this customer'}
+						</button>
 					{/each}
 				{:else}
-					<button class="btn sm" type="button" {...linkAttrs} onclick={() => (linking = true)}
-						>Link customer</button
-					>
+					<button class="btn sm" type="button" {...linkAttrs} onclick={() => (linking = true)}>
+						Link customer
+					</button>
 				{/if}
 			{/if}
 		{:else if ctxError}
@@ -419,8 +420,10 @@
 									class="btn sm ghost"
 									type="button"
 									aria-label="Copy {c.label}"
-									onclick={() => copy(c.label, c.value)}>{copied === c.label ? 'Copied' : 'Copy'}</button
+									onclick={() => copy(c.label, c.value)}
 								>
+									{copied === c.label ? 'Copied' : 'Copy'}
+								</button>
 							</dd>
 						{/each}
 					</dl>
@@ -529,9 +532,9 @@
 			{/if}
 		</dl>
 		{#if caseId}
-			<a href="/admin/jobs/{encodeURIComponent(job)}/cases/{encodeURIComponent(caseId)}"
-				>Open the case trace</a
-			>
+			<a href="/admin/jobs/{encodeURIComponent(job)}/cases/{encodeURIComponent(caseId)}">
+				Open the case trace
+			</a>
 		{/if}
 	</details>
 </aside>

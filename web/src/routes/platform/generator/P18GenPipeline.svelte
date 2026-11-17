@@ -29,12 +29,15 @@
 						<div class="p18-node-top">
 							<span class="p18-code mono">{s.code}</span>
 							<span class="p18-label">{s.label}</span>
-							{#if s.drafts}<span class="p18-tag llm" title="The LLM drafts here (costs tokens)">LLM</span
-								>{/if}
+							{#if s.drafts}<span class="p18-tag llm" title="The LLM drafts here (costs tokens)">
+									LLM
+								</span>{/if}
 							{#if !P18_TENANT_STEPS.includes(s.key)}<span
 									class="p18-tag plat"
-									title="Tenant runs skip this step">platform only</span
-								>{/if}
+									title="Tenant runs skip this step"
+								>
+									platform only
+								</span>{/if}
 						</div>
 						<p class="p18-what">
 							{#if s.drafts}<span class="muted">drafts</span> {s.drafts} ·
@@ -54,8 +57,9 @@
 										class:red={r.red > 0}
 										href="/platform/generator/{r.id}"
 										title="{r.industry} / {r.job} — {r.red ? `${r.red} red` : r.status}"
-										>#{r.id} here{#if r.red}&nbsp;· {r.red} red{/if}</a
 									>
+										#{r.id} here{#if r.red}&nbsp;· {r.red} red{/if}
+									</a>
 								{/each}
 							</div>
 						{/if}

@@ -119,8 +119,9 @@
 				class="btn primary"
 				{...writeAttrs(session, 'job_designer')}
 				disabled={saving || writeAttrs(session, 'job_designer').disabled}
-				>{saving ? 'Saving…' : 'Create relation'}</button
 			>
+				{saving ? 'Saving…' : 'Create relation'}
+			</button>
 			<button type="button" class="btn" onclick={() => (open = false)}>Cancel</button>
 		</div>
 	</form>

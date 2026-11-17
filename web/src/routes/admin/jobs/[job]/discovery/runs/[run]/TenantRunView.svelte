@@ -150,10 +150,10 @@
 					<div class="row">
 						<span class="chip {STATE_CHIP[st][1]}">{STATE_CHIP[st][0]}</span>
 						<span>produces <b>{STEP_PRODUCES[step]}</b></span>
-						{#if t.total}<span class="muted"
-								>· {t.total} drafted · {t.kept} kept · {t.dropped} dropped{#if t.pending}
-									· <b>{t.pending} to decide</b>{/if}</span
-							>{/if}
+						{#if t.total}<span class="muted">
+								· {t.total} drafted · {t.kept} kept · {t.dropped} dropped{#if t.pending}
+									· <b>{t.pending} to decide</b>{/if}
+							</span>{/if}
 					</div>
 					{#if open && step === r.current_step && DRAFT_STEPS.includes(step)}
 						<P18DraftHint bind:value={hint} error={hintError} disabled={drafting} />
@@ -190,9 +190,9 @@
 						<ul class="plain">
 							{#each outs as o (o.label)}
 								<li>
-									<span class="chip {r.status === 'packaged' ? 'ok' : 'muted'}"
-										>{r.status === 'packaged' ? 'landed' : 'will land'}</span
-									>
+									<span class="chip {r.status === 'packaged' ? 'ok' : 'muted'}">
+										{r.status === 'packaged' ? 'landed' : 'will land'}
+									</span>
 									<span class="mono">{o.label}</span>
 								</li>
 							{/each}
@@ -223,8 +223,9 @@
 									disabled={!can || r.red > 0}
 									onclick={() =>
 										act(() => api().packageJobGeneratorRun(r.id), 'Refinements saved to the draft.')}
-									>Save refinements to the draft</button
 								>
+									Save refinements to the draft
+								</button>
 							{:else}
 								<button
 									class="btn primary"
@@ -232,12 +233,13 @@
 									title={can ? undefined : writeHint('job_designer')}
 									disabled={!can || t.pending > 0 || (r.red > 0 && step === 'validate')}
 									onclick={() => act(() => api().advanceJobGeneratorRun(r.id), 'Step done.')}
-									>Continue to next step</button
 								>
+									Continue to next step
+								</button>
 							{/if}
-							{#if t.pending && step !== 'package'}<span class="muted"
-									>{t.pending} draft(s) still to decide.</span
-								>{/if}
+							{#if t.pending && step !== 'package'}<span class="muted">
+									{t.pending} draft(s) still to decide.
+								</span>{/if}
 						</div>
 					{/if}
 				</Card>

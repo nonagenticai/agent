@@ -71,15 +71,15 @@
 			<li class="j8c-step o-{s.owner}" class:here={s.here}>
 				<span class="j8c-n mono">{s.n}</span>
 				<span class="j8c-body">
-					{#if s.href}<a class="j8c-label" href={s.href}>{s.label}</a>{:else}<span class="j8c-label"
-							>{s.label}</span
-						>{/if}
+					{#if s.href}<a class="j8c-label" href={s.href}>{s.label}</a>{:else}<span class="j8c-label">
+							{s.label}
+						</span>{/if}
 					<span class="j8c-text">{s.text}</span>
 					<span class="j8c-who">{OWNER[s.owner]}</span>
 				</span>
-				{#if i < steps.length - 1}<span class="j8c-op" aria-hidden="true"
-						>{i === 0 ? '→' : i < 3 ? '∩' : '→'}</span
-					>{/if}
+				{#if i < steps.length - 1}<span class="j8c-op" aria-hidden="true">
+						{i === 0 ? '→' : i < 3 ? '∩' : '→'}
+					</span>{/if}
 			</li>
 		{/each}
 	</ol>

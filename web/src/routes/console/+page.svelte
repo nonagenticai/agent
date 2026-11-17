@@ -205,18 +205,22 @@
 			class:ok={streamStatus === 'open' && !paused}
 			class:warn={streamStatus === 'retrying' || streamStatus === 'connecting' || paused}
 			role="status"
-			data-testid="feed-status">{paused ? 'paused' : FEED_LABEL[streamStatus]}</span
+			data-testid="feed-status"
 		>
-		<button class="btn sm" type="button" onclick={togglePause} aria-pressed={paused}
-			>{paused ? `Resume${held.length ? ` (${held.length})` : ''}` : 'Pause'}</button
-		>
+			{paused ? 'paused' : FEED_LABEL[streamStatus]}
+		</span>
+		<button class="btn sm" type="button" onclick={togglePause} aria-pressed={paused}>
+			{paused ? `Resume${held.length ? ` (${held.length})` : ''}` : 'Pause'}
+		</button>
 		<button
 			class="btn sm"
 			type="button"
 			onclick={dropAll}
 			disabled={streamStatus !== 'open'}
-			title="Simulate a dropped connection">Drop connection</button
+			title="Simulate a dropped connection"
 		>
+			Drop connection
+		</button>
 	{/snippet}
 </PageHead>
 
@@ -236,11 +240,11 @@
 		bind:active={tab}
 		label="Console view"
 	/>
-	<span class="l1-tabs-note"
-		>{tab === 'bus'
+	<span class="l1-tabs-note">
+		{tab === 'bus'
 			? 'Every bus entry, for engineers: operation calls show ids and outcome codes only (K50).'
-			: 'Turns, agents and step-in. The raw bus entries are under Bus stream.'}</span
-	>
+			: 'Turns, agents and step-in. The raw bus entries are under Bus stream.'}
+	</span>
 </div>
 
 <div hidden={tab !== 'conversations'}>
@@ -270,9 +274,9 @@
 						<button class="btn sm" type="button" onclick={clearView}>Clear view</button>
 					</div>
 					{#if paused}
-						<span class="held" role="status"
-							>Paused · {held.length} new entr{held.length === 1 ? 'y' : 'ies'} held. Resume to show them.</span
-						>
+						<span class="held" role="status">
+							Paused · {held.length} new entr{held.length === 1 ? 'y' : 'ies'} held. Resume to show them.
+						</span>
 					{/if}
 				</section>
 				<section aria-label="Filters">
@@ -298,8 +302,9 @@
 							class="btn sm"
 							type="button"
 							onclick={() => (filter = { caseId: '', env: '', text: '', badOnly: false })}
-							>Clear filters</button
 						>
+							Clear filters
+						</button>
 					{/if}
 				</section>
 				<section aria-label="Legend">
@@ -316,10 +321,10 @@
 				<div class="tracebar" data-pane="activity">
 					<span>Agent status is derived from the entries seen here and consumer-group metrics.</span>
 					{#if store.trimmed > 0}
-						<span role="status"
-							>Showing the last {MAX_PER_LANE} entries per lane; {store.trimmed} older not shown (open the case
-							for its full trace).</span
-						>
+						<span role="status">
+							Showing the last {MAX_PER_LANE} entries per lane; {store.trimmed} older not shown (open the case for
+							its full trace).
+						</span>
 					{/if}
 				</div>
 				<section class="panel activity" aria-label="Case activity" data-pane="activity">
@@ -329,9 +334,9 @@
 							<div>
 								<dt>Case</dt>
 								<dd class="mono">
-									<a href="/admin/jobs/{encodeURIComponent(app.job)}/cases/{encodeURIComponent(act.caseId)}"
-										>{act.caseId}</a
-									>{filter.caseId ? '' : ' (latest seen)'}
+									<a href="/admin/jobs/{encodeURIComponent(app.job)}/cases/{encodeURIComponent(act.caseId)}">
+										{act.caseId}
+									</a>{filter.caseId ? '' : ' (latest seen)'}
 								</dd>
 							</div>
 							<div>
@@ -385,9 +390,9 @@
 									<span class="count">{filtering ? `${list.length}/` : ''}{store[lane.id].length}</span>
 								</h2>
 								<span class="flow">{lane.flow}</span>
-								<span class="legend"
-									><span><b>↓</b> {lane.legend[0]}</span><span><b>↑</b> {lane.legend[1]}</span></span
-								>
+								<span class="legend">
+									<span><b>↓</b> {lane.legend[0]}</span><span><b>↑</b> {lane.legend[1]}</span>
+								</span>
 							</header>
 							<div class="list" bind:this={listEls[lane.id]} onscroll={() => onScroll(lane.id)}>
 								{#if store[lane.id].length === 0}<div class="empty">{lane.empty}</div>
@@ -412,34 +417,36 @@
 										onmouseenter={() => (hoverCid = e.envelope.correlation_id)}
 										onmouseleave={() => (hoverCid = null)}
 									>
-										<span class="r1"
-											><span class="topic"
-												><b class="dir" title={dir === 'down' ? 'forward' : 'return path'}
-													>{dir === 'down' ? '↓' : '↑'}</b
-												>{#if ev}<span class="ctx">{contextOf(e.envelope.topic)}</span>{ev}{:else}{e.envelope
-														.topic}{/if}</span
-											><span class="time">{clock(e.envelope.published_at_ms)}</span></span
-										>
+										<span class="r1">
+											<span class="topic">
+												<b class="dir" title={dir === 'down' ? 'forward' : 'return path'}>
+													{dir === 'down' ? '↓' : '↑'}
+												</b>{#if ev}<span class="ctx">{contextOf(e.envelope.topic)}</span>{ev}{:else}{e
+														.envelope.topic}{/if}
+											</span><span class="time">{clock(e.envelope.published_at_ms)}</span>
+										</span>
 										{#if plain(e)}<span class="plain">{plain(e)}</span>{/if}
-										<span class="route"
-											>{e.envelope.from} → {e.consumer_group ?? '—'} · {e.envelope.correlation_id}</span
-										>
+										<span class="route">
+											{e.envelope.from} → {e.consumer_group ?? '—'} · {e.envelope.correlation_id}
+										</span>
 										{#if summary(e)}<span class="sum">{summary(e)}</span>{/if}
-										<span class="meta"
-											><span class="skey">{e.stream}</span><span>{e.entry_id}</span>{#if ack}<span
+										<span class="meta">
+											<span class="skey">{e.stream}</span><span>{e.entry_id}</span>{#if ack}<span
 													class="ack"
 													class:done={ack === 'acked'}
 													title={ack === 'acked'
 														? `XACKed by ${e.consumer_group}`
-														: `In ${e.consumer_group}: not acknowledged yet`}>{ack}</span
-												>{/if}</span
-										>
+														: `In ${e.consumer_group}: not acknowledged yet`}
+												>
+													{ack}
+												</span>{/if}
+										</span>
 									</button>
 								{/each}
 								{#if fresh(lane.id) > 0 && !follow[lane.id]}
-									<button type="button" class="newev" onclick={() => jump(lane.id)}
-										>{fresh(lane.id)} new entr{fresh(lane.id) === 1 ? 'y' : 'ies'} ↓</button
-									>
+									<button type="button" class="newev" onclick={() => jump(lane.id)}>
+										{fresh(lane.id)} new entr{fresh(lane.id) === 1 ? 'y' : 'ies'} ↓
+									</button>
 								{/if}
 							</div>
 						</section>

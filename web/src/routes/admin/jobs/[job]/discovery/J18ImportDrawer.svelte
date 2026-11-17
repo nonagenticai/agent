@@ -82,16 +82,16 @@
 				</p>
 				<div class="tbl-wrap">
 					<table class="tbl dense">
-						<thead
-							><tr
-								>{#each preview.columns as c (c)}<th>{c}</th>{/each}</tr
-							></thead
-						>
+						<thead>
+							<tr>
+								{#each preview.columns as c (c)}<th>{c}</th>{/each}
+							</tr>
+						</thead>
 						<tbody>
 							{#each preview.sample_rows as r, i (i)}
-								<tr
-									>{#each r as cell, j (j)}<td>{cell}</td>{/each}</tr
-								>
+								<tr>
+									{#each r as cell, j (j)}<td>{cell}</td>{/each}
+								</tr>
 							{/each}
 						</tbody>
 					</table>
@@ -119,8 +119,10 @@
 				type="button"
 				{...writeAttrs(session, 'job_designer')}
 				disabled={!preview || !text || busy || writeAttrs(session, 'job_designer').disabled}
-				onclick={upload}>{busy && preview ? 'Uploading…' : 'Upload and classify'}</button
+				onclick={upload}
 			>
+				{busy && preview ? 'Uploading…' : 'Upload and classify'}
+			</button>
 			<button class="btn" type="button" onclick={() => (open = false)}>Cancel</button>
 		</div>
 	</div>

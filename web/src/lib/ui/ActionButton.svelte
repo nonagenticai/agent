@@ -29,8 +29,10 @@
 		aria-describedby={disabledReason ? reasonId : undefined}
 		onclick={(e) => {
 			if (!disabledReason) onclick?.(e);
-		}}>{@render children()}</button
+		}}
 	>
+		{@render children()}
+	</button>
 	{#if disabledReason}<span class="reason" id={reasonId}>{disabledReason}</span>{/if}
 </span>
 

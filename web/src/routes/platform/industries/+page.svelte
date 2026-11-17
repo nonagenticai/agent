@@ -199,9 +199,9 @@
 				{#if d.items.length}
 					<div class="tbl-wrap">
 						<table class="tbl" data-testid="industries">
-							<thead
-								><tr><th>Industry</th><th>Departments</th><th>Status</th><th>In use</th><th></th></tr></thead
-							>
+							<thead>
+								<tr><th>Industry</th><th>Departments</th><th>Status</th><th>In use</th><th></th></tr>
+							</thead>
 							<tbody>
 								{#each d.items as i (i.industry)}
 									{@const st = status(i)}
@@ -210,15 +210,16 @@
 										<td>{i.departments.filter((x) => !x.retired_at).length}</td>
 										<td><Chip text={st.text} variant={st.variant} /></td>
 										<td>{usage(i.jobs)}</td>
-										<td
-											><button
+										<td>
+											<button
 												class="btn sm"
 												type="button"
 												aria-pressed={picked === i.industry}
 												onclick={() => (picked = picked === i.industry ? '' : i.industry)}
-												>{picked === i.industry ? 'Close' : 'Open'}</button
-											></td
-										>
+											>
+												{picked === i.industry ? 'Close' : 'Open'}
+											</button>
+										</td>
 									</tr>
 								{/each}
 							</tbody>
@@ -228,16 +229,16 @@
 					<p class="muted">No industries yet: create the first one below.</p>
 				{/if}
 				<form class="ind-form" onsubmit={createIndustry} data-testid="industry-create">
-					<label class="field"
-						><span class="label">New industry</span><input
+					<label class="field">
+						<span class="label">New industry</span><input
 							class="input"
 							bind:value={newLabel}
 							placeholder="Telecommunications"
 							aria-label="New industry name"
-						/></label
-					>
-					<label class="field"
-						><span class="label">Key</span><input
+						/>
+					</label>
+					<label class="field">
+						<span class="label">Key</span><input
 							class="input mono"
 							value={shownKey}
 							oninput={(e) => {
@@ -245,14 +246,16 @@
 								newKey = e.currentTarget.value;
 							}}
 							aria-label="New industry key"
-						/></label
-					>
+						/>
+					</label>
 					<button
 						class="btn primary"
 						type="submit"
 						{...sa}
-						disabled={!newLabel.trim() || !KEY_RE.test(shownKey)}>Create industry</button
+						disabled={!newLabel.trim() || !KEY_RE.test(shownKey)}
 					>
+						Create industry
+					</button>
 				</form>
 				<p class="muted small">The key is permanent: tags, templates and job selections hold it.</p>
 			</Card>
@@ -264,20 +267,20 @@
 			<Card title={i.label} sub="{i.key} · {st.text}{i.tag ? ` · ${i.tag}` : ''}">
 				<div class="ind-detail" data-testid="industry-detail">
 					<form class="ind-form" onsubmit={(e) => renameIndustry(i, e)}>
-						<label class="field"
-							><span class="label">Name</span><input
+						<label class="field">
+							<span class="label">Name</span><input
 								class="input"
 								bind:value={rename}
 								aria-label="Industry name"
-							/></label
-						>
-						<button class="btn" type="submit" {...sa} disabled={!rename.trim() || rename.trim() === i.label}
-							>Rename</button
-						>
+							/>
+						</label>
+						<button class="btn" type="submit" {...sa} disabled={!rename.trim() || rename.trim() === i.label}>
+							Rename
+						</button>
 						{#if i.retired_at}
-							<button class="btn" type="button" {...sa} onclick={() => setIndustryRetired(i, false)}
-								>Restore</button
-							>
+							<button class="btn" type="button" {...sa} onclick={() => setIndustryRetired(i, false)}>
+								Restore
+							</button>
 						{:else}
 							<button
 								class="btn danger"
@@ -285,8 +288,10 @@
 								{...sa}
 								disabled={i.jobs.length > 0}
 								title={i.jobs.length ? 'Tenant jobs still use it' : undefined}
-								onclick={() => setIndustryRetired(i, true)}>Retire</button
+								onclick={() => setIndustryRetired(i, true)}
 							>
+								Retire
+							</button>
 						{/if}
 					</form>
 					{#if i.jobs.length}
@@ -308,11 +313,12 @@
 										{#if editing === dpt.department}
 											<form class="ind-form" onsubmit={(e) => renameDepartment(i, dpt, e)}>
 												<input class="input" bind:value={editLabel} aria-label="Department name" />
-												<button class="btn sm" type="submit" {...sa} disabled={!editLabel.trim()}>Save</button
-												>
-												<button class="btn sm ghost" type="button" onclick={() => (editing = null)}
-													>Cancel</button
-												>
+												<button class="btn sm" type="submit" {...sa} disabled={!editLabel.trim()}>
+													Save
+												</button>
+												<button class="btn sm ghost" type="button" onclick={() => (editing = null)}>
+													Cancel
+												</button>
 											</form>
 										{:else}
 											<strong>{dpt.label}</strong>
@@ -326,16 +332,20 @@
 												onclick={() => {
 													editing = dpt.department;
 													editLabel = dpt.label;
-												}}>Rename</button
+												}}
 											>
+												Rename
+											</button>
 											{#if dpt.retired_at}
 												<button
 													class="btn sm"
 													type="button"
 													{...sa}
 													disabled={!!i.retired_at}
-													onclick={() => setDepartmentRetired(i, dpt, false)}>Restore</button
+													onclick={() => setDepartmentRetired(i, dpt, false)}
 												>
+													Restore
+												</button>
 											{:else}
 												<button
 													class="btn sm danger"
@@ -343,8 +353,10 @@
 													{...sa}
 													disabled={dpt.jobs.length > 0}
 													title={dpt.jobs.length ? 'Tenant jobs still use it' : undefined}
-													onclick={() => setDepartmentRetired(i, dpt, true)}>Retire</button
+													onclick={() => setDepartmentRetired(i, dpt, true)}
 												>
+													Retire
+												</button>
 											{/if}
 										{/if}
 									</div>
@@ -363,16 +375,16 @@
 					{/if}
 					{#if !i.retired_at}
 						<form class="ind-form" onsubmit={(e) => createDepartment(i, e)} data-testid="department-create">
-							<label class="field"
-								><span class="label">New department</span><input
+							<label class="field">
+								<span class="label">New department</span><input
 									class="input"
 									bind:value={deptLabel}
 									placeholder="Customer care"
 									aria-label="New department name"
-								/></label
-							>
-							<label class="field"
-								><span class="label">Key</span><input
+								/>
+							</label>
+							<label class="field">
+								<span class="label">Key</span><input
 									class="input mono"
 									value={shownDeptKey}
 									oninput={(e) => {
@@ -380,24 +392,26 @@
 										deptKey = e.currentTarget.value;
 									}}
 									aria-label="New department key"
-								/></label
-							>
-							<label class="field"
-								><span class="label">Extends</span><select
+								/>
+							</label>
+							<label class="field">
+								<span class="label">Extends</span><select
 									class="input"
 									bind:value={deptExtends}
 									aria-label="Department archetype"
 								>
 									<option value="">No archetype</option>
 									{#each archetypes as a (a.key)}<option value={a.key}>{a.label}</option>{/each}
-								</select></label
-							>
+								</select>
+							</label>
 							<button
 								class="btn primary"
 								type="submit"
 								{...sa}
-								disabled={!deptLabel.trim() || !KEY_RE.test(shownDeptKey)}>Add department</button
+								disabled={!deptLabel.trim() || !KEY_RE.test(shownDeptKey)}
 							>
+								Add department
+							</button>
 						</form>
 					{/if}
 				</div>

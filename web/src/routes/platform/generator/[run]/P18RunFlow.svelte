@@ -43,10 +43,10 @@
 						{#if t.dropped}<span class="d" style:flex={t.dropped}></span>{/if}
 						{#if t.pending}<span class="p" style:flex={t.pending}></span>{/if}
 					</span>
-					<span class="p18-tally"
-						>{t.kept} kept{#if t.dropped}&nbsp;· {t.dropped} dropped{/if}{#if t.pending}&nbsp;·
-							<b>{t.pending} to decide</b>{/if}</span
-					>
+					<span class="p18-tally">
+						{t.kept} kept{#if t.dropped}&nbsp;· {t.dropped} dropped{/if}{#if t.pending}&nbsp;·
+							<b>{t.pending} to decide</b>{/if}
+					</span>
 				{:else}
 					<span class="p18-tally faint">→ {STEP_PRODUCES[s.key]}</span>
 				{/if}

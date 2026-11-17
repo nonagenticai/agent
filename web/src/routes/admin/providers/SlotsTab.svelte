@@ -240,41 +240,41 @@
 			label={(r) => `${slots.find((s) => s.slot === r.ref.slot)?.label ?? r.ref.slot} slot`}
 		/>
 		{#if slots.some((s) => !s.configured)}
-			<Callout kind="gap" title="Empty slots"
-				><span
-					>{slots
+			<Callout kind="gap" title="Empty slots">
+				<span>
+					{slots
 						.filter((s) => !s.configured)
 						.map((s) => s.label)
 						.join(', ')} not configured: work that needs {slots.filter((s) => !s.configured).length === 1
 						? 'it'
-						: 'them'} fails (and the release readiness lists it as a missing W5 slot).</span
-				></Callout
-			>
+						: 'them'} fails (and the release readiness lists it as a missing W5 slot).
+				</span>
+			</Callout>
 		{/if}
 		<Card cls="flush" title={INTRO[service].title} sub={platformManaged ? INTERNAL_COPY : INTRO[service].sub}>
 			<div class="tbl-wrap">
 				<table class="tbl clickable" data-testid={`slots-${service}`}>
 					<thead>
-						<tr
-							><th>Slot · used by</th><th>→ Provider · model</th><th>Funding · region</th><th class="r"
-								>Version</th
-							><th>Token</th><th>Updated</th></tr
-						>
+						<tr>
+							<th>Slot · used by</th><th>→ Provider · model</th><th>Funding · region</th><th class="r">
+								Version
+							</th><th>Token</th><th>Updated</th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each slots as s (s.slot)}
 							<tr data-slot={s.slot} onclick={() => edit(s)}>
 								<td>
-									<button class="table-action" type="button" onclick={(e) => (e.stopPropagation(), edit(s))}
-										>{s.label}</button
-									>
+									<button class="table-action" type="button" onclick={(e) => (e.stopPropagation(), edit(s))}>
+										{s.label}
+									</button>
 									<span class="cell-sub mono">{s.service}.{s.slot}</span>
 									<span class="cell-sub">{s.used_by.join(', ')}</span>
-									{#if s.drift}<span class="cell-sub"
-											><Chip text={`drift: v${s.drift.remote_version} by another app`} variant="warn" /></span
-										>{/if}
-									{#if s.withheld}<span class="cell-sub" data-testid={`slot-withheld-${s.slot}`}
-											><Chip
+									{#if s.drift}<span class="cell-sub">
+											<Chip text={`drift: v${s.drift.remote_version} by another app`} variant="warn" />
+										</span>{/if}
+									{#if s.withheld}<span class="cell-sub" data-testid={`slot-withheld-${s.slot}`}>
+											<Chip
 												text={`withheld: ${s.withheld.model ?? 'deployment default'} not live`}
 												variant="warn"
 												title={s.withheld.roots.length
@@ -287,24 +287,31 @@
 													data-testid={`slot-push-${s.slot}`}
 													disabled={pushing === s.slot}
 													onclick={(e) => (e.stopPropagation(), pushAgain(s))}
-													>{pushing === s.slot ? 'Pushing…' : 'Push again'}</button
-												>{/if}</span
-										>{/if}
+												>
+													{pushing === s.slot ? 'Pushing…' : 'Push again'}
+												</button>{/if}
+										</span>{/if}
 								</td>
 								<td>
 									{#if s.source === 'default'}<Chip text="deployment default" variant="ok" /><span
-											class="cell-sub mono">{s.model}</span
-										>{:else if s.configured}<span>{kindLabel(s.kind ?? '')}</span><span class="cell-sub mono"
-											>{s.model}</span
-										>{:else}<Chip text="empty" variant="err" />{/if}
-									{#if canWrite && resettable(s)}<span class="cell-sub"
-											><button
+											class="cell-sub mono"
+										>
+											{s.model}
+										</span>{:else if s.configured}<span>{kindLabel(s.kind ?? '')}</span><span
+											class="cell-sub mono"
+										>
+											{s.model}
+										</span>{:else}<Chip text="empty" variant="err" />{/if}
+									{#if canWrite && resettable(s)}<span class="cell-sub">
+											<button
 												class="table-action"
 												type="button"
 												data-testid={`slot-use-default-${s.slot}`}
-												onclick={(e) => (e.stopPropagation(), askReset(s))}>Use default</button
-											></span
-										>{/if}
+												onclick={(e) => (e.stopPropagation(), askReset(s))}
+											>
+												Use default
+											</button>
+										</span>{/if}
 								</td>
 								<td>
 									{#if s.configured}
@@ -330,9 +337,11 @@
 		<p class="note">
 			Saving a slot tests it live and creates a model change for every job that uses the old model: each job
 			is rebuilt (re-embed, copy or re-ingest) and accepted into its draft on <a
-				href="/admin/knowledge/model-changes">Model changes</a
-			>, so no job changes model until you publish it. The version you edited must still be the current one,
-			so a change made elsewhere is never silently overwritten.
+				href="/admin/knowledge/model-changes"
+			>
+				Model changes
+			</a>, so no job changes model until you publish it. The version you edited must still be the current
+			one, so a change made elsewhere is never silently overwritten.
 		</p>
 	{/snippet}
 </LoadState>
@@ -342,31 +351,31 @@
 		<div class="stack">
 			<p class="muted">{cur.purpose} Used by: {cur.used_by.join(', ')}.</p>
 			{#if platformManaged}
-				<Callout kind="info" title="Managed by the platform"
-					><span data-testid="slot-platform-managed"
-						>nonagentic’s own tenant runs this slot on {kindLabel(cur.kind ?? '')} (D70); the platform binds its
-						provider, model and endpoint. Nothing here is editable.</span
-					></Callout
-				>
+				<Callout kind="info" title="Managed by the platform">
+					<span data-testid="slot-platform-managed">
+						nonagentic’s own tenant runs this slot on {kindLabel(cur.kind ?? '')} (D70); the platform binds its
+						provider, model and endpoint. Nothing here is editable.
+					</span>
+				</Callout>
 			{/if}
 			{#if cur.source === 'default' && !platformManaged}
-				<Callout kind="info" title="Deployment default"
-					><span data-testid="slot-default"
-						>This slot uses the deployment default{cur.model ? ` (${cur.model})` : ''}; no URL or token of
-						yours is stored. Save a provider below to use your own.</span
-					></Callout
-				>
+				<Callout kind="info" title="Deployment default">
+					<span data-testid="slot-default">
+						This slot uses the deployment default{cur.model ? ` (${cur.model})` : ''}; no URL or token of
+						yours is stored. Save a provider below to use your own.
+					</span>
+				</Callout>
 			{/if}
 			{#if confirmReset && !platformManaged}
-				<Callout kind="gap" title="Use the deployment default?"
-					><span data-testid="slot-reset-confirm"
-						>The {cur.label} slot drops its provider, URL and token and uses the deployment default{slotDeploymentDefault(
+				<Callout kind="gap" title="Use the deployment default?">
+					<span data-testid="slot-reset-confirm">
+						The {cur.label} slot drops its provider, URL and token and uses the deployment default{slotDeploymentDefault(
 							cur.slot,
 						)
 							? ` (${slotDeploymentDefault(cur.slot)})`
-							: ''}. Jobs using the current model get a model change.</span
-					></Callout
-				>
+							: ''}. Jobs using the current model get a model change.
+					</span>
+				</Callout>
 				<div class="actions">
 					<button
 						class="btn primary"
@@ -374,21 +383,23 @@
 						{...writeAttrs(session, 'integrations_manager')}
 						disabled={!canWrite || busy}
 						data-testid="slot-reset-go"
-						onclick={resetSlot}>{busy ? 'Resetting…' : 'Use default'}</button
+						onclick={resetSlot}
 					>
+						{busy ? 'Resetting…' : 'Use default'}
+					</button>
 					<button class="btn" type="button" onclick={() => (confirmReset = false)}>Keep</button>
 				</div>
 			{/if}
 			{#if cur.withheld && !platformManaged}
-				<Callout kind="gap" title="The new embedding model is not live yet"
-					><span data-testid="slot-withheld"
-						>The published embedding model {cur.withheld.model ?? 'the deployment default'} (v{cur.withheld
+				<Callout kind="gap" title="The new embedding model is not live yet">
+					<span data-testid="slot-withheld">
+						The published embedding model {cur.withheld.model ?? 'the deployment default'} (v{cur.withheld
 							.version}) was withheld at {when(cur.withheld.at)}: {cur.withheld.roots.length
 							? cur.withheld.roots.join(', ')
 							: 'knowledge on the deployment default'} still holds content a job reads on the old model. Rebuild
-						it through its <a href="/admin/knowledge/model-changes">model change</a> and publish; then push again.</span
-					></Callout
-				>
+						it through its <a href="/admin/knowledge/model-changes">model change</a> and publish; then push again.
+					</span>
+				</Callout>
 				<div class="actions">
 					<button
 						class="btn"
@@ -396,26 +407,28 @@
 						{...writeAttrs(session, 'integrations_manager')}
 						disabled={!canWrite || pushing === cur.slot}
 						data-testid="slot-push-go"
-						onclick={() => cur && pushAgain(cur)}>{pushing === cur.slot ? 'Pushing…' : 'Push again'}</button
+						onclick={() => cur && pushAgain(cur)}
 					>
+						{pushing === cur.slot ? 'Pushing…' : 'Push again'}
+					</button>
 				</div>
 			{/if}
 			{#if cur.drift && !platformManaged}
-				<Callout kind="gap" title="Changed by another app"
-					><span
-						>{cur.drift.changed_by} wrote v{cur.drift.remote_version} at {when(cur.drift.at)}; you have v{cur.version}.
-						Agent will not overwrite it. Load the current version, then edit again.</span
-					></Callout
-				>
+				<Callout kind="gap" title="Changed by another app">
+					<span>
+						{cur.drift.changed_by} wrote v{cur.drift.remote_version} at {when(cur.drift.at)}; you have v{cur.version}.
+						Agent will not overwrite it. Load the current version, then edit again.
+					</span>
+				</Callout>
 				<div class="actions">
-					<button class="btn" type="button" {...writeAttrs(session, 'integrations_manager')} onclick={adopt}
-						>Load the current version</button
-					>
+					<button class="btn" type="button" {...writeAttrs(session, 'integrations_manager')} onclick={adopt}>
+						Load the current version
+					</button>
 				</div>
 			{/if}
 			<fieldset class="fs" disabled={!canWrite || busy}>
-				<label class="field"
-					><span class="label">Provider</span>
+				<label class="field">
+					<span class="label">Provider</span>
 					<select
 						class="input"
 						aria-label="Provider"
@@ -423,10 +436,10 @@
 						onchange={(e) => pickKind(e.currentTarget.value)}
 					>
 						{#each cur.kinds as k (k)}<option value={k}>{kindLabel(k)}</option>{/each}
-					</select></label
-				>
-				<label class="field"
-					><span class="label">Model</span>
+					</select>
+				</label>
+				<label class="field">
+					<span class="label">Model</span>
 					<select
 						class="input mono"
 						aria-label="Model"
@@ -435,17 +448,17 @@
 					>
 						{#each offered as m (m)}<option value={m}>{m}</option>{/each}
 						{#if !platformManaged}<option value={OTHER}>Other model…</option>{/if}
-					</select></label
-				>
+					</select>
+				</label>
 				{#if modelPick === OTHER}
-					<label class="field"
-						><span class="label">Model name</span><input
+					<label class="field">
+						<span class="label">Model name</span><input
 							class="input mono"
 							aria-label="Model name"
 							bind:value={model}
 							placeholder="The model id the provider expects"
-						/></label
-					>
+						/>
+					</label>
 				{/if}
 				{#if internal}
 					<p class="cell-sub" data-testid="slot-internal">
@@ -454,23 +467,23 @@
 						token is stored for this tenant.
 					</p>
 				{:else}
-					<label class="field"
-						><span class="label">URL</span><input
+					<label class="field">
+						<span class="label">URL</span><input
 							class="input mono"
 							aria-label="URL"
 							bind:value={baseUrl}
 							placeholder="https://api.example.eu/v1"
 							autocomplete="off"
 							spellcheck="false"
-						/></label
-					>
-					<label class="field"
-						><span class="label"
-							>Token {#if cur.secret.set && kind === cur.kind}<Chip
+						/>
+					</label>
+					<label class="field">
+						<span class="label">
+							Token {#if cur.secret.set && kind === cur.kind}<Chip
 									text={secretText(cur.secret)}
 									variant="ok"
-								/>{/if}</span
-						><input
+								/>{/if}
+						</span><input
 							class="input mono"
 							type="password"
 							aria-label="Token"
@@ -479,8 +492,8 @@
 							placeholder={cur.secret.set && kind === cur.kind
 								? 'Leave empty to keep the stored token (same provider and URL only)'
 								: 'Paste the provider API key'}
-						/></label
-					>
+						/>
+					</label>
 					<p class="cell-sub">Write-only: stored sealed, never shown again, only its fingerprint.</p>
 				{/if}
 				{#if !platformManaged}
@@ -490,11 +503,11 @@
 				{/if}
 			</fieldset>
 			{#if probe}
-				<Callout kind={probe.ok ? 'info' : 'err'} title={probe.ok ? 'Test passed' : 'Test failed'}
-					><span data-testid="slot-test-result"
-						>{probe.detail}{probe.dims ? ` · ${probe.dims} dimensions` : ''} · nothing was saved.</span
-					></Callout
-				>
+				<Callout kind={probe.ok ? 'info' : 'err'} title={probe.ok ? 'Test passed' : 'Test failed'}>
+					<span data-testid="slot-test-result">
+						{probe.detail}{probe.dims ? ` · ${probe.dims} dimensions` : ''} · nothing was saved.
+					</span>
+				</Callout>
 			{/if}
 			{#if failure}
 				<Callout
@@ -502,9 +515,9 @@
 					title={failure.code === 'VERSION_CONFLICT'
 						? '409 VERSION_CONFLICT — nothing overwritten'
 						: 'Not saved'}
-					><span>{failure.message}{failure.code === 'VERSION_CONFLICT' ? '' : ` (${failure.code})`}</span
-					></Callout
 				>
+					<span>{failure.message}{failure.code === 'VERSION_CONFLICT' ? '' : ` (${failure.code})`}</span>
+				</Callout>
 			{/if}
 			{#if !platformManaged}
 				<div class="actions">
@@ -513,16 +526,20 @@
 						type="button"
 						{...writeAttrs(session, 'integrations_manager')}
 						disabled={!canWrite || busy}
-						onclick={save}>{busy ? 'Testing and saving…' : 'Save'}</button
+						onclick={save}
 					>
+						{busy ? 'Testing and saving…' : 'Save'}
+					</button>
 					{#if !internal}
 						<button
 							class="btn"
 							type="button"
 							{...writeAttrs(session, 'integrations_manager')}
 							disabled={!canWrite || busy || testing}
-							onclick={testDraft}>{testing ? 'Testing…' : 'Test'}</button
+							onclick={testDraft}
 						>
+							{testing ? 'Testing…' : 'Test'}
+						</button>
 					{/if}
 					{#if resettable(cur) && !confirmReset}
 						<button
@@ -530,8 +547,10 @@
 							type="button"
 							{...writeAttrs(session, 'integrations_manager')}
 							disabled={!canWrite || busy}
-							onclick={() => (confirmReset = true)}>Use default</button
+							onclick={() => (confirmReset = true)}
 						>
+							Use default
+						</button>
 					{/if}
 				</div>
 			{/if}

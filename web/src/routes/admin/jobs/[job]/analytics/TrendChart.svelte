@@ -85,12 +85,12 @@
 			aria-label="Share of cases resolved without a person and handed to staff, {span}-day rolling"
 		>
 			{#each panels as pn (pn.key)}
-				<text class="ptitle" x={L} y={pn.top - 10}
-					><tspan class="pdot-{pn.cls}">●</tspan>
+				<text class="ptitle" x={L} y={pn.top - 10}>
+					<tspan class="pdot-{pn.cls}">●</tspan>
 					{pn.title}{#if pn.first != null && pn.last != null}<tspan class="pdelta">
-							{`\u00a0· ${fmt.pct(pn.first, 0)} → ${fmt.pct(pn.last, 0)} over the window`}</tspan
-						>{/if}</text
-				>
+							{`\u00a0· ${fmt.pct(pn.first, 0)} → ${fmt.pct(pn.last, 0)} over the window`}
+						</tspan>{/if}
+				</text>
 				{#each pn.ticks as g (g)}
 					<line class="grid" x1={L} x2={L + iw} y1={pn.y(g)} y2={pn.y(g)} />
 					<text class="tick" x={L - 6} y={pn.y(g) + 4} text-anchor="end">{Math.round(g * 100)}%</text>
@@ -112,9 +112,9 @@
 				<path class="ln ln-{pn.cls}" d={pn.d} />
 				{#if pn.last != null}
 					<circle class="dot dot-{pn.cls}" cx={x(points.length - 1)} cy={pn.y(pn.last)} r="4" />
-					<text class="end" x={L + iw + 6} y={pn.y(pn.last) + (pn.key === 'containment' ? 14 : 4)}
-						>{fmt.pct(pn.last, 0)}</text
-					>
+					<text class="end" x={L + iw + 6} y={pn.y(pn.last) + (pn.key === 'containment' ? 14 : 4)}>
+						{fmt.pct(pn.last, 0)}
+					</text>
 				{/if}
 				{#if hover != null && hp && hp[pn.key] != null}
 					<line class="cross" x1={x(hover)} x2={x(hover)} y1={pn.top} y2={pn.top + PH} />
@@ -144,9 +144,9 @@
 			<div class="j2t-tip" style:left="{Math.min(80, Math.max(12, tipLeft))}%">
 				<b>{hp.day}</b>
 				<span>{fmt.n(hp.cases)} cases that day</span>
-				<span
-					><i class="sw sw-c"></i>{hp.containment == null ? '—' : fmt.pct(hp.containment, 0)} resolved</span
-				>
+				<span>
+					<i class="sw sw-c"></i>{hp.containment == null ? '—' : fmt.pct(hp.containment, 0)} resolved
+				</span>
 				<span><i class="sw sw-h"></i>{hp.handover == null ? '—' : fmt.pct(hp.handover, 0)} to staff</span>
 			</div>
 		{/if}
@@ -155,13 +155,13 @@
 		<summary>View data</summary>
 		<div class="tbl-wrap">
 			<table class="tbl dense">
-				<thead
-					><tr
-						><th>Day</th><th class="r">Cases</th><th class="r">Resolved ({span} d)</th><th class="r"
-							>To staff ({span} d)</th
-						></tr
-					></thead
-				>
+				<thead>
+					<tr>
+						<th>Day</th><th class="r">Cases</th><th class="r">Resolved ({span} d)</th><th class="r">
+							To staff ({span} d)
+						</th>
+					</tr>
+				</thead>
 				<tbody>
 					{#each points as p (p.day)}
 						<tr>

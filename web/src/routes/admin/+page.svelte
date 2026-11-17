@@ -162,9 +162,9 @@
 						</div>
 						<div class="ws-num"><b>{fmt.k(a.turns)}</b><span>customer messages answered</span></div>
 						<div class="ws-num">
-							<b
-								>{fmt.n(ok)}{#if all}<small>/{fmt.n(all)}</small>{/if}</b
-							><span>actions on your systems succeeded</span>
+							<b>
+								{fmt.n(ok)}{#if all}<small>/{fmt.n(all)}</small>{/if}
+							</b><span>actions on your systems succeeded</span>
 						</div>
 					</div>
 					{#if !a.attributed}
@@ -195,30 +195,32 @@
 					<div class="tbl-wrap">
 						<table class="tbl" data-testid="ws-agents">
 							<thead>
-								<tr
-									><th>Agent</th><th>Status</th><th>Live version</th><th class="r">Open cases</th><th
-										class="r">{L.contained} (30 d)</th
-									><th></th></tr
-								>
+								<tr>
+									<th>Agent</th><th>Status</th><th>Live version</th><th class="r">Open cases</th><th
+										class="r"
+									>
+										{L.contained} (30 d)
+									</th><th></th>
+								</tr>
 							</thead>
 							<tbody>
 								{#each rows as r (r.job.key)}
 									{@const c = r.status.open_cases}
 									<tr data-job={r.job.key}>
-										<td
-											><a href={jobPath(r.job.key)}><b>{r.job.label}</b></a>
-											<TechDetail><span class="cell-sub mono">{r.job.key}</span></TechDetail></td
-										>
+										<td>
+											<a href={jobPath(r.job.key)}><b>{r.job.label}</b></a>
+											<TechDetail><span class="cell-sub mono">{r.job.key}</span></TechDetail>
+										</td>
 										<td><StatusChip status={r.status} /></td>
 										<td>
-											{#if r.status.live_release}<span data-testid="live-release"
-													>{releaseLabel(r.status.live_release.id)}</span
-												>{:else}<span class="muted">Not live yet</span>{/if}
+											{#if r.status.live_release}<span data-testid="live-release">
+													{releaseLabel(r.status.live_release.id)}
+												</span>{:else}<span class="muted">Not live yet</span>{/if}
 										</td>
-										<td class="r"
-											>{c.agent + c.staff + c.waiting + c.failed}{#if c.staff_tests}
-												<span class="muted">({c.staff_tests} staff tests)</span>{/if}</td
-										>
+										<td class="r">
+											{c.agent + c.staff + c.waiting + c.failed}{#if c.staff_tests}
+												<span class="muted">({c.staff_tests} staff tests)</span>{/if}
+										</td>
 										<td class="r">{fmt.pct(r.status.resolved_by_agent_30d, 0)}</td>
 										<td class="r"><a class="btn sm" href={jobPath(r.job.key)}>Open</a></td>
 									</tr>
@@ -254,49 +256,51 @@
 						{#if o.tenant.residency}<span
 								data-testid="t2-residency"
 								title="Data residency, set at provisioning (D59): pins your stores, LLM providers and logs"
-								><Chip text={`data in ${o.tenant.residency.toUpperCase()}`} variant="tool" /></span
-							>{/if}
+							>
+								<Chip text={`data in ${o.tenant.residency.toUpperCase()}`} variant="tool" />
+							</span>{/if}
 						<MilestoneChip milestone="M3" />
 					{/snippet}
 					<div class="tbl-wrap">
 						<table class="tbl" data-testid="integrations">
 							<thead>
-								<tr
-									><th>Target</th><th>Status</th><th class="r">Attempts</th><th>Last success</th><th
-										>Last error</th
-									><th aria-label="Row actions"></th></tr
-								>
+								<tr>
+									<th>Target</th><th>Status</th><th class="r">Attempts</th><th>Last success</th><th>
+										Last error
+									</th><th aria-label="Row actions"></th>
+								</tr>
 							</thead>
 							<tbody>
 								{#each o.integrations as r (r.target)}
 									{@const chip = integrationChip(r)}
 									<tr data-target={r.target}>
-										<td
-											><b>{r.label}</b><span class="cell-sub mono"
-												>{r.current ? `${r.current.op}` : r.target}</span
-											></td
-										>
+										<td>
+											<b>{r.label}</b><span class="cell-sub mono">
+												{r.current ? `${r.current.op}` : r.target}
+											</span>
+										</td>
 										<td>
 											<Chip text={chip.text} variant={chip.variant} />
 											{#each r.drift as d (d.slot)}
-												<span class="cell-sub"
-													><Chip
+												<span class="cell-sub">
+													<Chip
 														text={`drift: ${d.slot} v${d.local_version} → v${d.remote_version}`}
 														variant="warn"
 														title="Another app changed this slot. Nothing was overwritten."
-													/></span
-												>
+													/>
+												</span>
 											{/each}
 										</td>
-										<td class="r mono"
-											>{r.current ? `${r.current.attempts} / ${r.current.max_attempts}` : '—'}</td
-										>
+										<td class="r mono">
+											{r.current ? `${r.current.attempts} / ${r.current.max_attempts}` : '—'}
+										</td>
 										<td>{when(r.last_success_at)}</td>
 										<td>
 											{#if r.current?.last_error}
-												<span class="mono"
-													>{r.current.last_http_status ?? ''} {r.current.last_error_code}</span
-												>
+												<span class="mono">
+													{r.current.last_http_status ?? ''}
+													{r.current.last_error_code}
+												</span>
 												<span class="cell-sub">{r.current.last_error}</span>
 											{:else}<span class="muted">—</span>{/if}
 										</td>
@@ -308,23 +312,28 @@
 														type="button"
 														{...writeAttrs(session, 'tenant_admin')}
 														disabled={writeAttrs(session, 'tenant_admin').disabled || busy !== ''}
-														onclick={() => retry(r)}>Retry</button
+														onclick={() => retry(r)}
 													>
+														Retry
+													</button>
 													<button
 														class="btn sm"
 														type="button"
 														{...writeAttrs(session, 'tenant_admin')}
 														disabled={writeAttrs(session, 'tenant_admin').disabled || busy !== ''}
-														onclick={() => cancel(r)}>Cancel</button
+														onclick={() => cancel(r)}
 													>
+														Cancel
+													</button>
 												{/if}
 												<button
 													class="btn sm"
 													type="button"
 													aria-expanded={openHistory === r.target}
 													onclick={() => (openHistory = openHistory === r.target ? null : r.target)}
-													>History</button
 												>
+													History
+												</button>
 											</div>
 										</td>
 									</tr>
@@ -332,12 +341,13 @@
 										<tr class="history">
 											<td colspan="6">
 												<table class="tbl dense">
-													<thead
-														><tr
-															><th>Created</th><th>Op</th><th>Status</th><th class="r">Attempts</th><th>By</th
-															><th>Error</th></tr
-														></thead
-													>
+													<thead>
+														<tr>
+															<th>Created</th><th>Op</th><th>Status</th><th class="r">Attempts</th><th>
+																By
+															</th><th>Error</th>
+														</tr>
+													</thead>
 													<tbody>
 														{#each r.history as h (h.id)}
 															<tr>

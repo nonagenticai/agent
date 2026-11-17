@@ -75,10 +75,9 @@
 			<div class="tbl-wrap">
 				<table class="tbl" data-testid="side-by-side-{object}">
 					<thead>
-						<tr
-							><th>Key</th><th>State</th><th>Base (release)</th><th>Yours</th><th aria-label="Actions"
-							></th></tr
-						>
+						<tr>
+							<th>Key</th><th>State</th><th>Base (release)</th><th>Yours</th><th aria-label="Actions"></th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each rows as row (row.key)}
@@ -91,9 +90,9 @@
 										<div class="muted small live-was">
 											Live: <span class="mono">{pending.live ?? 'release value'}</span>
 										</div>{/if}
-									{#if row.conflict}<a href={conflictsHref} title={row.conflict.detail}
-											><Chip text="Conflict: {KIND_LABEL[row.conflict.kind]}" variant="err" /></a
-										>{/if}
+									{#if row.conflict}<a href={conflictsHref} title={row.conflict.detail}>
+											<Chip text="Conflict: {KIND_LABEL[row.conflict.kind]}" variant="err" />
+										</a>{/if}
 									{#if row.base?.required === true}<Chip
 											text="Required"
 											variant="muted"
@@ -135,11 +134,11 @@
 									</td>
 								{:else}
 									<td>{row.base ? summaryOf(object, row.base) : 'Gone from the release'}</td>
-									<td class="muted"
-										>Hidden by you <span class="small"
-											>({row.tenant?.updated_by_name ?? row.tenant?.updated_by})</span
-										></td
-									>
+									<td class="muted">
+										Hidden by you <span class="small">
+											({row.tenant?.updated_by_name ?? row.tenant?.updated_by})
+										</span>
+									</td>
 								{/if}
 								<td class="r actions-cell">
 									{#if edit && row.state !== 'tombstone'}
@@ -148,8 +147,10 @@
 											type="button"
 											disabled={wa.disabled || busy !== ''}
 											title={wa.title}
-											onclick={() => edit(row, data.entities)}>Edit</button
+											onclick={() => edit(row, data.entities)}
 										>
+											Edit
+										</button>
 									{/if}
 									{#each actionsFor(row) as op}
 										<button
@@ -157,8 +158,10 @@
 											type="button"
 											disabled={wa.disabled || busy !== ''}
 											title={wa.title}
-											onclick={() => act(row, op)}>{ACTION_LABEL[op]}</button
+											onclick={() => act(row, op)}
 										>
+											{ACTION_LABEL[op]}
+										</button>
 									{/each}
 								</td>
 							</tr>

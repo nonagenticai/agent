@@ -127,11 +127,11 @@
 		{#if entity}
 			<span class="level {entity.scope}">{SCOPE_LABEL[entity.scope]}</span>
 			<Chip text={ORIGIN_LABEL[entity.origin]} variant={entity.origin === 'tenant' ? 'accent' : 'muted'} />
-			<span class="mono"
-				>{entity.name}{entity.industry ? ` · ${entity.industry}` : ''}{entity.department
+			<span class="mono">
+				{entity.name}{entity.industry ? ` · ${entity.industry}` : ''}{entity.department
 					? ` · ${entity.department}`
-					: ''}</span
-			>
+					: ''}
+			</span>
 			{#if entity.hidden}<Chip text="hidden" variant="dead" />{/if}
 			{#if pending.length}<Chip text="Draft" variant="warn" title={draftTitle(pending)} />{/if}
 		{/if}
@@ -144,45 +144,45 @@
 					{#each pending as p (p.id)}
 						<li>
 							{p.label}
-							{#if p.live !== p.draft}<span class="muted"
-									>— live: {p.live ?? 'none'} · draft: {p.draft ?? 'none'}</span
-								>{/if}
+							{#if p.live !== p.draft}<span class="muted">
+									— live: {p.live ?? 'none'} · draft: {p.draft ?? 'none'}
+								</span>{/if}
 						</li>
 					{/each}
 				</ul>
-				<span class="muted"
-					>Saved to draft, not live: <a href="/chat">test it in the test chat</a>, then
-					<a href="/admin/jobs/{app.job}/release">review &amp; publish</a>.</span
-				>
+				<span class="muted">
+					Saved to draft, not live: <a href="/chat">test it in the test chat</a>, then
+					<a href="/admin/jobs/{app.job}/release">review &amp; publish</a>.
+				</span>
 			</div>
 		{/if}
 		{#if entity.origin === 'tenant'}
 			<div class="j11-own tenant" data-testid="j11-own">
 				<b>+ Added by you</b>
-				<span
-					>A refinement of this job ({entity.layer}{entity.created_by ? `, by ${entity.created_by}` : ''}).
-					You can change it here; changes are saved to draft and customers see them once you
-					<a href="/admin/jobs/{app.job}/release">publish</a>.</span
-				>
+				<span>
+					A refinement of this job ({entity.layer}{entity.created_by ? `, by ${entity.created_by}` : ''}). You
+					can change it here; changes are saved to draft and customers see them once you
+					<a href="/admin/jobs/{app.job}/release">publish</a>.
+				</span>
 			</div>
 		{:else}
 			<div class="j11-own" data-testid="j11-own">
-				<b
-					><svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"
-						><path
+				<b>
+					<svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
+						<path
 							d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z"
 							fill="none"
 							stroke="currentColor"
 							stroke-width="2.2"
 							stroke-linejoin="round"
-						/></svg
-					>
-					Inherited from {entity.layer}</b
-				>
-				<span
-					>Its fields come from the template and are read-only here. You can add synonyms customers use, add
-					attributes and relations, or hide it for this job — saved to draft, live once you publish a release.</span
-				>
+						/>
+					</svg>
+					Inherited from {entity.layer}
+				</b>
+				<span>
+					Its fields come from the template and are read-only here. You can add synonyms customers use, add
+					attributes and relations, or hide it for this job — saved to draft, live once you publish a release.
+				</span>
 			</div>
 		{/if}
 
@@ -202,9 +202,9 @@
 								<span class="j11-use-label">{s.label}</span>
 								<span class="mono muted">{s.activity}</span>
 								<span class="spacer"></span>
-								{#if s.procedure}<a class="mono" href="/admin/jobs/{app.job}/procedures/{s.procedure}"
-										>procedure {s.procedure}</a
-									>{/if}
+								{#if s.procedure}<a class="mono" href="/admin/jobs/{app.job}/procedures/{s.procedure}">
+										procedure {s.procedure}
+									</a>{/if}
 							</li>
 						{/each}
 					</ul>
@@ -237,8 +237,9 @@
 			<dt>Platform object</dt>
 			<dd>
 				{#if entity.object_key}
-					{#if sa}<a class="mono" href="/platform/objects/{entity.object_key}">{entity.object_key}</a
-						>{:else}<span class="mono">{entity.object_key}</span>{/if}
+					{#if sa}<a class="mono" href="/platform/objects/{entity.object_key}">
+							{entity.object_key}
+						</a>{:else}<span class="mono">{entity.object_key}</span>{/if}
 					<span class="muted"> — operations and states live on the platform object</span>
 				{:else}
 					<span class="muted">Not linked to a platform object; it cannot back an operation.</span>
@@ -257,9 +258,9 @@
 		<section>
 			<div class="sec-head">
 				<h3>Synonyms</h3>
-				<button type="button" class="btn sm" {...writeAttrs(session, 'job_designer')} onclick={toggleHidden}
-					>{entity.hidden ? 'Unhide entity' : 'Hide entity'}</button
-				>
+				<button type="button" class="btn sm" {...writeAttrs(session, 'job_designer')} onclick={toggleHidden}>
+					{entity.hidden ? 'Unhide entity' : 'Hide entity'}
+				</button>
 			</div>
 			<div class="chips">
 				{#each entity.synonyms as s (s)}<Chip text={s} />{:else}<span class="muted">None.</span>{/each}
@@ -280,18 +281,19 @@
 			<h3>Attributes ({entity.attributes.length})</h3>
 			<div class="tbl-wrap">
 				<table class="tbl dense">
-					<thead
-						><tr><th>Name</th><th>Type</th><th>Personal data</th><th>Origin</th><th>Synonyms</th></tr></thead
-					>
+					<thead>
+						<tr><th>Name</th><th>Type</th><th>Personal data</th><th>Origin</th><th>Synonyms</th></tr>
+					</thead>
 					<tbody>
 						{#each entity.attributes as a (a.name)}
 							<tr>
 								<td class="mono">{a.name}</td>
 								<td class="mono">{a.data_type}</td>
-								<td
-									>{#if a.pii}<Chip text="personal data" variant="err" />{:else}<span class="muted">no</span
-										>{/if}</td
-								>
+								<td>
+									{#if a.pii}<Chip text="personal data" variant="err" />{:else}<span class="muted">
+											no
+										</span>{/if}
+								</td>
 								<td>
 									<Chip text={ORIGIN_LABEL[a.origin]} variant={a.origin === 'tenant' ? 'accent' : 'muted'} />
 									{#if a.conflict}<Chip
@@ -324,9 +326,9 @@
 				>
 					{#each ATTR_TYPES as t (t)}<option value={t}>{t}</option>{/each}
 				</select>
-				<label class="attr-pii"
-					><input type="checkbox" bind:checked={attrPii} disabled={!canWrite} /> personal data</label
-				>
+				<label class="attr-pii">
+					<input type="checkbox" bind:checked={attrPii} disabled={!canWrite} /> personal data
+				</label>
 				<button class="btn sm" type="submit" {...writeAttrs(session, 'job_designer')}>Add attribute</button>
 			</form>
 		</section>
@@ -341,8 +343,10 @@
 					type="button"
 					class="btn sm"
 					{...writeAttrs(session, 'job_designer')}
-					onclick={() => onaddrelation(entity.name)}>Add relation</button
+					onclick={() => onaddrelation(entity.name)}
 				>
+					Add relation
+				</button>
 			</div>
 			{#each rel.out as r (relKey(r))}
 				<div class="rel">
@@ -379,9 +383,9 @@
 		{#if confirmKey === relKey(r)}
 			<span class="confirm" role="group" aria-label="Confirm delete">
 				<span class="muted">Delete {r.subject} {r.predicate} {r.object}?</span>
-				<button type="button" class="btn sm danger" disabled={busy} onclick={() => deleteRelation(r)}
-					>{busy ? 'Deleting…' : 'Delete'}</button
-				>
+				<button type="button" class="btn sm danger" disabled={busy} onclick={() => deleteRelation(r)}>
+					{busy ? 'Deleting…' : 'Delete'}
+				</button>
 				<button type="button" class="btn sm" onclick={() => (confirmKey = null)}>Keep</button>
 			</span>
 		{:else}
@@ -393,8 +397,10 @@
 				onclick={() => {
 					confirmKey = relKey(r);
 					relError = null;
-				}}>Delete</button
+				}}
 			>
+				Delete
+			</button>
 		{/if}
 	{/if}
 {/snippet}

@@ -21,12 +21,14 @@
 	};
 </script>
 
-<span class="kt k-{kind}" class:bad class:wide title={title ?? STEP_KIND[kind].hint}
-	><b>{LETTER[kind]}</b>{#if wide}<span class="kt-name">{STEP_KIND[kind].label}</span>{/if}{#if gate}<span
+<span class="kt k-{kind}" class:bad class:wide title={title ?? STEP_KIND[kind].hint}>
+	<b>{LETTER[kind]}</b>{#if wide}<span class="kt-name">{STEP_KIND[kind].label}</span>{/if}{#if gate}<span
 			class="kt-gate"
-			aria-label="gate">◆</span
-		>{/if}</span
->
+			aria-label="gate"
+		>
+			◆
+		</span>{/if}
+</span>
 
 <style>
 	.kt {

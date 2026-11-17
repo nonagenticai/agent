@@ -14,9 +14,9 @@
 {#if verdict !== 'no_knowledge'}
 	<div class="as" class:compact data-testid="answer-sources" data-grounding={verdict}>
 		{#if verdict !== 'grounded'}
-			<span class="chip {label.variant} sm as-flag" title={label.title} data-testid="grounding-flag"
-				>{verdict === 'not_grounded' ? '⚠ ' : ''}{label.text}</span
-			>
+			<span class="chip {label.variant} sm as-flag" title={label.title} data-testid="grounding-flag">
+				{verdict === 'not_grounded' ? '⚠ ' : ''}{label.text}
+			</span>
 		{/if}
 		{#if sources.length}
 			<details class="as-list">
@@ -31,12 +31,13 @@
 						<li title="chunk {s.chunk_id} · document {s.document_id}">
 							<b>{sourceLabel(s)}</b>
 							{#if pc}
-								<span class="as-layer" data-testid="citation-platform"
-									><span class="chip accent sm">{pc.text}</span>{#if pc.href}
-										<a href={pc.href} target="_blank" rel="noopener noreferrer">source</a
-										>{/if}{#if pc.licence}
-										<span class="as-ids">{pc.licence}</span>{/if}</span
-								>
+								<span class="as-layer" data-testid="citation-platform">
+									<span class="chip accent sm">{pc.text}</span>{#if pc.href}
+										<a href={pc.href} target="_blank" rel="noopener noreferrer">
+											source
+										</a>{/if}{#if pc.licence}
+										<span class="as-ids">{pc.licence}</span>{/if}
+								</span>
 							{:else}
 								<span class="as-path mono">{storePath(s.store_path)}</span>
 							{/if}
@@ -47,11 +48,11 @@
 				</ol>
 			</details>
 		{:else if !compact}
-			<span class="as-none"
-				>{verdict === 'dont_know'
+			<span class="as-none">
+				{verdict === 'dont_know'
 					? 'The knowledge search found nothing to cite.'
-					: 'Knowledge was searched, but the answer cites no source.'}</span
-			>
+					: 'Knowledge was searched, but the answer cites no source.'}
+			</span>
 		{/if}
 	</div>
 {/if}

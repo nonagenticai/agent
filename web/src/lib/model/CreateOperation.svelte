@@ -84,9 +84,9 @@
 	}
 </script>
 
-<button class="btn primary" type="button" {...superAdminAttrs(session)} onclick={start}
-	>Create operation</button
->
+<button class="btn primary" type="button" {...superAdminAttrs(session)} onclick={start}>
+	Create operation
+</button>
 <Drawer bind:open title="Create operation" dirty={!created && !!(form.object || form.verb)}>
 	{#if created}
 		<Callout kind="info" title="Operation created">
@@ -118,10 +118,13 @@
 					bind:value={form.object}
 					required
 					disabled={busy}
-					><option value="" disabled>Choose an object</option>{#each objects as o (o.object)}<option
-							value={o.object}>{o.label} · {o.object}</option
-						>{/each}</select
 				>
+					<option value="" disabled>Choose an object</option>{#each objects as o (o.object)}<option
+							value={o.object}
+						>
+							{o.label} · {o.object}
+						</option>{/each}
+				</select>
 			</div>
 			<div class="field">
 				<label for="new-op-verb">Verb</label><input
@@ -141,9 +144,9 @@
 					bind:value={form.variant}
 					pattern="[A-Za-z0-9_\-]+"
 					disabled={busy}
-				/><span class="muted"
-					>Create the unqualified operation first. A variant inherits its unchanged attributes.</span
-				>
+				/><span class="muted">
+					Create the unqualified operation first. A variant inherits its unchanged attributes.
+				</span>
 			</div>
 			{#if form.variant.trim()}
 				<div class="field">
@@ -172,10 +175,11 @@
 					class="input"
 					bind:value={form.modality}
 					disabled={busy}
-					><option value="observe">Observe — read state</option><option value="do"
-						>Do — change the record</option
-					><option value="request">Request — ask the provider</option></select
 				>
+					<option value="observe">Observe — read state</option><option value="do">
+						Do — change the record
+					</option><option value="request">Request — ask the provider</option>
+				</select>
 			</div>
 			<div class="field">
 				<label for="new-op-kind">Operation kind</label><select
@@ -183,10 +187,11 @@
 					class="input"
 					bind:value={form.op_kind}
 					disabled={busy}
-					><option value="standard">Standard</option><option value="hosted_payment_link"
-						>Hosted payment link</option
-					></select
 				>
+					<option value="standard">Standard</option><option value="hosted_payment_link">
+						Hosted payment link
+					</option>
+				</select>
 			</div>
 			<div class="field">
 				<label for="new-op-identity">Minimum identity level</label><select
@@ -195,9 +200,11 @@
 					bind:value={form.identity_level}
 					required
 					disabled={busy}
-					><option value="" disabled>Choose the required level</option
-					>{#each ['0', '1', '2', '3', 'S'] as l}<option value={l}>{LEVEL_LABEL[l]}</option>{/each}</select
-				><span class="muted">The server enforces the contract's minimum level.</span>
+				>
+					<option value="" disabled>
+						Choose the required level
+					</option>{#each ['0', '1', '2', '3', 'S'] as l}<option value={l}>{LEVEL_LABEL[l]}</option>{/each}
+				</select><span class="muted">The server enforces the contract's minimum level.</span>
 			</div>
 			<div class="field">
 				<label for="new-op-side-effect">Side effect</label><select
@@ -205,24 +212,28 @@
 					class="input"
 					bind:value={form.side_effect}
 					disabled={busy}
-					>{#each ['R', 'W', 'X', 'P'] as effect}<option value={effect}
-							>{effect} — {EFFECT_LABEL[effect as NewOperationInput['side_effect']]}</option
-						>{/each}</select
 				>
+					{#each ['R', 'W', 'X', 'P'] as effect}<option value={effect}>
+							{effect} — {EFFECT_LABEL[effect as NewOperationInput['side_effect']]}
+						</option>{/each}
+				</select>
 			</div>
-			<label
-				><input type="checkbox" bind:checked={form.confirm_back} disabled={busy} /> Require customer confirmation</label
-			>
+			<label>
+				<input type="checkbox" bind:checked={form.confirm_back} disabled={busy} /> Require customer confirmation
+			</label>
 			<div class="field">
 				<label for="new-op-idempotency">Idempotency</label><select
 					id="new-op-idempotency"
 					class="input"
 					bind:value={form.idempotency}
 					disabled={busy}
-					><option value="nat">Natural</option><option value="key">Idempotency key</option><option
-						value="key+dup">Key and duplicate search</option
-					></select
 				>
+					<option value="nat">Natural</option><option value="key">Idempotency key</option><option
+						value="key+dup"
+					>
+						Key and duplicate search
+					</option>
+				</select>
 			</div>
 			<div class="field">
 				<label for="new-op-verify">Verification read</label><select
@@ -230,11 +241,13 @@
 					class="input"
 					bind:value={form.verify_read}
 					disabled={busy}
-					><option value="">None</option
-					>{#each operations.filter((o) => o.side_effect === 'R') as o (o.key)}<option value={o.key}
-							>{o.key}</option
-						>{/each}</select
 				>
+					<option value="">
+						None
+					</option>{#each operations.filter((o) => o.side_effect === 'R') as o (o.key)}<option value={o.key}>
+							{o.key}
+						</option>{/each}
+				</select>
 			</div>
 			<div class="field">
 				<label for="new-op-input">Input fields (comma separated)</label><input
@@ -250,10 +263,10 @@
 					class="input"
 					bind:value={form.output}
 					disabled={busy}
-				/><span class="muted"
-					>Leave I/O blank to use the operation contract's fields. Custom operations use the object's live
-					fields.</span
-				>
+				/><span class="muted">
+					Leave I/O blank to use the operation contract's fields. Custom operations use the object's live
+					fields.
+				</span>
 			</div>
 			<div class="field">
 				<label for="new-op-description">Description</label><textarea
@@ -262,9 +275,9 @@
 					bind:value={form.description}
 					disabled={busy}></textarea>
 			</div>
-			<button class="btn primary" type="submit" disabled={busy || !form.layer_key || !form.identity_level}
-				>{busy ? 'Creating…' : 'Create operation draft'}</button
-			>
+			<button class="btn primary" type="submit" disabled={busy || !form.layer_key || !form.identity_level}>
+				{busy ? 'Creating…' : 'Create operation draft'}
+			</button>
 		</form>
 	{/if}
 </Drawer>

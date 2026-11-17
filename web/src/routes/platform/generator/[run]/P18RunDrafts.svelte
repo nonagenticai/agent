@@ -65,9 +65,9 @@
 			<div class="p18-dmeta">
 				<span class="p18-kind">{it.kind.replaceAll('_', ' ')}</span>
 				<span class="p18-conf" title="LLM confidence">
-					<span class="p18-confbar" aria-hidden="true"
-						><span style:width="{Math.round(it.llm_confidence * 100)}%"></span></span
-					>
+					<span class="p18-confbar" aria-hidden="true">
+						<span style:width="{Math.round(it.llm_confidence * 100)}%"></span>
+					</span>
 					{Math.round(it.llm_confidence * 100)}% sure
 				</span>
 			</div>
@@ -84,20 +84,21 @@
 								: it.proposal === 'proposed'
 									? 'warn'
 									: 'muted'}"
-						>{it.proposal === 'none' ? 'not proposed (rule 1)' : `proposal ${it.proposal}`}</span
 					>
+						{it.proposal === 'none' ? 'not proposed (rule 1)' : `proposal ${it.proposal}`}
+					</span>
 				</div>
 			{/if}
 			{#if it.new_operation}
 				<div class="row p18-newobj">
-					<span class="chip proposed"
-						>new operation: {String(it.new_operation.object ?? '')}.{String(
-							it.new_operation.verb ?? '',
-						)}</span
+					<span class="chip proposed">
+						new operation: {String(it.new_operation.object ?? '')}.{String(it.new_operation.verb ?? '')}
+					</span>
+					<span
+						class="chip {it.proposal === 'approved' ? 'ok' : it.proposal === 'rejected' ? 'err' : 'warn'}"
 					>
-					<span class="chip {it.proposal === 'approved' ? 'ok' : it.proposal === 'rejected' ? 'err' : 'warn'}"
-						>proposal {it.proposal}</span
-					>
+						proposal {it.proposal}
+					</span>
 				</div>
 			{/if}
 			{#if it.example}
@@ -116,13 +117,16 @@
 							onclick={async () => {
 								await act(() => decide(r.id, it.id, { decision: 'renamed', note: renameTo }), 'Renamed.');
 								renaming = null;
-							}}>Save</button
+							}}
 						>
+							Save
+						</button>
 						<button class="btn sm" type="button" onclick={() => (renaming = null)}>Cancel</button>
 					{:else if merging === it.id}
 						<select class="input" aria-label="Merge into" bind:value={mergeInto}>
-							{#each items.filter((x) => x.id !== it.id) as x (x.id)}<option value={x.id}>{x.title}</option
-								>{/each}
+							{#each items.filter((x) => x.id !== it.id) as x (x.id)}<option value={x.id}>
+									{x.title}
+								</option>{/each}
 						</select>
 						<button
 							class="btn sm primary"
@@ -130,24 +134,29 @@
 							onclick={async () => {
 								await act(() => decide(r.id, it.id, { decision: 'merged', note: mergeInto }), 'Merged.');
 								merging = null;
-							}}>Merge</button
+							}}
 						>
+							Merge
+						</button>
 						<button class="btn sm" type="button" onclick={() => (merging = null)}>Cancel</button>
 					{:else if it.decision === 'pending'}
 						<button
 							class="btn sm primary"
 							type="button"
 							onclick={() => act(() => decide(r.id, it.id, { decision: 'accepted' }), 'Accepted.')}
-							>Accept</button
 						>
+							Accept
+						</button>
 						<button
 							class="btn sm"
 							type="button"
 							onclick={() => {
 								renaming = it.id;
 								renameTo = it.title;
-							}}>Rename</button
+							}}
 						>
+							Rename
+						</button>
 						<button
 							class="btn sm"
 							type="button"
@@ -155,20 +164,25 @@
 							onclick={() => {
 								merging = it.id;
 								mergeInto = items.find((x) => x.id !== it.id)?.id ?? '';
-							}}>Merge</button
+							}}
 						>
+							Merge
+						</button>
 						<button
 							class="btn sm danger"
 							type="button"
-							onclick={() => act(() => decide(r.id, it.id, { decision: 'dropped' }), 'Dropped.')}>Drop</button
+							onclick={() => act(() => decide(r.id, it.id, { decision: 'dropped' }), 'Dropped.')}
 						>
+							Drop
+						</button>
 					{:else}
 						<button
 							class="btn sm"
 							type="button"
 							onclick={() => act(() => decide(r.id, it.id, { decision: 'pending' }), 'Decision undone.')}
-							>Undo</button
 						>
+							Undo
+						</button>
 					{/if}
 					{#if r.scope === 'platform' && it.kind === 'operation_expectation' && it.proposal === 'none' && it.decision !== 'dropped'}
 						<button
@@ -177,8 +191,10 @@
 							onclick={() => {
 								opItem = it;
 								opOpen = true;
-							}}>Propose new operation</button
+							}}
 						>
+							Propose new operation
+						</button>
 					{:else if it.kind === 'operation_expectation' && it.new_operation}
 						<button
 							class="btn sm"
@@ -186,16 +202,18 @@
 							disabled={it.proposal !== 'proposed'}
 							onclick={() =>
 								act(() => api().resolveGeneratorProposal(r.id, it.id, true), 'Operation approved.')}
-							>Approve operation</button
 						>
+							Approve operation
+						</button>
 						<button
 							class="btn sm"
 							type="button"
 							disabled={it.proposal !== 'proposed'}
 							onclick={() =>
 								act(() => api().resolveGeneratorProposal(r.id, it.id, false), 'Operation rejected.')}
-							>Reject operation</button
 						>
+							Reject operation
+						</button>
 					{/if}
 					{#if it.new_object && it.proposal === 'none'}
 						<button
@@ -205,23 +223,27 @@
 								act(
 									() => api().proposeGeneratorObject(r.id, it.id),
 									`Proposed ${it.new_object} to the super_admin.`,
-								)}>Propose new object</button
+								)}
 						>
+							Propose new object
+						</button>
 					{:else if it.new_object && it.proposal === 'proposed'}
 						<button
 							class="btn sm"
 							type="button"
 							onclick={() =>
 								act(() => api().resolveGeneratorProposal(r.id, it.id, true), `${it.new_object} approved.`)}
-							>Approve object</button
 						>
+							Approve object
+						</button>
 						<button
 							class="btn sm"
 							type="button"
 							onclick={() =>
 								act(() => api().resolveGeneratorProposal(r.id, it.id, false), `${it.new_object} rejected.`)}
-							>Reject</button
 						>
+							Reject
+						</button>
 					{/if}
 				</div>
 			{/if}

@@ -92,9 +92,9 @@
 						if (!ok) el.value = role.max_side_effect;
 					}}
 				>
-					{#each ['R', 'W', 'X', 'P'] as se (se)}<option value={se}
-							>{SIDE_EFFECT_LABEL[se as SideEffect]}</option
-						>{/each}
+					{#each ['R', 'W', 'X', 'P'] as se (se)}<option value={se}>
+							{SIDE_EFFECT_LABEL[se as SideEffect]}
+						</option>{/each}
 				</select>
 			</label>
 			<span class="muted">{role.note}</span>
@@ -120,17 +120,16 @@
 						{#each role.derived as d (d.activity)}
 							{@const peak = peakSideEffect(d.ops)}
 							<tr>
-								<td
-									><span class="cell-title">{d.label}</span><span class="cell-sub mono">{d.activity}</span
-									></td
-								>
-								<td
-									><Chip
+								<td>
+									<span class="cell-title">{d.label}</span><span class="cell-sub mono">{d.activity}</span>
+								</td>
+								<td>
+									<Chip
 										text={peak}
 										variant={SIDE_EFFECT_VARIANT[peak]}
 										title="Highest side effect: {SIDE_EFFECT_LABEL[peak]}"
-									/></td
-								>
+									/>
+								</td>
 								<td>
 									<span class="chips">
 										{#each d.ops as o (o)}
@@ -145,11 +144,11 @@
 								</td>
 							</tr>
 						{:else}
-							<tr
-								><td colspan="3" class="muted"
-									>This template has no activities yet (generator run in progress).</td
-								></tr
-							>
+							<tr>
+								<td colspan="3" class="muted">
+									This template has no activities yet (generator run in progress).
+								</td>
+							</tr>
 						{/each}
 					</tbody>
 				</table>
@@ -157,28 +156,30 @@
 		{:else}
 			<div class="tbl-wrap">
 				<table class="tbl dense">
-					<thead
-						><tr>
+					<thead>
+						<tr>
 							<th>Operation</th><th>Modalities</th><th>Side effect</th><th
-								title="Minimum case identity level the runner requires (N5)">Identity</th
-							><th></th></tr
-						></thead
-					>
+								title="Minimum case identity level the runner requires (N5)"
+							>
+								Identity
+							</th><th></th>
+						</tr>
+					</thead>
 					<tbody>
 						{#each role.grants as g (`${g.object}.${g.verb}{${g.variant ?? ''}}`)}
 							{@const c = catalogueOp(`${g.object}.${g.verb}`)}
 							<tr>
-								<td class="mono"
-									>{opLabel(`${g.object}.${g.verb}`, g.variant)}{#if g.derived}
-										<Chip text="derived" variant="tool" />{/if}</td
-								>
+								<td class="mono">
+									{opLabel(`${g.object}.${g.verb}`, g.variant)}{#if g.derived}
+										<Chip text="derived" variant="tool" />{/if}
+								</td>
 								<td>{g.modalities.join(', ')}</td>
-								<td
-									>{#if c}<Chip
+								<td>
+									{#if c}<Chip
 											text={SIDE_EFFECT_LABEL[c.side_effect]}
 											variant={SIDE_EFFECT_VARIANT[c.side_effect]}
-										/>{/if}</td
-								>
+										/>{/if}
+								</td>
 								<td class="mono">{c?.identity_level ?? '—'}</td>
 								<td class="r">
 									<button
@@ -196,8 +197,10 @@
 														g.variant,
 													),
 												`Removed ${opLabel(`${g.object}.${g.verb}`, g.variant)} from ${role.label}.`,
-											)}>Remove</button
+											)}
 									>
+										Remove
+									</button>
 								</td>
 							</tr>
 						{:else}
@@ -220,14 +223,14 @@
 					bind:value={variant}
 				/>
 				{#each MODALITIES as m (m)}
-					<label class="check"
-						><input
+					<label class="check">
+						<input
 							type="checkbox"
 							checked={mods.includes(m)}
 							onchange={(e) => toggle(m, e.currentTarget.checked)}
 						/>
-						{m}</label
-					>
+						{m}
+					</label>
 				{/each}
 				<button type="submit" class="btn sm primary" disabled={busy || !op}>Add grant</button>
 			</form>

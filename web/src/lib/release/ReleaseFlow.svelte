@@ -71,9 +71,9 @@
 			{#if extra}{@render extra()}{/if}
 			<div class="acts">
 				<ActionButton disabledReason={approveReason} onclick={onapprove}>Approve</ActionButton>
-				<ActionButton primary disabledReason={goLiveReason} onclick={ongolive}
-					>Go live{goLiveLabel ? ` with ${goLiveLabel}` : ''}</ActionButton
-				>
+				<ActionButton primary disabledReason={goLiveReason} onclick={ongolive}>
+					Go live{goLiveLabel ? ` with ${goLiveLabel}` : ''}
+				</ActionButton>
 			</div>
 		</Card>
 		{#if below}{@render below()}{/if}

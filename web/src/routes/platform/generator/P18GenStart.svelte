@@ -131,10 +131,10 @@
 				rows="3"
 				placeholder="What the business sells and to whom; a website; or the discovery cluster this refines"
 				bind:value={description}></textarea>
-			<small class="muted"
-				>Step 1 (Business model) drafts axis values from this. Existing systems are mapped later by connector
-				templates.</small
-			>
+			<small class="muted">
+				Step 1 (Business model) drafts axis values from this. Existing systems are mapped later by connector
+				templates.
+			</small>
 		</div>
 
 		<section class="p18s-cost" data-testid="p18-estimate" aria-live="polite">
@@ -182,8 +182,10 @@
 				type="button"
 				disabled={busy || writeAttrsOrSuperAdmin(session, 'job_designer').disabled}
 				title={writeAttrsOrSuperAdmin(session, 'job_designer').title}
-				onclick={start}>{busy ? 'Starting…' : 'Start run'}</button
+				onclick={start}
 			>
+				{busy ? 'Starting…' : 'Start run'}
+			</button>
 			<button class="btn" type="button" onclick={() => (open = false)}>Cancel</button>
 		</div>
 	</div>

@@ -43,9 +43,9 @@
 				<tr>
 					<th scope="col" class="corner">{corner}</th>
 					{#each columns as c (colKey(c))}
-						<th scope="col"
-							>{#if colHeader}{@render colHeader(c)}{:else}{colKey(c)}{/if}</th
-						>
+						<th scope="col">
+							{#if colHeader}{@render colHeader(c)}{:else}{colKey(c)}{/if}
+						</th>
 					{/each}
 				</tr>
 			</thead>

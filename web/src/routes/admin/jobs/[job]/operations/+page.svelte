@@ -290,8 +290,9 @@
 						role="menuitem"
 						disabled={exporting !== null}
 						onclick={() => exportSpec(format, of)}
-						>{exporting === `${format}-${of}` ? 'Exporting…' : label}</button
 					>
+						{exporting === `${format}-${of}` ? 'Exporting…' : label}
+					</button>
 				{/each}
 			</div>
 		</details>
@@ -313,35 +314,35 @@
 			{#if v.ops.length}
 				<div class="tbl-wrap">
 					<table class="tbl dense">
-						<thead
-							><tr
-								><th>Operation</th><th>Side effect</th><th>Identity level</th><th>From template</th><th
-								></th></tr
-							></thead
-						>
+						<thead>
+							<tr>
+								<th>Operation</th><th>Side effect</th><th>Identity level</th><th>From template</th><th></th>
+							</tr>
+						</thead>
 						<tbody>
 							{#each v.ops as o (o.op)}
 								<tr>
 									<td class="mono">{o.op}</td>
-									<td
-										><Chip
+									<td>
+										<Chip
 											text={o.value.side_effect}
 											variant={o.value.side_effect === 'R' ? 'muted' : 'work'}
-										/></td
-									>
+										/>
+									</td>
 									<td>{levelLabel(o.value.identity_level)}</td>
 									<td class="mono">{o.value.template}</td>
-									<td
-										><button
+									<td>
+										<button
 											class="btn"
 											type="button"
 											{...writeAttrs(session, 'job_designer')}
 											disabled={!designer || ownBusy !== ''}
 											onclick={() =>
 												ownWrite(o.op, () => api().removeJobOwnOperation(o.op), `Removed ${o.op}.`)}
-											>Remove</button
-										></td
-									>
+										>
+											Remove
+										</button>
+									</td>
 								</tr>
 							{/each}
 						</tbody>
@@ -354,10 +355,9 @@
 			{#if addable.length}
 				<div class="tbl-wrap">
 					<table class="tbl dense">
-						<thead
-							><tr><th>Operation</th><th>Template</th><th>Side effect</th><th>Identity level</th><th></th></tr
-							></thead
-						>
+						<thead>
+							<tr><th>Operation</th><th>Template</th><th>Side effect</th><th>Identity level</th><th></th></tr>
+						</thead>
 						<tbody>
 							{#each addable as a (availableKey(a))}
 								{@const k = availableKey(a)}
@@ -382,8 +382,8 @@
 											{/each}
 										</select>
 									</td>
-									<td
-										><button
+									<td>
+										<button
 											class="btn"
 											type="button"
 											{...writeAttrs(session, 'job_designer')}
@@ -398,9 +398,11 @@
 															identity_level: levelOf(k),
 														}),
 													`Added ${a.op}.`,
-												)}>Add</button
-										></td
-									>
+												)}
+										>
+											Add
+										</button>
+									</td>
 								</tr>
 							{/each}
 						</tbody>
@@ -408,9 +410,9 @@
 				</div>
 			{:else}
 				<p class="muted">
-					No further operations to add. Build a template on <a href="/admin/connections/templates"
-						>Templates</a
-					> or import tools from an MCP server.
+					No further operations to add. Build a template on <a href="/admin/connections/templates">
+						Templates
+					</a> or import tools from an MCP server.
 				</p>
 			{/if}
 		{/snippet}
@@ -432,26 +434,28 @@
 			<li>
 				<span class="j6-step">1 · Expected</span>
 				<b data-testid="op-counts">{c.ops} ops / {c.objects} objects / {c.required} required</b>
-				<span
-					>From the job's templates — read-only here. <b>R</b> must run, <b>O</b> you may switch off.{#if sa}{' '}<a
-							href="/platform/operations">Open the operations catalogue</a
-						>{/if}</span
-				>
+				<span>
+					From the job's templates — read-only here. <b>R</b> must run, <b>O</b> you may switch off.{#if sa}{' '}<a
+							href="/platform/operations"
+						>
+							Open the operations catalogue
+						</a>{/if}
+				</span>
 			</li>
 			<li>
 				<span class="j6-step">2 · Routed per environment</span>
 				<b>prod and test, by you</b>
-				<span
-					>Saved to draft — the test env runs it at once, Production when you publish · draft rev
-					<span class="mono">{d.draft_rev}</span>.</span
-				>
+				<span>
+					Saved to draft — the test env runs it at once, Production when you publish · draft rev
+					<span class="mono">{d.draft_rev}</span>.
+				</span>
 			</li>
 			<li>
 				<span class="j6-step">3 · Run by a system</span>
 				<b>template implements it</b>
-				<span
-					>Ready when the system is healthy and its contract test is green; prod writes after your OK.</span
-				>
+				<span>
+					Ready when the system is healthy and its contract test is green; prod writes after your OK.
+				</span>
 			</li>
 			<li class="j6-alt">
 				<span class="j6-step">… or a fallback</span>
@@ -512,8 +516,10 @@
 									type="button"
 									{...writeAttrs(session, 'integrations_manager')}
 									disabled={!writable || bulk}
-									onclick={() => acceptAll(sug)}>Accept {sug.length} suggestions</button
+									onclick={() => acceptAll(sug)}
 								>
+									Accept {sug.length} suggestions
+								</button>
 							{/if}
 						</div>
 						<ul class="j6-bl" data-testid="blockers-{env}">
@@ -523,9 +529,9 @@
 									<div class="row">
 										<Chip text={CELL[g.state].label} variant={CELL[g.state].variant} />
 										{#each g.cells as b (b.key)}<span class="mono j6-opk">{b.key}</span>{/each}
-										{#if g.state === 'unrouted'}<span class="{env === 'prod' ? 's-err' : 's-warn'} j6-small"
-												>{env === 'prod' ? 'blocks release apply' : 'blocks testing, not publishing'}</span
-											>{/if}
+										{#if g.state === 'unrouted'}<span class="{env === 'prod' ? 's-err' : 's-warn'} j6-small">
+												{env === 'prod' ? 'blocks release apply' : 'blocks testing, not publishing'}
+											</span>{/if}
 									</div>
 									<span class="cell-sub">{g.why}</span>
 									<span class="row">
@@ -535,25 +541,28 @@
 												type="button"
 												{...writeAttrs(session, 'integrations_manager')}
 												disabled={!writable || bulk}
-												onclick={() => accept(d, one.op, env)}>Use {targetLabel(one.suggested)}</button
+												onclick={() => accept(d, one.op, env)}
 											>
+												Use {targetLabel(one.suggested)}
+											</button>
 										{/if}
 										{#if g.instance}
-											<a class="btn sm" href={sysHref(g.instance)}
-												>Fix {g.instance}{g.cells.length > 1 ? ` (${g.cells.length} ops)` : ''}</a
-											>
+											<a class="btn sm" href={sysHref(g.instance)}>
+												Fix {g.instance}{g.cells.length > 1 ? ` (${g.cells.length} ops)` : ''}
+											</a>
 										{/if}
 										{#if one}
-											<button class="btn sm" type="button" onclick={() => openEditor(d, one.op, env)}
-												>{g.state === 'unrouted' ? 'Route…' : 'Re-route…'}</button
-											>
+											<button class="btn sm" type="button" onclick={() => openEditor(d, one.op, env)}>
+												{g.state === 'unrouted' ? 'Route…' : 'Re-route…'}
+											</button>
 										{/if}
 									</span>
 									{#if one && g.state === 'unrouted' && !one.suggested}
-										<span class="cell-sub"
-											>No connected system implements it — <a href="/admin/connections/systems">connect one</a
-											>.</span
-										>
+										<span class="cell-sub">
+											No connected system implements it — <a href="/admin/connections/systems">
+												connect one
+											</a>.
+										</span>
 									{/if}
 								</li>
 							{/each}
@@ -597,9 +606,9 @@
 							<span class="mono">{h.key}</span>
 							<Chip text={CELL[h.state].label} variant={CELL[h.state].variant} />
 							<span class="cell-sub">{h.why}</span>
-							{#if h.instance}<a href={sysHref(h.instance)}
-									>{h.state === 'needs_ok' ? `Give your OK on ${h.instance}` : `Open ${h.instance}`}</a
-								>{/if}
+							{#if h.instance}<a href={sysHref(h.instance)}>
+									{h.state === 'needs_ok' ? `Give your OK on ${h.instance}` : `Open ${h.instance}`}
+								</a>{/if}
 						</li>
 					{/each}
 				</ul>
@@ -645,15 +654,17 @@
 							/>
 							<span class="mono">{opKey(o)}</span>
 						</span>
-						<span class="cell-sub"
-							><span
+						<span class="cell-sub">
+							<span
 								class:s-err={o.side_effect === 'X' || o.side_effect === 'P'}
-								class:s-warn={o.side_effect === 'W'}>{SIDE[o.side_effect]}</span
+								class:s-warn={o.side_effect === 'W'}
 							>
+								{SIDE[o.side_effect]}
+							</span>
 							· identity {o.identity_level} · {o.stages.length === 7
 								? 'all stages'
-								: o.stages.join(', ')}{o.note ? ` · ${o.note}` : ''}</span
-						>
+								: o.stages.join(', ')}{o.note ? ` · ${o.note}` : ''}
+						</span>
 					</div>
 				{/snippet}
 				{#snippet cell(o, col)}
@@ -661,18 +672,18 @@
 						{@const s = statsOf(d, o)}
 						{#if s}
 							<span class="mono">{fmt.n(s.calls_7d)}</span> calls
-							<span class="cell-sub" class:s-err={s.error_rate >= 0.05}
-								>{fmt.pct(s.error_rate)} errors · p95 {fmt.ms(s.p95_ms)}</span
-							>
+							<span class="cell-sub" class:s-err={s.error_rate >= 0.05}>
+								{fmt.pct(s.error_rate)} errors · p95 {fmt.ms(s.p95_ms)}
+							</span>
 						{:else}<span class="muted">no calls</span>{/if}
 					{:else}
 						{@const cl = cellOf(d, o, col)}
 						{@const errKey = `${opKey(o)}|${col}`}
 						<div class="route" data-testid="route-{opKey(o)}-{col}" title={cl.why}>
 							{#if cl.target}
-								<button class="table-action" type="button" onclick={() => openEditor(d, o, col)}
-									>{targetLabel(cl.target)}</button
-								>
+								<button class="table-action" type="button" onclick={() => openEditor(d, o, col)}>
+									{targetLabel(cl.target)}
+								</button>
 								<span class="chips">
 									<Chip text={CELL[cl.state].label} variant={CELL[cl.state].variant} />
 									{#if cl.inherited}<Chip
@@ -681,9 +692,9 @@
 											title="no route of its own: uses the {o.object}.{o.verb} route"
 										/>{/if}
 								</span>
-								{#if cl.target.kind === 'deep_link'}<span class="cell-sub mono url" title={cl.target.url}
-										>{cl.target.url}</span
-									>{/if}
+								{#if cl.target.kind === 'deep_link'}<span class="cell-sub mono url" title={cl.target.url}>
+										{cl.target.url}
+									</span>{/if}
 							{:else}
 								<Chip text={CELL.unrouted.label} variant="err" />
 								{#if cl.suggested}
@@ -693,10 +704,13 @@
 											class="btn sm"
 											type="button"
 											{...writeAttrs(session, 'integrations_manager')}
-											onclick={() => accept(d, o, col)}>Accept</button
+											onclick={() => accept(d, o, col)}
 										>
-										<button class="btn sm" type="button" onclick={() => openEditor(d, o, col)}>Choose…</button
-										>
+											Accept
+										</button>
+										<button class="btn sm" type="button" onclick={() => openEditor(d, o, col)}>
+											Choose…
+										</button>
 									</span>
 								{:else}
 									<button class="btn sm" type="button" onclick={() => openEditor(d, o, col)}>Route…</button>
@@ -738,14 +752,14 @@
 						{#each KINDS as [k, text, hint] (k)}
 							<label class="j6-kind">
 								<input type="radio" name="kind" value={k} bind:group={kind} />
-								<span
-									><b>{text}</b>
+								<span>
+									<b>{text}</b>
 									{#if k === 'not_offered' && op.required}<Chip
 											text="required — refused"
 											variant="err"
 										/>{/if}
-									<span class="cell-sub">{hint}</span></span
-								>
+									<span class="cell-sub">{hint}</span>
+								</span>
 							</label>
 						{/each}
 						{#if kind === 'instance'}
@@ -789,16 +803,20 @@
 							type="button"
 							{...writeAttrs(session, 'integrations_manager')}
 							disabled={!writable || saving}
-							onclick={save}>Save route</button
+							onclick={save}
 						>
+							Save route
+						</button>
 						{#if now.target && !now.inherited}
 							<button
 								class="btn"
 								type="button"
 								{...writeAttrs(session, 'integrations_manager')}
 								disabled={!writable || saving}
-								onclick={clear}>Clear route</button
+								onclick={clear}
 							>
+								Clear route
+							</button>
 						{/if}
 						{#if !writable}<span class="muted">{writeHint('integrations_manager')}</span>{/if}
 					</div>
@@ -817,11 +835,11 @@
 									{r.target ? targetLabel(r.target) : 'no route'}{r.inherited ? ' (via *)' : ''} · {CELL[
 										r.state
 									].label}
-									{#if own}<span class="cell-sub"
-											>by {d.names[own.updated_by] ?? own.updated_by}, {own.updated_at
+									{#if own}<span class="cell-sub">
+											by {d.names[own.updated_by] ?? own.updated_by}, {own.updated_at
 												.slice(0, 16)
-												.replace('T', ' ')}</span
-										>{/if}
+												.replace('T', ' ')}
+										</span>{/if}
 								</dd>
 							{/each}
 						</dl>

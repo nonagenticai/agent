@@ -101,9 +101,9 @@
 >
 	{#snippet actions()}<a class="btn sm" href="/admin/knowledge/eval">Retrieval eval</a>{/snippet}
 	<form class="sp-form" onsubmit={run}>
-		<label class="field sp-q"
-			><span class="label">Question</span><input class="input" bind:value={q} aria-label="Question" /></label
-		>
+		<label class="field sp-q">
+			<span class="label">Question</span><input class="input" bind:value={q} aria-label="Question" />
+		</label>
 		<div class="field">
 			<span class="label">Search</span>
 			<Seg
@@ -116,24 +116,24 @@
 			/>
 		</div>
 		{#if scope === 'kind'}
-			<label class="field"
-				><span class="label">Kind of {app.job}</span><select
+			<label class="field">
+				<span class="label">Kind of {app.job}</span><select
 					class="input"
 					aria-label="Knowledge kind"
 					bind:value={kindKey}
 					required
 				>
 					<option value="">{kinds === null ? 'Loading kinds…' : 'Pick a kind…'}</option>
-					{#each kinds ?? [] as k (`${k.stage}|${k.kind}`)}<option value={`${k.stage}|${k.kind}`}
-							>{k.stage} · {k.kind}{k.packs?.length
+					{#each kinds ?? [] as k (`${k.stage}|${k.kind}`)}<option value={`${k.stage}|${k.kind}`}>
+							{k.stage} · {k.kind}{k.packs?.length
 								? ` (+${k.packs.length} pack${k.packs.length === 1 ? '' : 's'})`
-								: ''}</option
-						>{/each}
-				</select></label
-			>
+								: ''}
+						</option>{/each}
+				</select>
+			</label>
 		{:else if needRoot}
-			<label class="field"
-				><span class="label">Store tree</span><select
+			<label class="field">
+				<span class="label">Store tree</span><select
 					class="input"
 					aria-label="Store tree"
 					bind:value={root}
@@ -141,8 +141,8 @@
 				>
 					<option value="">Pick a tree…</option>
 					{#each roots as r (r.id)}<option value={r.id}>{r.label} ({r.key})</option>{/each}
-				</select></label
-			>
+				</select>
+			</label>
 		{/if}
 		<div class="field">
 			<span class="label">Routing</span>
@@ -156,40 +156,41 @@
 				bind:active={mode}
 			/>
 		</div>
-		<label class="field"
-			><span class="label">Results</span><input
+		<label class="field">
+			<span class="label">Results</span><input
 				class="input num"
 				type="number"
 				min="1"
 				max="50"
 				bind:value={topK}
-			/></label
-		>
+			/>
+		</label>
 		<label
 			class="field"
 			title="How many branches of the store tree laya follows (1–8). Embedding search ignores it."
-			><span class="label">Branches (beam)</span><input
+		>
+			<span class="label">Branches (beam)</span><input
 				class="input num"
 				type="number"
 				min="1"
 				max={BEAM_MAX}
 				disabled={mode === 'embed'}
 				bind:value={beam}
-			/></label
-		>
-		<label class="field"
-			><span class="label">Min score</span><input
+			/>
+		</label>
+		<label class="field">
+			<span class="label">Min score</span><input
 				class="input num"
 				type="number"
 				min="0"
 				max="1"
 				step="0.05"
 				bind:value={minScore}
-			/></label
-		>
-		<button class="btn primary" type="submit" disabled={running || !q.trim() || (needRoot && !root)}
-			>{running ? 'Searching…' : 'Search'}</button
-		>
+			/>
+		</label>
+		<button class="btn primary" type="submit" disabled={running || !q.trim() || (needRoot && !root)}>
+			{running ? 'Searching…' : 'Search'}
+		</button>
 	</form>
 	{#if queryErr}
 		<Callout kind="err" title="Search refused"><span>{queryErr}</span></Callout>
@@ -199,25 +200,25 @@
 		{@const t = result.timings_ms}
 		{#if result.degraded?.length}
 			<Callout kind="gap" title="Searched without some platform packs">
-				<span data-testid="query-degraded"
-					>{result.degraded.join(', ')} — excluded, hidden, retired or unreadable right now. See the job's Knowledge
-					kinds.</span
-				>
+				<span data-testid="query-degraded">
+					{result.degraded.join(', ')} — excluded, hidden, retired or unreadable right now. See the job's Knowledge
+					kinds.
+				</span>
 			</Callout>
 		{/if}
 		<div class="sp-routing" data-testid="query-routing">
 			<span><span class="label">Mode</span> <b>{r.mode_used}</b></span>
-			<span
-				><span class="label">Searched</span>
+			<span>
+				<span class="label">Searched</span>
 				<span class="mono">{r.leaves.join(', ') || '—'}</span>
-				<span class="muted">({r.leaves.length} of {result.searched.length} stores)</span></span
-			>
-			<span
-				><span class="label">Laya</span>
-				{#if !r.laya_consulted}not consulted{:else if r.laya_fallback}<span class="s-warn"
-						>fell back to every store ({r.laya_fallback.replace(/_/g, ' ')})</span
-					>{:else}routed with {Number(beam)} branch{Number(beam) === 1 ? '' : 'es'}{/if}</span
-			>
+				<span class="muted">({r.leaves.length} of {result.searched.length} stores)</span>
+			</span>
+			<span>
+				<span class="label">Laya</span>
+				{#if !r.laya_consulted}not consulted{:else if r.laya_fallback}<span class="s-warn">
+						fell back to every store ({r.laya_fallback.replace(/_/g, ' ')})
+					</span>{:else}routed with {Number(beam)} branch{Number(beam) === 1 ? '' : 'es'}{/if}
+			</span>
 			{#if result.skipped_unbound.length}
 				<span class="muted">skipped (not in strata_rag): {result.skipped_unbound.join(', ')}</span>
 			{/if}
@@ -253,35 +254,40 @@
 				{#each result.hits as h (h.chunk_id)}
 					<li>
 						<div class="sp-hit">
-							<span class="mono muted sp-path"
-								>{h.layer === 'platform' ? '' : h.store_path.join(' / ')}
+							<span class="mono muted sp-path">
+								{h.layer === 'platform' ? '' : h.store_path.join(' / ')}
 								<span
 									class="chip {h.layer === 'platform' ? 'accent' : 'muted'}"
 									data-testid="hit-layer"
 									title={h.layer === 'platform' ? 'A pinned platform pack' : 'One of your stores'}
-									>{layerChip(h)}</span
-								>{#if h.layer === 'platform' && provenanceHref(h.metadata?.provenance)}
+								>
+									{layerChip(h)}
+								</span>{#if h.layer === 'platform' && provenanceHref(h.metadata?.provenance)}
 									<a
 										class="sp-prov"
 										href={provenanceHref(h.metadata?.provenance)}
 										target="_blank"
-										rel="noopener noreferrer">source</a
+										rel="noopener noreferrer"
 									>
-									<span class="muted">{provenanceText(h.metadata?.provenance)}</span>{/if}</span
-							>
+										source
+									</a>
+									<span class="muted">{provenanceText(h.metadata?.provenance)}</span>{/if}
+							</span>
 							<b class="cite">{cite(h)}</b>
 							<span class="cell-sub">{h.text}</span>
 							<span class="sp-scores mono" data-testid="hit-scores">
-								<span title="Embedding similarity (your embed slot)"
-									>dense {score(h.scores.dense)} <Meter value={h.scores.dense ?? 0} /></span
-								>
-								<span title="Word match (hybrid only)"
-									>lexical {score(h.scores.lexical)}
-									<Meter value={h.scores.lexical ?? 0} cls="s-work" /></span
-								>
-								<span title="Rerank score (your rerank slot; the first candidates only)"
-									>rerank {score(h.scores.rerank)} <Meter value={h.scores.rerank ?? 0} cls="s-ok" /></span
-								>
+								<span title="Embedding similarity (your embed slot)">
+									dense {score(h.scores.dense)}
+									<Meter value={h.scores.dense ?? 0} />
+								</span>
+								<span title="Word match (hybrid only)">
+									lexical {score(h.scores.lexical)}
+									<Meter value={h.scores.lexical ?? 0} cls="s-work" />
+								</span>
+								<span title="Rerank score (your rerank slot; the first candidates only)">
+									rerank {score(h.scores.rerank)}
+									<Meter value={h.scores.rerank ?? 0} cls="s-ok" />
+								</span>
 							</span>
 						</div>
 						<span class="mono sp-final" title="Final score">{h.score.toFixed(2)}</span>

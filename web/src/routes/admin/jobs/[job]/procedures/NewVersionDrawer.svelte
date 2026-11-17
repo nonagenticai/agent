@@ -290,13 +290,13 @@
 		<h3>Steps</h3>
 		<div class="tbl-wrap">
 			<table class="tbl dense steps">
-				<thead
-					><tr
-						><th>#</th><th>Phase</th><th>Name</th><th>Operation</th><th>Variant</th><th>Effect</th><th
-							>Gate</th
-						><th></th></tr
-					></thead
-				>
+				<thead>
+					<tr>
+						<th>#</th><th>Phase</th><th>Name</th><th>Operation</th><th>Variant</th><th>Effect</th><th>
+							Gate
+						</th><th></th>
+					</tr>
+				</thead>
 				<tbody>
 					{#each form.steps as s, i (i)}
 						{@const c = catalogueOp(s.operation)}
@@ -305,15 +305,15 @@
 							: ''}
 						<tr class:bad={outside.includes(label)}>
 							<td class="r">{i + 1}</td>
-							<td
-								><input
+							<td>
+								<input
 									class="input mono ph"
 									type="number"
 									min="0"
 									aria-label="Step {i + 1} phase"
 									bind:value={s.phase}
-								/></td
-							>
+								/>
+							</td>
 							<td><input class="input" aria-label="Step {i + 1} name" bind:value={s.name} /></td>
 							<td>
 								<select class="input mono" aria-label="Step {i + 1} operation" bind:value={s.operation}>
@@ -321,19 +321,20 @@
 									{#each OPERATION_CATALOGUE as o (o.op)}<option value={o.op}>{o.op}</option>{/each}
 								</select>
 							</td>
-							<td
-								><input
+							<td>
+								<input
 									class="input mono"
 									aria-label="Step {i + 1} variant"
 									bind:value={s.variant}
 									placeholder="—"
-								/></td
-							>
-							<td
-								>{#if c}<Chip text={c.side_effect} variant={SIDE_EFFECT_VARIANT[c.side_effect]} />{/if}</td
-							>
-							<td><input type="checkbox" aria-label="Step {i + 1} gates the case" bind:checked={s.gate} /></td
-							>
+								/>
+							</td>
+							<td>
+								{#if c}<Chip text={c.side_effect} variant={SIDE_EFFECT_VARIANT[c.side_effect]} />{/if}
+							</td>
+							<td>
+								<input type="checkbox" aria-label="Step {i + 1} gates the case" bind:checked={s.gate} />
+							</td>
 							<td>
 								<button
 									type="button"
@@ -341,16 +342,17 @@
 									aria-expanded={s.open}
 									aria-label="Step {i + 1} conditions"
 									onclick={() => (s.open = !s.open)}
-									>Conditions{s.pre.length + s.post.length
-										? ` (${s.pre.length + s.post.length})`
-										: ''}</button
 								>
+									Conditions{s.pre.length + s.post.length ? ` (${s.pre.length + s.post.length})` : ''}
+								</button>
 								<button
 									type="button"
 									class="btn sm"
 									aria-label="Remove step {i + 1}"
-									onclick={() => form.steps.splice(i, 1)}>Remove</button
+									onclick={() => form.steps.splice(i, 1)}
 								>
+									Remove
+								</button>
 							</td>
 						</tr>
 						{#if s.open}
@@ -414,8 +416,10 @@
 					performed_by: '',
 					max_per_case: '',
 					open: false,
-				})}>Add step</button
+				})}
 		>
+			Add step
+		</button>
 
 		<h3>Success</h3>
 		<p class="note">
@@ -431,14 +435,16 @@
 		<h3>Needs tools</h3>
 		<div class="tools">
 			{#each form.tools as t, i (t)}
-				<span class="tool"
-					><Chip text={t} variant="tool" /><button
+				<span class="tool">
+					<Chip text={t} variant="tool" /><button
 						type="button"
 						class="btn sm"
 						aria-label="Remove needed tool {t}"
-						onclick={() => form.tools.splice(i, 1)}>×</button
-					></span
-				>
+						onclick={() => form.tools.splice(i, 1)}
+					>
+						×
+					</button>
+				</span>
 			{:else}
 				<span class="muted">None: the procedure starts without checking its tools are routed.</span>
 			{/each}
@@ -468,9 +474,9 @@
 			{#if outside.length}
 				<div class="callout err" role="status">
 					<strong>{outside.join(', ')} outside the activity grant</strong>
-					<span
-						>You can save the DRAFT, but moving it to CANARY or cutting a release with it is refused (409).</span
-					>
+					<span>
+						You can save the DRAFT, but moving it to CANARY or cutting a release with it is refused (409).
+					</span>
 				</div>
 			{/if}
 		{/if}
@@ -483,8 +489,9 @@
 				class="btn primary"
 				{...writeAttrs(session, 'job_designer')}
 				disabled={saving || writeAttrs(session, 'job_designer').disabled}
-				>{saving ? 'Creating…' : 'Create DRAFT'}</button
 			>
+				{saving ? 'Creating…' : 'Create DRAFT'}
+			</button>
 			<button type="button" class="btn" onclick={() => (open = false)}>Cancel</button>
 		</div>
 	</form>

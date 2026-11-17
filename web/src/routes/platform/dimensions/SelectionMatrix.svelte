@@ -39,11 +39,11 @@
 		{/snippet}
 		{#snippet cell(s, c)}
 			{#if (s.values[c.dim.key] ?? []).includes(c.key)}
-				<span class="on" title={`${s.tenant_name} picks ${c.dim.label} ${c.label}`}
-					><span class="dot">●</span><span class="sr">selected</span><span class="ph-only chip accent"
-						>{c.dim.label}: {c.label}</span
-					></span
-				>
+				<span class="on" title={`${s.tenant_name} picks ${c.dim.label} ${c.label}`}>
+					<span class="dot">●</span><span class="sr">selected</span><span class="ph-only chip accent">
+						{c.dim.label}: {c.label}
+					</span>
+				</span>
 			{:else}
 				<span class="off" aria-hidden="true">·</span>
 			{/if}

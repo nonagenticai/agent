@@ -40,9 +40,9 @@
 				<div class="tg-ava" aria-hidden="true">{initials(agentName)}</div>
 				<div class="tg-row-body">
 					<div class="tg-row-top">
-						<span class="tg-row-name">{agentName}</span><span class="tg-row-time"
-							>{formatTime(last?.at ?? null)}</span
-						>
+						<span class="tg-row-name">{agentName}</span><span class="tg-row-time">
+							{formatTime(last?.at ?? null)}
+						</span>
 					</div>
 					<div class="tg-row-prev">{typing ? 'typing…' : (last?.text ?? 'Start the conversation')}</div>
 				</div>
@@ -89,9 +89,9 @@
 								<span class="tg-sr">{you ? customerName : agentName}:</span>
 								<span class="tg-txt">{m.text}</span>
 								<span class="tg-stamp">
-									{#if m.at !== null}<time>{formatTime(m.at)}</time>{:else if m.status !== 'sending'}<span
-											>{PENDING_LABEL[m.status as keyof typeof PENDING_LABEL]}</span
-										>{/if}
+									{#if m.at !== null}<time>{formatTime(m.at)}</time>{:else if m.status !== 'sending'}<span>
+											{PENDING_LABEL[m.status as keyof typeof PENDING_LABEL]}
+										</span>{/if}
 									{#if you}
 										<span
 											class="tg-ticks"
@@ -99,9 +99,9 @@
 											data-testid="chat-ticks"
 											role="img"
 											aria-label={TICK[m.status].label}
-											><svg viewBox="0 0 24 24" aria-hidden="true"><path d={TICK[m.status].icon} /></svg
-											></span
 										>
+											<svg viewBox="0 0 24 24" aria-hidden="true"><path d={TICK[m.status].icon} /></svg>
+										</span>
 									{/if}
 								</span>
 							</div>

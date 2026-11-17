@@ -54,8 +54,10 @@
 					class="j9try-ex"
 					class:on={picked === ex.label}
 					aria-pressed={picked === ex.label}
-					onclick={() => pick(ex.label, ex.facts)}>{ex.label}</button
+					onclick={() => pick(ex.label, ex.facts)}
 				>
+					{ex.label}
+				</button>
 			{/each}
 		</div>
 	{/if}

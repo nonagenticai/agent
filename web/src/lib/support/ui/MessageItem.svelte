@@ -74,8 +74,9 @@
 						class="chip warn"
 						data-testid="mirror-chip"
 						title="The helpdesk ticket refused this note or could not be reached; it is kept here."
-						>Not copied to ticket</span
 					>
+						Not copied to ticket
+					</span>
 				</div>
 			{/if}
 			{#if message.local === 'failed' && !message.noRetry}

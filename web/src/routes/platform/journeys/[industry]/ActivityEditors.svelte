@@ -177,8 +177,10 @@
 			<span class="label">Also shown in</span>
 			<div class="chips">
 				{#each j.stages.filter((s) => s.key !== act.stage) as s (s.key)}
-					<label class="chip muted"><input type="checkbox" value={s.key} bind:group={also} /> {s.label}</label
-					>
+					<label class="chip muted">
+						<input type="checkbox" value={s.key} bind:group={also} />
+						{s.label}
+					</label>
 				{/each}
 			</div>
 		</div>
@@ -206,8 +208,8 @@
 				{#each act.operations as o (opLabel(o))}
 					<tr>
 						<td class="mono">{opLabel(o)}</td>
-						<td
-							><select
+						<td>
+							<select
 								class="input"
 								aria-label="Expectation of {opLabel(o)}"
 								value={o.required ? 'R' : 'O'}
@@ -216,16 +218,18 @@
 							>
 								<option value="R">required</option>
 								<option value="O">optional</option>
-							</select></td
-						>
-						<td
-							><button
+							</select>
+						</td>
+						<td>
+							<button
 								class="btn sm"
 								type="button"
 								aria-label="Remove {opLabel(o)}"
-								onclick={() => removeOp(opLabel(o))}>Remove</button
-							></td
-						>
+								onclick={() => removeOp(opLabel(o))}
+							>
+								Remove
+							</button>
+						</td>
 					</tr>
 				{:else}
 					<tr><td class="muted">No operations expected.</td></tr>
@@ -280,9 +284,9 @@
 			</div>
 		</div>
 		<div class="field">
-			<label for="ac-dlg"
-				>Sample dialogue (<code>customer:</code>, <code>agent:</code> or <code>system:</code> per line)</label
-			>
+			<label for="ac-dlg">
+				Sample dialogue (<code>customer:</code>, <code>agent:</code> or <code>system:</code> per line)
+			</label>
 			<textarea id="ac-dlg" class="input" rows="4" bind:value={cDialogue}></textarea>
 		</div>
 		<button class="btn" type="button" onclick={saveCard}>Save card</button>

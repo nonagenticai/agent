@@ -59,9 +59,9 @@
 		{:else}
 			<div class="tiles">
 				<div class="tile">
-					<span class="v" data-testid="csat-mean">{mean(report.mean)}</span><span class="k"
-						>Mean rating (of 5)</span
-					>
+					<span class="v" data-testid="csat-mean">{mean(report.mean)}</span><span class="k">
+						Mean rating (of 5)
+					</span>
 				</div>
 				<div class="tile">
 					<span class="v" data-testid="csat-rate">{pct(report.response_rate)}</span>
@@ -85,9 +85,9 @@
 					<thead><tr><th>Channel</th><th>Asked</th><th>Answered</th><th>Mean</th></tr></thead>
 					<tbody>
 						{#each report.by_channel as c (c.channel)}
-							<tr
-								><td>{label(c.channel)}</td><td>{c.asked}</td><td>{c.answered}</td><td>{mean(c.mean)}</td></tr
-							>
+							<tr>
+								<td>{label(c.channel)}</td><td>{c.asked}</td><td>{c.answered}</td><td>{mean(c.mean)}</td>
+							</tr>
 						{/each}
 					</tbody>
 				</table>

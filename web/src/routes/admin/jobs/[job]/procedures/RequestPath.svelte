@@ -20,19 +20,19 @@
 		<li>
 			<span class="rp-n">2</span>
 			<b>Context space</b>
-			<span class="muted"
-				>Gates pick the request type; the qualifier asks for its <em>required slots</em>.
-				<a href="{j}/gates">Gates</a></span
-			>
+			<span class="muted">
+				Gates pick the request type; the qualifier asks for its <em>required slots</em>.
+				<a href="{j}/gates">Gates</a>
+			</span>
 		</li>
 		<li class="rp-main">
 			<span class="rp-n">3</span>
 			<b>Procedure runs</b>
-			<span class="muted"
-				>The live version’s steps (the one the live release carries), each one operation inside the activity’s
+			<span class="muted">
+				The live version’s steps (the one the live release carries), each one operation inside the activity’s
 				grant.
-				<a href="{j}/toolsets">Toolsets</a></span
-			>
+				<a href="{j}/toolsets">Toolsets</a>
+			</span>
 			<span class="rp-legend">
 				{#each KINDS as k (k)}<KindTag kind={k} wide />{/each}
 				<span class="muted rp-gate"><span aria-hidden="true">◆</span> gate: “no” ends the case</span>
@@ -41,10 +41,10 @@
 		<li>
 			<span class="rp-n">4</span>
 			<b>Outcome</b>
-			<span class="muted"
-				>Resolved · not eligible (a gate said no) · handed over (a step failed, or nothing is live).
-				<a href="{j}/handover">Handover queue</a></span
-			>
+			<span class="muted">
+				Resolved · not eligible (a gate said no) · handed over (a step failed, or nothing is live).
+				<a href="{j}/handover">Handover queue</a>
+			</span>
 		</li>
 	</ol>
 </section>

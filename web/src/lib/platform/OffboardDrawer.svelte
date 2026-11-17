@@ -71,9 +71,9 @@
 				<Callout kind="err" title={error.code}>{error.message}</Callout>
 			{/if}
 			<div class="actions">
-				<button class="btn danger" type="submit" disabled={!confirmed || saving || !session.superAdmin}
-					>{saving ? 'Offboarding…' : 'Offboard this tenant'}</button
-				>
+				<button class="btn danger" type="submit" disabled={!confirmed || saving || !session.superAdmin}>
+					{saving ? 'Offboarding…' : 'Offboard this tenant'}
+				</button>
 			</div>
 		</form>
 	{/if}

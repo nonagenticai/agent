@@ -131,9 +131,9 @@
 >
 	{#snippet actions()}
 		<a class="btn" href="/platform/audit?action=license.reseal">Licence audit</a>
-		<button class="btn" {...superAdminAttrs(session)} disabled={busy || !session.superAdmin} onclick={nudge}
-			>Nudge verdict refresh</button
-		>
+		<button class="btn" {...superAdminAttrs(session)} disabled={busy || !session.superAdmin} onclick={nudge}>
+			Nudge verdict refresh
+		</button>
 	{/snippet}
 </PageHead>
 
@@ -148,12 +148,12 @@
 					{s.serving}<small>/ {s.live} live tenants serving</small>
 				</p>
 				<p class="p20-line">
-					<span class="p20-n" class:err={s.failingClosed.length > 0} data-testid="fails-closed"
-						>{s.failingClosed.length}</span
-					>
-					fail closed on a stale verdict{#if s.failingClosed.length}: <strong
-							>{s.failingClosed.join(', ')}</strong
-						>{/if}
+					<span class="p20-n" class:err={s.failingClosed.length > 0} data-testid="fails-closed">
+						{s.failingClosed.length}
+					</span>
+					fail closed on a stale verdict{#if s.failingClosed.length}: <strong>
+							{s.failingClosed.join(', ')}
+						</strong>{/if}
 				</p>
 				<p class="p20-line muted">
 					{s.refusedByDesign.length} refused by design{s.refusedByDesign.length
@@ -164,9 +164,9 @@
 			<section class="p20-answer" class:warn={s.behind > 0}>
 				<span class="label">Keyring · are tokens on the current key?</span>
 				<p class="p20-big">
-					{sealedLive - s.behind}<small
-						>/ {sealedLive} tokens on <span class="mono">{o.current_kid}</span></small
-					>
+					{sealedLive - s.behind}<small>
+						/ {sealedLive} tokens on <span class="mono">{o.current_kid}</span>
+					</small>
 				</p>
 				<p class="p20-line">
 					{#if s.behind}<strong>{plural(s.behind, 'token')}</strong> still on an older kid — reseal before dropping
@@ -207,10 +207,11 @@
 						<tr>
 							<th>Tenant</th><th>Edge</th><th>Licence · sealed under</th><th>Verdict</th><th
 								class="p20-agecol"
-								>Verdict age <span class="p20-legend"
-									>refresh {VERDICT_REFRESH_S} s · fail {VERDICT_MAX_AGE_S / 60} min</span
-								></th
-							><th>Last re-issue</th><th></th>
+							>
+								Verdict age <span class="p20-legend">
+									refresh {VERDICT_REFRESH_S} s · fail {VERDICT_MAX_AGE_S / 60} min
+								</span>
+							</th><th>Last re-issue</th><th></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -225,11 +226,11 @@
 								<td>
 									{#if t.licence}
 										<span class="mono">{t.licence.licence_id}</span>
-										<span class="cell-sub mono"
-											>{#if t.licence.kid}v2:<span class:p20-behind={t.licence.kid !== o.current_kid}
-													>{t.licence.kid}</span
-												>:••••{:else}no token (revoked){/if}</span
-										>
+										<span class="cell-sub mono">
+											{#if t.licence.kid}v2:<span class:p20-behind={t.licence.kid !== o.current_kid}>
+													{t.licence.kid}
+												</span>:••••{:else}no token (revoked){/if}
+										</span>
 									{:else}<span class="muted">—</span>{/if}
 								</td>
 								<td>
@@ -251,9 +252,9 @@
 												<b class="p20-dot {e.variant}" style="left:{agePos(t.verdict.age_seconds) * 100}%"
 												></b>
 											</span>
-											<span class="mono p20-agev" class:stale={e.state === 'stale'}
-												>{age(t.verdict.age_seconds)}</span
-											>
+											<span class="mono p20-agev" class:stale={e.state === 'stale'}>
+												{age(t.verdict.age_seconds)}
+											</span>
 										</div>
 									{:else}<span class="muted">no row</span>{/if}
 								</td>
@@ -265,9 +266,9 @@
 										/>
 										<span class="cell-sub">{utc(t.last_reissue.at)} · {t.last_reissue.reason}</span>
 										{#if t.last_reissue.old_still_valid}
-											<span class="cell-sub p20-stillvalid" data-testid="old-still-valid"
-												>old token still valid — retrying revoke</span
-											>
+											<span class="cell-sub p20-stillvalid" data-testid="old-still-valid">
+												old token still valid — retrying revoke
+											</span>
 										{/if}
 									{:else}<span class="muted">never</span>{/if}
 								</td>
@@ -278,19 +279,23 @@
 											{...superAdminAttrs(session)}
 											disabled={busy || replacing || !session.superAdmin}
 											onclick={() => openReplace(t, 'reissue')}
-											aria-label={`Re-issue the licence of ${t.name}`}>Re-issue…</button
+											aria-label={`Re-issue the licence of ${t.name}`}
 										>
+											Re-issue…
+										</button>
 										<button
 											class="btn sm danger"
 											{...superAdminAttrs(session)}
 											disabled={busy || replacing || !session.superAdmin}
 											onclick={() => openReplace(t, 'remint')}
-											aria-label={`Re-mint the leaked licence of ${t.name}`}>Re-mint…</button
+											aria-label={`Re-mint the leaked licence of ${t.name}`}
 										>
+											Re-mint…
+										</button>
 									{/if}
-									<button class="btn sm" onclick={() => open(t)} aria-label={`Licence details for ${t.name}`}
-										>Details</button
-									>
+									<button class="btn sm" onclick={() => open(t)} aria-label={`Licence details for ${t.name}`}>
+										Details
+									</button>
 								</td>
 							</tr>
 						{/each}
@@ -309,8 +314,10 @@
 					class:primary={s.behind > 0}
 					{...superAdminAttrs(session)}
 					disabled={busy || !session.superAdmin}
-					onclick={reseal}>Reseal to {o.current_kid}</button
+					onclick={reseal}
 				>
+					Reseal to {o.current_kid}
+				</button>
 			{/snippet}
 			{#if resealed}
 				<Callout kind="info" title="Resealed {resealed.resealed} · {resealed.remaining} remaining">
@@ -373,9 +380,9 @@
 					</p>
 				{/if}
 				<p class="p20-note">
-					<strong>Metering:</strong> every usage-ledger row is attributed with the licence id + subject id (<code
-						>agent_licence_attribution()</code
-					>, never the token). Billing emit is
+					<strong>Metering:</strong> every usage-ledger row is attributed with the licence id + subject id (<code>
+						agent_licence_attribution()
+					</code>, never the token). Billing emit is
 					<Chip
 						text={o.metering_emit_enabled ? 'on' : 'off'}
 						variant={o.metering_emit_enabled ? 'ok' : 'muted'}
@@ -433,14 +440,13 @@
 				kind={replaced.status === 'reissued' ? 'info' : 'err'}
 				title={replaced.status === 'reissued' ? 'Done' : 'Old token still valid — retrying'}
 			>
-				<span data-testid="replace-result"
-					>{#if replaced.status === 'reissued'}New licence <span class="mono">{replaced.new_licence_id}</span
-						>;
+				<span data-testid="replace-result">
+					{#if replaced.status === 'reissued'}New licence <span class="mono">{replaced.new_licence_id}</span>;
 						{replaced.old_licence_id} revoked.{:else}Licences did not confirm the revoke of {replaced.old_licence_id};
 						it stays valid until the provisioning tick revokes it{replaced.code
 							? ` (${replaced.code})`
-							: ''}.{/if}</span
-				>
+							: ''}.{/if}
+				</span>
 			</Callout>
 		{/if}
 		{#if replaceError}<Callout kind="err" title={replaceError.code}>{replaceError.message}</Callout>{/if}
@@ -453,12 +459,13 @@
 					type="submit"
 					{...superAdminAttrs(session)}
 					disabled={replacing || !session.superAdmin || (replaceMode === 'remint' && !nameMatches)}
-					>{replacing
+				>
+					{replacing
 						? 'Working…'
 						: replaceMode === 'remint'
 							? 'Re-mint and revoke the old licence'
-							: 'Re-issue licence'}</button
-				>
+							: 'Re-issue licence'}
+				</button>
 			{/if}
 		</div>
 	</form>

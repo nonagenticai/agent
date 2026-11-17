@@ -30,8 +30,9 @@
 			<span
 				class="onto-pill tenant"
 				title="Added by this tenant (refinement) · {SCOPE_LABEL[entity.scope] ?? entity.scope} scope"
-				>+ {SCOPE_LABEL[entity.scope] ?? entity.scope}</span
 			>
+				+ {SCOPE_LABEL[entity.scope] ?? entity.scope}
+			</span>
 		{:else}
 			<svg
 				class="onto-lock"
@@ -59,13 +60,16 @@
 					class="attr-name"
 					class:tenant-attr={a.origin === 'tenant' && entity.origin !== 'tenant'}
 					title={a.origin === 'tenant' && entity.origin !== 'tenant' ? 'Added by this tenant' : undefined}
-					>{#if a.origin === 'tenant' && entity.origin !== 'tenant'}+
-					{/if}{a.name}</span
 				>
+					{#if a.origin === 'tenant' && entity.origin !== 'tenant'}+
+					{/if}{a.name}
+				</span>
 				{#if a.conflict}<span
 						class="attr-warn"
-						title="Its base parent changed: resolve on Release → Conflicts">!</span
-					>{/if}
+						title="Its base parent changed: resolve on Release → Conflicts"
+					>
+						!
+					</span>{/if}
 				<span class="attr-type">{a.data_type}</span>
 				{#if a.pii}<span class="attr-pii">Personal data</span>{/if}
 			</div>

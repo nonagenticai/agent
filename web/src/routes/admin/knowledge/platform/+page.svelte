@@ -116,15 +116,17 @@
 									<td class="mono">{x.key_prefix}</td>
 									<td>{x.reason}</td>
 									<td class="muted">{x.created_at ? when(x.created_at) : '—'}</td>
-									<td class="right"
-										><button
+									<td class="right">
+										<button
 											class="btn sm"
 											type="button"
 											{...writeAttrs(session, 'knowledge_manager')}
 											disabled={!canWrite || restoring === x.key_prefix}
-											onclick={() => restore(x)}>Restore</button
-										></td
-									>
+											onclick={() => restore(x)}
+										>
+											Restore
+										</button>
+									</td>
 								</tr>
 							{/each}
 						</tbody>
@@ -136,24 +138,24 @@
 
 	<Card title="Exclude" sub="A pack key (industry/retail/returns) or a whole branch (industry/retail).">
 		<form class="pk-form" onsubmit={exclude} data-testid="pk-exclude-form">
-			<label class="field"
-				><span class="label">Key or prefix</span><input
+			<label class="field">
+				<span class="label">Key or prefix</span><input
 					class="input mono"
 					bind:value={prefix}
 					placeholder="industry/retail"
 					aria-label="Key or prefix"
-				/></label
-			>
-			<label class="field"
-				><span class="label">Reason</span><input
+				/>
+			</label>
+			<label class="field">
+				<span class="label">Reason</span><input
 					id="pk-reason"
 					class="input"
 					bind:value={reason}
 					maxlength={MAX_REASON_CHARS}
 					placeholder="Why it does not apply to you"
 					aria-label="Reason"
-				/></label
-			>
+				/>
+			</label>
 			{#if problem}<p class="err-text pk-small" role="alert">{problem}</p>{/if}
 			<div class="row">
 				<button
@@ -161,8 +163,9 @@
 					type="submit"
 					{...writeAttrs(session, 'knowledge_manager')}
 					disabled={!canWrite || saving || !prefix.trim() || !reason.trim() || !!problem}
-					>{saving ? 'Excluding…' : 'Exclude now'}</button
 				>
+					{saving ? 'Excluding…' : 'Exclude now'}
+				</button>
 			</div>
 		</form>
 	</Card>
@@ -188,23 +191,27 @@
 								type="button"
 								disabled={!canWrite}
 								title="Prefill an exclusion of the whole {g.family} family"
-								onclick={() => start(g.family)}>Exclude all {g.family}…</button
-							>{/if}
+								onclick={() => start(g.family)}
+							>
+								Exclude all {g.family}…
+							</button>{/if}
 					</h3>
 					<ul class="list-plain">
 						{#each g.packs as p (p.pin)}
 							<li>
 								<Chip text={p.pin} variant="accent" />
-								<span class="muted pk-small"
-									>{p.published_at ? `published ${when(p.published_at)}` : 'not published'}</span
-								>
+								<span class="muted pk-small">
+									{p.published_at ? `published ${when(p.published_at)}` : 'not published'}
+								</span>
 								<button
 									class="btn sm"
 									type="button"
 									disabled={!canWrite}
 									title="Prefill an exclusion of {p.key}"
-									onclick={() => start(p.key)}>Exclude…</button
+									onclick={() => start(p.key)}
 								>
+									Exclude…
+								</button>
 							</li>
 						{/each}
 					</ul>

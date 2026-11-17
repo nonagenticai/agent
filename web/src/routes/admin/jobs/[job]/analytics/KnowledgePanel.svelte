@@ -87,13 +87,13 @@
 						<span><i class="g"></i>grounded {fmt.n(k.grounded)}</span>
 						<span><i class="n"></i>not grounded {fmt.n(k.not_grounded)}</span>
 						<span><i class="d"></i>I don't know {fmt.n(k.dont_know)}</span>
-						<span class="s-{tone(k.grounded_rate)} kn-verdict"
-							>{k.grounded_rate == null
+						<span class="s-{tone(k.grounded_rate)} kn-verdict">
+							{k.grounded_rate == null
 								? ''
 								: k.grounded_rate >= 0.85
 									? 'Mostly grounded'
-									: 'Too many answers without a source'}</span
-						>
+									: 'Too many answers without a source'}
+						</span>
 					</span>
 				</div>
 			{/if}
@@ -105,11 +105,11 @@
 						<ul class="list-plain kn-list" data-testid="kn-unanswered">
 							{#each k.unanswered as q (q.query)}
 								<li>
-									<span class="kn-main"
-										><a href={storesHref(q.query)}>{q.query}</a><span class="cell-sub"
-											>“{q.example}” · last {when(q.last_at)}</span
-										></span
-									>
+									<span class="kn-main">
+										<a href={storesHref(q.query)}>{q.query}</a><span class="cell-sub">
+											“{q.example}” · last {when(q.last_at)}
+										</span>
+									</span>
 									<span class="mono">{fmt.n(q.count)}×</span>
 								</li>
 							{/each}
@@ -127,9 +127,9 @@
 								<li>
 									<span>{reasonLabel(r.reason)}</span>
 									<span class="mono">{fmt.n(r.count)}</span>
-									<span class="kn-rbar" aria-hidden="true"
-										><span style:width="{downs ? (r.count / downs) * 100 : 0}%"></span></span
-									>
+									<span class="kn-rbar" aria-hidden="true">
+										<span style:width="{downs ? (r.count / downs) * 100 : 0}%"></span>
+									</span>
 								</li>
 							{/each}
 						</ul>
@@ -148,13 +148,13 @@
 						<ul class="kn-reasons" data-testid="kn-most-cited">
 							{#each k.most_cited as d (d.document_id)}
 								<li title={d.document_id}>
-									<span class="kn-main"
-										>{d.title}<span class="cell-sub mono">{storePath(d.store_path)}</span></span
-									>
+									<span class="kn-main">
+										{d.title}<span class="cell-sub mono">{storePath(d.store_path)}</span>
+									</span>
 									<span class="mono">{fmt.n(d.citations)}</span>
-									<span class="kn-rbar" aria-hidden="true"
-										><span class="g" style:width="{(d.citations / top) * 100}%"></span></span
-									>
+									<span class="kn-rbar" aria-hidden="true">
+										<span class="g" style:width="{(d.citations / top) * 100}%"></span>
+									</span>
 								</li>
 							{/each}
 						</ul>
@@ -164,9 +164,9 @@
 				</section>
 				<section aria-labelledby="kn-never">
 					<h3 id="kn-never">
-						Never cited <span class="muted"
-							>· {fmt.n(k.never_cited_total)} of {fmt.n(k.documents_total)} documents</span
-						>
+						Never cited <span class="muted">
+							· {fmt.n(k.never_cited_total)} of {fmt.n(k.documents_total)} documents
+						</span>
 					</h3>
 					{#if k.never_cited.length}
 						<ul class="list-plain kn-list" data-testid="kn-never-cited">

@@ -9,8 +9,10 @@
 			{#each crumbs as c, i (i)}
 				<li>
 					{#if c.href}<a href={c.href}>{c.label}</a>{:else}<span
-							aria-current={i === crumbs.length - 1 ? 'page' : undefined}>{c.label}</span
-						>{/if}
+							aria-current={i === crumbs.length - 1 ? 'page' : undefined}
+						>
+							{c.label}
+						</span>{/if}
 				</li>
 			{/each}
 		</ol>

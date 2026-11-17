@@ -212,25 +212,28 @@
 				<div class="tbl-wrap">
 					<table class="tbl dense clickable" data-testid="op-stats">
 						<thead>
-							<tr
-								><th>Operation</th><th>Route → system</th><th class="r">Calls</th><th class="r">Failing</th
-								><th class="r">Denied</th><th class="r">p95</th></tr
-							>
+							<tr>
+								<th>Operation</th><th>Route → system</th><th class="r">Calls</th><th class="r">Failing</th><th
+									class="r"
+								>
+									Denied
+								</th><th class="r">p95</th>
+							</tr>
 						</thead>
 						<tbody>
 							{#each s.items as r (statKey(r))}
 								{@const rate = r.calls ? r.errors / r.calls : null}
 								<tr onclick={() => setQuery({ op: r.op })}>
-									<td class="mono"
-										>{r.op}
-										{#if r.side_effect}<span class="cell-sub" title={SIDE_EFFECT[r.side_effect].hint}
-												>{SIDE_EFFECT[r.side_effect].hint}</span
-											>{/if}</td
-									>
-									<td
-										><Chip text={ROUTE_LABEL[r.route]} variant={ROUTE_VARIANT[r.route]} />
-										{#if r.instance}<span class="mono muted">{r.instance}</span>{/if}</td
-									>
+									<td class="mono">
+										{r.op}
+										{#if r.side_effect}<span class="cell-sub" title={SIDE_EFFECT[r.side_effect].hint}>
+												{SIDE_EFFECT[r.side_effect].hint}
+											</span>{/if}
+									</td>
+									<td>
+										<Chip text={ROUTE_LABEL[r.route]} variant={ROUTE_VARIANT[r.route]} />
+										{#if r.instance}<span class="mono muted">{r.instance}</span>{/if}
+									</td>
 									<td class="r">{fmt.n(r.calls)}</td>
 									<td class="r" class:bad={rate != null && rate >= 0.1}>{fmt.pct(rate)}</td>
 									<td class="r">{fmt.n(r.denied)}</td>
@@ -308,53 +311,57 @@
 			<div class="tbl-wrap">
 				<table class="tbl dense" data-testid="op-log">
 					<thead>
-						<tr
-							><th>When · case</th><th>Operation</th><th>System</th><th>Outcome</th><th>For the customer</th
-							><th>Safety</th><th class="r">Latency</th></tr
-						>
+						<tr>
+							<th>When · case</th><th>Operation</th><th>System</th><th>Outcome</th><th>
+								For the customer
+							</th><th>Safety</th><th class="r">Latency</th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each p.items as c (c.call_id)}
 							{@const e = endingCell(c)}
 							{@const href = systemHref(c.instance)}
 							<tr class="j22-row {e === 'pending' ? '' : ENDING[e].cls}">
-								<td class="nowrap"
-									>{when(c.at)}
-									<span class="cell-sub"
-										><a class="mono" href={jobPath(app.job, `/cases/${encodeURIComponent(c.case_id)}`)}
-											>{c.case_id}</a
-										>
+								<td class="nowrap">
+									{when(c.at)}
+									<span class="cell-sub">
+										<a class="mono" href={jobPath(app.job, `/cases/${encodeURIComponent(c.case_id)}`)}>
+											{c.case_id}
+										</a>
 										{#if c.env === 'test'}<Chip
 												text="test · draft"
 												variant="accent"
 												title="Ran the draft in the Test environment"
-											/>{:else}<span class="muted">prod</span>{/if}</span
-									></td
-								>
-								<td class="mono"
-									>{c.op}{#if c.attempt > 1}<span class="cell-sub">attempt {c.attempt}</span>{/if}</td
-								>
+											/>{:else}<span class="muted">prod</span>{/if}
+									</span>
+								</td>
+								<td class="mono">
+									{c.op}{#if c.attempt > 1}<span class="cell-sub">attempt {c.attempt}</span>{/if}
+								</td>
 								<td>
 									{#if c.route !== 'instance'}<Chip
 											text={ROUTE_LABEL[c.route]}
 											variant={ROUTE_VARIANT[c.route]}
 										/>{/if}
-									{#if href}<a class="mono" {href}>{c.instance}</a
-										>{:else if c.instance && c.instance !== 'builtin'}<span class="mono">{c.instance}</span
-										>{/if}
-									{#if c.template && c.template !== 'deep_link'}<span class="cell-sub mono">{c.template}</span
-										>{/if}
+									{#if href}<a class="mono" {href}>
+											{c.instance}
+										</a>{:else if c.instance && c.instance !== 'builtin'}<span class="mono">
+											{c.instance}
+										</span>{/if}
+									{#if c.template && c.template !== 'deep_link'}<span class="cell-sub mono">
+											{c.template}
+										</span>{/if}
 								</td>
-								<td
-									><Status word={CALL_STATE_WORD[c.state]} label={CALL_STATE_LABEL[c.state]} />
-									{#if c.outcome !== 'ok' && c.outcome !== c.state}<span class="cell-sub mono"
-											>{c.outcome}</span
-										>{/if}</td
-								>
+								<td>
+									<Status word={CALL_STATE_WORD[c.state]} label={CALL_STATE_LABEL[c.state]} />
+									{#if c.outcome !== 'ok' && c.outcome !== c.state}<span class="cell-sub mono">
+											{c.outcome}
+										</span>{/if}
+								</td>
 								<td class="j22-for">
-									{#if e !== 'pending' && e !== 'ok'}{FOR_CUSTOMER[e]}{#if c.check}<span class="cell-sub"
-												>checked: {c.check.verdict === 'landed' ? 'went through' : 'did not go through'}</span
-											>{/if}{:else}<span class="muted">—</span>{/if}
+									{#if e !== 'pending' && e !== 'ok'}{FOR_CUSTOMER[e]}{#if c.check}<span class="cell-sub">
+												checked: {c.check.verdict === 'landed' ? 'went through' : 'did not go through'}
+											</span>{/if}{:else}<span class="muted">—</span>{/if}
 								</td>
 								<td class="j22-safe">
 									{#if c.side_effect}<Chip
@@ -362,12 +369,12 @@
 											variant={c.side_effect === 'R' ? 'muted' : 'tool'}
 											title={SIDE_EFFECT[c.side_effect].hint}
 										/>{/if}
-									{#if c.idempotency && c.side_effect !== 'R'}<span class="cell-sub"
-											>{IDEMPOTENCY_LABEL[c.idempotency] ?? c.idempotency}</span
-										>{/if}
-									{#if c.confirm_ref}<span class="cell-sub" title="Customer message that confirmed this call"
-											>confirmed · <span class="mono">{c.confirm_ref}</span></span
-										>{/if}
+									{#if c.idempotency && c.side_effect !== 'R'}<span class="cell-sub">
+											{IDEMPOTENCY_LABEL[c.idempotency] ?? c.idempotency}
+										</span>{/if}
+									{#if c.confirm_ref}<span class="cell-sub" title="Customer message that confirmed this call">
+											confirmed · <span class="mono">{c.confirm_ref}</span>
+										</span>{/if}
 								</td>
 								<td class="r nowrap">{fmt.ms(c.latency_ms)}<span class="cell-sub mono">{c.call_id}</span></td>
 							</tr>

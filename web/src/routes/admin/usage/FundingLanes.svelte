@@ -55,9 +55,9 @@
 				<span class="t5-lane-name"><i class="sw {l.cls}"></i> {l.name}</span>
 				<span class="mono t5-lane-val">{v > 0 ? `${fmt.k(v)} tokens · ${pct(v, total)}` : '0'}</span>
 			</div>
-			<span class="t5-track {l.cls}" role="img" aria-label="{l.name}: {pct(v, total)}"
-				><i style="width:{total > 0 ? (v / total) * 100 : 0}%"></i></span
-			>
+			<span class="t5-track {l.cls}" role="img" aria-label="{l.name}: {pct(v, total)}">
+				<i style="width:{total > 0 ? (v / total) * 100 : 0}%"></i>
+			</span>
 			<p class="t5-lane-who">
 				{v > 0 ? l.who : l.idle}
 				{#if v === 0 && l.href}<a href={l.href}>{l.link} →</a>{/if}
@@ -73,16 +73,19 @@
 			<tbody>
 				{#each sources as s (s.key)}
 					<tr data-source={s.key}>
-						<td
-							>{s.label}{#if s.turns !== null}<span class="cell-sub">{fmt.n(s.turns)} turns</span>{:else}<span
-									class="cell-sub">activity generator · no turns</span
-								>{/if}</td
-						>
+						<td>
+							{s.label}{#if s.turns !== null}<span class="cell-sub">{fmt.n(s.turns)} turns</span>{:else}<span
+									class="cell-sub"
+								>
+									activity generator · no turns
+								</span>{/if}
+						</td>
 						<td class="r mono">{fmt.k(s.tokens)}</td>
 						<td class="r">
-							{#each LANES.filter((l) => s.funding[l.key] > 0) as l (l.key)}<span class="chip ok"
-									>{l.name} {pct(s.funding[l.key], s.tokens)}</span
-								>{/each}
+							{#each LANES.filter((l) => s.funding[l.key] > 0) as l (l.key)}<span class="chip ok">
+									{l.name}
+									{pct(s.funding[l.key], s.tokens)}
+								</span>{/each}
 						</td>
 					</tr>
 				{/each}

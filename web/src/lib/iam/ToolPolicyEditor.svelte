@@ -67,18 +67,18 @@
 	/>
 	<section>
 		<h4>Needs and outcome</h4>
-		<label class="field"
-			><span class="label">Requires these state keys before it runs</span>
+		<label class="field">
+			<span class="label">Requires these state keys before it runs</span>
 			<input
 				class="input mono"
 				aria-label="Required state keys"
 				placeholder="customer_id, auth_token"
 				disabled={!writable || saving}
 				bind:value={form.requires}
-			/></label
-		>
-		<label class="field"
-			><span class="label">Before it runs</span>
+			/>
+		</label>
+		<label class="field">
+			<span class="label">Before it runs</span>
 			<select
 				class="input"
 				aria-label="Confirmation"
@@ -87,10 +87,10 @@
 			>
 				<option value="by_user">Ask the user to confirm</option>
 				<option value="auto">Run automatically</option>
-			</select></label
-		>
-		<label class="field"
-			><span class="label">If an input cannot be resolved</span>
+			</select>
+		</label>
+		<label class="field">
+			<span class="label">If an input cannot be resolved</span>
 			<select
 				class="input"
 				aria-label="On failure"
@@ -99,15 +99,15 @@
 			>
 				<option value="handover">Hand over to a person</option>
 				<option value="refuse">Refuse</option>
-			</select></label
-		>
+			</select>
+		</label>
 	</section>
 	{#if err}
-		<Callout kind="err" title="Not saved"
-			><span data-testid="policy-error" role="alert"
-				>{err.message} <span class="mono muted">{err.code}</span></span
-			></Callout
-		>
+		<Callout kind="err" title="Not saved">
+			<span data-testid="policy-error" role="alert">
+				{err.message} <span class="mono muted">{err.code}</span>
+			</span>
+		</Callout>
 	{/if}
 	{#if problem}<p class="muted small" data-testid="policy-problem">{problem}</p>{/if}
 	<div class="row">
@@ -116,12 +116,14 @@
 			type="button"
 			{...writeAttrs(session, 'integrations_manager')}
 			disabled={!writable || saving || problem !== null}
-			onclick={save}>Save to draft</button
+			onclick={save}
 		>
+			Save to draft
+		</button>
 		{#if policy}
-			<button class="btn" type="button" disabled={!writable || saving} onclick={clear}
-				>Remove declaration</button
-			>
+			<button class="btn" type="button" disabled={!writable || saving} onclick={clear}>
+				Remove declaration
+			</button>
 		{/if}
 	</div>
 	{#if !writable}<p class="note">

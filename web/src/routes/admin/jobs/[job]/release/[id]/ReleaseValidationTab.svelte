@@ -109,22 +109,23 @@
 			>
 				{#if !v.rows.length}
 					<div class="empty" data-testid="grid-no-rows">
-						This cut has no questions. Add them on the <a href={jobPath(app.job, '/validation')}>Validation</a
-						> page.
+						This cut has no questions. Add them on the <a href={jobPath(app.job, '/validation')}>
+							Validation
+						</a> page.
 					</div>
 				{:else}
 					<div class="tbl-wrap">
 						<table class="tbl dense" data-testid="grid-rows">
-							<thead
-								><tr><th>Question</th><th>Expected answer</th><th>Reference</th><th>Verdict</th></tr></thead
-							>
+							<thead>
+								<tr><th>Question</th><th>Expected answer</th><th>Reference</th><th>Verdict</th></tr>
+							</thead>
 							<tbody>
 								{#each v.rows as r (r.id)}
 									<tr data-testid="grid-row-{r.id}" class:rej={r.verdict === 'rejected'}>
-										<td
-											>{r.question}
-											{#if r.activity}<div class="cell-sub mono">{r.activity}</div>{/if}</td
-										>
+										<td>
+											{r.question}
+											{#if r.activity}<div class="cell-sub mono">{r.activity}</div>{/if}
+										</td>
 										<td>{r.expected}</td>
 										<td class="mono small">{r.reference}</td>
 										<td>
@@ -133,8 +134,10 @@
 													? 'ok'
 													: r.verdict === 'rejected'
 														? 'err'
-														: 'muted'}">{r.verdict === 'pending' ? 'not graded' : r.verdict}</span
+														: 'muted'}"
 											>
+												{r.verdict === 'pending' ? 'not graded' : r.verdict}
+											</span>
 											{#if r.reason}<div class="cell-sub err-text">{REASON[r.reason]}</div>{/if}
 										</td>
 									</tr>

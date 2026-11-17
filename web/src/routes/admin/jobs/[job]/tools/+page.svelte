@@ -211,8 +211,9 @@
 				<li class="j25-tool" class:attn={blocked(r.prod)}>
 					<div class="j25-what">
 						<span class="row">
-							<button type="button" class="table-action mono j25-name" onclick={() => show(r)}>{r.key}</button
-							>
+							<button type="button" class="table-action mono j25-name" onclick={() => show(r)}>
+								{r.key}
+							</button>
 							<Chip
 								text={r.op.required ? 'required' : 'optional'}
 								variant={r.op.required ? 'accent' : 'muted'}
@@ -223,11 +224,11 @@
 							<Chip text={fx.label} variant={fx.variant} />
 							<span title={IDENTITY[r.op.identity_level] ?? ''}>identity level {r.op.identity_level}</span>
 							{#if r.def?.transitions.length}
-								<span class="mono j25-state"
-									>{r.op.object}: {[...new Set(r.def.transitions.map((t) => t.from))].join(' / ')} → {[
+								<span class="mono j25-state">
+									{r.op.object}: {[...new Set(r.def.transitions.map((t) => t.from))].join(' / ')} → {[
 										...new Set(r.def.transitions.map((t) => t.to)),
-									].join(' / ')}</span
-								>
+									].join(' / ')}
+								</span>
 							{/if}
 						</span>
 					</div>
@@ -235,9 +236,9 @@
 						<span class="j25-k">Used in</span>
 						{#if r.steps.length}
 							{#each r.steps.slice(0, 3) as s (`${s.procedure}#${s.step_number}`)}
-								<a href={procHref(s.procedure)}
-									><span class="mono">{s.procedure}</span> · step {s.step_number}</a
-								>
+								<a href={procHref(s.procedure)}>
+									<span class="mono">{s.procedure}</span> · step {s.step_number}
+								</a>
 							{/each}
 							{#if r.steps.length > 3}<span class="muted">+{r.steps.length - 3} more</span>{/if}
 						{:else}
@@ -261,9 +262,9 @@
 					<div class="j25-calls">
 						{#if r.stats}
 							<b class="mono">{fmt.n(r.stats.calls_7d)}</b> calls · 7 days
-							<span class="muted" class:s-err={r.stats.error_rate >= 0.05}
-								>{fmt.pct(r.stats.error_rate)} errors · p95 {fmt.ms(r.stats.p95_ms)}</span
-							>
+							<span class="muted" class:s-err={r.stats.error_rate >= 0.05}>
+								{fmt.pct(r.stats.error_rate)} errors · p95 {fmt.ms(r.stats.p95_ms)}
+							</span>
 						{:else}<span class="muted">no calls yet</span>{/if}
 					</div>
 				</li>
@@ -316,9 +317,9 @@
 							{r.def?.confirm_back
 								? 'The agent asks the customer to confirm.'
 								: 'Runs without a customer confirmation.'}
-							{#if r.def?.idempotency}<span class="cell-sub"
-									>Retry-safe: {RETRY[r.def.idempotency] ?? r.def.idempotency}</span
-								>{/if}
+							{#if r.def?.idempotency}<span class="cell-sub">
+									Retry-safe: {RETRY[r.def.idempotency] ?? r.def.idempotency}
+								</span>{/if}
 						</dd>
 					{/if}
 					<dt>Needs</dt>
@@ -344,8 +345,10 @@
 				{:else}
 					<p class="muted">
 						No procedure step calls it. The agent can still use it while it answers, if its role may — see <a
-							href={jobPath(app.job, '/toolsets')}>Toolsets</a
-						>.
+							href={jobPath(app.job, '/toolsets')}
+						>
+							Toolsets
+						</a>.
 					</p>
 				{/if}
 			</section>
@@ -393,9 +396,9 @@
 								bind:value={pick[env]}
 								disabled={!writable || saving !== null}
 							>
-								<option value="" disabled
-									>{c.inherited ? `As every ${r.op.object}.${r.op.verb}…` : 'Choose who answers…'}</option
-								>
+								<option value="" disabled>
+									{c.inherited ? `As every ${r.op.object}.${r.op.verb}…` : 'Choose who answers…'}
+								</option>
 								{#each choices as ch (ch.value)}<option value={ch.value}>{ch.label}</option>{/each}
 							</select>
 							<button
@@ -406,8 +409,10 @@
 									saving !== null ||
 									!pick[env] ||
 									pick[env] === (c.inherited ? '' : choiceValue(c.target))}
-								onclick={() => saveRoute(d, r, env)}>Save to draft</button
+								onclick={() => saveRoute(d, r, env)}
 							>
+								Save to draft
+							</button>
 						</div>
 						{#if err && err.env === env}
 							<p class="s-err small" role="alert"><b class="mono">{err.code}</b> — {err.message}</p>

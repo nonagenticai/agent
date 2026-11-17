@@ -31,11 +31,11 @@
 				<li>
 					<span class="chip tool" title="{g.point} · threshold {g.threshold}">{g.key}</span>
 					<span class="j5-q">{g.question}</span>
-					<span class="j5-a"
-						>→ <b>{g.answer}</b>{#if g.verdicts_7d != null}<span class="muted">
-								· {g.verdicts_7d}× in 7 d</span
-							>{/if}</span
-					>
+					<span class="j5-a">
+						→ <b>{g.answer}</b>{#if g.verdicts_7d != null}<span class="muted">
+								· {g.verdicts_7d}× in 7 d
+							</span>{/if}
+					</span>
 				</li>
 			{/each}
 		</ul>
@@ -103,16 +103,17 @@
 						<span class="mono">{c.verb}</span>
 						{#if c.to}
 							<div class="j5-trans">
-								<span class="j5-from"
-									>{#each c.from as f (f)}<span class="chip muted">{f}</span>{/each}</span
-								>
+								<span class="j5-from">
+									{#each c.from as f (f)}<span class="chip muted">{f}</span>{/each}
+								</span>
 								<span aria-hidden="true">→</span>
 								<span class="chip accent">{c.to}</span>
 							</div>
 							<span class="cell-sub">Any other status: refused, nothing changes.</span>
 						{:else if c.from.length}
-							<span class="cell-sub">Allowed while {c.object} is {c.from.join(' / ')}; status unchanged.</span
-							>
+							<span class="cell-sub">
+								Allowed while {c.object} is {c.from.join(' / ')}; status unchanged.
+							</span>
 						{:else}
 							<span class="cell-sub">Creates or updates a {c.object} record.</span>
 						{/if}

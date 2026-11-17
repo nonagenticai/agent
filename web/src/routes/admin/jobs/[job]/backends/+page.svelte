@@ -219,9 +219,9 @@
 		</div>
 		<div class="row">
 			<a class="btn sm" href={sysHref(i.id)}>{h.word === 'ok' ? 'Open system' : 'Fix on the system page'}</a>
-			{#if s.blockedUses}<span class="muted"
-					>{s.blockedUses} tool route{s.blockedUses === 1 ? '' : 's'} on it cannot run yet</span
-				>{/if}
+			{#if s.blockedUses}<span class="muted">
+					{s.blockedUses} tool route{s.blockedUses === 1 ? '' : 's'} on it cannot run yet
+				</span>{/if}
 		</div>
 	</article>
 {/snippet}

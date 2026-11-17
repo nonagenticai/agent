@@ -103,9 +103,9 @@
 				bind:active={group}
 			/>
 			{#if point !== 'all'}
-				<button type="button" class="btn sm" onclick={() => (point = 'all')}
-					>Showing {point} only · show all points</button
-				>
+				<button type="button" class="btn sm" onclick={() => (point = 'all')}>
+					Showing {point} only · show all points
+				</button>
 			{/if}
 		</div>
 
@@ -124,16 +124,16 @@
 									onclick={() => show(q)}
 									aria-label="Open {q.key}: {q.question}"
 								>
-									<span class="gl-key mono"
-										>{q.key}{#if q.safety}<Lock />{/if}</span
-									>
+									<span class="gl-key mono">
+										{q.key}{#if q.safety}<Lock />{/if}
+									</span>
 									<span class="gl-main">
 										<span class="gl-q">{q.question}</span>
-										<span class="gl-rule"
-											><span class="mono gl-th">{ruleText(q)}</span><span class="gl-arrow" aria-hidden="true"
-												>→</span
-											>{q.effect}</span
-										>
+										<span class="gl-rule">
+											<span class="mono gl-th">{ruleText(q)}</span><span class="gl-arrow" aria-hidden="true">
+												→
+											</span>{q.effect}
+										</span>
 									</span>
 									<span class="gl-meta">
 										<span class="chips">

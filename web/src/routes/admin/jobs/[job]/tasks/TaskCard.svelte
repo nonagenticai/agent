@@ -122,8 +122,8 @@
 					{#each paragraphs(q.message) as p, i (i)}<p class="task-para">{p}</p>{/each}
 					{#each fields as f (f.name)}
 						{#if f.kind === 'choice'}
-							<label class="field"
-								><span class="label">{f.name}{f.required ? ' *' : ''}</span>
+							<label class="field">
+								<span class="label">{f.name}{f.required ? ' *' : ''}</span>
 								<select
 									class="input"
 									value={draft(q.key)[f.name] ?? ''}
@@ -134,8 +134,8 @@
 								</select>
 							</label>
 						{:else}
-							<label class="field"
-								><span class="label">{f.name}{f.required ? ' *' : ''}</span>
+							<label class="field">
+								<span class="label">{f.name}{f.required ? ' *' : ''}</span>
 								<textarea
 									class="input"
 									rows="3"
@@ -169,12 +169,13 @@
 			type="button"
 			disabled={terminal || !canWrite || busy !== '' || task.cancel_requested}
 			onclick={cancel}
-			>{task.cancel_requested && !terminal
+		>
+			{task.cancel_requested && !terminal
 				? 'Cancel requested'
 				: busy === 'cancel'
 					? 'Cancelling…'
-					: 'Cancel task'}</button
-		>
+					: 'Cancel task'}
+		</button>
 	</div>
 	{#if cancelError}<span class="field-err" role="alert">{cancelError}</span>{/if}
 </article>

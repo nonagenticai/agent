@@ -61,8 +61,10 @@
 				type="button"
 				class="btn sm"
 				aria-label="Remove {label} {i + 1}"
-				onclick={() => rows.splice(i, 1)}>Remove</button
+				onclick={() => rows.splice(i, 1)}
 			>
+				Remove
+			</button>
 		</div>
 	{/each}
 	<button type="button" class="btn sm" onclick={add}>Add condition</button>

@@ -290,27 +290,27 @@
 <LoadState resource={res}>
 	{#snippet children(v)}
 		{#if v.warning?.code === 'key_required'}
-			<Callout kind="gap" title="Key required"
-				><span>{v.warning.message} The release readiness lists this too (not a block).</span></Callout
-			>
+			<Callout kind="gap" title="Key required">
+				<span>{v.warning.message} The release readiness lists this too (not a block).</span>
+			</Callout>
 		{/if}
 		{#if v.live_problems?.length}
-			<Callout kind="err" title="Live bindings that cannot serve"
-				><span data-testid="llm-live-problems"
-					>{#each v.live_problems as p, i (`${p.job}:${p.use}`)}{#if i}{'; '}{/if}<b>{p.job}</b> · {LLM_USE_RULES[
+			<Callout kind="err" title="Live bindings that cannot serve">
+				<span data-testid="llm-live-problems">
+					{#each v.live_problems as p, i (`${p.job}:${p.use}`)}{#if i}{'; '}{/if}<b>{p.job}</b> · {LLM_USE_RULES[
 							p.use
 						]?.label ?? p.use}: {p.message} ({p.code}){/each}. Bind a provider that can serve, then publish
-					the job.</span
-				></Callout
-			>
+					the job.
+				</span>
+			</Callout>
 		{/if}
 		{#if v.hosting === 'internal'}
-			<Callout kind="info" title="nonagentic's own tenant"
-				><span data-testid="llm-internal"
-					>The LLM runs on the pgx vLLM, every other GPU capability on mlx_api, both managed by the platform.
-					Customer tenants bind their own external providers with a URL and a token.</span
-				></Callout
-			>
+			<Callout kind="info" title="nonagentic's own tenant">
+				<span data-testid="llm-internal">
+					The LLM runs on the pgx vLLM, every other GPU capability on mlx_api, both managed by the platform.
+					Customer tenants bind their own external providers with a URL and a token.
+				</span>
+			</Callout>
 		{/if}
 		{#each unboundUses(v) as u (u.use)}
 			<div class="callout gap bind-callout" data-testid="bind-callout-{u.use}">
@@ -323,22 +323,25 @@
 							type="button"
 							{...writeAttrs(session, 'integrations_manager')}
 							onclick={() => bindUse(u.use, u.candidate!.id, u.candidate!.model)}
-							>Bind {u.candidate.name}{u.candidate.model ? ` · ${u.candidate.model}` : ''}</button
 						>
+							Bind {u.candidate.name}{u.candidate.model ? ` · ${u.candidate.model}` : ''}
+						</button>
 					{:else if v.hosting === 'internal'}
 						<span class="muted">The internal providers serve no {LLM_KIND_LABEL[u.kind]} endpoint yet.</span>
 					{:else}
-						<span class="muted"
-							>No {LLM_KIND_LABEL[u.kind]} provider yet{u.use === 'gates'
+						<span class="muted">
+							No {LLM_KIND_LABEL[u.kind]} provider yet{u.use === 'gates'
 								? ': only a Laya provider can serve gates'
-								: ''}.</span
-						>
+								: ''}.
+						</span>
 						<button
 							class="btn sm"
 							type="button"
 							{...writeAttrs(session, 'integrations_manager')}
-							onclick={() => edit(null, u.kind)}>Add a {LLM_KIND_LABEL[u.kind]} provider</button
+							onclick={() => edit(null, u.kind)}
 						>
+							Add a {LLM_KIND_LABEL[u.kind]} provider
+						</button>
 					{/if}
 				</span>
 			</div>
@@ -362,8 +365,10 @@
 						class="btn primary sm"
 						type="button"
 						{...writeAttrs(session, 'integrations_manager')}
-						onclick={() => edit(null)}>Add provider</button
+						onclick={() => edit(null)}
 					>
+						Add provider
+					</button>
 				{/if}
 			{/snippet}
 			{#if v.providers.length === 0}
@@ -376,37 +381,37 @@
 				<div class="tbl-wrap">
 					<table class="tbl" data-testid="llm-providers">
 						<thead>
-							<tr
-								><th>Provider</th><th>Endpoint · region</th><th>Funding · token</th><th>Models</th><th
-									>Health</th
-								><th aria-label="Provider actions"></th></tr
-							>
+							<tr>
+								<th>Provider</th><th>Endpoint · region</th><th>Funding · token</th><th>Models</th><th>
+									Health
+								</th><th aria-label="Provider actions"></th>
+							</tr>
 						</thead>
 						<tbody>
 							{#each v.providers as p (p.id)}
 								{@const tc = tokenChip(p)}
 								{@const f = providerFunding(p)}
 								<tr data-provider={p.id}>
-									<td
-										><b>{p.name}</b>
-										<Chip text={LLM_KIND_LABEL[p.kind]} /><span class="cell-sub"
-											>{bound(v, p.id) ? `serves ${bound(v, p.id)}` : 'not bound to a use'} · by {p.updated_by}</span
-										></td
-									>
-									<td
-										><span class="mono url">{p.base_url}</span><span class="cell-sub"
-											>{providerRegion(p) ?? 'region not declared'}</span
-										></td
-									>
-									<td
-										><span class="chips"
-											><Chip
+									<td>
+										<b>{p.name}</b>
+										<Chip text={LLM_KIND_LABEL[p.kind]} /><span class="cell-sub">
+											{bound(v, p.id) ? `serves ${bound(v, p.id)}` : 'not bound to a use'} · by {p.updated_by}
+										</span>
+									</td>
+									<td>
+										<span class="mono url">{p.base_url}</span><span class="cell-sub">
+											{providerRegion(p) ?? 'region not declared'}
+										</span>
+									</td>
+									<td>
+										<span class="chips">
+											<Chip
 												text={FUNDING[f].label}
 												variant={FUNDING[f].variant}
 												title={FUNDING[f].hint}
-											/><Chip text={tc.text} variant={tc.variant} /></span
-										></td
-									>
+											/><Chip text={tc.text} variant={tc.variant} />
+										</span>
+									</td>
 									<td class="mono">{p.models.join(', ')}</td>
 									<td>
 										{#if p.last_test}
@@ -422,11 +427,13 @@
 												type="button"
 												{...writeAttrs(session, 'integrations_manager')}
 												disabled={!canWrite || testing === p.id}
-												onclick={() => test(p)}>{testing === p.id ? 'Testing…' : 'Test'}</button
+												onclick={() => test(p)}
 											>
-											<button class="btn sm" type="button" onclick={() => edit(p)}
-												>{canWrite && p.token_mode !== 'internal' ? 'Edit' : 'View'}</button
-											>
+												{testing === p.id ? 'Testing…' : 'Test'}
+											</button>
+											<button class="btn sm" type="button" onclick={() => edit(p)}>
+												{canWrite && p.token_mode !== 'internal' ? 'Edit' : 'View'}
+											</button>
 										</span>
 									</td>
 								</tr>
@@ -450,15 +457,17 @@
 				/>
 				<div class="tbl-wrap">
 					<table class="tbl uses" data-testid="llm-uses">
-						<thead><tr><th>Use</th><th>→ Provider</th><th>→ Model</th><th>If unbound</th><th></th></tr></thead
-						>
+						<thead>
+							<tr><th>Use</th><th>→ Provider</th><th>→ Model</th><th>If unbound</th><th></th></tr>
+						</thead>
 						<tbody>
 							{#each v.uses as u (u.use)}
 								{@const rule = LLM_USE_RULES[u.use]}
 								{@const problem = pickProblem(v, u.use)}
 								<tr data-use={u.use}>
-									<td><b>{u.label}</b><span class="cell-sub mono">{u.use} · {kindsText(u.use)} only</span></td
-									>
+									<td>
+										<b>{u.label}</b><span class="cell-sub mono">{u.use} · {kindsText(u.use)} only</span>
+									</td>
 									<td>
 										<select
 											class="input"
@@ -471,10 +480,11 @@
 											{#each v.providers as p (p.id)}<option
 													value={p.id}
 													disabled={!!llmUseProblem(u.use, p.kind)}
-													>{p.name}{llmUseProblem(u.use, p.kind)
+												>
+													{p.name}{llmUseProblem(u.use, p.kind)
 														? ` (${LLM_KIND_LABEL[p.kind]}: cannot serve)`
-														: ''}</option
-												>{/each}
+														: ''}
+												</option>{/each}
 										</select>
 										{#if problem}<span class="cell-sub err-text" role="alert">{problem}</span>{/if}
 									</td>
@@ -495,22 +505,24 @@
 												bind:value={sel.tts.voice}
 												disabled={!canWrite || !sel.tts.provider}
 											/>
-											{#if voiceProblem(sel.tts.voice)}<span class="cell-sub err-text" role="alert"
-													>{voiceProblem(sel.tts.voice)}</span
-												>{/if}
+											{#if voiceProblem(sel.tts.voice)}<span class="cell-sub err-text" role="alert">
+													{voiceProblem(sel.tts.voice)}
+												</span>{/if}
 										{/if}
 									</td>
 									<td class="muted">{rule.fallback}</td>
-									<td class="r"
-										><button
+									<td class="r">
+										<button
 											class="btn sm"
 											type="button"
 											aria-label="Bind {u.use}"
 											{...writeAttrs(session, 'integrations_manager')}
 											disabled={!canWrite || !!problem || (u.use === 'tts' && !!voiceProblem(sel.tts.voice))}
-											onclick={() => bind(v, u.use)}>Bind</button
-										></td
-									>
+											onclick={() => bind(v, u.use)}
+										>
+											Bind
+										</button>
+									</td>
 								</tr>
 							{/each}
 						</tbody>
@@ -528,68 +540,64 @@
 <Drawer bind:open title={editing ? editing.name : 'Add LLM provider'} {dirty}>
 	<div class="stack">
 		{#if !canWrite}
-			<Callout kind="info" title="Read only"
-				><span>Changing providers needs the tenant_admin role.</span></Callout
-			>
+			<Callout kind="info" title="Read only">
+				<span>Changing providers needs the tenant_admin role.</span>
+			</Callout>
 		{/if}
 		{#if managed}
-			<Callout kind="info" title="Managed by the platform"
-				><span data-testid="llm-managed">{INTERNAL_COPY}</span></Callout
-			>
+			<Callout kind="info" title="Managed by the platform">
+				<span data-testid="llm-managed">{INTERNAL_COPY}</span>
+			</Callout>
 		{/if}
 		<fieldset class="fs" disabled={!canWrite || busy || managed}>
 			{#if !editing}
-				<label class="field"
-					><span class="label">Provider</span><select
+				<label class="field">
+					<span class="label">Provider</span><select
 						class="input"
 						aria-label="Provider preset"
 						value={preset}
 						onchange={(e) => applyPreset(e.currentTarget.value)}
 					>
 						{#each LLM_PRESETS as p (p.key)}<option value={p.key}>{p.label}</option>{/each}
-					</select></label
-				>
+					</select>
+				</label>
 			{/if}
-			<label class="field"
-				><span class="label">Name</span><input
-					class="input"
-					bind:value={name}
-					placeholder="Mistral EU"
-				/></label
-			>
-			<label class="field"
-				><span class="label">Kind</span><select class="input" bind:value={kind} aria-label="Kind">
+			<label class="field">
+				<span class="label">Name</span><input class="input" bind:value={name} placeholder="Mistral EU" />
+			</label>
+			<label class="field">
+				<span class="label">Kind</span><select class="input" bind:value={kind} aria-label="Kind">
 					<option value="openai">{LLM_KIND_LABEL.openai}</option>
 					<option value="laya">{LLM_KIND_LABEL.laya} (gate answers)</option>
 					<option value="w2v">{LLM_KIND_LABEL.w2v} (asr / tts only)</option>
-				</select></label
-			>
-			<label class="field"
-				><span class="label">URL</span><input
+				</select>
+			</label>
+			<label class="field">
+				<span class="label">URL</span><input
 					class="input mono"
 					bind:value={baseUrl}
 					placeholder="https://api.mistral.ai/v1"
 					autocomplete="off"
 					spellcheck="false"
-				/></label
-			>
-			<label class="field"
-				><span class="label">Models (comma separated)</span><input
+				/>
+			</label>
+			<label class="field">
+				<span class="label">Models (comma separated)</span><input
 					class="input mono"
 					bind:value={models}
 					placeholder="mistral-large-latest"
-				/></label
-			>
+				/>
+			</label>
 			{#if managed}
 				<p class="cell-sub">Token: the platform's internal service credential (never stored per tenant).</p>
 			{:else}
-				<label class="field"
-					><span class="label"
-						>Token {#if editing?.secret.set && !clearKey}<Chip
+				<label class="field">
+					<span class="label">
+						Token {#if editing?.secret.set && !clearKey}<Chip
 								text={secretText(editing.secret)}
 								variant="ok"
-							/>{/if}</span
-					><input
+							/>{/if}
+					</span><input
 						class="input mono"
 						type="password"
 						aria-label="Token"
@@ -598,12 +606,12 @@
 						placeholder={editing?.secret.set
 							? 'Leave empty to keep the stored token'
 							: 'Paste the provider API key'}
-					/></label
-				>
+					/>
+				</label>
 				{#if editing?.secret.set}
-					<label class="check"
-						><input type="checkbox" bind:checked={clearKey} /> Remove the stored token</label
-					>
+					<label class="check">
+						<input type="checkbox" bind:checked={clearKey} /> Remove the stored token
+					</label>
 				{/if}
 				<p class="cell-sub">
 					Write-only: stored encrypted per tenant, never returned, logged or audited; only its fingerprint
@@ -615,8 +623,10 @@
 						class="btn sm"
 						type="button"
 						disabled={!canWrite || draftTesting || !baseUrl.trim()}
-						onclick={testDraft}>{draftTesting ? 'Testing…' : 'Test before saving'}</button
+						onclick={testDraft}
 					>
+						{draftTesting ? 'Testing…' : 'Test before saving'}
+					</button>
 					<span class="cell-sub">Probes these values now. Nothing is saved; a typed token is sent once.</span>
 					{#if draftTest}
 						<p class="test-line" role="status">
@@ -638,16 +648,16 @@
 				{#each LLM_USES as use (use)}
 					{@const problem = useForProblem(use)}
 					<div class="use-row">
-						<label class="check"
-							><input
+						<label class="check">
+							<input
 								type="checkbox"
 								aria-label="Use for {use}"
 								checked={useFor[use].on && !problem}
 								disabled={!!problem}
 								onchange={(e) => (useFor[use].on = e.currentTarget.checked)}
 							/>
-							{LLM_USE_RULES[use].label}</label
-						>
+							{LLM_USE_RULES[use].label}
+						</label>
 						{#if problem}
 							<span class="cell-sub" data-testid="use-for-reason-{use}">{problem}</span>
 						{:else if useFor[use].on}
@@ -660,11 +670,11 @@
 						{/if}
 					</div>
 				{/each}
-				<span class="cell-sub"
-					>{readOnly
+				<span class="cell-sub">
+					{readOnly
 						? 'Which use this provider serves is set per job in Agent uses; live when each job publishes (D69).'
-						: 'Applied on Save to the draft of every job; live when each job publishes (D69).'}</span
-				>
+						: 'Applied on Save to the draft of every job; live when each job publishes (D69).'}
+				</span>
 			</fieldset>
 		</fieldset>
 		{#if failure}
@@ -674,10 +684,10 @@
 			<div class="callout err" role="alertdialog" aria-label="Remove provider">
 				<strong>Remove {editing.name}?</strong>
 				<span>Its token is deleted. A provider bound to a use cannot be removed.</span>
-				<span
-					><button class="btn sm danger" type="button" onclick={remove}>Remove</button>
-					<button class="btn sm" type="button" onclick={() => (confirmDelete = false)}>Keep</button></span
-				>
+				<span>
+					<button class="btn sm danger" type="button" onclick={remove}>Remove</button>
+					<button class="btn sm" type="button" onclick={() => (confirmDelete = false)}>Keep</button>
+				</span>
 			</div>
 		{/if}
 		<div class="actions" hidden={readOnly}>
@@ -686,16 +696,20 @@
 					class="btn"
 					type="button"
 					{...writeAttrs(session, 'integrations_manager')}
-					onclick={() => (confirmDelete = true)}>Remove</button
+					onclick={() => (confirmDelete = true)}
 				>
+					Remove
+				</button>
 			{/if}
 			<button
 				class="btn primary"
 				type="button"
 				{...writeAttrs(session, 'integrations_manager')}
 				disabled={!canWrite || busy}
-				onclick={save}>{busy ? 'Saving…' : 'Save'}</button
+				onclick={save}
 			>
+				{busy ? 'Saving…' : 'Save'}
+			</button>
 		</div>
 	</div>
 </Drawer>

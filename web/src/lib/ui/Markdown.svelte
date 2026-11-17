@@ -9,11 +9,13 @@
 
 {#snippet inline(
 	nodes: MdInline[],
-)}{#each nodes as n, i (i)}{#if n.t === 'text'}{n.v}{:else if n.t === 'strong'}<strong
-				>{@render inline(n.c)}</strong
-			>{:else if n.t === 'em'}<em>{@render inline(n.c)}</em>{:else if n.t === 'code'}<code>{n.v}</code
-			>{:else}<a href={n.href} target="_blank" rel="noopener noreferrer">{@render inline(n.c)}</a
-			>{/if}{/each}{/snippet}
+)}{#each nodes as n, i (i)}{#if n.t === 'text'}{n.v}{:else if n.t === 'strong'}<strong>
+				{@render inline(n.c)}
+			</strong>{:else if n.t === 'em'}<em>{@render inline(n.c)}</em>{:else if n.t === 'code'}<code>
+				{n.v}
+			</code>{:else}<a href={n.href} target="_blank" rel="noopener noreferrer">
+				{@render inline(n.c)}
+			</a>{/if}{/each}{/snippet}
 
 <div class="md {cls}">
 	{#each blocks as b, i (i)}

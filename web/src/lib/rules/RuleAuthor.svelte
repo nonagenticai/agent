@@ -117,12 +117,12 @@
 		}}
 	>
 		<p>
-			Define the facts and conditions the agent checks with <code
-				>rule.evaluate{'{'}{id || 'RULE-ID'}{'}'}</code
-			>. Save to draft, try it, then publish a release to use it in Production.
+			Define the facts and conditions the agent checks with <code>
+				rule.evaluate{'{'}{id || 'RULE-ID'}{'}'}
+			</code>. Save to draft, try it, then publish a release to use it in Production.
 		</p>
-		<label
-			>Rule id<input
+		<label>
+			Rule id<input
 				class="input"
 				bind:value={id}
 				disabled={!!rule}
@@ -130,17 +130,17 @@
 				pattern={'[A-Z][A-Z0-9-]{0,31}'}
 				maxlength="32"
 				placeholder="CREDIT-LIMIT"
-			/></label
-		>
+			/>
+		</label>
 		<label>Label<input class="input" bind:value={form.label} required /></label>
-		<label
-			>Guarded operations<input
+		<label>
+			Guarded operations<input
 				class="input"
 				bind:value={operations}
 				required
 				placeholder="case.create, order.return"
-			/></label
-		>
+			/>
+		</label>
 		<p class="muted">
 			Read these facts in your procedure before calling the rule. Add a rule step to the procedure to enforce
 			it.
@@ -149,33 +149,30 @@
 			<legend>Facts</legend>
 			{#each form.facts as f, i (i)}
 				<div class="row">
-					<label
-						>Fact {i + 1} key<input
-							class="input"
-							bind:value={f.key}
-							required
-							placeholder="order.total"
-						/></label
-					>
+					<label>
+						Fact {i + 1} key<input class="input" bind:value={f.key} required placeholder="order.total" />
+					</label>
 					<label>Fact {i + 1} label<input class="input" bind:value={f.label} required /></label>
-					<label
-						>Fact {i + 1} type<select class="input" bind:value={f.kind}
-							><option value="number">Number</option><option value="text">Text</option><option value="date"
-								>Date</option
-							><option value="bool">True or false</option></select
-						></label
-					>
-					<button class="btn sm" type="button" onclick={() => form.facts.splice(i, 1)}
-						>Remove fact {i + 1}</button
-					>
+					<label>
+						Fact {i + 1} type<select class="input" bind:value={f.kind}>
+							<option value="number">Number</option><option value="text">Text</option><option value="date">
+								Date
+							</option><option value="bool">True or false</option>
+						</select>
+					</label>
+					<button class="btn sm" type="button" onclick={() => form.facts.splice(i, 1)}>
+						Remove fact {i + 1}
+					</button>
 				</div>
 			{/each}
 			<button
 				class="btn sm"
 				type="button"
 				disabled={form.facts.length >= 32}
-				onclick={() => form.facts.push({ key: '', label: '', kind: 'text' })}>Add fact</button
+				onclick={() => form.facts.push({ key: '', label: '', kind: 'text' })}
 			>
+				Add fact
+			</button>
 		</fieldset>
 		<fieldset>
 			<legend>Thresholds (optional)</legend>
@@ -185,25 +182,20 @@
 			</p>
 			{#each form.values as v, i (i)}
 				<div class="row">
-					<label
-						>Threshold {i + 1} key<input
-							class="input"
-							bind:value={v.key}
-							required
-							pattern="[a-z][a-z0-9_]*"
-						/></label
-					>
+					<label>
+						Threshold {i + 1} key<input class="input" bind:value={v.key} required pattern="[a-z][a-z0-9_]*" />
+					</label>
 					<label>Threshold {i + 1} label<input class="input" bind:value={v.label} required /></label>
-					<label
-						>Threshold {i + 1} unit<select class="input" bind:value={v.unit}
-							><option value="number">Number</option><option value="days">Days</option><option value="months"
-								>Months</option
-							><option value="text">Text</option><option value="list">Comma-separated list</option></select
-						></label
-					>
-					<button class="btn sm" type="button" onclick={() => form.values.splice(i, 1)}
-						>Remove threshold {i + 1}</button
-					>
+					<label>
+						Threshold {i + 1} unit<select class="input" bind:value={v.unit}>
+							<option value="number">Number</option><option value="days">Days</option><option value="months">
+								Months
+							</option><option value="text">Text</option><option value="list">Comma-separated list</option>
+						</select>
+					</label>
+					<button class="btn sm" type="button" onclick={() => form.values.splice(i, 1)}>
+						Remove threshold {i + 1}
+					</button>
 				</div>
 			{/each}
 			<button
@@ -211,46 +203,49 @@
 				type="button"
 				disabled={form.values.length >= 32}
 				onclick={() => form.values.push({ key: '', label: '', unit: 'number', hint: '' })}
-				>Add threshold</button
 			>
+				Add threshold
+			</button>
 		</fieldset>
 		<RuleConditionEditor bind:condition={form.evaluation.condition} facts={form.facts} values={form.values} />
 		<p class="muted">
 			Numeric comparisons require numbers. List comparisons use comma-separated values and ignore letter case.
 			Missing or invalid facts send the decision to a person.
 		</p>
-		<label
-			>Eligible reason<textarea
+		<label>
+			Eligible reason<textarea
 				class="input"
 				bind:value={form.evaluation.eligible_reason}
 				required
-				maxlength="1000"></textarea></label
-		>
-		<label
-			>Ineligible reason<textarea
+				maxlength="1000"></textarea>
+		</label>
+		<label>
+			Ineligible reason<textarea
 				class="input"
 				bind:value={form.evaluation.ineligible_reason}
 				required
-				maxlength="1000"></textarea></label
-		>
+				maxlength="1000"></textarea>
+		</label>
 		{#if error}<p role="alert">{error}</p>{/if}
 		<div class="row">
-			<button class="btn primary" type="submit" disabled={busy || wa.disabled} title={wa.title}
-				>{busy ? 'Saving…' : 'Save rule draft'}</button
-			>
+			<button class="btn primary" type="submit" disabled={busy || wa.disabled} title={wa.title}>
+				{busy ? 'Saving…' : 'Save rule draft'}
+			</button>
 			<button class="btn" type="button" onclick={() => (open = false)}>Cancel</button>
 			{#if rule}<button
 					class="btn"
 					type="button"
 					disabled={busy || wa.disabled}
-					onclick={() => (removing = true)}>Remove rule</button
-				>{/if}
+					onclick={() => (removing = true)}
+				>
+					Remove rule
+				</button>{/if}
 		</div>
 		{#if removing}<div role="alert">
 				<p>Remove {rule?.id} from the draft? Update any procedure steps that call it before publishing.</p>
-				<button class="btn danger" type="button" disabled={busy} onclick={() => void remove()}
-					>Confirm removal</button
-				>
+				<button class="btn danger" type="button" disabled={busy} onclick={() => void remove()}>
+					Confirm removal
+				</button>
 			</div>{/if}
 	</form>
 </Drawer>

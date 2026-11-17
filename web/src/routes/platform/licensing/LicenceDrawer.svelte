@@ -79,8 +79,10 @@
 								class="btn primary sm"
 								{...superAdminAttrs(session)}
 								disabled={busy || !session.superAdmin || row.status === 'archived'}
-								onclick={() => onreseal(row.tenant_id)}>Reseal this tenant to {overview.current_kid}</button
+								onclick={() => onreseal(row.tenant_id)}
 							>
+								Reseal this tenant to {overview.current_kid}
+							</button>
 						{:else}
 							<p class="muted ld-small">On the current key — nothing to do.</p>
 						{/if}

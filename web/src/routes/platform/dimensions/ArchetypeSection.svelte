@@ -55,8 +55,10 @@
 									class="mono"
 									href={d.layer_id
 										? `/platform/layers?layer=${encodeURIComponent(d.layer_id)}`
-										: '/platform/layers'}>industry_dept/{d.industry}/{d.key}</a
+										: '/platform/layers'}
 								>
+									industry_dept/{d.industry}/{d.key}
+								</a>
 								{#if d.areas.length}
 									<span class="areas">
 										areas:

@@ -160,8 +160,9 @@
 							x={g.lx}
 							y={g.ly - (lines.length - 1) * 12}
 							text-anchor="middle"
-							>{#each lines as ln, li (li)}<tspan x={g.lx} dy={li ? 12 : 0}>{ln}</tspan>{/each}</text
 						>
+							{#each lines as ln, li (li)}<tspan x={g.lx} dy={li ? 12 : 0}>{ln}</tspan>{/each}
+						</text>
 					{/if}
 				{/if}
 			{/each}
@@ -205,9 +206,9 @@
 								height={NODE_H - 6}
 								rx="6"
 							/>{/if}
-						<text x={p.x + NODE_W / 2} y={p.y + NODE_H / 2 + 4} text-anchor="middle"
-							>{s.label}{s.canonical ? '' : ' *'}</text
-						>
+						<text x={p.x + NODE_W / 2} y={p.y + NODE_H / 2 + 4} text-anchor="middle">
+							{s.label}{s.canonical ? '' : ' *'}
+						</text>
 						{#if refused}
 							<text class="badge" x={p.x + NODE_W - 6} y={p.y + 12} text-anchor="end">✕</text>
 						{:else if ok}
@@ -219,18 +220,18 @@
 		</svg>
 	</div>
 	<div class="legend-row" aria-label="Legend">
-		<span
-			><svg width="26" height="8" aria-hidden="true"
-				><line class="edge op" x1="0" x2="26" y1="4" y2="4" /></svg
-			>
-			agent operation</span
-		>
-		<span
-			><svg width="26" height="8" aria-hidden="true"
-				><line class="edge event" x1="0" x2="26" y1="4" y2="4" /></svg
-			>
-			backend event (system of record)</span
-		>
+		<span>
+			<svg width="26" height="8" aria-hidden="true">
+				<line class="edge op" x1="0" x2="26" y1="4" y2="4" />
+			</svg>
+			agent operation
+		</span>
+		<span>
+			<svg width="26" height="8" aria-hidden="true">
+				<line class="edge event" x1="0" x2="26" y1="4" y2="4" />
+			</svg>
+			backend event (system of record)
+		</span>
 		<span><span class="sw dbl" aria-hidden="true"></span> terminal</span>
 		<span><span class="sw dot" aria-hidden="true"></span> initial</span>
 		{#if def.states.some((s) => !s.canonical)}<span>* connector-only status</span>{/if}

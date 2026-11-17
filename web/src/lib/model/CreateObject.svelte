@@ -87,10 +87,13 @@
 					class="input"
 					bind:value={form.tier}
 					disabled={busy}
-					><option value="base">Base</option><option value="industry">Industry</option><option
-						value="optional">Optional</option
-					></select
 				>
+					<option value="base">Base</option><option value="industry">Industry</option><option
+						value="optional"
+					>
+						Optional
+					</option>
+				</select>
 			</div>
 			<div class="field">
 				<label for="new-object-description">Description</label><textarea
@@ -102,9 +105,9 @@
 			<p class="muted">
 				Add the object's fields, states and relations in its detail editor after creating it.
 			</p>
-			<button class="btn primary" type="submit" disabled={busy || !form.layer_key}
-				>{busy ? 'Creating…' : 'Create object draft'}</button
-			>
+			<button class="btn primary" type="submit" disabled={busy || !form.layer_key}>
+				{busy ? 'Creating…' : 'Create object draft'}
+			</button>
 		</form>
 	{/if}
 </Drawer>

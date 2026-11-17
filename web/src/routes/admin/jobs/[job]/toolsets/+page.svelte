@@ -316,8 +316,10 @@
 							type="button"
 							{...writeAttrs(session, 'job_designer')}
 							disabled={!canWrite || busy}
-							onclick={() => savePrompt(roleRow)}>Save prompt</button
+							onclick={() => savePrompt(roleRow)}
 						>
+							Save prompt
+						</button>
 					{/if}
 					{#if !roleRow.enabled_platform}
 						<p class="j8-hint">
@@ -384,9 +386,10 @@
 											class="j8o-pill p-{p}"
 											class:you={l === 'N3' && r.narrowed}
 											title={p === 'cut' && c ? CUT_LABEL[c] : undefined}
-											>{l}
-											{l === 'N3' && r.narrowed ? '✂' : PILL_GLYPH[p]}</span
 										>
+											{l}
+											{l === 'N3' && r.narrowed ? '✂' : PILL_GLYPH[p]}
+										</span>
 									{/each}
 								</div>
 								<div class="j8o-route">
@@ -396,23 +399,23 @@
 								<div class="j8o-call">
 									{#if c === null}
 										<span class="j8o-k">per call</span>
-										<span
-											>needs <b>{pc.identity}</b>{[
+										<span>
+											needs <b>{pc.identity}</b>{[
 												pc.confirm ? 'customer confirms first' : '',
 												pc.hosted_link ? 'hosted payment link only' : '',
 												pc.verify_read && !pc.hosted_link ? 'verified by a read after' : '',
 											]
 												.filter(Boolean)
 												.map((x) => ` · ${x}`)
-												.join('')}</span
-										>
+												.join('')}
+										</span>
 									{:else}
 										<span class="j8o-k">{c ? CUT_LABEL[c] : ''}</span>
 										<span class="j8o-why">{r.reason}</span>
 										{#if used.length && c === 'narrowed'}
-											<span class="j8o-warn"
-												>That step is refused at run time (not_entitled) and the case escalates.</span
-											>
+											<span class="j8o-warn">
+												That step is refused at run time (not_entitled) and the case escalates.
+											</span>
 										{/if}
 									{/if}
 								</div>
@@ -423,8 +426,10 @@
 											class="btn sm"
 											{...writeAttrs(session, 'job_designer')}
 											disabled={!canWrite || busy}
-											onclick={() => restore(opLabel(r.op, r.variant))}>Restore</button
+											onclick={() => restore(opLabel(r.op, r.variant))}
 										>
+											Restore
+										</button>
 									{:else if r.granted && r.expected && ts.role_enabled}
 										<button
 											type="button"
@@ -436,8 +441,10 @@
 													? `Remove for this activity; ${used.join(', ')} would then be refused`
 													: 'Remove this operation for this role and activity'
 												: writeHint('job_designer')}
-											onclick={() => narrow(r)}>Narrow</button
+											onclick={() => narrow(r)}
 										>
+											Narrow
+										</button>
 									{:else if r.expected && !r.granted && ts.role_enabled}
 										<button
 											type="button"
@@ -447,8 +454,10 @@
 											title={canWrite
 												? 'Try to add this to the role grant — tenants may only narrow, so this is refused'
 												: writeHint('job_designer')}
-											onclick={() => restore(opLabel(r.op, r.variant))}>Grant</button
+											onclick={() => restore(opLabel(r.op, r.variant))}
 										>
+											Grant
+										</button>
 									{/if}
 								</div>
 							</li>
@@ -475,10 +484,10 @@
 							<div class="j8p">
 								<p class="j8p-h">
 									<a class="mono" href="{jobBase}/procedures/{encodeURIComponent(p.name)}">{p.name}</a>
-									<span class="faint"
-										>v{p.version} · {p.origin === 'tenant' ? 'your version' : 'template'} · space
-										<span class="mono">{p.context_space}</span></span
-									>
+									<span class="faint">
+										v{p.version} · {p.origin === 'tenant' ? 'your version' : 'template'} · space
+										<span class="mono">{p.context_space}</span>
+									</span>
 									{#if bad}<Chip text="{bad} step{bad > 1 ? 's' : ''} would be refused" variant="err" />
 									{:else}<Chip text="every step callable" variant="ok" />{/if}
 								</p>
@@ -512,12 +521,13 @@
 			{/snippet}
 			<div class="tbl-wrap ph-stack">
 				<table class="tbl dense">
-					<thead
-						><tr
-							><th>Role</th><th>Activity</th><th>Operation removed</th><th>State</th><th>By</th><th>When</th
-							><th></th></tr
-						></thead
-					>
+					<thead>
+						<tr>
+							<th>Role</th><th>Activity</th><th>Operation removed</th><th>State</th><th>By</th><th>
+								When
+							</th><th></th>
+						</tr>
+					</thead>
 					<tbody>
 						{#each ov.narrowings as n (n.role + n.activity + n.op)}
 							<tr>
@@ -539,14 +549,16 @@
 										class="btn sm"
 										{...writeAttrs(session, 'job_designer')}
 										disabled={!canWrite || busy}
-										onclick={() => restore(n.op, n.activity, n.role)}>Restore</button
+										onclick={() => restore(n.op, n.activity, n.role)}
 									>
+										Restore
+									</button>
 								</td>
 							</tr>
 						{:else}
-							<tr
-								><td colspan="7" class="muted">No narrowings: every role has its full template grant.</td></tr
-							>
+							<tr>
+								<td colspan="7" class="muted">No narrowings: every role has its full template grant.</td>
+							</tr>
 						{/each}
 					</tbody>
 				</table>

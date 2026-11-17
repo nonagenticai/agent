@@ -85,8 +85,10 @@
 					id="itab-{v.id}"
 					aria-selected={view === v.id}
 					aria-controls="ipanel"
-					onclick={() => (view = v.id)}>{v.label}</button
+					onclick={() => (view = v.id)}
 				>
+					{v.label}
+				</button>
 			{/each}
 		</div>
 	{/if}
@@ -121,17 +123,18 @@
 									class="chip err"
 									data-testid="grounding-flag"
 									title="The search returned no citation: an answer built on it is not grounded (an answer counts only with ≥1 citation)."
-									>not grounded</span
-								>{/if}
+								>
+									not grounded
+								</span>{/if}
 						</h4>
 						{#if faq.sources.length}
 							<ul class="wl">
 								{#each faq.sources as s (s.chunk_id)}
 									<li title="chunk {s.chunk_id}">
 										<span class="mono">{s.document_id}</span>
-										{#if s.store_path?.length}· {s.store_path.join(' / ')}{/if}<br /><span class="mono"
-											>chunk {s.chunk_id}</span
-										>
+										{#if s.store_path?.length}· {s.store_path.join(' / ')}{/if}<br /><span class="mono">
+											chunk {s.chunk_id}
+										</span>
 									</li>
 								{/each}
 							</ul>

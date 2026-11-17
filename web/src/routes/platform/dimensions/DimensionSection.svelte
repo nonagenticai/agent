@@ -74,17 +74,17 @@
 										in {groupOf[v.key]!.join(', ')}
 									</div>{/if}
 							</td>
-							<td data-label="Used by"
-								><div class="used">
+							<td data-label="Used by">
+								<div class="used">
 									{#if !u}
 										<span class="muted">—</span>
 									{:else}
 										{@const st = STATUS_CHIP[statusOf(u)]}
 										<Chip text={st.text} variant={st.variant} />
 										{#each u.selections as s (s.tenant_id + s.job)}
-											<a class="ref" href={`/platform/tenants/${s.tenant_id}`}
-												>{s.tenant_name} · {s.job_label}</a
-											>
+											<a class="ref" href={`/platform/tenants/${s.tenant_id}`}>
+												{s.tenant_name} · {s.job_label}
+											</a>
 										{/each}
 										{#each u.layers as l (l.id)}
 											<a
@@ -92,22 +92,22 @@
 												href={l.row_id
 													? `/platform/layers?row=${encodeURIComponent(l.row_id)}`
 													: '/platform/layers'}
-												title={`Adds ${l.adds.join(', ')}`}>{l.path}</a
+												title={`Adds ${l.adds.join(', ')}`}
 											>
+												{l.path}
+											</a>
 										{/each}
 										{#if u.context_spaces.length}
-											<span class="ref muted" title={u.context_spaces.join('\n')}
-												>{u.context_spaces.length} context space{u.context_spaces.length === 1
-													? ''
-													: 's'}</span
-											>
+											<span class="ref muted" title={u.context_spaces.join('\n')}>
+												{u.context_spaces.length} context space{u.context_spaces.length === 1 ? '' : 's'}
+											</span>
 										{/if}
 										{#if statusOf(u) === 'unused'}
 											<span class="ref muted">kept for every tenant to pick</span>
 										{/if}
 									{/if}
-								</div></td
-							>
+								</div>
+							</td>
 							<td class="nowrap" data-label="Releases">
 								{#if u && u.releases.length}
 									<span title={releaseTitle(u)}>{u.releases.length} frozen</span>

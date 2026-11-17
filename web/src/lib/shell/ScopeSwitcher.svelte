@@ -38,17 +38,19 @@
 	<div class="scope-row">
 		<span class="scope-k" id="scope-ws">{L.tenant}</span>
 		<div class="ws">
-			<a href="/admin" class="ws-name" aria-labelledby="scope-ws ws-name-text" onclick={() => onnavigate?.()}
-				><span id="ws-name-text">{tenantLabel}</span></a
-			>
+			<a href="/admin" class="ws-name" aria-labelledby="scope-ws ws-name-text" onclick={() => onnavigate?.()}>
+				<span id="ws-name-text">{tenantLabel}</span>
+			</a>
 			{#if session.superAdmin}
 				<button
 					class="ws-change"
 					type="button"
 					data-testid="tenant-button"
 					title="The workspace every page acts in"
-					onclick={() => onpickworkspace()}>Change</button
+					onclick={() => onpickworkspace()}
 				>
+					Change
+				</button>
 			{/if}
 		</div>
 	</div>

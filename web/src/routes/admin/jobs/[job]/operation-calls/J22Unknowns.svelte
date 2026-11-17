@@ -69,9 +69,9 @@
 					{#if u.call.template}<span class="mono faint">{u.call.template}</span>{/if}
 				</div>
 				<div class="j22u-case">
-					<a class="mono" href={jobPath(app.job, `/cases/${encodeURIComponent(u.case.case_id)}`)}
-						>{u.case.case_id}</a
-					>
+					<a class="mono" href={jobPath(app.job, `/cases/${encodeURIComponent(u.case.case_id)}`)}>
+						{u.case.case_id}
+					</a>
 					{u.case.title} · {u.case.customer_name} · {when(u.call.at)} ·
 					<span class="mono">{u.call.call_id}</span>
 				</div>
@@ -99,14 +99,18 @@
 						class="btn primary"
 						type="button"
 						{...writeAttrs(session, 'operator')}
-						onclick={() => record(u, 'landed')}>It went through</button
+						onclick={() => record(u, 'landed')}
 					>
+						It went through
+					</button>
 					<button
 						class="btn"
 						type="button"
 						{...writeAttrs(session, 'operator')}
-						onclick={() => record(u, 'not_landed')}>It did not go through</button
+						onclick={() => record(u, 'not_landed')}
 					>
+						It did not go through
+					</button>
 				</div>
 				{#if writeAttrs(session, 'operator').disabled}<p class="muted small" data-testid="support-roles-note">
 						{SUPPORT_ROLES_NOTE}
@@ -120,9 +124,9 @@
 			{#each done as u (u.call.call_id)}
 				<li>
 					<span class="mono">{u.call.op}</span> ·
-					<a class="mono" href={jobPath(app.job, `/cases/${encodeURIComponent(u.case.case_id)}`)}
-						>{u.case.case_id}</a
-					>
+					<a class="mono" href={jobPath(app.job, `/cases/${encodeURIComponent(u.case.case_id)}`)}>
+						{u.case.case_id}
+					</a>
 					— checked by {u.call.check!.by_name}:
 					<strong>{u.call.check!.verdict === 'landed' ? 'went through' : 'did not go through'}</strong>
 					{#if u.call.check!.note}<span class="muted">“{u.call.check!.note}”</span>{/if}

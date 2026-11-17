@@ -61,9 +61,10 @@
 				<span class="jtf-sub">{s.sub}</span>
 				<span class="jtf-n">
 					{u.n}
-					{u.n === 1 ? 'question' : 'questions'}{#if u.closed}<span class="jtf-closed"
-							><Lock /> {u.closed} fail closed</span
-						>{/if}{#if u.refined}<span class="jtf-ref">{u.refined} refined</span>{/if}
+					{u.n === 1 ? 'question' : 'questions'}{#if u.closed}<span class="jtf-closed">
+							<Lock />
+							{u.closed} fail closed
+						</span>{/if}{#if u.refined}<span class="jtf-ref">{u.refined} refined</span>{/if}
 				</span>
 				{#if u.checked}
 					<span class="jtf-week">

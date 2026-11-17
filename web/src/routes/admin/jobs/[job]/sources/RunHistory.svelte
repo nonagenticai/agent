@@ -90,31 +90,34 @@
 <section class="runs">
 	<div class="row">
 		<h3>Runs</h3>
-		<span class="muted runs-hint"
-			>{isFile
+		<span class="muted runs-hint">
+			{isFile
 				? 'Each re-sync uploads the full set of files: one ingest job per file; when every file is ingested, their documents replace the previous run’s.'
-				: 'Each run hands one ingest job to strata_ingest; its documents replace the previous run’s in the store.'}</span
-		>
+				: 'Each run hands one ingest job to strata_ingest; its documents replace the previous run’s in the store.'}
+		</span>
 		<button
 			class="btn primary"
 			type="button"
 			disabled={blocked !== ''}
 			title={blocked || undefined}
 			onclick={() => resync(false)}
-			>{isFile
+		>
+			{isFile
 				? `Upload and re-sync${files.length ? ` (${files.length})` : ''}`
 				: structured(source.type)
 					? 'Re-sync with the saved mapping'
-					: 'Re-sync'}</button
-		>
+					: 'Re-sync'}
+		</button>
 		{#if structured(source.type) && editedMapping}
 			<button
 				class="btn"
 				type="button"
 				disabled={blocked !== ''}
 				title={blocked || undefined}
-				onclick={() => resync(true)}>Re-sync with the edited mapping</button
+				onclick={() => resync(true)}
 			>
+				Re-sync with the edited mapping
+			</button>
 		{/if}
 		<button class="btn" type="button" onclick={() => runs.refresh()}>Refresh</button>
 	</div>
@@ -132,20 +135,21 @@
 	{:else if runs.value.state === 'ok'}
 		<div class="tbl-wrap">
 			<table class="tbl dense" data-testid="source-runs">
-				<thead
-					><tr
-						><th>Started</th><th>Status</th><th class="r">Documents</th><th>{isFile ? 'Files' : 'Mapping'}</th
-						><th>Details</th></tr
-					></thead
-				>
+				<thead>
+					<tr>
+						<th>Started</th><th>Status</th><th class="r">Documents</th><th>
+							{isFile ? 'Files' : 'Mapping'}
+						</th><th>Details</th>
+					</tr>
+				</thead>
 				<tbody>
 					{#each runs.value.data.items as r (r.id)}
 						<tr data-run={r.id}>
-							<td class="mono nowrap"
-								><button class="table-action" type="button" onclick={() => openRun(r)}
-									>{when(r.started_at)}</button
-								><span class="cell-sub">{r.started_by}</span></td
-							>
+							<td class="mono nowrap">
+								<button class="table-action" type="button" onclick={() => openRun(r)}>
+									{when(r.started_at)}
+								</button><span class="cell-sub">{r.started_by}</span>
+							</td>
 							<td><Chip text={RUN_LABELS[r.status]} variant={variant(r.status)} /></td>
 							<td class="r">{r.status === 'running' ? '—' : fmt.n(r.documents)}</td>
 							<td>{isFile ? filesText(r) || '—' : (r.mapping ?? '—')}</td>
@@ -155,11 +159,13 @@
 								{#if r.replace_report}<span class="cell-sub">{replaceSummary(r.replace_report)}</span>{/if}
 								{#each r.ingest_job_ids.slice(0, 3) as id (id)}<a
 										class="cell-sub"
-										href={`/admin/knowledge/jobs?id=${encodeURIComponent(id)}`}>ingest job {id}</a
-									>{/each}
-								{#if r.ingest_job_ids.length > 3}<span class="cell-sub"
-										>+{r.ingest_job_ids.length - 3} more ingest jobs</span
-									>{/if}
+										href={`/admin/knowledge/jobs?id=${encodeURIComponent(id)}`}
+									>
+										ingest job {id}
+									</a>{/each}
+								{#if r.ingest_job_ids.length > 3}<span class="cell-sub">
+										+{r.ingest_job_ids.length - 3} more ingest jobs
+									</span>{/if}
 								<button class="btn sm" type="button" onclick={() => openRun(r)}>Run details</button>
 							</td>
 						</tr>

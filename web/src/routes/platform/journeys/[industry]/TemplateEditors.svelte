@@ -176,15 +176,19 @@
 										class="btn sm"
 										disabled={i === 0}
 										aria-label="Move {s.label} earlier"
-										onclick={() => moveStage(i, -1)}>↑</button
+										onclick={() => moveStage(i, -1)}
 									>
+										↑
+									</button>
 									<button
 										type="button"
 										class="btn sm"
 										disabled={i === stages.length - 1}
 										aria-label="Move {s.label} later"
-										onclick={() => moveStage(i, 1)}>↓</button
+										onclick={() => moveStage(i, 1)}
 									>
+										↓
+									</button>
 								</td>
 							</tr>
 						{/each}
@@ -223,17 +227,17 @@
 					<tbody>
 						{#each j.themes as t (t.key)}
 							<tr>
-								<td
-									><input
+								<td>
+									<input
 										class="input"
 										aria-label="Label of {t.key}"
 										value={t.label}
 										onchange={(e) => renameTheme(t.key, e)}
-									/></td
-								>
+									/>
+								</td>
 								<td class="mono">{t.key}</td>
-								<td
-									><input
+								<td>
+									<input
 										class="input weight"
 										type="number"
 										min="0"
@@ -242,8 +246,8 @@
 										aria-label="Escalation weight of {t.key}"
 										value={Math.round(t.escalation_weight * 100)}
 										onchange={(e) => weighTheme(t.key, e)}
-									/></td
-								>
+									/>
+								</td>
 							</tr>
 						{/each}
 					</tbody>
@@ -275,16 +279,16 @@
 						{#each j.channels as c (c.key)}
 							<tr>
 								<td>{c.label}</td>
-								<td
-									><select
+								<td>
+									<select
 										class="input"
 										aria-label="Status of {c.label}"
 										value={c.status}
 										onchange={(e) => setChannel(c.key, e)}
 									>
 										{#each STATUSES as s (s)}<option value={s}>{s.replace('_', ' ')}</option>{/each}
-									</select></td
-								>
+									</select>
+								</td>
 								<td class="muted">{c.note || '—'}</td>
 							</tr>
 						{/each}
@@ -299,16 +303,17 @@
 				<div class="field">
 					<label for="te-m-stage">Stage</label>
 					<select id="te-m-stage" class="input" bind:value={mStage}>
-						{#each stages as s (s.key)}<option value={s.key} selected={s.key === msgStage}>{s.label}</option
-							>{/each}
+						{#each stages as s (s.key)}<option value={s.key} selected={s.key === msgStage}>
+								{s.label}
+							</option>{/each}
 					</select>
 				</div>
 				<div class="field">
 					<label for="te-m-ch">Channel</label>
 					<select id="te-m-ch" class="input" bind:value={mChannel}>
-						{#each j.channels as c (c.key)}<option value={c.key} selected={c.key === msgChannel}
-								>{c.label}</option
-							>{/each}
+						{#each j.channels as c (c.key)}<option value={c.key} selected={c.key === msgChannel}>
+								{c.label}
+							</option>{/each}
 					</select>
 				</div>
 			</div>
@@ -335,17 +340,20 @@
 										class="btn sm"
 										title="Edit {k.kind}"
 										onclick={() => editKind(k.stage, k.kind, k.required)}
-										>{k.required ? 'required' : 'optional'}</button
 									>
+										{k.required ? 'required' : 'optional'}
+									</button>
 								</td>
-								<td
-									><button
+								<td>
+									<button
 										type="button"
 										class="btn sm"
 										aria-label="Remove {k.kind} from {k.stage}"
-										onclick={() => removeKind(k.stage, k.kind)}>Remove</button
-									></td
-								>
+										onclick={() => removeKind(k.stage, k.kind)}
+									>
+										Remove
+									</button>
+								</td>
 							</tr>
 						{:else}
 							<tr><td colspan="4" class="muted">No knowledge kinds declared.</td></tr>
@@ -370,10 +378,10 @@
 					<input id="te-k-store" class="input" placeholder="returns_policy" bind:value={kStore} />
 				</div>
 			</div>
-			<label class="row"
-				><input type="checkbox" bind:checked={kRequired} /> Required (a lower layer can make an optional kind required,
-				never the reverse)</label
-			>
+			<label class="row">
+				<input type="checkbox" bind:checked={kRequired} /> Required (a lower layer can make an optional kind required,
+				never the reverse)
+			</label>
 			<button type="button" class="btn" onclick={addKind}>Save knowledge kind</button>
 		</fieldset>
 	</div>

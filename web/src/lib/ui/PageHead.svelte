@@ -41,8 +41,10 @@
 						onmouseleave={() => (showHelp = false)}
 						onfocus={() => (showHelp = true)}
 						onblur={() => (showHelp = false)}
-						onkeydown={(e) => e.key === 'Escape' && (showHelp = false)}>ⓘ</button
+						onkeydown={(e) => e.key === 'Escape' && (showHelp = false)}
 					>
+						ⓘ
+					</button>
 				{/if}
 			</p>
 			{#if help}<span id="{uid}-help" role="tooltip" class="help-tip" hidden={!showHelp}>{help}</span>{/if}

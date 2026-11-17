@@ -146,8 +146,10 @@
 				class="btn primary"
 				type="submit"
 				disabled={busy || over}
-				title={over ? `At most ${limit} characters` : undefined}>Resolve</button
+				title={over ? `At most ${limit} characters` : undefined}
 			>
+				Resolve
+			</button>
 		</div>
 	</form>
 </Drawer>

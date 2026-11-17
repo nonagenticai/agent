@@ -98,8 +98,10 @@
 											type="button"
 											aria-label="Remove {WEEKDAY_LABEL[d]} window {i + 1}"
 											onclick={() => removeWindow(d, i)}
-											{...attrs}>×</button
+											{...attrs}
 										>
+											×
+										</button>
 									</span>
 								{:else}
 									<span class="muted">closed</span>
@@ -112,8 +114,10 @@
 									aria-label="Add a {WEEKDAY_LABEL[d]} window"
 									onclick={() => addWindow(d)}
 									disabled={attrs.disabled || value.weekly[d].length >= MAX_WINDOWS}
-									title={attrs.title}>+ window</button
+									title={attrs.title}
 								>
+									+ window
+								</button>
 							</td>
 						</tr>
 					{/each}

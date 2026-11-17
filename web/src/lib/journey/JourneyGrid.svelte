@@ -139,8 +139,9 @@
 {#snippet lane(r: Row, s: JourneyStage)}
 	{#if r.key === 'themes'}
 		<div class="chips">
-			{#each s.themes as t, i (t)}<span class="chip accent">{themeLabel[t] ?? t}</span
-				>{#if i < s.themes.length - 1}<span class="muted">→</span>{/if}{/each}
+			{#each s.themes as t, i (t)}<span class="chip accent">
+					{themeLabel[t] ?? t}
+				</span>{#if i < s.themes.length - 1}<span class="muted">→</span>{/if}{/each}
 		</div>
 	{:else if s.out_of_scope}
 		<span class="muted oos-cell">Out of scope</span>
@@ -163,9 +164,9 @@
 				>
 					{#if a.refinement === 'hidden'}<s>{a.label}</s>{:else}{a.label}{/if}
 					{#if a.refinement === 'extension'}<span class="chip cust">tenant</span>{/if}
-					{#if a.refinement === 'relabelled'}<span class="chip work" title="Template label: {a.base_label}"
-							>relabelled</span
-						>{/if}
+					{#if a.refinement === 'relabelled'}<span class="chip work" title="Template label: {a.base_label}">
+							relabelled
+						</span>{/if}
 					{#if a.refinement === 'hidden'}<span class="chip dead">hidden</span>{/if}
 					{#if a.pending}<span class="chip warn" title="Not in a release yet">unreleased</span>{/if}
 					{#if activityMeta}<span class="act-meta">{@render activityMeta(a)}</span>{/if}
@@ -183,16 +184,18 @@
 					class="btn sm add"
 					onclick={() => onAdd(s)}
 					disabled={addDisabled}
-					title={addTitle}>{addLabel}</button
+					title={addTitle}
 				>
+					{addLabel}
+				</button>
 			{/if}
 		</div>
 	{:else if r.key === 'msg_chat'}
 		{@const u = utter(s, 'chat')}
 		<div class:red={!u.length}>
-			{#each u as m (m)}<div class="utt">“{m}”</div>{:else}<span class="red-text"
-					>No chat messages (rule 4)</span
-				>{/each}
+			{#each u as m (m)}<div class="utt">“{m}”</div>{:else}<span class="red-text">
+					No chat messages (rule 4)
+				</span>{/each}
 		</div>
 	{:else if r.key === 'msg_email' || r.key === 'msg_form'}
 		{@const u = utter(s, r.key === 'msg_email' ? 'email' : 'contact_form')}
@@ -200,14 +203,15 @@
 			{#each u as m (m)}<div class="utt">“{m}”</div>{:else}<span class="muted">—</span>{/each}
 		</div>
 	{:else if r.key === 'msg_oos'}
-		<span class="muted oos-cell" title={oos.map((c) => `${c.label}: ${c.note}`).join('\n')}>out of scope</span
-		>
+		<span class="muted oos-cell" title={oos.map((c) => `${c.label}: ${c.note}`).join('\n')}>
+			out of scope
+		</span>
 	{:else if r.key === 'objects'}
 		{@const objs = objects(s)}
 		<div class="chips" class:red={!objs.length}>
-			{#each objs as o (o)}<span class="chip tool">{label(o)}</span>{:else}<span class="red-text"
-					>No business objects (rule 4)</span
-				>{/each}
+			{#each objs as o (o)}<span class="chip tool">{label(o)}</span>{:else}<span class="red-text">
+					No business objects (rule 4)
+				</span>{/each}
 		</div>
 	{:else if r.key === 'kinds'}
 		{@const ks = kinds.filter((k) => k.stage === s.key)}
@@ -219,8 +223,10 @@
 						? ' · not in the bound store'
 						: k.present
 							? ` · in store ${k.store}`
-							: ''}">{k.kind}{k.required ? '' : ' (opt.)'}{k.present === false ? ' · missing' : ''}</span
+							: ''}"
 				>
+					{k.kind}{k.required ? '' : ' (opt.)'}{k.present === false ? ' · missing' : ''}
+				</span>
 			{:else}<span class="muted">—</span>{/each}
 		</div>
 	{/if}
@@ -244,22 +250,24 @@
 						</span>
 						{#if s.themes.length}
 							<span class="chips jg-themes">
-								{#each s.themes as t, k (t)}<span class="chip accent">{themeLabel[t] ?? t}</span
-									>{#if k < s.themes.length - 1}<span class="muted">→</span>{/if}{/each}
+								{#each s.themes as t, k (t)}<span class="chip accent">
+										{themeLabel[t] ?? t}
+									</span>{#if k < s.themes.length - 1}<span class="muted">→</span>{/if}{/each}
 							</span>
 						{/if}
 					</summary>
 					<div class="jg-body">
 						{#if onStage || s.key === 'change' || s.key === 'exit'}
 							<p class="jg-tools">
-								{#if onStage}<button type="button" class="btn sm" onclick={() => onStage(s)}
-										>Edit stage</button
-									>{/if}
+								{#if onStage}<button type="button" class="btn sm" onclick={() => onStage(s)}>
+										Edit stage
+									</button>{/if}
 								{#if s.key === 'change' || s.key === 'exit'}<span
 										class="veto"
 										title="Change and Exit are unlabelled on the owner's slide; the labels are owner-vetoable (K48)"
-										>label vetoable</span
-									>{/if}
+									>
+										label vetoable
+									</span>{/if}
 							</p>
 						{/if}
 						{#if s.out_of_scope}
@@ -296,21 +304,22 @@
 			{#snippet colHeader(s)}
 				<div class="stage-head" class:oos={s.out_of_scope}>
 					{#if onStage}
-						<button type="button" class="linkish" onclick={() => onStage(s)} title={s.synonyms.join(', ')}
-							>{s.order}. {s.label}</button
-						>
+						<button type="button" class="linkish" onclick={() => onStage(s)} title={s.synonyms.join(', ')}>
+							{s.order}. {s.label}
+						</button>
 					{:else}
 						<b title={s.synonyms.join(', ')}>{s.order}. {s.label}</b>
 					{/if}
 					{#if s.out_of_scope}<span class="chip muted">out of scope</span>{/if}
-					{#if redCount(s)}<span class="chip err" title="Red validation items in this stage"
-							>{redCount(s)} red</span
-						>{/if}
+					{#if redCount(s)}<span class="chip err" title="Red validation items in this stage">
+							{redCount(s)} red
+						</span>{/if}
 					{#if s.key === 'change' || s.key === 'exit'}<span
 							class="veto"
 							title="Change and Exit are unlabelled on the owner's slide; the labels are owner-vetoable (K48)"
-							>label vetoable</span
-						>{/if}
+						>
+							label vetoable
+						</span>{/if}
 					{@render stageMeta?.(s)}
 				</div>
 			{/snippet}

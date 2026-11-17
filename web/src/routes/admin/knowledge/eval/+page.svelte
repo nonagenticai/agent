@@ -448,8 +448,10 @@
 			title={runningRun ? RUN_BUSY_REASON : undefined}
 			aria-describedby={runningRun ? 'ev-run-reason' : undefined}
 			data-testid="ev-run"
-			onclick={runEval}>{starting ? 'Starting…' : runningRun ? 'Running…' : 'Run eval'}</button
+			onclick={runEval}
 		>
+			{starting ? 'Starting…' : runningRun ? 'Running…' : 'Run eval'}
+		</button>
 	{/snippet}
 </PageHead>
 
@@ -480,14 +482,14 @@
 	<fieldset class="ev-modes" data-testid="ev-modes">
 		<legend class="label">Modes to score</legend>
 		{#each EVAL_MODES as m (m)}
-			<label class="ev-mode"
-				><input
+			<label class="ev-mode">
+				<input
 					type="checkbox"
 					checked={modes.includes(m)}
 					disabled={!canWrite || busy}
 					onchange={(e) => toggleMode(m, (e.currentTarget as HTMLInputElement).checked)}
-				/> <span class="mono">{MODE_LABEL[m]}</span></label
-			>
+				/> <span class="mono">{MODE_LABEL[m]}</span>
+			</label>
 		{/each}
 		<span class="muted ev-small">PASS = every routed mode's recall@5 is at least flat's.</span>
 	</fieldset>
@@ -496,36 +498,36 @@
 		<div class="callout ev-running" role="status" aria-live="polite" data-testid="ev-running">
 			<strong>Eval running · <span data-testid="ev-progress">{progressText(runningRun)}</span></strong>
 			<Meter value={runningRun.progress.total ? runningRun.progress.done / runningRun.progress.total : 0} />
-			<span class="muted ev-small" id="ev-run-reason"
-				>Started {when(runningRun.started_at)} by {runningRun.started_by ?? '—'}. {RUN_BUSY_REASON} It keeps running
-				if you leave this page.</span
-			>
-			{#if pollStopped === runningRun.id}<span class="ev-small ev-warn" data-testid="ev-poll-stopped"
-					>Progress not read {EVAL_POLL_MAX_FAILS} times in a row ({pollError}); stopped checking. The run
-					goes on on the server.
-					<button class="btn sm" type="button" data-testid="ev-poll-retry" onclick={resumePolling}
-						>Retry</button
-					></span
-				>{:else if pollError}<span class="ev-small ev-warn" data-testid="ev-poll-error"
-					>Progress not read ({pollError}); retrying in {Math.round(pollDelay(pollFails) / 1000)} s.</span
-				>{/if}
+			<span class="muted ev-small" id="ev-run-reason">
+				Started {when(runningRun.started_at)} by {runningRun.started_by ?? '—'}. {RUN_BUSY_REASON} It keeps running
+				if you leave this page.
+			</span>
+			{#if pollStopped === runningRun.id}<span class="ev-small ev-warn" data-testid="ev-poll-stopped">
+					Progress not read {EVAL_POLL_MAX_FAILS} times in a row ({pollError}); stopped checking. The run goes
+					on on the server.
+					<button class="btn sm" type="button" data-testid="ev-poll-retry" onclick={resumePolling}>
+						Retry
+					</button>
+				</span>{:else if pollError}<span class="ev-small ev-warn" data-testid="ev-poll-error">
+					Progress not read ({pollError}); retrying in {Math.round(pollDelay(pollFails) / 1000)} s.
+				</span>{/if}
 		</div>
 	{:else if lastFailed}
 		<div class="callout err ev-failed" role="alert" data-testid="ev-failed">
 			<strong>The last eval failed{lastFailed.error ? `: ${lastFailed.error}` : '.'}</strong>
-			<span class="muted ev-small"
-				>Started {when(lastFailed.started_at)} · stopped after {progressText(lastFailed)}. Nothing was scored;
-				run it again.</span
-			>
+			<span class="muted ev-small">
+				Started {when(lastFailed.started_at)} · stopped after {progressText(lastFailed)}. Nothing was scored;
+				run it again.
+			</span>
 		</div>
 	{/if}
 
 	{#if goneNote && !runningRun}
 		<div class="callout err" role="alert" data-testid="ev-gone">
 			<strong>This run no longer exists.</strong>
-			<span class="muted ev-small"
-				>Run {goneNote} was removed while this page followed it; it has no results.</span
-			>
+			<span class="muted ev-small">
+				Run {goneNote} was removed while this page followed it; it has no results.
+			</span>
 		</div>
 	{/if}
 
@@ -551,8 +553,8 @@
 	>
 		{#snippet actions()}
 			{#if runList.length > 1}
-				<label class="ev-pick"
-					><span class="label">Run</span>
+				<label class="ev-pick">
+					<span class="label">Run</span>
 					<!-- Bound to the shown run, so the default (newest completed run) is the selected option, never index -1. -->
 					<select
 						class="input"
@@ -560,13 +562,11 @@
 						onchange={(e) => (shownId = e.currentTarget.value)}
 						data-testid="ev-run-pick"
 					>
-						{#each runList as r, i (r.id)}<option value={r.id}
-								>{when(r.started_at)} · {r.question_count} q · {runLabel(r)}{i === 0
-									? ' (latest)'
-									: ''}</option
-							>{/each}
-					</select></label
-				>
+						{#each runList as r, i (r.id)}<option value={r.id}>
+								{when(r.started_at)} · {r.question_count} q · {runLabel(r)}{i === 0 ? ' (latest)' : ''}
+							</option>{/each}
+					</select>
+				</label>
 			{/if}
 		{/snippet}
 		{#if runs.value.state === 'unavailable'}
@@ -604,38 +604,40 @@
 					{...writeAttrs(session, 'knowledge_manager')}
 					disabled={!canWrite || full}
 					title={full ? `The set holds at most ${EVAL_MAX_QUESTIONS} questions` : undefined}
-					onclick={() => openForm()}>Add question</button
+					onclick={() => openForm()}
 				>
+					Add question
+				</button>
 			{/snippet}
 			{#if formOpen}
 				<form class="ev-form" id="ev-form" onsubmit={save} data-testid="ev-form">
-					<label class="field ev-wide"
-						><span class="label">Question</span><input
+					<label class="field ev-wide">
+						<span class="label">Question</span><input
 							class="input"
 							bind:value={form.query}
 							placeholder="How long does a refund take?"
-						/></label
-					>
-					<label class="field"
-						><span class="label">Expected document</span><input
+						/>
+					</label>
+					<label class="field">
+						<span class="label">Expected document</span><input
 							class="input"
 							list="ev-docs"
 							bind:value={form.expected_document}
 							placeholder="Document title"
-						/></label
-					>
-					<datalist id="ev-docs"
-						>{#each docTitles as t (t)}<option value={t}></option>{/each}</datalist
-					>
-					<label class="field"
-						><span class="label">Expected text</span><input
+						/>
+					</label>
+					<datalist id="ev-docs">
+						{#each docTitles as t (t)}<option value={t}></option>{/each}
+					</datalist>
+					<label class="field">
+						<span class="label">Expected text</span><input
 							class="input"
 							bind:value={form.expected_text}
 							placeholder="Words a good passage contains"
-						/></label
-					>
-					<label class="field"
-						><span class="label">Leaf store (optional)</span>
+						/>
+					</label>
+					<label class="field">
+						<span class="label">Leaf store (optional)</span>
 						<select
 							class="input mono"
 							bind:value={form.expected_leaf}
@@ -646,25 +648,25 @@
 								<option value={form.expected_leaf}>{form.expected_leaf}</option>
 							{/if}
 							{#each leaves as s (s.id)}<option value={s.key}>{s.key}</option>{/each}
-						</select></label
-					>
+						</select>
+					</label>
 					<details class="ev-wide ev-more" bind:open={moreOpen}>
 						<summary>Document or chunk ids</summary>
 						<div class="ev-ids">
-							<label class="field"
-								><span class="label">Expected document ids</span><input
+							<label class="field">
+								<span class="label">Expected document ids</span><input
 									class="input mono"
 									bind:value={form.document_ids}
 									placeholder="id; id"
-								/></label
-							>
-							<label class="field"
-								><span class="label">Expected chunk ids</span><input
+								/>
+							</label>
+							<label class="field">
+								<span class="label">Expected chunk ids</span><input
 									class="input mono"
 									bind:value={form.chunk_ids}
 									placeholder="id; id"
-								/></label
-							>
+								/>
+							</label>
 						</div>
 					</details>
 					{#if touched && formProblems.length}
@@ -675,8 +677,10 @@
 							class="btn primary sm"
 							type="submit"
 							{...writeAttrs(session, 'knowledge_manager')}
-							disabled={!canWrite || formProblems.length > 0}>{editing ? 'Save' : 'Add to golden set'}</button
+							disabled={!canWrite || formProblems.length > 0}
 						>
+							{editing ? 'Save' : 'Add to golden set'}
+						</button>
 						<button class="btn sm" type="button" onclick={closeForm}>Cancel</button>
 					</div>
 				</form>
@@ -685,10 +689,10 @@
 				<div class="callout err" role="alertdialog" aria-label="Delete golden question">
 					<strong>Delete “{confirmDel.query}”?</strong>
 					<span>Past runs keep it; the next run will not ask it.</span>
-					<span
-						><button class="btn sm danger" type="button" onclick={() => remove(confirmDel!)}>Delete</button>
-						<button class="btn sm" type="button" onclick={() => (confirmDel = null)}>Keep it</button></span
-					>
+					<span>
+						<button class="btn sm danger" type="button" onclick={() => remove(confirmDel!)}>Delete</button>
+						<button class="btn sm" type="button" onclick={() => (confirmDel = null)}>Keep it</button>
+					</span>
 				</div>
 			{/if}
 			{#if questions.value.state === 'loading'}
@@ -717,15 +721,19 @@
 											type="button"
 											{...writeAttrs(session, 'knowledge_manager')}
 											onclick={() => openForm(q, q)}
-											aria-label={`Edit ${q.query}`}>Edit</button
+											aria-label={`Edit ${q.query}`}
 										>
+											Edit
+										</button>
 										<button
 											class="btn sm"
 											type="button"
 											{...writeAttrs(session, 'knowledge_manager')}
 											onclick={() => (confirmDel = q)}
-											aria-label={`Delete ${q.query}`}>Delete</button
+											aria-label={`Delete ${q.query}`}
 										>
+											Delete
+										</button>
 									</td>
 								</tr>
 							{/each}

@@ -15,8 +15,9 @@
 			class="chip {VARIANT[origin.op]}"
 			href={`/platform/layers?row=${encodeURIComponent(origin.row_id)}`}
 			title={`Open row ${origin.row_id} in the layer explorer`}
-			>{layerLabel(origin.layer)} <strong>{origin.op}</strong></a
 		>
+			{layerLabel(origin.layer)} <strong>{origin.op}</strong>
+		</a>
 	{:else}
 		<span class="muted">—</span>
 	{/each}

@@ -46,13 +46,14 @@
 				<span class="l1-agent">Qualifier</span>
 				<div class="l1-step-body">
 					{#each turn.qualifier.gates as g (g.at + g.point)}
-						<span class="l1-v {gateTone(g.verdict)}" title="{g.point} gate · {g.latency_ms} ms"
-							>{g.point} {g.verdict}</span
-						>
+						<span class="l1-v {gateTone(g.verdict)}" title="{g.point} gate · {g.latency_ms} ms">
+							{g.point}
+							{g.verdict}
+						</span>
 						{#each notable(g) as v (v.key)}
-							<span class="l1-v warn" title="Below threshold: asked again or fell back"
-								>{v.label}: {v.value} ({Math.round(v.confidence * 100)}%)</span
-							>
+							<span class="l1-v warn" title="Below threshold: asked again or fell back">
+								{v.label}: {v.value} ({Math.round(v.confidence * 100)}%)
+							</span>
 						{/each}
 						{#if g.note}<span class="l1-note">{g.note}</span>{/if}
 					{/each}
@@ -71,19 +72,19 @@
 				<span class="l1-agent">Procedure</span>
 				<div class="l1-step-body">
 					{#each turn.procedure.ops as o (o.call_id)}
-						<span class="l1-op {opTone(o)}" title={o.detail ?? `${o.route} · ${o.latency_ms ?? '—'} ms`}
-							><span class="l1-mono">{o.op}</span> → {o.outcome}{#if o.instance}<span class="l1-dim">
-									@{o.instance}</span
-								>{/if}</span
-						>
+						<span class="l1-op {opTone(o)}" title={o.detail ?? `${o.route} · ${o.latency_ms ?? '—'} ms`}>
+							<span class="l1-mono">{o.op}</span> → {o.outcome}{#if o.instance}<span class="l1-dim">
+									@{o.instance}
+								</span>{/if}
+						</span>
 					{/each}
 					{#each turn.procedure.knowledge as k (k.at + k.query)}
-						<span class="l1-op ok" title="knowledge.search “{k.query}” in {k.store}"
-							><span class="l1-mono">knowledge.search</span> → {k.passages.length} passage{k.passages
+						<span class="l1-op ok" title="knowledge.search “{k.query}” in {k.store}">
+							<span class="l1-mono">knowledge.search</span> → {k.passages.length} passage{k.passages
 								.length === 1
 								? ''
-								: 's'}</span
-						>
+								: 's'}
+						</span>
 					{/each}
 					{#if step === 'procedure'}<span class="l1-working">working…</span>{/if}
 				</div>
@@ -101,9 +102,9 @@
 						<span class="l1-dim">{g.verdicts.map((v) => v.key).join(' · ')} checked</span>
 						{#if g.note}<span class="l1-note">{g.note}</span>{/if}
 					{/each}
-					{#if step === 'post_gate' && !turn.postGate.length}<span class="l1-working"
-							>checking the reply…</span
-						>{/if}
+					{#if step === 'post_gate' && !turn.postGate.length}<span class="l1-working">
+							checking the reply…
+						</span>{/if}
 				</div>
 			</li>
 		{/if}
@@ -112,9 +113,9 @@
 	{#each turn.replies as r (r.at)}
 		<p class="l1-said l1-said-agent">
 			<span class="l1-who">Agent</span>{r.text}
-			{#if r.used_knowledge === undefined && r.cites?.length}<span class="l1-cites"
-					>cites {r.cites.join(', ')}</span
-				>{/if}
+			{#if r.used_knowledge === undefined && r.cites?.length}<span class="l1-cites">
+					cites {r.cites.join(', ')}
+				</span>{/if}
 		</p>
 		{#if r.used_knowledge}<div class="l1-sources"><AnswerSources g={r} /></div>{/if}
 	{/each}

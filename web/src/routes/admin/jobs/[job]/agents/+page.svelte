@@ -118,10 +118,10 @@
 	{#snippet empty()}
 		<div class="j23-empty">
 			<b>No agents serve this job yet.</b>
-			<span
-				>Agents start when the job has a published release and is put on the bus. Until then customer messages
-				are not answered.</span
-			>
+			<span>
+				Agents start when the job has a published release and is put on the bus. Until then customer messages
+				are not answered.
+			</span>
 			<a class="btn sm" href={jobPath(app.job, '/release')}>Go to Release</a>
 		</div>
 	{/snippet}
@@ -162,8 +162,10 @@
 							disabled={busy || writeAttrs(session, 'operator').disabled}
 							title={writeAttrs(session, 'operator').title}
 							data-testid="claim-stuck"
-							onclick={() => claim(first)}>Claim stuck entries</button
+							onclick={() => claim(first)}
 						>
+							Claim stuck entries
+						</button>
 					{/if}
 					<a class="btn sm" href={jobPath(app.job, '/operation-calls')}>Operation calls</a>
 					<a class="btn sm" href="#behind">What “behind” means</a>
@@ -215,9 +217,9 @@
 							></span>
 						{/each}
 					</div>
-					<span class="j23-env-sub"
-						><b>{prodOn} of {items.length}</b> agents serve the published release.</span
-					>
+					<span class="j23-env-sub">
+						<b>{prodOn} of {items.length}</b> agents serve the published release.
+					</span>
 					{#if fleet.approved_waiting}
 						<p class="j23-env-note">
 							<span class="mono">{fleet.approved_waiting}</span> is approved but not applied. After you apply
@@ -234,11 +236,11 @@
 					</header>
 					<div class="j23-env-cfg">
 						<span class="mono">draft · rev {fleet.test.rev}</span>
-						<span class="muted"
-							>· {fleet.test.unpublished
+						<span class="muted">
+							· {fleet.test.unpublished
 								? plural(fleet.test.unpublished, 'unpublished change')
-								: 'same as Production (no unpublished changes)'}</span
-						>
+								: 'same as Production (no unpublished changes)'}
+						</span>
 					</div>
 					{#if testCopies.length}
 						<div class="j23-meter" aria-label="{testOn} of {testCopies.length} test copies serve the draft">
@@ -249,10 +251,10 @@
 								></span>
 							{/each}
 						</div>
-						<span class="j23-env-sub"
-							><b>{testOn} of {testCopies.length}</b> test copies serve the draft{#if testOn < testCopies.length};
-								{testCopies.length - testOn} re-reading (≤ {fleet.follow_s} s){/if}.</span
-						>
+						<span class="j23-env-sub">
+							<b>{testOn} of {testCopies.length}</b> test copies serve the draft{#if testOn < testCopies.length};
+								{testCopies.length - testOn} re-reading (≤ {fleet.follow_s} s){/if}.
+						</span>
 					{:else}
 						<span class="j23-env-sub muted">No test copies are running.</span>
 					{/if}
@@ -300,20 +302,20 @@
 								<td class="r">{a.consumers}</td>
 								<td class="r">{a.per_min ?? '—'}</td>
 								<td class="r" class:j23-warn-num={a.lag > 5}>{a.lag}</td>
-								<td class="r" class:j23-warn-num={a.pending > 3}
-									>{a.pending}{#if a.oldest_pending_s}<span class="cell-sub"
-											>oldest {a.oldest_pending_s} s</span
-										>{/if}</td
-								>
+								<td class="r" class:j23-warn-num={a.pending > 3}>
+									{a.pending}{#if a.oldest_pending_s}<span class="cell-sub">
+											oldest {a.oldest_pending_s} s
+										</span>{/if}
+								</td>
 								<td class="r" class:j23-warn-num={(a.errors_1h ?? 0) > 0}>{a.errors_1h ?? '—'}</td>
 								<td class="r">{a.restarts_24h ?? '—'}</td>
 								<td>{fleet ? ago(heartbeatAge(a.last_heartbeat, fleet.as_of)) : when(a.last_heartbeat)}</td>
-								<td class="mono"
-									>{cfgText(a.prod, 'prod')}<span class="cell-sub j23-cfg-{ps}">{CFG_LABEL[ps]}</span></td
-								>
-								<td class="mono"
-									>{cfgText(a.test, 'test')}<span class="cell-sub j23-cfg-{ts}">{CFG_LABEL[ts]}</span></td
-								>
+								<td class="mono">
+									{cfgText(a.prod, 'prod')}<span class="cell-sub j23-cfg-{ps}">{CFG_LABEL[ps]}</span>
+								</td>
+								<td class="mono">
+									{cfgText(a.test, 'test')}<span class="cell-sub j23-cfg-{ts}">{CFG_LABEL[ts]}</span>
+								</td>
 							</tr>
 						{/each}
 					</tbody>
@@ -349,9 +351,9 @@
 		{@const role = ROLES[roleOf(sel)]}
 		<div class="j23-d-head j23-v-{h.word === 'idle' ? 'idle' : h.word}">
 			<b>{h.label}</b>
-			{#if h.reasons.length}<span>{h.reasons.join(' ')}</span>{:else}<span
-					>Picks up every message as it arrives.</span
-				>{/if}
+			{#if h.reasons.length}<span>{h.reasons.join(' ')}</span>{:else}<span>
+					Picks up every message as it arrives.
+				</span>{/if}
 		</div>
 		{#each h.kinds as k (k)}
 			<p class="j23-todo"><span class="label">{BEHIND[k].label}</span> {BEHIND[k].todo}</p>
@@ -362,8 +364,10 @@
 				class="btn sm"
 				disabled={busy || writeAttrs(session, 'operator').disabled}
 				title={writeAttrs(session, 'operator').title}
-				onclick={() => claim(sel!)}>Claim stuck entries</button
+				onclick={() => claim(sel!)}
 			>
+				Claim stuck entries
+			</button>
 		{/if}
 		{#if sel.note}<p class="note">{sel.note}</p>{/if}
 
@@ -386,10 +390,9 @@
 		<h3>Config it serves</h3>
 		<div class="tbl-wrap">
 			<table class="tbl dense">
-				<thead
-					><tr><th>Environment</th><th>Serving</th><th>Re-read</th><th class="r">Inst.</th><th></th></tr
-					></thead
-				>
+				<thead>
+					<tr><th>Environment</th><th>Serving</th><th>Re-read</th><th class="r">Inst.</th><th></th></tr>
+				</thead>
 				<tbody>
 					{#each [['Production', sel.prod, 'prod'], ['Test env', sel.test, 'test']] as const as [label, s, env] (env)}
 						{@const st = fleet ? configState(s, fleet, env) : 'off'}
@@ -409,11 +412,11 @@
 		{#if sel.instances?.length}
 			<div class="tbl-wrap">
 				<table class="tbl dense" data-testid="agent-instances">
-					<thead
-						><tr
-							><th>Process</th><th>State</th><th>Started</th><th class="r">Restarts</th><th>Heartbeat</th></tr
-						></thead
-					>
+					<thead>
+						<tr>
+							<th>Process</th><th>State</th><th>Started</th><th class="r">Restarts</th><th>Heartbeat</th>
+						</tr>
+					</thead>
 					<tbody>
 						{#each sel.instances as i (i.name)}
 							<tr>
@@ -454,8 +457,10 @@
 			{#if sel.kind === 'gate'}<a class="btn sm" href={jobPath(app.job, '/gates')}>Gates</a>{/if}
 			{#if sel.kind === 'runner' || sel.kind === 'worker'}<a
 					class="btn sm"
-					href={jobPath(app.job, '/operation-calls')}>Operation calls</a
-				>{/if}
+					href={jobPath(app.job, '/operation-calls')}
+				>
+					Operation calls
+				</a>{/if}
 			{#if sel.model_routes.length}<a class="btn sm" href="/admin/providers">Providers</a>{/if}
 			<a class="btn sm" href="/platform/agent-roles">Agent roles</a>
 		</div>

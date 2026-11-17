@@ -66,8 +66,9 @@
 						aria-expanded={open}
 						aria-controls="nav-items-{g.group}"
 						onclick={() => (opened[g.group] = !open)}
-						><span>{g.label}</span><i aria-hidden="true" class:open></i></button
 					>
+						<span>{g.label}</span><i aria-hidden="true" class:open></i>
+					</button>
 				{:else}
 					<span>{g.label}</span>
 				{/if}
@@ -81,16 +82,19 @@
 									class:on={isOn(item.href)}
 									aria-current={isOn(item.href) ? 'page' : undefined}
 									onclick={() => onnavigate?.()}
-									><Icon name={item.icon} /><span>{item.label}</span>{#if badges[item.href]}{@const b =
+								>
+									<Icon name={item.icon} /><span>{item.label}</span>{#if badges[item.href]}{@const b =
 											badges[item.href]!}<span
 											class="badge"
 											class:warn={!b.urgent}
 											data-testid="nav-badge"
-											aria-label="{b.count} {b.count === 1 ? 'item needs' : 'items need'} you">{b.count}</span
-										>{/if}{#if prefs.showMilestones && item.milestone !== 'M1'}<span class="badge ms"
-											>{item.milestone}</span
-										>{/if}</a
-								>
+											aria-label="{b.count} {b.count === 1 ? 'item needs' : 'items need'} you"
+										>
+											{b.count}
+										</span>{/if}{#if prefs.showMilestones && item.milestone !== 'M1'}<span class="badge ms">
+											{item.milestone}
+										</span>{/if}
+								</a>
 							{/each}
 						{/each}
 					</div>

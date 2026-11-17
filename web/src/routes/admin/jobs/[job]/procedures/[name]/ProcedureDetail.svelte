@@ -116,8 +116,10 @@
 			type="button"
 			class="btn primary"
 			{...writeAttrs(session, 'job_designer')}
-			onclick={() => (creating = true)}>New version</button
+			onclick={() => (creating = true)}
 		>
+			New version
+		</button>
 	{/snippet}
 </PageHead>
 
@@ -141,9 +143,9 @@
 						: 'from the template'}), carried by release
 					<a class="mono" href="/admin/jobs/{app.job}/release/{release}">{release}</a>.
 				{:else}<b class="err-text">Nothing live: cases in this space are handed over to staff.</b>{/if}
-				{#if pending}<span class="pd-pending"
-						><b class="mono">{pending.version}</b> is published and goes live with the next release.</span
-					>{/if}
+				{#if pending}<span class="pd-pending">
+						<b class="mono">{pending.version}</b> is published and goes live with the next release.
+					</span>{/if}
 			</p>
 		</section>
 
@@ -247,9 +249,9 @@
 						<dt>Activity grant</dt>
 						<dd>
 							<span class="chips">
-								{#each sel.activity_grant as g (g)}<Chip text={g} variant="tool" />{:else}<span class="muted"
-										>none</span
-									>{/each}
+								{#each sel.activity_grant as g (g)}<Chip text={g} variant="tool" />{:else}<span class="muted">
+										none
+									</span>{/each}
 							</span>
 						</dd>
 						<dt>Production, 7 days</dt>
@@ -273,9 +275,9 @@
 					{#if sel.outside_grant.length}
 						<Callout kind="err" title="{sel.outside_grant.join(', ')} outside the activity grant">
 							A step calls an operation the activity does not grant. Moving this version to CANARY or
-							PUBLISHED, or cutting a release with it, is refused with 409 <span class="mono"
-								>operation_outside_grant</span
-							>. <a href="/admin/jobs/{app.job}/toolsets">Toolsets</a>
+							PUBLISHED, or cutting a release with it, is refused with 409 <span class="mono">
+								operation_outside_grant
+							</span>. <a href="/admin/jobs/{app.job}/toolsets">Toolsets</a>
 						</Callout>
 					{/if}
 					{#if sel.origin === 'base'}
@@ -297,35 +299,41 @@
 									type="button"
 									class="btn"
 									{...writeAttrs(session, 'job_designer')}
-									onclick={() => (creating = true)}>Start a tenant version from it</button
+									onclick={() => (creating = true)}
 								>
+									Start a tenant version from it
+								</button>
 							{:else}
 								{#each nextStatuses(sel.status) as to (to)}
 									{#if to === 'PUBLISHED' && sel.status === 'ARCHIVED'}
 										{#if confirmRollback}
 											<span class="pr-confirm" role="group" aria-label="Confirm roll back">
-												<span
-													>Re-publish {sel.version}? {eff && eff.origin === 'tenant'
+												<span>
+													Re-publish {sel.version}? {eff && eff.origin === 'tenant'
 														? `${eff.version} moves to ARCHIVED.`
-														: ''}</span
-												>
+														: ''}
+												</span>
 												<button
 													class="btn primary"
 													type="button"
 													disabled={busy}
-													onclick={() => move(sel, to)}>Roll back to {sel.version}</button
+													onclick={() => move(sel, to)}
 												>
-												<button class="btn" type="button" onclick={() => (confirmRollback = false)}
-													>Cancel</button
-												>
+													Roll back to {sel.version}
+												</button>
+												<button class="btn" type="button" onclick={() => (confirmRollback = false)}>
+													Cancel
+												</button>
 											</span>
 										{:else}
 											<button
 												class="btn"
 												type="button"
 												{...writeAttrs(session, 'release_manager')}
-												onclick={() => (confirmRollback = true)}>Roll back to this version</button
+												onclick={() => (confirmRollback = true)}
 											>
+												Roll back to this version
+											</button>
 										{/if}
 									{:else if to === 'PUBLISHED'}
 										<button
@@ -337,8 +345,10 @@
 												: approvedByMe
 													? 'You approved this version'
 													: 'Adds you as a reviewer; it does not publish'}
-											onclick={() => approve(sel)}>Approve</button
+											onclick={() => approve(sel)}
 										>
+											Approve
+										</button>
 										{#if approvedByMe}<span class="muted">You approved this version.</span>{/if}
 										<button
 											class="btn primary"
@@ -347,8 +357,10 @@
 											title={!canPublish
 												? writeHint('release_manager')
 												: 'Adds it to the next release; it goes live when that release is applied'}
-											onclick={() => move(sel, to)}>Publish</button
+											onclick={() => move(sel, to)}
 										>
+											Publish
+										</button>
 									{:else}
 										<button
 											class="btn"
@@ -356,8 +368,10 @@
 											type="button"
 											{...writeAttrs(session, 'job_designer')}
 											disabled={!canWrite || busy}
-											onclick={() => move(sel, to)}>Move to {to}</button
+											onclick={() => move(sel, to)}
 										>
+											Move to {to}
+										</button>
 									{/if}
 								{:else}
 									<span class="muted">No further moves from {sel.status}.</span>

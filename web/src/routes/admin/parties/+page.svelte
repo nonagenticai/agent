@@ -72,8 +72,8 @@
 			search();
 		}}
 	>
-		<label class="field"
-			>Search
+		<label class="field">
+			Search
 			<input
 				class="input"
 				type="search"
@@ -101,16 +101,18 @@
 						<tbody>
 							{#each [...page.items, ...more] as p (p.id)}
 								<tr data-testid="party-row" data-id={p.id}>
-									<td
-										><a href="/admin/parties/{p.id}"><b>{partyName(p)}</b></a>{#if p.subject}<span
-												class="cell-sub mono">{p.subject}</span
-											>{/if}{#if p.merged_into}<span class="cell-sub">merged into another customer</span
-											>{/if}</td
-									>
-									<td data-label="Kind"
-										><span class="chip {p.known ? 'ok' : 'muted'}">{p.known ? 'known' : 'anonymous'}</span
-										></td
-									>
+									<td>
+										<a href="/admin/parties/{p.id}"><b>{partyName(p)}</b></a>{#if p.subject}<span
+												class="cell-sub mono"
+											>
+												{p.subject}
+											</span>{/if}{#if p.merged_into}<span class="cell-sub">
+												merged into another customer
+											</span>{/if}
+									</td>
+									<td data-label="Kind">
+										<span class="chip {p.known ? 'ok' : 'muted'}">{p.known ? 'known' : 'anonymous'}</span>
+									</td>
 									<td data-label="Channels">{channelsOf(p).join(', ') || '—'}</td>
 									<td data-label="First seen">{stamp(p.created_at)}</td>
 								</tr>

@@ -149,9 +149,9 @@
 						<div class="j2-ns-track" aria-hidden="true">
 							<span class="j2-ns-fill j2-{state}" style:width="{ns.value * 100}%"></span>
 							{#if ns.target != null}
-								<span class="j2-ns-tgt" style:left="{ns.target * 100}%"
-									><i>target {fmt.pct(ns.target, 0)}</i></span
-								>
+								<span class="j2-ns-tgt" style:left="{ns.target * 100}%">
+									<i>target {fmt.pct(ns.target, 0)}</i>
+								</span>
 							{/if}
 						</div>
 					{/if}
@@ -216,16 +216,16 @@
 					<div class="j2-rel-say">
 						<Chip text={VERDICT_CHIP[cmp.overall].text} variant={VERDICT_CHIP[cmp.overall].variant} />
 						<span>
-							<a class="mono" href={href(`/release/${encodeURIComponent(cmp.current.release_id)}`)}
-								>{cmp.current.release_id}</a
-							>
+							<a class="mono" href={href(`/release/${encodeURIComponent(cmp.current.release_id)}`)}>
+								{cmp.current.release_id}
+							</a>
 							has been live {cmp.liveDays < 2
 								? `${cmp.liveDays.toFixed(1)} days`
 								: `${Math.round(cmp.liveDays)} days`} ({fmt.n(cmp.current.cases)} cases){#if cmp.previous},
 								compared with
-								<a class="mono" href={href(`/release/${encodeURIComponent(cmp.previous.release_id)}`)}
-									>{cmp.previous.release_id}</a
-								>
+								<a class="mono" href={href(`/release/${encodeURIComponent(cmp.previous.release_id)}`)}>
+									{cmp.previous.release_id}
+								</a>
 								({fmt.n(cmp.previous.cases)} cases, {when(cmp.previous.applied_at)} – {when(
 									cmp.previous.until,
 								)}){/if}.
@@ -294,15 +294,15 @@
 								<ul class="list-plain">
 									{#each cmp.current.moves as mv (mv.activity)}
 										<li>
-											<a href={href(`/journey/${encodeURIComponent(mv.activity)}`)}
-												>{mv.activity.split(':')[1]?.replaceAll('_', ' ')}</a
-											>
+											<a href={href(`/journey/${encodeURIComponent(mv.activity)}`)}>
+												{mv.activity.split(':')[1]?.replaceAll('_', ' ')}
+											</a>
 											<span class="mono">
 												{fmt.pct(mv.from, 0)} → <b>{fmt.pct(mv.to, 0)}</b>
-												<span class={mv.to >= mv.from ? 's-ok' : 's-err'}
-													>{mv.to >= mv.from ? '▲' : '▼'}
-													{Math.round(Math.abs(mv.to - mv.from) * 100)} pts</span
-												>
+												<span class={mv.to >= mv.from ? 's-ok' : 's-err'}>
+													{mv.to >= mv.from ? '▲' : '▼'}
+													{Math.round(Math.abs(mv.to - mv.from) * 100)} pts
+												</span>
 												<span class="muted">· {mv.cases} cases</span>
 											</span>
 										</li>
@@ -320,9 +320,9 @@
 							<p class="j2-waiting">
 								<Chip text="Approved, not applied" variant="accent" />
 								<span>
-									<a class="mono" href={href(`/release/${encodeURIComponent(cmp.waiting.release_id)}`)}
-										>{cmp.waiting.release_id}</a
-									>
+									<a class="mono" href={href(`/release/${encodeURIComponent(cmp.waiting.release_id)}`)}>
+										{cmp.waiting.release_id}
+									</a>
 									publishes the draft it was cut from. Apply it on the
 									<a href={href('/release')}>Release page</a> to start measuring it here.
 								</span>
@@ -365,11 +365,11 @@
 					{#each gaps as g, i (g.activity)}
 						<a class="j2-gap" href={href(`/journey/${encodeURIComponent(g.activity)}`)}>
 							<span class="j2-gap-n">{i + 1}</span>
-							<span
-								><b>{g.activity.split(':')[0]} · {g.name}</b><span class="cell-sub"
-									>{fmt.pct(g.rate, 0)} resolved · {g.gap} handovers to win back</span
-								></span
-							>
+							<span>
+								<b>{g.activity.split(':')[0]} · {g.name}</b><span class="cell-sub">
+									{fmt.pct(g.rate, 0)} resolved · {g.gap} handovers to win back
+								</span>
+							</span>
 						</a>
 					{/each}
 				</div>
@@ -398,23 +398,25 @@
 							</tr>
 							{#each s.activities as r (r.activity)}
 								<tr>
-									<td class="j2-actname"
-										><a href={href(`/journey/${encodeURIComponent(r.activity)}`)}>{r.name}</a><span
-											class="cell-sub mono">{r.activity}</span
-										></td
-									>
+									<td class="j2-actname">
+										<a href={href(`/journey/${encodeURIComponent(r.activity)}`)}>{r.name}</a><span
+											class="cell-sub mono"
+										>
+											{r.activity}
+										</span>
+									</td>
 									<td class="r">{fmt.n(r.cases)}</td>
 									<td>
-										<span class="j2-meter"
-											><Meter
+										<span class="j2-meter">
+											<Meter
 												value={r.rate}
 												cls={ns.target != null && r.rate >= ns.target
 													? 's-ok'
 													: r.rate >= 0.4
 														? 's-warn'
 														: 's-err'}
-											/><span class="mono">{fmt.pct(r.rate, 0)}</span></span
-										>
+											/><span class="mono">{fmt.pct(r.rate, 0)}</span>
+										</span>
 									</td>
 									<td class="r">{fmt.n(r.escalated)}</td>
 									<td class="r">{r.gap ? fmt.n(r.gap) : '—'}</td>
@@ -451,9 +453,9 @@
 								{#each g.reasons as r (r.reason)}
 									<li>
 										<span class="j2-r-label">{r.label}</span>
-										<span class="j2-r-bar" aria-hidden="true"
-											><span style:width="{handovers ? (r.count / handovers) * 100 : 0}%"></span></span
-										>
+										<span class="j2-r-bar" aria-hidden="true">
+											<span style:width="{handovers ? (r.count / handovers) * 100 : 0}%"></span>
+										</span>
 										<span class="mono j2-r-n">{fmt.n(r.count)}</span>
 										<a class="j2-r-fix" href={href(r.page)}>{r.pageLabel} →</a>
 									</li>
@@ -481,11 +483,11 @@
 								<li>
 									<span>
 										<b class="mono">{s.system}</b>
-										<span class="cell-sub"
-											>{fmt.n(s.calls)} calls{s.denied
+										<span class="cell-sub">
+											{fmt.n(s.calls)} calls{s.denied
 												? ` · ${fmt.n(s.denied)} refused by policy`
-												: ''}{s.worst ? ` · worst: ${s.worst.op} (${s.worst.errors} errors)` : ''}</span
-										>
+												: ''}{s.worst ? ` · worst: ${s.worst.op} (${s.worst.errors} errors)` : ''}
+										</span>
 									</span>
 									<span class="j2-sys-r">
 										<Chip
@@ -499,8 +501,10 @@
 						</ul>
 						<p class="muted j2-foot">
 							Refused-by-policy calls are the guard working, not errors. Fix failing systems on <a
-								href="/admin/connections/systems">Systems</a
-							>.
+								href="/admin/connections/systems"
+							>
+								Systems
+							</a>.
 						</p>
 					{/snippet}
 				</LoadState>
@@ -530,16 +534,16 @@
 							<ul class="list-plain">
 								{#each worstGates(qs) as q (q.key)}
 									<li>
-										<span
-											>{q.question}<span class="cell-sub mono"
-												>{q.key}{q.safety ? ' · safety' : ''} · {q.layer}</span
-											></span
-										>
-										<span class="mono"
-											>{fmt.pct(q.stats.below_threshold / q.stats.verdicts_7d, 0)} below · {fmt.n(
+										<span>
+											{q.question}<span class="cell-sub mono">
+												{q.key}{q.safety ? ' · safety' : ''} · {q.layer}
+											</span>
+										</span>
+										<span class="mono">
+											{fmt.pct(q.stats.below_threshold / q.stats.verdicts_7d, 0)} below · {fmt.n(
 												q.stats.verdicts_7d,
-											)}</span
-										>
+											)}
+										</span>
 									</li>
 								{/each}
 							</ul>
