@@ -295,7 +295,14 @@ async fn reconciler_retries_until_redis_accepts_then_rebuilds() {
     // Redis starts accepting at that address (a proxy to the test server)
     let proxy = r::proxy_at(addr).await;
     let want = vec![format!("{t}/care_desk/prod"), format!("{t}/care_desk/test")];
-    let until = std::time::Instant::now() + Duration::from_secs(45);
+    // This window must outlast the reconciler's OWN budget, not one attempt: a single Redis
+    // command now waits up to RESPONSE_TIMEOUT (10 s), and `reconcile_once` is capped at
+    // RECONCILE_ATTEMPT (10 s) with a 1 s → 60 s doubling backoff between failures. On a CI
+    // runner executing 2 500 tests in parallel the first attempts after the proxy comes up can
+    // each burn their whole budget, so 45 s was marginal: main run 44288912242 failed here with
+    // an empty registry while the same commit passed locally and on the PR. 120 s covers two
+    // full attempt-plus-backoff cycles under load and does not weaken the assertion.
+    let until = std::time::Instant::now() + Duration::from_secs(120);
     let mut got = Vec::new();
     while std::time::Instant::now() < until {
         got = members_of(&real, t).await;
