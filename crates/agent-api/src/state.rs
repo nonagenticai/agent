@@ -127,7 +127,7 @@ impl AppState {
 pub async fn build(cfg: Config) -> Result<AppState> {
     let owner = PgPoolOptions::new()
         .max_connections(1)
-        .acquire_timeout(std::time::Duration::from_secs(5))
+        .acquire_timeout(std::time::Duration::from_secs(10))
         .connect(&cfg.migrate_database_url)
         .await
         .context("connect MIGRATE_DATABASE_URL (migration owner)")?;
@@ -152,7 +152,7 @@ pub async fn build(cfg: Config) -> Result<AppState> {
     owner.close().await;
     let db = transaction_safe(PgPoolOptions::new())
         .max_connections(10)
-        .acquire_timeout(std::time::Duration::from_secs(5))
+        .acquire_timeout(std::time::Duration::from_secs(10))
         .connect(&cfg.database_url)
         .await
         .context("connect DATABASE_URL (runtime role)")?;
@@ -208,7 +208,7 @@ pub fn transaction_safe(opts: PgPoolOptions) -> PgPoolOptions {
 pub async fn build_runtime(cfg: Config) -> Result<AppState> {
     let db = transaction_safe(PgPoolOptions::new())
         .max_connections(10)
-        .acquire_timeout(std::time::Duration::from_secs(5))
+        .acquire_timeout(std::time::Duration::from_secs(10))
         .connect(&cfg.database_url)
         .await
         .context("connect DATABASE_URL (agent_runtime)")?;

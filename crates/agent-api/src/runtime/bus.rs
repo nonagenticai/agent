@@ -347,9 +347,13 @@ impl ConsumeOptions {
 }
 
 /// Per-command Redis response budget. The `redis` crate defaults to 500 ms, which a cross-site round trip
-/// (mf1 → worker3) exceeds often enough to fail ~0.5% of the 5 s deadline sweep. Bounded on purpose: long
-/// enough to absorb uplink jitter, short enough that a real stall still shows.
-pub const RESPONSE_TIMEOUT: Duration = Duration::from_secs(2);
+/// (home site → worker3) exceeds often enough to fail ~0.5% of the 5 s deadline sweep. 10 s because the
+/// stall that matters is not a slow command but a whole-tunnel outage: on hp1 (2026-11-18) the tailnet path
+/// to worker3 stalled for up to ~6 s at a time (tailscale0 queue overflow, later multi-second delay), and
+/// the Redis sweeps, the heartbeats and the Postgres pool all timed out together while the Redis server
+/// itself was idle and healthy. Sweeps are lease-based and idempotent, so a late reply is safe; the budget
+/// only has to outlast the stall. Bounded on purpose — a real outage still surfaces, just 10 s later.
+pub const RESPONSE_TIMEOUT: Duration = Duration::from_secs(10);
 
 #[derive(Clone)]
 pub struct Bus {
@@ -403,11 +407,12 @@ impl Bus {
     }
 
     /// Connect on first use (agent-api: a Redis outage must not stop the admin API from booting). Commands fail
-    /// fast while Redis is down: 2 s per connection attempt, 2 retries.
+    /// while Redis is down: 10 s per connection attempt, 2 retries — the same tunnel-stall budget as
+    /// [`RESPONSE_TIMEOUT`], because a stalled tunnel also breaks the reconnect, not only the command.
     pub fn connect_lazy(url: &str, prefix: &str) -> Result<Self> {
         let client = Client::open(url).context("REDIS_URL is not a valid redis URL")?;
         let cfg = ConnectionManagerConfig::new()
-            .set_connection_timeout(Some(Duration::from_secs(2)))
+            .set_connection_timeout(Some(Duration::from_secs(10)))
             .set_response_timeout(Some(RESPONSE_TIMEOUT))
             .set_number_of_retries(2);
         let conn = ConnectionManager::new_lazy_with_config(client.clone(), cfg)
