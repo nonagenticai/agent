@@ -12,6 +12,9 @@
 //!   [`BackendEvent::Done`]. A body that ends cleanly without `[DONE]` is done too.
 //! - A transport failure before any answer is [`BackendError::Unavailable`]; a non-2xx status, an error chunk, a
 //!   malformed chunk or a body cut mid-way is [`BackendError::Upstream`].
+//! - **A consumer that disconnects does not cancel the call.** The upstream request is owned by its own task and is
+//!   read to the terminal chunk even after the SSE stream is dropped, so the inference-router completes the call and
+//!   books its usage; only then does the task end. See [`drive`].
 //!
 //! The call is counted as upstream `inference_router` / `chat_completions` (crate::observability::upstream_http). No
 //! message text, party or metadata is logged: only statuses.
@@ -130,7 +133,45 @@ impl InteractionBackend for LlmPassthrough {
                 call = call.header(k, v);
             }
         }
-        stream::unfold(Phase::Connect(Box::new(call)), step).boxed()
+        // The call runs in its OWN task, not inside the returned stream. A staff-playground
+        // consumer that disconnects mid-generation drops that stream; when the call lived in it,
+        // the drop cancelled the upstream request, and the inference-router then aborted a vLLM
+        // generation it had already prefilled — tokens that count on the backend and reach no
+        // cost event (measured 2026-11-18: ~82k-token prefills, `0 DC downstream_remote_disconnect`
+        // at the gateway, `LocalLlmMeteringCoverageLow` at 0.32). The task keeps reading to the
+        // terminal chunk after the consumer leaves; the router completes the call and books it.
+        let (tx, rx) = tokio::sync::mpsc::channel(STREAM_BUFFER);
+        tokio::spawn(async move { drive(call, tx).await });
+        stream::unfold(
+            rx,
+            |mut rx| async move { rx.recv().await.map(|ev| (ev, rx)) },
+        )
+        .boxed()
+    }
+}
+
+/// How many parsed events may sit between the upstream task and a slow consumer. Small on
+/// purpose: the channel is backpressure, not a buffer — the upstream reads at the consumer's pace
+/// while it is present, and only the DRAIN path (consumer gone) runs unthrottled to the end.
+const STREAM_BUFFER: usize = 64;
+
+/// Read the upstream call to completion, delivering every event to `tx`.
+///
+/// A closed channel (the consumer disconnected) is NOT a reason to stop: the remaining chunks are
+/// read and discarded so the upstream request finishes and its usage is booked. Errors are sent
+/// like any other event; the loop ends only when the reader reaches its terminal phase.
+async fn drive(
+    call: reqwest::RequestBuilder,
+    tx: tokio::sync::mpsc::Sender<Result<BackendEvent, BackendError>>,
+) {
+    let mut phase = Phase::Connect(Box::new(call));
+    loop {
+        let Some((event, next)) = step(phase).await else {
+            return;
+        };
+        // `send` fails only when the consumer is gone; the drain continues either way.
+        let _ = tx.send(event).await;
+        phase = next;
     }
 }
 
@@ -569,5 +610,129 @@ mod tests {
             collect(llm("http://127.0.0.1:9/v1").respond(req())).await,
             Err(BackendError::Unavailable(_))
         ));
+    }
+
+    /// What the slow fake's body recorded about its own life.
+    #[derive(Default)]
+    struct TailSeen {
+        /// The final chunk was produced: the body was read to the end.
+        finished: std::sync::atomic::AtomicBool,
+        /// The body was dropped before its final chunk: the client stopped reading.
+        dropped: std::sync::atomic::AtomicBool,
+    }
+
+    /// The fake's SSE body: the first chunk immediately, then one chunk per `gap`. Drop detection
+    /// is the point — a cancelled request drops this stream early.
+    struct SlowBody {
+        chunks: std::collections::VecDeque<axum::body::Bytes>,
+        ready_at: Option<tokio::time::Instant>,
+        gap: std::time::Duration,
+        finished: bool,
+        seen: Arc<TailSeen>,
+    }
+
+    impl futures_util::Stream for SlowBody {
+        type Item = Result<axum::body::Bytes, std::io::Error>;
+
+        fn poll_next(
+            mut self: std::pin::Pin<&mut Self>,
+            cx: &mut std::task::Context<'_>,
+        ) -> std::task::Poll<Option<Self::Item>> {
+            use std::sync::atomic::Ordering;
+            if let Some(at) = self.ready_at {
+                let now = tokio::time::Instant::now();
+                if now < at {
+                    let waker = cx.waker().clone();
+                    tokio::spawn(async move {
+                        tokio::time::sleep_until(at).await;
+                        waker.wake();
+                    });
+                    return std::task::Poll::Pending;
+                }
+                self.ready_at = None;
+            }
+            let Some(chunk) = self.chunks.pop_front() else {
+                return std::task::Poll::Ready(None);
+            };
+            if self.chunks.is_empty() {
+                self.finished = true;
+                self.seen.finished.store(true, Ordering::SeqCst);
+            }
+            self.ready_at = Some(tokio::time::Instant::now() + self.gap);
+            std::task::Poll::Ready(Some(Ok(chunk)))
+        }
+    }
+
+    impl Drop for SlowBody {
+        fn drop(&mut self) {
+            use std::sync::atomic::Ordering;
+            if !self.finished {
+                self.seen.dropped.store(true, Ordering::SeqCst);
+            }
+        }
+    }
+
+    /// A fake upstream whose SSE body is spread over several chunks with delays.
+    async fn slow_upstream(seen: Arc<TailSeen>) -> String {
+        let app = Router::new().route(
+            "/v1/chat/completions",
+            post(move || {
+                let seen = seen.clone();
+                async move {
+                    let chunks: std::collections::VecDeque<axum::body::Bytes> = [
+                        "data: {\"choices\":[{\"delta\":{\"content\":\"Hel\"}}]}\n\n",
+                        "data: {\"choices\":[{\"delta\":{\"content\":\"lo\"},\"finish_reason\":\"stop\"}]}\n\n",
+                        "data: {\"choices\":[],\"usage\":{\"prompt_tokens\":3,\"completion_tokens\":2}}\n\n",
+                        "data: [DONE]\n\n",
+                    ]
+                    .into_iter()
+                    .map(|s| axum::body::Bytes::from_static(s.as_bytes()))
+                    .collect();
+                    let body = SlowBody {
+                        chunks,
+                        ready_at: None,
+                        gap: std::time::Duration::from_millis(40),
+                        finished: false,
+                        seen,
+                    };
+                    (
+                        [(axum::http::header::CONTENT_TYPE, "text/event-stream")],
+                        axum::body::Body::from_stream(body),
+                    )
+                        .into_response()
+                }
+            }),
+        );
+        let l = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let addr = l.local_addr().unwrap();
+        tokio::spawn(async move { axum::serve(l, app).await.unwrap() });
+        format!("http://{addr}/v1")
+    }
+
+    /// The staff playground's consumer goes away mid-generation. The upstream body must still be
+    /// read to its terminal chunk, otherwise the router aborts a prefill it has already billed and
+    /// those tokens reach no cost event (`0 DC downstream_remote_disconnect`, 2026-11-18).
+    #[tokio::test]
+    async fn a_consumer_that_disconnects_does_not_cancel_the_upstream_call() {
+        use std::sync::atomic::Ordering;
+        let seen = Arc::new(TailSeen::default());
+        let url = slow_upstream(seen.clone()).await;
+        let mut events = llm(&url).respond(req());
+        let first = events.next().await;
+        assert!(
+            matches!(first, Some(Ok(BackendEvent::Delta(_)))),
+            "the first delta must arrive before the consumer leaves: {first:?}"
+        );
+        drop(events);
+        // Long enough for the drain to pass the remaining three chunks (3 x 40 ms) and finish.
+        tokio::time::sleep(std::time::Duration::from_millis(400)).await;
+        assert!(
+            seen.finished.load(Ordering::SeqCst),
+            "the upstream body must be read to its terminal chunk after the consumer left"
+        );
+        assert!(
+            !seen.dropped.load(Ordering::SeqCst),
+            "the upstream body was dropped early: the call was cancelled"
+        );
     }
 }
