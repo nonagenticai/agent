@@ -7,7 +7,7 @@
 # Env per binary: the module doc of crates/agent-api/src/bin/<name>.rs. Building -p agent-api builds every
 # src/bin target; each is copied by name, so a missing binary fails the image build, not the rollout.
 ARG BASE_REGISTRY=docker.io
-FROM ${BASE_REGISTRY}/library/rust:1.100.0-bookworm AS build
+FROM ${BASE_REGISTRY}/library/rust:1.100.0-trixie AS build
 ARG PACKAGE=agent-api
 WORKDIR /src
 COPY Cargo.toml Cargo.lock ./
@@ -18,7 +18,7 @@ RUN test -n "$PACKAGE" \
  && cp "target/release/$PACKAGE" /out/ \
  && for b in agent-edge orchestrator runner interaction; do cp "target/release/$b" /out/; done
 
-FROM ${BASE_REGISTRY}/library/debian:12-slim
+FROM ${BASE_REGISTRY}/library/debian:13-slim
 RUN apt-get update \
  && apt-get install -y --no-install-recommends ca-certificates \
  && rm -rf /var/lib/apt/lists/*
