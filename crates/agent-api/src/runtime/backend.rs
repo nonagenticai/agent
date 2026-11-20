@@ -37,11 +37,12 @@ use std::time::Duration;
 use futures_util::StreamExt;
 use futures_util::stream::{self, BoxStream};
 use sqlx::PgConnection;
+use tokio::sync::broadcast;
 use uuid::Uuid;
 
 use super::interaction::ROLE as INTERACTION_ROLE;
 use crate::audit::Actor;
-use crate::conversations::{handover, ownership, state as conv_state, store};
+use crate::conversations::{handover, hub, ownership, state as conv_state, store};
 use crate::error::{ApiError, ApiResult};
 use crate::interaction::{
     BackendError, BackendEvent, ConversationRef, InteractionBackend, InteractionRequest, Message,
@@ -170,13 +171,34 @@ impl RuntimeBackend {
         message_id: Uuid,
     ) -> ApiResult<Outcome> {
         let until = tokio::time::Instant::now() + REPLY_WAIT;
-        // The frame is only a wake-up; the stored row is the outcome. Subscribe BEFORE the first
-        // read, so a reply committed between the read and the wait still wakes this task; a frame
-        // that is missed (Pub/Sub is lossy) is covered by WAIT_FALLBACK.
-        let mut frames = self.chat_frames(scope).await;
-        let mut push = frames.is_some();
-        // A frame only wakes the wait when it names this conversation: every waiter in the job
-        // subscribes to the same channel, and one reply must not make all of them read the row.
+        // The frame is only a wake-up; the stored row is the outcome. Subscribe to the local hub
+        // BEFORE the first read, then acquire the process's one Pub/Sub bridge for this job: the
+        // bridge republishes the job's chat frames into the hub. This replaces a new Redis Pub/Sub
+        // connection per wait; a missed frame (a dropped link, a full broadcast buffer) is covered
+        // by WAIT_FALLBACK, exactly as before.
+        let mut frames = self.st.events.subscribe();
+        let mut _hold = None;
+        let mut down = None;
+        let mut push = false;
+        if let Some(bridge) = self.st.sse.as_ref() {
+            match bridge
+                .acquire(scope.tenant, scope.job_id, &scope.job_key)
+                .await
+            {
+                Ok(sub) => {
+                    down = Some(sub.reset());
+                    _hold = Some(sub);
+                    push = true;
+                }
+                Err(e) => tracing::warn!(
+                    error = %format!("{e:#}"),
+                    "reply_wait_bridge_unavailable"
+                ),
+            }
+        }
+        // A frame only wakes the wait when it names this conversation (and this tenant/job): every
+        // waiter in the job reads the same hub broadcast, and one reply must not make all of them
+        // read the row.
         let mut check = true;
         loop {
             if check
@@ -196,56 +218,40 @@ impl RuntimeBackend {
             // missed frame, so it can be longer.
             let wait = (until - now).min(if push { WAIT_FALLBACK } else { POLL });
             if push {
-                let stream = frames.as_mut().expect("push implies a stream");
-                let (closed, relevant) = tokio::select! {
-                    _ = tokio::time::sleep(wait) => (false, true),
-                    frame = stream.next() => match frame {
-                        None => (true, true),
-                        Some(m) => {
-                            let relevant = m
-                                .get_payload::<String>()
-                                .map(|p| frame_for(&p, conversation_id))
-                                .unwrap_or(true);
-                            (false, relevant)
+                let closed = tokio::select! {
+                    _ = tokio::time::sleep(wait) => false,
+                    _ = async {
+                        match down.as_mut() {
+                            Some(r) => { let _ = r.changed().await; }
+                            None => std::future::pending::<()>().await,
                         }
+                    } => true,
+                    frame = frames.recv() => match frame {
+                        Ok(f) => {
+                            check = hub::matches(
+                                &f,
+                                scope.tenant,
+                                scope.job_id,
+                                Some(conversation_id),
+                            );
+                            false
+                        }
+                        Err(broadcast::error::RecvError::Lagged(_)) => {
+                            // The waiter fell behind the hub: re-read the row, do not sleep past it.
+                            check = true;
+                            false
+                        }
+                        Err(broadcast::error::RecvError::Closed) => true,
                     },
                 };
-                check = relevant;
                 if closed {
-                    // A closed subscription falls back to the interval read.
+                    // A dropped link (or a closed hub) falls back to the interval read.
                     push = false;
-                    frames = None;
+                    _hold = None;
+                    down = None;
                 }
             } else {
                 tokio::time::sleep(wait).await;
-            }
-        }
-    }
-
-    /// The scope's chat publication, for waking a reply wait. `None` when Redis is unset or the
-    /// subscription cannot be made in time: [`RuntimeBackend::reply_after`] then reads the row on
-    /// the fallback interval, as it did before the push wait existed.
-    async fn chat_frames(
-        &self,
-        scope: &JobScope,
-    ) -> Option<std::pin::Pin<Box<dyn futures_util::Stream<Item = redis::Msg> + Send>>> {
-        let root = self.st.redis.as_ref()?;
-        let rs = turn::runtime_scope(scope, CUSTOMER_ENV).ok()?;
-        let bus = root.scoped(&rs);
-        let make = async {
-            let mut ps = bus.client().get_async_pubsub().await?;
-            ps.subscribe(bus.streams.chat()).await?;
-            Ok::<_, redis::RedisError>(ps)
-        };
-        match tokio::time::timeout(Duration::from_millis(500), make).await {
-            Ok(Ok(ps)) => Some(Box::pin(ps.into_on_message())),
-            Ok(Err(e)) => {
-                tracing::warn!(kind = ?e.kind(), "reply_wait_subscribe_failed");
-                None
-            }
-            Err(_) => {
-                tracing::warn!("reply_wait_subscribe_timeout");
-                None
             }
         }
     }
@@ -811,33 +817,46 @@ impl InteractionBackend for RuntimeBackend {
     }
 }
 
-/// Whether a chat frame names `conversation_id`. A payload that cannot be parsed wakes the wait:
-/// a duplicate row read is cheaper than a lost reply.
-fn frame_for(payload: &str, conversation_id: &str) -> bool {
-    serde_json::from_str::<serde_json::Value>(payload)
-        .ok()
-        .and_then(|v| {
-            v.get("conversation_id")
-                .and_then(|c| c.as_str())
-                .map(|c| c == conversation_id)
-        })
-        .unwrap_or(true)
-}
-
 #[cfg(test)]
 mod tests {
-    use super::frame_for;
+    use super::*;
+
+    fn frame(tenant: Uuid, job_id: Uuid, conversation: &'static str) -> hub::Frame {
+        hub::Frame {
+            tenant,
+            job_id,
+            conversation_id: Some(conversation.to_string()),
+            event: "message",
+            data: serde_json::json!({}),
+        }
+    }
 
     #[test]
-    fn a_frame_only_wakes_its_conversation() {
-        assert!(frame_for(
-            r#"{"conversation_id":"c-1","event":"message","data":{}}"#,
-            "c-1"
+    fn a_frame_only_wakes_its_conversation_job_and_tenant() {
+        let (tenant, job) = (Uuid::new_v4(), Uuid::new_v4());
+        assert!(hub::matches(
+            &frame(tenant, job, "c-1"),
+            tenant,
+            job,
+            Some("c-1")
         ));
-        assert!(!frame_for(
-            r#"{"conversation_id":"c-2","event":"message","data":{}}"#,
-            "c-1"
+        assert!(!hub::matches(
+            &frame(tenant, job, "c-2"),
+            tenant,
+            job,
+            Some("c-1")
         ));
-        assert!(frame_for("not json", "c-1"));
+        assert!(!hub::matches(
+            &frame(tenant, Uuid::new_v4(), "c-1"),
+            tenant,
+            job,
+            Some("c-1")
+        ));
+        assert!(!hub::matches(
+            &frame(Uuid::new_v4(), job, "c-1"),
+            tenant,
+            job,
+            Some("c-1")
+        ));
     }
 }
