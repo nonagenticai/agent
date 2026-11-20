@@ -59,7 +59,7 @@
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::convert::Infallible;
 use std::hash::Hash;
-use std::net::SocketAddr;
+use std::net::{IpAddr, SocketAddr};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
@@ -1082,19 +1082,40 @@ struct WireMessage {
     text: String,
 }
 
-/// `CF-Connecting-IP` (set by Cloudflare, which overwrites a client's own), else the socket peer, else `unknown`.
-/// `X-Forwarded-For` is ignored: a visitor sets it freely, so trusting it would let one IP pose as many and slip the
-/// per-IP limits.
-fn client_ip(headers: &HeaderMap, peer: Option<SocketAddr>) -> String {
-    if let Some(ip) = headers
-        .get("cf-connecting-ip")
-        .and_then(|v| v.to_str().ok())
-        .map(str::trim)
-        .filter(|v| !v.is_empty())
-    {
-        return ip.to_string();
+/// The peers allowed to set `CF-Connecting-IP`: loopback, RFC1918, link-local, IPv6 unique-local, and
+/// the 100.64/10 shared range (the cluster, tailnet and cloudflared path). A public peer is a client
+/// talking to the edge directly, so its header is a claim, not an observation.
+fn trusted_proxy(ip: IpAddr) -> bool {
+    match ip {
+        IpAddr::V4(v4) => {
+            let octets = v4.octets();
+            v4.is_loopback()
+                || v4.is_private()
+                || v4.is_link_local()
+                || (octets[0] == 100 && (64..=127).contains(&octets[1]))
+        }
+        IpAddr::V6(v6) => v6.is_loopback() || v6.is_unique_local() || v6.is_unicast_link_local(),
     }
-    peer.map_or_else(|| "unknown".to_string(), |a| a.ip().to_string())
+}
+
+/// `CF-Connecting-IP` (set by Cloudflare, which overwrites a client's own) when the socket peer is a
+/// trusted proxy, else the socket peer itself. The header is parsed as an IP and never trusted from a
+/// public peer: otherwise one client can pose as many and slip the per-IP limits. `X-Forwarded-For` is
+/// ignored for the same reason.
+fn client_ip(headers: &HeaderMap, peer: Option<SocketAddr>) -> String {
+    // `to_canonical`: a peer seen as ::ffff:10.0.0.1 is the IPv4 address for trust and for the key.
+    let Some(peer) = peer.map(|a| a.ip().to_canonical()) else {
+        return "unknown".to_string();
+    };
+    if trusted_proxy(peer)
+        && let Some(ip) = headers
+            .get("cf-connecting-ip")
+            .and_then(|v| v.to_str().ok())
+            .and_then(|v| v.trim().parse::<IpAddr>().ok())
+    {
+        return ip.to_canonical().to_string();
+    }
+    peer.to_string()
 }
 
 async fn messages(
@@ -2113,17 +2134,54 @@ mod tests {
     }
 
     #[test]
-    fn client_ip_trusts_cloudflare_or_the_peer_never_forwarded_for() {
-        let peer: SocketAddr = "192.0.2.9:4000".parse().unwrap();
+    fn client_ip_honours_cloudflare_only_behind_a_trusted_proxy() {
+        let public: SocketAddr = "192.0.2.9:4000".parse().unwrap();
+        let private: SocketAddr = "10.1.2.3:4000".parse().unwrap();
+        let loopback: SocketAddr = "127.0.0.1:4000".parse().unwrap();
+        let shared: SocketAddr = "100.70.1.2:4000".parse().unwrap();
+        let mapped: SocketAddr = "[::ffff:10.0.0.5]:4000".parse().unwrap();
         let mut h = HeaderMap::new();
         h.insert(
             "x-forwarded-for",
             HeaderValue::from_static("203.0.113.1, 10.0.0.1"),
         );
-        assert_eq!(client_ip(&h, Some(peer)), "192.0.2.9");
+        assert_eq!(client_ip(&h, Some(public)), "192.0.2.9");
         assert_eq!(client_ip(&h, None), "unknown");
         h.insert("cf-connecting-ip", HeaderValue::from_static("198.51.100.4"));
-        assert_eq!(client_ip(&h, Some(peer)), "198.51.100.4");
+        assert_eq!(
+            client_ip(&h, Some(public)),
+            "192.0.2.9",
+            "a public peer cannot spoof its IP"
+        );
+        assert_eq!(client_ip(&h, Some(private)), "198.51.100.4");
+        assert_eq!(client_ip(&h, Some(loopback)), "198.51.100.4");
+        assert_eq!(client_ip(&h, Some(shared)), "198.51.100.4");
+        assert_eq!(client_ip(&h, Some(mapped)), "198.51.100.4");
+        h.insert("cf-connecting-ip", HeaderValue::from_static("not-an-ip"));
+        assert_eq!(client_ip(&h, Some(private)), "10.1.2.3");
+        h.insert("cf-connecting-ip", HeaderValue::from_static("2001:db8::1"));
+        assert_eq!(client_ip(&h, Some(private)), "2001:db8::1");
+    }
+
+    #[test]
+    fn trusted_proxies_are_the_private_and_platform_ranges() {
+        for ip in [
+            "127.0.0.1",
+            "10.0.0.1",
+            "172.16.0.1",
+            "192.168.1.1",
+            "169.254.1.1",
+            "100.64.0.1",
+            "100.127.255.254",
+            "::1",
+            "fc00::1",
+            "fe80::1",
+        ] {
+            assert!(trusted_proxy(ip.parse().unwrap()), "{ip}");
+        }
+        for ip in ["8.8.8.8", "100.128.0.1", "99.64.0.1", "2001:db8::1"] {
+            assert!(!trusted_proxy(ip.parse().unwrap()), "{ip}");
+        }
     }
 
     #[test]
