@@ -328,12 +328,21 @@ async fn sweep_orphaned_databases(base: &str) {
 pub const APP_ROLE_PASSWORD: &str = "agent_app";
 
 /// Once per server, before any database is migrated: `agent_app` exists, may log in, and has the test password.
+///
+/// ⚠️ Every role statement below takes the advisory lock `hashtext('agent_test_roles')` first.
+/// Two callers that reach `ALTER ROLE agent_app` at the same moment make Postgres answer
+/// `XX000 tuple concurrently updated` from `pg_authid` — measured 2026-11-19 in the coding
+/// sandbox, where 3 of 3811 tests failed exactly that way while every test that reached the same
+/// fixtures in a quiet moment passed. The fixtures run once per test, on parallel threads and
+/// across test binaries, so the guard must be cross-process: an in-process `OnceCell` does not
+/// cover it. The lock is transaction-scoped, so a `DO` block releases it when the statement ends.
 async fn ensure_app_role(base: &str) {
     let admin = PgPool::connect(base)
         .await
         .expect("connect to the test postgres server");
     sqlx::query(
         "DO $$ BEGIN
+             PERFORM pg_advisory_xact_lock(hashtext('agent_test_roles'));
              IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'agent_app') THEN
                  CREATE ROLE agent_app LOGIN PASSWORD 'agent_app' NOSUPERUSER NOBYPASSRLS;
              ELSE
@@ -348,6 +357,7 @@ async fn ensure_app_role(base: &str) {
     // The platform role (migration 0031 verifies, never creates it; production's DBA step creates it).
     sqlx::query(
         "DO $$ BEGIN
+             PERFORM pg_advisory_xact_lock(hashtext('agent_test_roles'));
              IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'agent_platform') THEN
                  CREATE ROLE agent_platform NOLOGIN NOSUPERUSER NOBYPASSRLS;
              END IF;
@@ -362,6 +372,7 @@ async fn ensure_app_role(base: &str) {
     // with its own secret). A member of nothing.
     sqlx::query(
         "DO $$ BEGIN
+             PERFORM pg_advisory_xact_lock(hashtext('agent_test_roles'));
              IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'agent_runtime') THEN
                  CREATE ROLE agent_runtime LOGIN PASSWORD 'agent_runtime' NOSUPERUSER NOBYPASSRLS;
              ELSE
@@ -393,11 +404,38 @@ pub async fn runtime_pool(owner: &PgPool) -> PgPool {
 }
 
 /// `GRANT agent_platform TO agent_app WITH INHERIT FALSE, SET TRUE` (re-granting resets the options).
+///
+/// Takes the same advisory lock as [`ensure_app_role`]: a `GRANT` is a write to the same catalog
+/// (`pg_authid` membership rows), so it races the role statements the same way.
 pub async fn grant_platform_membership(admin: &PgPool) {
+    let mut tx = admin.begin().await.expect("begin the platform grant");
+    sqlx::query("SELECT pg_advisory_xact_lock(hashtext('agent_test_roles'))")
+        .execute(&mut *tx)
+        .await
+        .expect("lock the test role setup");
     sqlx::query("GRANT agent_platform TO agent_app WITH INHERIT FALSE, SET TRUE")
-        .execute(admin)
+        .execute(&mut *tx)
         .await
         .expect("grant agent_platform to agent_app");
+    tx.commit().await.expect("commit the platform grant");
+}
+
+/// Run one role-mutating statement under the same advisory lock as [`ensure_app_role`].
+///
+/// The `platform_role` fixtures `GRANT`, `REVOKE` and `RENAME` the very roles every other test
+/// sets up, so a bare statement can collide with [`ensure_app_role`] on another thread and answer
+/// `XX000 tuple concurrently updated`. Same key, same critical section.
+pub async fn role_statement(admin: &PgPool, sql: &'static str) {
+    let mut tx = admin.begin().await.expect("begin the role statement");
+    sqlx::query("SELECT pg_advisory_xact_lock(hashtext('agent_test_roles'))")
+        .execute(&mut *tx)
+        .await
+        .expect("lock the test role setup");
+    sqlx::query(sql)
+        .execute(&mut *tx)
+        .await
+        .expect("role statement");
+    tx.commit().await.expect("commit the role statement");
 }
 
 /// A superuser pool on the shared test server (role-level fixtures only; roles are server-wide).
