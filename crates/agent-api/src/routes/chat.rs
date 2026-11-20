@@ -283,11 +283,10 @@ async fn send_chat_message(
             "Messages are at most 2,000 characters.".into(),
         ));
     }
+    // one read, no write: a BEGIN/COMMIT around it only adds two round trips to every send
     let conv = {
-        let mut tx = j.begin(&st.db).await?;
-        let conv = store::conversation_or_404(&mut tx, &id).await?;
-        tx.commit().await?;
-        conv
+        let mut conn = st.db.acquire().await?;
+        store::conversation_or_404(&mut *conn, &id).await?
     };
     // this door serves the staff test chat only; a customer channel's conversation has its own
     if conv.channel != "staff" {

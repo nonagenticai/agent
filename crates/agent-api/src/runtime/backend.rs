@@ -11,7 +11,8 @@
 //! nothing for a runtime reply.
 //!
 //! The wait reads the stored reply, not the `chat` frame: frames are lossy by design (the message is stored first),
-//! a row is not. It ends at the first agent line after the customer's message (with the CSAT prompt the daemon
+//! a row is not. A frame wakes the wait; it never supplies the outcome, and a missed frame is covered by a
+//! fallback read. It ends at the first agent line after the customer's message (with the CSAT prompt the daemon
 //! stored in the same transaction appended), a handover item opened for the conversation, or staff control; after
 //! [`REPLY_WAIT`] it is 503 `unavailable` (the reply, when it comes, is in the conversation's history).
 //!
@@ -53,8 +54,11 @@ use crate::turn::{self, AuthorRole, Inbound};
 pub const REPLY_WAIT: Duration = Duration::from_secs(100);
 const _: () = assert!(REPLY_WAIT.as_secs() < crate::channels::core::INBOUND_TIMEOUT.as_secs());
 
-/// How often the wait re-reads the conversation.
+/// How often the wait re-reads the conversation when no frame wakes it.
 const POLL: Duration = Duration::from_millis(200);
+
+/// The fallback read interval of the push wait: frames are lossy, the stored row is not.
+const WAIT_FALLBACK: Duration = Duration::from_secs(1);
 
 /// How long a new message waits for the previous turn's lock before it is 409 `conversation_busy`.
 const BUSY_WAIT: Duration = Duration::from_secs(2);
@@ -166,6 +170,11 @@ impl RuntimeBackend {
         message_id: Uuid,
     ) -> ApiResult<Outcome> {
         let until = tokio::time::Instant::now() + REPLY_WAIT;
+        // The frame is only a wake-up; the stored row is the outcome. Subscribe BEFORE the first
+        // read, so a reply committed between the read and the wait still wakes this task; a frame
+        // that is missed (Pub/Sub is lossy) is covered by WAIT_FALLBACK.
+        let mut frames = self.chat_frames(scope).await;
+        let mut push = frames.is_some();
         loop {
             if let Some(o) = self
                 .outcome(scope, conversation_id, (at_ms, message_id), message_id)
@@ -173,11 +182,57 @@ impl RuntimeBackend {
             {
                 return Ok(o);
             }
-            if tokio::time::Instant::now() >= until {
+            let now = tokio::time::Instant::now();
+            if now >= until {
                 tracing::warn!(conversation = %conversation_id, "runtime_reply_timeout");
                 return Err(turn::unavailable());
             }
-            tokio::time::sleep(POLL).await;
+            // Without a subscription this is the old poll; with one, the interval only covers a
+            // missed frame, so it can be longer.
+            let wait = (until - now).min(if push { WAIT_FALLBACK } else { POLL });
+            if push {
+                let stream = frames.as_mut().expect("push implies a stream");
+                let closed = tokio::select! {
+                    _ = tokio::time::sleep(wait) => false,
+                    // Any frame in this scope re-reads the row.
+                    frame = stream.next() => frame.is_none(),
+                };
+                if closed {
+                    // A closed subscription falls back to the interval read.
+                    push = false;
+                    frames = None;
+                }
+            } else {
+                tokio::time::sleep(wait).await;
+            }
+        }
+    }
+
+    /// The scope's chat publication, for waking a reply wait. `None` when Redis is unset or the
+    /// subscription cannot be made in time: [`RuntimeBackend::reply_after`] then reads the row on
+    /// the fallback interval, as it did before the push wait existed.
+    async fn chat_frames(
+        &self,
+        scope: &JobScope,
+    ) -> Option<std::pin::Pin<Box<dyn futures_util::Stream<Item = redis::Msg> + Send>>> {
+        let root = self.st.redis.as_ref()?;
+        let rs = turn::runtime_scope(scope, CUSTOMER_ENV).ok()?;
+        let bus = root.scoped(&rs);
+        let make = async {
+            let mut ps = bus.client().get_async_pubsub().await?;
+            ps.subscribe(bus.streams.chat()).await?;
+            Ok::<_, redis::RedisError>(ps)
+        };
+        match tokio::time::timeout(Duration::from_millis(500), make).await {
+            Ok(Ok(ps)) => Some(Box::pin(ps.into_on_message())),
+            Ok(Err(e)) => {
+                tracing::warn!(kind = ?e.kind(), "reply_wait_subscribe_failed");
+                None
+            }
+            Err(_) => {
+                tracing::warn!("reply_wait_subscribe_timeout");
+                None
+            }
         }
     }
 
@@ -192,29 +247,28 @@ impl RuntimeBackend {
     ) -> ApiResult<Option<Outcome>> {
         let (at_ms, after_id) = after;
         let mut tx = store::begin_job(&self.st.db, scope.tenant, scope.job_id).await?;
-        let lines: Vec<Line> = sqlx::query_as(
-            "SELECT message_id, text, case_id FROM conversation_message \
-              WHERE conversation_id = $1 AND role = 'agent' AND author IS DISTINCT FROM $4 AND (at_ms, message_id) > ($2, $3) \
-              ORDER BY at_ms, message_id LIMIT 1",
+        // One statement, not two: the customer message's case_id rides the same primary-key lookup.
+        // SW-6: the agent never stores a CSAT prompt with its reply (it arms the request; the prompt follows the
+        // customer's acknowledgement), so the reply is the first line alone.
+        let line: Option<Line> = sqlx::query_as(
+            "SELECT m.message_id, m.text, COALESCE(m.case_id, c.case_id) AS case_id \
+               FROM conversation_message m \
+               LEFT JOIN conversation_message c ON c.message_id = $4 \
+              WHERE m.conversation_id = $1 AND m.role = 'agent' \
+                AND m.author IS DISTINCT FROM $5 AND (m.at_ms, m.message_id) > ($2, $3) \
+              ORDER BY m.at_ms, m.message_id LIMIT 1",
         )
         .bind(conversation_id)
         .bind(at_ms)
         .bind(after_id)
+        .bind(message_id)
         .bind(crate::runtime::task_relay::AUTHOR)
-        .fetch_all(&mut *tx)
+        .fetch_optional(&mut *tx)
         .await?;
-        let out = if let Some(first) = lines.first() {
-            let linked: Option<Option<String>> = sqlx::query_scalar(
-                "SELECT case_id FROM conversation_message WHERE message_id = $1",
-            )
-            .bind(message_id)
-            .fetch_optional(&mut *tx)
-            .await?;
-            // SW-6: the agent never stores a CSAT prompt with its reply (it arms the request; the prompt follows the
-            // customer's acknowledgement), so the reply is the first line alone
+        let out = if let Some(first) = line {
             Some(Outcome::Replied {
                 message_id: first.message_id,
-                case_id: first.case_id.clone().or(linked.flatten()),
+                case_id: first.case_id.clone(),
                 text: first.text.clone(),
             })
         } else if ownership::silenced(&ownership::read(&mut tx, conversation_id).await?.owner) {

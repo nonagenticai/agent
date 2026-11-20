@@ -1,0 +1,44 @@
+name: agent-perf
+
+# Dedicated benchmark database. It is NOT the dev or test stack: nothing here is shared with
+# compose.local.yml, and `down -v` only destroys this project's volume.
+#
+#   set -a; . target/local/dependencies.env; set +a
+#   docker compose -f scripts/perf/docker-compose.perf.yml up -d
+#
+# Port 55432 is internal = external. Check it is free before starting; never 8000.
+
+services:
+  postgres-perf:
+    image: ${AGENT_PG_REGISTRY:-docker.io/library}/postgres:18-alpine
+    command:
+      - postgres
+      - -p
+      - "55432"
+      - -c
+      - shared_preload_libraries=pg_stat_statements
+      - -c
+      - track_io_timing=on
+      - -c
+      - max_connections=100
+      - -c
+      - fsync=off
+      - -c
+      - synchronous_commit=off
+      - -c
+      - log_min_duration_statement=-1
+    environment:
+      POSTGRES_USER: agent_dev_owner
+      POSTGRES_DB: agent_perf
+      POSTGRES_PASSWORD: ${AGENT_DEV_POSTGRES_PASSWORD:?source target/local/dependencies.env first}
+    ports: ["127.0.0.1:55432:55432"]
+    shm_size: 1gb
+    volumes: [postgres-perf:/var/lib/postgresql]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -h 127.0.0.1 -p 55432 -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  postgres-perf:
