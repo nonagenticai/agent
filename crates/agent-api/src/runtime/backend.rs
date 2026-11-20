@@ -175,13 +175,18 @@ impl RuntimeBackend {
         // that is missed (Pub/Sub is lossy) is covered by WAIT_FALLBACK.
         let mut frames = self.chat_frames(scope).await;
         let mut push = frames.is_some();
+        // A frame only wakes the wait when it names this conversation: every waiter in the job
+        // subscribes to the same channel, and one reply must not make all of them read the row.
+        let mut check = true;
         loop {
-            if let Some(o) = self
-                .outcome(scope, conversation_id, (at_ms, message_id), message_id)
-                .await?
+            if check
+                && let Some(o) = self
+                    .outcome(scope, conversation_id, (at_ms, message_id), message_id)
+                    .await?
             {
                 return Ok(o);
             }
+            check = true;
             let now = tokio::time::Instant::now();
             if now >= until {
                 tracing::warn!(conversation = %conversation_id, "runtime_reply_timeout");
@@ -192,11 +197,20 @@ impl RuntimeBackend {
             let wait = (until - now).min(if push { WAIT_FALLBACK } else { POLL });
             if push {
                 let stream = frames.as_mut().expect("push implies a stream");
-                let closed = tokio::select! {
-                    _ = tokio::time::sleep(wait) => false,
-                    // Any frame in this scope re-reads the row.
-                    frame = stream.next() => frame.is_none(),
+                let (closed, relevant) = tokio::select! {
+                    _ = tokio::time::sleep(wait) => (false, true),
+                    frame = stream.next() => match frame {
+                        None => (true, true),
+                        Some(m) => {
+                            let relevant = m
+                                .get_payload::<String>()
+                                .map(|p| frame_for(&p, conversation_id))
+                                .unwrap_or(true);
+                            (false, relevant)
+                        }
+                    },
                 };
+                check = relevant;
                 if closed {
                     // A closed subscription falls back to the interval read.
                     push = false;
@@ -794,5 +808,36 @@ impl InteractionBackend for RuntimeBackend {
         req: InteractionRequest,
     ) -> BoxStream<'static, Result<BackendEvent, BackendError>> {
         runtime_stream(self.st.clone(), req)
+    }
+}
+
+/// Whether a chat frame names `conversation_id`. A payload that cannot be parsed wakes the wait:
+/// a duplicate row read is cheaper than a lost reply.
+fn frame_for(payload: &str, conversation_id: &str) -> bool {
+    serde_json::from_str::<serde_json::Value>(payload)
+        .ok()
+        .and_then(|v| {
+            v.get("conversation_id")
+                .and_then(|c| c.as_str())
+                .map(|c| c == conversation_id)
+        })
+        .unwrap_or(true)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::frame_for;
+
+    #[test]
+    fn a_frame_only_wakes_its_conversation() {
+        assert!(frame_for(
+            r#"{"conversation_id":"c-1","event":"message","data":{}}"#,
+            "c-1"
+        ));
+        assert!(!frame_for(
+            r#"{"conversation_id":"c-2","event":"message","data":{}}"#,
+            "c-1"
+        ));
+        assert!(frame_for("not json", "c-1"));
     }
 }
