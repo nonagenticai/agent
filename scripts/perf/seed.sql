@@ -19,10 +19,27 @@ INSERT INTO jobs (id, tenant_id, key, label, pins, created_by)
 SELECT id, :'tenant', 'perf_job_' || n, 'Perf job ' || n, '[]', 'perf:seed'
 FROM perf_jobs;
 
+-- 50k cases the DRIVERS read model probes: five per conversation, job-scoped ids, started within
+-- 5 days so the conversation branch (`started_at >= occurred_at`) matches older events. Case ids
+-- satisfy agent_case's `^CS-[1-9][0-9]*$` check.
+INSERT INTO agent_case
+    (tenant_id, job_id, case_id, conversation_id, channel, env, activity, request_type, started_at)
+SELECT :'tenant', pj.id,
+       'CS-' || (pj.n * 100000 + idx)::text,
+       'perf-conv-' || lpad((pj.n * 1000 + (idx % 1000) + 1)::text, 5, '0'),
+       'web_chat', 'prod',
+       (ARRAY['order_status', 'refund', 'delivery', 'returns', 'account'])[1 + idx % 5],
+       CASE WHEN idx % 3 = 0 THEN 'request' END,
+       now() - (random() * interval '5 days')
+FROM perf_jobs pj
+CROSS JOIN generate_series(1, 5000) AS idx;
+
 -- 1M metered calls over 90 days, spread over 10 jobs and the dimensions the report groups by.
+-- The branch is (g/10)%10, deliberately independent of the job selector g%10: 60% carry a case_id,
+-- 30% a conversation_id (case_id NULL), 10% neither. That exercises both DRIVERS lateral arms.
 INSERT INTO usage_event
-    (tenant_id, job_id, event_key, occurred_at, source, use, actor, provider_id, model, funding,
-     tokens_in, tokens_out)
+    (tenant_id, job_id, event_key, occurred_at, source, use, conversation_id, case_id,
+     actor, provider_id, model, funding, tokens_in, tokens_out)
 SELECT :'tenant',
        pj.id,
        gen_random_uuid(),
@@ -30,6 +47,10 @@ SELECT :'tenant',
        'turn',
        CASE g % 5 WHEN 0 THEN 'qualify' WHEN 1 THEN 'answer' WHEN 2 THEN 'knowledge'
                   WHEN 3 THEN 'qualify' ELSE 'answer' END,
+       CASE WHEN (g / 10) % 10 BETWEEN 6 AND 8
+            THEN 'perf-conv-' || lpad((pj.n * 1000 + (g % 1000) + 1)::text, 5, '0') END,
+       CASE WHEN (g / 10) % 10 < 6
+            THEN 'CS-' || (pj.n * 100000 + (g % 5000) + 1)::text END,
        'user-' || (g % 50),
        'provider-' || (g % 4),
        'model-' || (g % 7),

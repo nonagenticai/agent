@@ -52,9 +52,8 @@ done
 [ "$(docker inspect --format '{{.State.Health.Status}}' agent-perf-postgres-perf-1 2>/dev/null || true)" = healthy ] \
   || { echo "perf postgres did not become healthy" >&2; docker logs --tail 40 agent-perf-postgres-perf-1 >&2; exit 1; }
 
-echo "[perf] extension + schema"
+echo "[perf] roles + schema"
 PGPASSWORD="$AGENT_DEV_POSTGRES_PASSWORD" psql "$URL" -v ON_ERROR_STOP=1 -q <<'SQL'
-CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
 -- The platform-stack's init_db creates these before migrating (0031 requires agent_platform
 -- and its grant; 0001/0065 create the other two only when the owner has CREATEROLE).
 DO $$
@@ -74,6 +73,10 @@ SQL
 # The whole source tree, not one file: sqlcheck runs one ast-grep pattern at a time and
 # ast-grep exits 1 when a pattern has no match, so a narrow path aborts before migrating.
 AGENT_SQLCHECK_URL="$URL" uv run scripts/static/sqlcheck.py crates/agent-api/src
+# AFTER the schema: sqlcheck drops/recreates `public` when the migration set changes, which also
+# drops an extension installed there. Creating it before the schema step loses it on a fresh run.
+PGPASSWORD="$AGENT_DEV_POSTGRES_PASSWORD" psql "$URL" -v ON_ERROR_STOP=1 -q \
+  -c "CREATE EXTENSION IF NOT EXISTS pg_stat_statements;"
 
 echo "[perf] seeding 1M usage events, 10k conversations, 200k messages, 100k calls"
 PGPASSWORD="$AGENT_DEV_POSTGRES_PASSWORD" psql "$URL" -v ON_ERROR_STOP=1 -q -v tenant="$TENANT" \
