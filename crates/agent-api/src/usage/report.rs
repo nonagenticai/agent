@@ -166,17 +166,19 @@ const SLICES: &str = "SELECT (u.occurred_at AT TIME ZONE 'UTC')::date AS day, j.
       WHERE u.occurred_at >= $1 AND u.occurred_at < $2 \
       GROUP BY 1, 2, 3, 4, 5, 6, 7, 8, 9";
 
-const DRIVERS: &str = "SELECT j.key AS job, COALESCE(u.activity, c.activity, c.request_type, 'unqualified') AS activity, \
+const DRIVERS: &str = "SELECT j.key AS job, COALESCE(u.activity, c1.activity, c2.activity, c1.request_type, c2.request_type, 'unqualified') AS activity, \
             count(*) FILTER (WHERE u.use = 'qualify')::bigint AS turns, \
             COALESCE(sum(u.tokens_in + u.tokens_out), 0)::bigint AS tokens \
        FROM usage_event u JOIN jobs j ON j.tenant_id = u.tenant_id AND j.id = u.job_id \
        LEFT JOIN LATERAL ( \
             SELECT NULLIF(ac.activity, '') AS activity, NULLIF(ac.request_type, '') AS request_type FROM agent_case ac \
+             WHERE ac.tenant_id = u.tenant_id AND ac.job_id = u.job_id AND ac.case_id = u.case_id \
+             ORDER BY ac.started_at LIMIT 1) c1 ON u.case_id IS NOT NULL \
+       LEFT JOIN LATERAL ( \
+            SELECT NULLIF(ac.activity, '') AS activity, NULLIF(ac.request_type, '') AS request_type FROM agent_case ac \
              WHERE ac.tenant_id = u.tenant_id AND ac.job_id = u.job_id \
-               AND (ac.case_id = u.case_id \
-                    OR (u.case_id IS NULL AND ac.conversation_id = u.conversation_id \
-                        AND ac.started_at >= u.occurred_at)) \
-             ORDER BY ac.started_at LIMIT 1) c ON true \
+               AND ac.conversation_id = u.conversation_id AND ac.started_at >= u.occurred_at \
+             ORDER BY ac.started_at LIMIT 1) c2 ON u.case_id IS NULL \
       WHERE u.occurred_at >= $1 AND u.occurred_at < $2 AND NOT u.source = ANY ($3) \
       GROUP BY 1, 2";
 
