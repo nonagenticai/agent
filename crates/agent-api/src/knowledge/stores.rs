@@ -4,7 +4,7 @@
 //!
 //! Also the kind-scoped search over a leaf set (§0 R10/R11, PK-7, [`query_leaf_set`]): the tenant leaf plus the
 //! pinned platform packs' leaves (`leaf_ids`), degraded by pin (never failed) when a pinned pack is unreadable.
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use chrono::{DateTime, Utc};
 use serde_json::{Value, json};
@@ -214,10 +214,24 @@ pub fn root_of(stores: &[StoreRow], id: Uuid) -> Option<Uuid> {
 
 /// The stores of the tree whose root is `root` (the root included); `root` must be a root store.
 pub fn subtree(stores: &[StoreRow], root: Uuid) -> Vec<&StoreRow> {
-    stores
-        .iter()
-        .filter(|s| root_of(stores, s.id) == Some(root))
-        .collect()
+    // One children map and a walk, not `root_of` per store (O(n²) on the knowledge query path).
+    let mut children: HashMap<Uuid, Vec<Uuid>> = HashMap::with_capacity(stores.len());
+    for s in stores {
+        if let Some(parent) = s.parent_id {
+            children.entry(parent).or_default().push(s.id);
+        }
+    }
+    let mut ids: HashSet<Uuid> = HashSet::with_capacity(stores.len());
+    let mut queue = vec![root];
+    while let Some(id) = queue.pop() {
+        if !ids.insert(id) {
+            continue;
+        }
+        if let Some(kids) = children.get(&id) {
+            queue.extend(kids);
+        }
+    }
+    stores.iter().filter(|s| ids.contains(&s.id)).collect()
 }
 
 /// The footprint's `stores` (web `TenantFootprint.stores`): leaves, bound leaves, unbound store keys. `documents`
@@ -422,5 +436,49 @@ mod tests {
             unreadable: false,
         };
         assert!(pack.live() && !empty.live());
+    }
+
+    #[test]
+    fn subtree_is_the_root_and_every_descendant_in_order() {
+        fn store(id: u128, parent: Option<u128>) -> StoreRow {
+            StoreRow {
+                id: Uuid::from_u128(id),
+                key: format!("s{id}"),
+                label: String::new(),
+                parent_id: parent.map(Uuid::from_u128),
+                kind: "custom".into(),
+                areas: vec![],
+                strata_store_id: None,
+                region: String::new(),
+                updated_at: Utc::now(),
+                ensuring: false,
+            }
+        }
+        let stores = vec![
+            store(1, None),
+            store(2, Some(1)),
+            store(3, Some(1)),
+            store(4, Some(2)),
+            store(5, None),
+        ];
+        let ids = |v: Vec<&StoreRow>| v.iter().map(|s| s.id).collect::<Vec<_>>();
+        assert_eq!(
+            ids(subtree(&stores, Uuid::from_u128(1))),
+            vec![
+                Uuid::from_u128(1),
+                Uuid::from_u128(2),
+                Uuid::from_u128(3),
+                Uuid::from_u128(4)
+            ]
+        );
+        assert_eq!(
+            ids(subtree(&stores, Uuid::from_u128(3))),
+            vec![Uuid::from_u128(3)]
+        );
+        assert_eq!(
+            ids(subtree(&stores, Uuid::from_u128(5))),
+            vec![Uuid::from_u128(5)]
+        );
+        assert!(ids(subtree(&stores, Uuid::from_u128(9))).is_empty());
     }
 }

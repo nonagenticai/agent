@@ -795,6 +795,16 @@ fn names(v: Option<&Value>, provider_id: &str) -> bool {
     v.and_then(|x| x.get("provider_id")).and_then(Value::as_str) == Some(provider_id)
 }
 
+/// [`names`] at the place `r` of a whole-kind read ([`design::values_of_kind`]).
+fn names_at(rows: &[design::DesignRow], r: &design::DraftRef, provider_id: &str) -> bool {
+    names(
+        rows.iter()
+            .find(|row| &row.r#ref == r)
+            .and_then(|row| row.snap.as_ref()),
+        provider_id,
+    )
+}
+
 /// The keys of the jobs whose LIVE design (`DesignOf::Live`: the active snapshot, or the baseline of a job never
 /// released) binds any use to `provider_id`, by key. Run in a transaction scoped to the tenant.
 pub async fn live_users(
@@ -864,16 +874,21 @@ pub async fn holders(
         }),
     };
     for jr in &jobs {
+        // One read of the kind per design, not one per use: values_of_kind returns every `llm_use`
+        // place from the same snapshot the per-place read would load.
+        let live = design::values_of_kind(&mut *c, reg, jr, &DesignOf::Live, "llm_use").await?;
+        let mut cut_rows: Vec<Vec<design::DesignRow>> = Vec::new();
+        for cut in cuts.iter().filter(|x| x.job_id == jr.id) {
+            let of = DesignOf::Release(cut.release_id.clone());
+            cut_rows.push(design::values_of_kind(&mut *c, reg, jr, &of, "llm_use").await?);
+        }
         for u in STORED_USES {
             let r = use_ref(u);
-            let v = design::value(&mut *c, reg, jr, &DesignOf::Live, "llm_use", &r).await?;
-            if names(v.as_ref(), &want) {
+            if names_at(&live, &r, &want) {
                 push(jr.key.as_str(), u, true);
             }
-            for cut in cuts.iter().filter(|x| x.job_id == jr.id) {
-                let of = DesignOf::Release(cut.release_id.clone());
-                let v = design::value(&mut *c, reg, jr, &of, "llm_use", &r).await?;
-                if names(v.as_ref(), &want) {
+            for rows in &cut_rows {
+                if names_at(rows, &r, &want) {
                     push(jr.key.as_str(), u, false);
                 }
             }
