@@ -1,0 +1,28 @@
+# Compile gate without a local compiler: `cargo fmt --check` and
+# `cargo clippy --all-targets -- -D warnings` on a GitHub-hosted runner.
+# This replaces rbuild (retired 2026-11). It is NOT a second CI: it runs no
+# test suite (scripts/test-lean.sh is the `rust` job's), writes no required
+# status, and never saves the dependency cache — it borrows the `rust` cache
+# that the PR workflow's main run produces.
+name: preflight
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'issue/**'
+      - 'lane/**'
+      - 'slice/**'
+
+concurrency:
+  group: preflight-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    uses: nonagenticai/ci-workflows/.github/workflows/rust-preflight.yml@d2ae87a417b00013838ba18841cdd1642b83fb89
+    with:
+      cache_shared_key: rust
