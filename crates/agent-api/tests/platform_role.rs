@@ -108,10 +108,11 @@ async fn boot_refuses_inherit_true_membership() {
         .await
         .expect("INHERIT FALSE, SET TRUE boots");
     let admin = common::server_admin().await;
-    sqlx::query("GRANT agent_platform TO agent_app WITH INHERIT TRUE, SET TRUE")
-        .execute(&admin)
-        .await
-        .unwrap();
+    common::role_statement(
+        &admin,
+        "GRANT agent_platform TO agent_app WITH INHERIT TRUE, SET TRUE",
+    )
+    .await;
     let r = agent_api::state::refuse_rls_bypass(&e.state.db).await;
     common::grant_platform_membership(&admin).await;
     let err = format!(
@@ -129,10 +130,7 @@ async fn boot_refuses_missing_membership() {
     let _l = LOCK.lock().await;
     let e = common::env().await;
     let admin = common::server_admin().await;
-    sqlx::query("REVOKE agent_platform FROM agent_app")
-        .execute(&admin)
-        .await
-        .unwrap();
+    common::role_statement(&admin, "REVOKE agent_platform FROM agent_app").await;
     let r = agent_api::state::refuse_rls_bypass(&e.state.db).await;
     common::grant_platform_membership(&admin).await;
     let err = format!("{:#}", r.expect_err("no membership must refuse boot"));
@@ -146,15 +144,17 @@ async fn boot_refuses_missing_membership() {
 async fn migration_0031_raises_without_the_role() {
     let _l = LOCK.lock().await;
     let admin = common::server_admin().await;
-    sqlx::query("ALTER ROLE agent_platform RENAME TO agent_platform_parked")
-        .execute(&admin)
-        .await
-        .unwrap();
+    common::role_statement(
+        &admin,
+        "ALTER ROLE agent_platform RENAME TO agent_platform_parked",
+    )
+    .await;
     let r = common::try_env().await;
-    sqlx::query("ALTER ROLE agent_platform_parked RENAME TO agent_platform")
-        .execute(&admin)
-        .await
-        .unwrap();
+    common::role_statement(
+        &admin,
+        "ALTER ROLE agent_platform_parked RENAME TO agent_platform",
+    )
+    .await;
     let err = match r {
         Ok(_) => panic!("migrating without agent_platform must fail"),
         Err(e) => format!("{e:#}"),
