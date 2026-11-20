@@ -1,32 +1,39 @@
 # Local Rust development and final PR
 
-Owner direction, 2026-10-26. Applies first to `nonagenticai/agent`. Other Rust
+Owner direction, 2026-10-26; amended 2026-11-20. Applies first to `nonagenticai/agent`. Other Rust
 applications may adopt this pattern with their own paths, resources and dependency
 configuration; this is not a change to non-Rust applications' development policies.
 
 ## Authority and scope
 
-Implement the whole currently agreed application spec locally before creating a
+Implement the whole currently agreed application spec before creating a
 new PR. The existing spec, accepted amendments and explicit owner deferrals define
 scope across all concurrent lanes. Finishing one plan or feature does not satisfy
 this gate. Record any unresolved requirement or acceptance blocker honestly; do not
 rename an incomplete subset as the whole spec.
 
-This instruction supersedes older local-Cargo bans, CI-only Rust verification,
-per-plan PRs and push/merge checkpoints in the design set, implementation plans,
-handoffs and Claude memories. Those checkpoints now require equivalent local
-validation and recorded results. Keep their technical dependencies and acceptance
-assertions. It does not authorize production changes or removal of CI gates.
+This instruction supersedes per-plan PRs and push/merge checkpoints in the design
+set, implementation plans, handoffs and Claude memories, and its 2026-11-20
+amendment replaces the old local-compilation workflow: local Rust compilation is
+retired (`rbuild`, the m1 build server and the mini1 overflow host are gone). The
+compile and lint verdict comes from the repository's GitHub-hosted `preflight.yml`.
+Validation results are still required and recorded with the SHA they ran against.
+Older plans that assume local Cargo builds or the local build queue are stale on
+that point only; keep their technical dependencies and acceptance assertions. It
+does not authorize production changes or removal of CI gates.
 
 ## Local environment
 
-- Compile and run Rust natively on the Mac. Run the agent web development tools
-  natively too. Pin Rust to CI's toolchain (currently 1.99.1), use `Cargo.lock` with
-  `--locked`, and use the Node version selected by the web workflow. The installed
-  Homebrew Rust version is not evidence that the matching toolchain is installed.
+- Run Rust natively on the Mac from binaries the preflight produced (or a frozen
+  bin directory handed over by the integration owner); do not compile locally. Run
+  the agent web development tools natively too. Pin the toolchain to CI's
+  (currently 1.99.1) for rustfmt, the LSP and `cargo metadata`, use `Cargo.lock`
+  with `--locked`, and use the Node version selected by the web workflow. The
+  installed Homebrew Rust version is not evidence that the matching toolchain is
+  installed.
 - Use one managed Docker dependency stack for Postgres 18, Redis (matching CI's
   configured version) and other services needed by the implemented feature. Keep
-  source code and the Rust compiler on the host; rebuilding application images is
+  source code and the Rust toolchain on the host; rebuilding application images is
   not the edit/test loop. Use native ARM dependency images on Apple Silicon.
 - Discover running containers, health and occupied ports before creating anything.
   Bind local dependencies to loopback; keep internal/external port numbers equal
@@ -48,37 +55,53 @@ This is the development policy, not a claim that a new Compose stack, toolchain 
 environment file has already been provisioned. Configure and health-check the
 local environment before relying on it for acceptance.
 
-## Shared Rust build resources
+## Local gates and the compile verdict
 
-One integration session owns the build queue. Feature sessions submit committed
-SHAs and focused test requests. Do not edit, switch or integrate the source being
-validated while a build/test command is running. Record the source SHA with the
-result. Keep source worktrees separate even though dependencies and build storage
-are shared.
+The gates you run locally are sub-second, compile nothing, and are run by the git
+hooks on commit:
 
-For this machine, run every compiling Cargo command through the build guard:
+```sh
+cargo fmt --all -- --check
+cargo metadata --locked --format-version 1
+actionlint
+```
+
+`scripts/static/gate.sh` (below) and the web checks are additional non-compiling
+gates.
+
+The compile and lint verdict is the repository's GitHub-hosted `preflight.yml`.
+Dispatch it on your branch and follow it:
+
+```sh
+gh workflow run preflight.yml --ref <branch>
+gh run watch
+```
+
+Record the branch head SHA with the verdict. Use preflight at meaningful
+checkpoints; never push or dispatch it after every edit merely to get compiler
+feedback. A bare compiling `cargo` command (`build`, `check`, `clippy`, `test`,
+`run`) is denied by the PreToolUse hook; do not route around a denial with shell
+wrappers or alternative tools.
+
+On **m4 only**, `~/.claude/scripts/cargo-guard.py` is the route for interactive
+local work:
 
 ```sh
 ~/.claude/scripts/cargo-guard.py test --workspace --locked -- --test-threads=4
 ```
 
-Run from the agent checkout or one of its verified Git worktrees. The command
-assumes the matching toolchain and dedicated test dependency URLs are configured.
-Use the same guard for `check`, `clippy`, `build` or `run`; it owns the target
-directory (`<repo>/target/claude`), the machine-wide build slots, the free-disk
-floor, the job count and the cache settings. Do not pass `--target-dir`, a
-different `CARGO_TARGET_DIR`, an alternate config file or a scratch path; the hook
-and the guard both refuse them. `cargo fmt --all -- --check` does not compile and
-needs no guard.
+Run it from the agent checkout or one of its verified Git worktrees. Use the same
+guard for `check`, `clippy`, `build` or `run`: it owns the target directory
+(`<repo>/target/claude`), the machine-wide build slots, the free-disk floor, the
+job count and the cache settings. Do not pass `--target-dir`, a different
+`CARGO_TARGET_DIR`, an alternate config file or a scratch path; the guard refuses
+them. On m4 the guard is the only local Cargo route, for every Rust repository on
+this estate (owner, 2026-11-09); there is no agent-specific prefix and the older
+explicit-env form is retired. It is for interactive iteration, not the pre-PR
+verdict. `rbuild` is retired. `target/local/` remains the local dependency-stack
+state directory (for example `dependencies.env`); it is not a build cache.
 
-This is the only local Cargo route, for every Rust repository on this estate
-(owner, 2026-11-09). There is no agent-specific prefix: the older explicit-env
-form is retired and the PreToolUse hook denies it. Do not route around a denial
-with shell wrappers or alternative tools. `target/local/` remains the local
-dependency-stack state directory (for example `dependencies.env`); it is not a
-build cache.
-
-Before each compiling command, check host free space, shared target size and Docker
+Before each guard command, check host free space, shared target size and Docker
 disk usage. Start with a 60 GiB budget for `target/claude` and keep at least 100 GiB
 of host space free. These are operational stop thresholds, not an automatically
 enforced filesystem quota. If either threshold is exceeded, pause new builds and
@@ -86,16 +109,16 @@ have the integration session reclaim only its own inactive artifacts. Do not run
 global Docker prune or delete another session's targets, containers or volumes.
 Do not run `cargo clean` between routine checks; retain the cache for reuse.
 
-## Static checks before the build queue
+## Static checks
 
-Run `scripts/static/gate.sh` in your worktree before submitting a SHA. It compiles
-nothing and takes under a minute: rustfmt, the ast-grep rules in
-`scripts/static/ast-grep/rules/`, and `scripts/static/sqlcheck.py`, which applies the
-migrations to a scratch database and `PREPARE`s every literal `sqlx::query*` string
-(wrong table, column or syntax fails; parameter-inference type errors are warnings).
-Known intentional failures live in `scripts/static/sqlcheck-allow.txt`; regenerate
-with `--update-allowlist` only after reading each new entry. Passing the gate is not
-compile or test evidence.
+Run `scripts/static/gate.sh` in your worktree before dispatching preflight or
+opening a PR. It compiles nothing and takes under a minute: rustfmt, the ast-grep
+rules in `scripts/static/ast-grep/rules/`, and `scripts/static/sqlcheck.py`, which
+applies the migrations to a scratch database and `PREPARE`s every literal
+`sqlx::query*` string (wrong table, column or syntax fails; parameter-inference
+type errors are warnings). Known intentional failures live in
+`scripts/static/sqlcheck-allow.txt`; regenerate with `--update-allowlist` only
+after reading each new entry. Passing the gate is not compile or test evidence.
 
 - Tools: `brew install ast-grep`, `uv`. The CI toolchain 1.99.1 lives in rustup
   (keg-only `brew install rustup`, no default set), so it never changes what
@@ -113,13 +136,21 @@ compile or test evidence.
 
 ## Validation during implementation
 
-Use focused tests while editing, then integrate completed commits continuously.
-After shared schema, seed, fixture or interface changes, include the affected
-downstream suites. Before final PR creation, run the assembled application's full
-local checks rather than relying on the individual branches' results:
+Use focused work while editing, take the compile and lint verdict from preflight
+at meaningful checkpoints, then integrate completed commits continuously. After
+shared schema, seed, fixture or interface changes, include the affected downstream
+suites. Before final PR creation, run the assembled application's full checks
+rather than relying on the individual branches' results:
 
-- Rust formatting, workspace Clippy on all targets with warnings denied, and
-  `cargo test --workspace --locked -- --test-threads=4` through the build guard.
+- The local non-compiling gates: `scripts/static/gate.sh`, `cargo fmt --all --
+  --check`, `cargo metadata --locked --format-version 1` and actionlint; the hooks
+  run the last three on every commit.
+- The compile and lint verdict: `preflight.yml` green on the branch head. It must
+  cover the old local bar — a full compile plus workspace Clippy on all targets
+  with warnings denied.
+- Rust tests: through the guard on m4
+  (`cargo-guard.py test --workspace --locked -- --test-threads=4`) or in CI, each
+  recorded with the SHA it ran against.
 - Web checks in `web/`: `npm ci`, `npm run format:check`, `npm run ci:verify`,
   `npm run test` and `npm run build`; execute the applicable Playwright acceptance
   tests with isolated available ports.
@@ -139,15 +170,17 @@ declaring local completion; do not use CI as the next diagnostic iteration.
 1. Keep frequent local commits in feature worktrees. One integration owner combines
    completed commits into an integration branch and coordinates migration numbers,
    generated fixtures and shared interfaces. Never reset or overwrite a peer's work.
-2. Branch backups without an associated PR are allowed when their push will not
-   trigger full CI. Check workflow triggers first. Pushing an existing PR triggers
-   CI; do not use it as a backup destination during this local completion phase.
+2. Push your lane branch before the work: the pushed branch is the claim, and it is
+   the ref `preflight.yml` is dispatched on. Check workflow triggers first. Do not
+   use an existing PR's branch as a scratch backup destination, and do not push or
+   dispatch CI merely to get compiler feedback.
 3. Keep existing PRs and branches as references until their changes are safely
    accounted for. This direction is not an instruction to close, merge or delete
    existing PRs, or to change repository/runner settings.
 4. Create one new application PR only when **all in-scope spec requirements** are
-   implemented in the assembled tree, cross-lane integration is complete, full local
-   validation passes, and required acceptance/demo evidence is recorded. An
+   implemented in the assembled tree, cross-lane integration is complete, the full
+   gate passes (non-compiling local gates, preflight green on the head, recorded
+   acceptance evidence), and required acceptance/demo evidence is recorded. An
    unresolved in-scope acceptance blocker means the PR gate is not met. Preserve
    existing owner approval gates for production-only acceptance; do not perform a
    production deployment just to satisfy local completion.
@@ -155,8 +188,9 @@ declaring local completion; do not use CI as the next diagnostic iteration.
    failures on that same PR. All required checks must pass on its latest head
    before merging; retain the normal image/deployment verification after merge.
 
-Do not open a separate PR for this workflow documentation update. Include it in
-the final application integration. Do not bypass hooks or disable CI requirements.
+Documentation-only corrections ship on their own lane branch and one PR, like any
+other unit of work; do not batch them into an application PR. Do not bypass hooks
+or disable CI requirements.
 
 ## Interactive platform stack
 
