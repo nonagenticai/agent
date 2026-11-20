@@ -158,12 +158,12 @@ struct Bucket {
     lanes: Lanes,
 }
 
-const SLICES: &str = "SELECT (u.occurred_at AT TIME ZONE 'UTC')::date AS day, j.key AS job_key, j.label AS job_label, \
-            u.actor, u.project, u.provider_id, u.model, u.funding, u.source, \
-            count(*) FILTER (WHERE u.use = 'qualify')::bigint AS turns, \
-            COALESCE(sum(u.tokens_in + u.tokens_out), 0)::bigint AS tokens \
-       FROM usage_event u LEFT JOIN jobs j ON j.tenant_id = u.tenant_id AND j.id = u.job_id \
-      WHERE u.occurred_at >= $1 AND u.occurred_at < $2 \
+const SLICES: &str = "SELECT r.day AS day, j.key AS job_key, j.label AS job_label, \
+            r.actor, r.project, r.provider_id, r.model, r.funding, r.source, \
+            COALESCE(sum(r.events) FILTER (WHERE r.use = 'qualify'), 0)::bigint AS turns, \
+            COALESCE(sum(r.tokens_in + r.tokens_out), 0)::bigint AS tokens \
+       FROM usage_rollup_daily r LEFT JOIN jobs j ON j.tenant_id = r.tenant_id AND j.id = r.job_id \
+      WHERE r.day >= $1 AND r.day < $2 \
       GROUP BY 1, 2, 3, 4, 5, 6, 7, 8, 9";
 
 const DRIVERS: &str = "SELECT j.key AS job, COALESCE(u.activity, c1.activity, c2.activity, c1.request_type, c2.request_type, 'unqualified') AS activity, \
@@ -235,8 +235,9 @@ pub async fn tenant_usage(
     let lo = midnight(from);
     let hi = midnight(today + Duration::days(1));
     let slices: Vec<Slice> = sqlx::query_as(SLICES)
-        .bind(lo)
-        .bind(hi)
+        // SLICES reads the daily rollup, whose keys are UTC days: bind the window as dates, not instants.
+        .bind(from)
+        .bind(today + Duration::days(1))
         .fetch_all(&mut *conn)
         .await?;
     let generator_sources: Vec<String> = GENERATOR_SOURCES.iter().map(|s| s.to_string()).collect();
@@ -260,8 +261,8 @@ pub async fn tenant_usage(
         None => Value::Null,
         Some(p) => {
             let prev: Vec<Slice> = sqlx::query_as(SLICES)
-                .bind(midnight(p))
-                .bind(lo)
+                .bind(p)
+                .bind(from)
                 .fetch_all(&mut *conn)
                 .await?;
             let conv = prev.iter().filter(|s| !s.generator());

@@ -31,8 +31,9 @@ const B4_LOW: [i64; 6] = [62, 64, 65, 66, 68, 69];
 /// and the functions 0182 / 0196 created, so it runs after them.
 /// 0233 (A5) rewrites `usage_event`'s source check and its `customer_turn` / `customers:` rows, and `usage_event` is
 /// 0064's (B4), so 0233 runs after it.
-const B4_HIGH: [i64; 18] = [
-    123, 128, 129, 131, 137, 154, 179, 181, 182, 183, 184, 196, 200, 205, 221, 223, 233, 236,
+/// 0253 (the daily usage rollup) creates triggers on 0064's `usage_event` and backfills from it, so it runs after it.
+const B4_HIGH: [i64; 19] = [
+    123, 128, 129, 131, 137, 154, 179, 181, 182, 183, 184, 196, 200, 205, 221, 223, 233, 236, 253,
 ];
 
 fn is_b4(v: i64) -> bool {

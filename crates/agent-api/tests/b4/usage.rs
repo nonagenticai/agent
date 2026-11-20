@@ -626,3 +626,68 @@ async fn drivers_use_request_type_and_staff_names_resolve_actor_names() {
     let b = report(&f.e, "7", "user").await;
     assert_eq!(row(&b, &platform)["label"], "fr-test (platform)", "{b}");
 }
+
+/// 0253: the rollup is a materialisation, not an append-only cache. The owner can update a ledger row
+/// (0233 did), so an UPDATE that moves it between dimension keys must remove the old key and add the
+/// new one; a DELETE must remove the key once its event count reaches zero.
+async fn rollup_row(
+    db: &PgPool,
+    tenant: Uuid,
+    job: Uuid,
+    actor: &str,
+) -> Option<(i64, i64, i64, i64)> {
+    sqlx::query_as(
+        "SELECT events, calls, tokens_in, tokens_out FROM usage_rollup_daily \
+          WHERE tenant_id = $1 AND job_id = $2 AND actor = $3 AND use = 'qualify' \
+            AND source = 'turn' AND funding = 'local_gpu' AND provider_id = 'internal' \
+            AND model = 'local-llm'",
+    )
+    .bind(tenant)
+    .bind(job)
+    .bind(actor)
+    .fetch_optional(db)
+    .await
+    .unwrap()
+}
+
+#[tokio::test]
+async fn rollup_reconciles_owner_update_and_delete() {
+    let f = fixture(common::env().await).await;
+    let db = &f.e.owner;
+    let mut e = turn(f.tenant, f.returns, "callers:web_chat", "local_gpu", 100);
+    e.tokens_out = 20;
+    seed(db, e).await;
+    assert_eq!(
+        rollup_row(db, f.tenant, f.returns, "callers:web_chat").await,
+        Some((1, 1, 100, 20))
+    );
+
+    sqlx::query(
+        "UPDATE usage_event SET actor = 'callers:telegram', tokens_in = 40 \
+          WHERE tenant_id = $1 AND job_id = $2",
+    )
+    .bind(f.tenant)
+    .bind(f.returns)
+    .execute(db)
+    .await
+    .unwrap();
+    assert_eq!(
+        rollup_row(db, f.tenant, f.returns, "callers:web_chat").await,
+        None
+    );
+    assert_eq!(
+        rollup_row(db, f.tenant, f.returns, "callers:telegram").await,
+        Some((1, 1, 40, 20))
+    );
+
+    sqlx::query("DELETE FROM usage_event WHERE tenant_id = $1 AND job_id = $2")
+        .bind(f.tenant)
+        .bind(f.returns)
+        .execute(db)
+        .await
+        .unwrap();
+    assert_eq!(
+        rollup_row(db, f.tenant, f.returns, "callers:telegram").await,
+        None
+    );
+}
