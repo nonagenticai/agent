@@ -136,11 +136,14 @@ BEGIN
 END
 $$;
 
+-- PUBLIC is the only default grant, but name the runtime roles explicitly: a direct call to
+-- `usage_rollup_add` would let them desync billing totals without a ledger row. Triggers still fire.
 REVOKE ALL ON FUNCTION public.usage_rollup_add(uuid, date, uuid, text, text, text, text, text, text,
-    text, bigint, bigint, bigint, bigint, bigint, integer) FROM PUBLIC;
-REVOKE ALL ON FUNCTION public.usage_rollup_ins() FROM PUBLIC;
-REVOKE ALL ON FUNCTION public.usage_rollup_upd() FROM PUBLIC;
-REVOKE ALL ON FUNCTION public.usage_rollup_del() FROM PUBLIC;
+    text, bigint, bigint, bigint, bigint, bigint, integer)
+    FROM PUBLIC, agent_app, agent_runtime;
+REVOKE ALL ON FUNCTION public.usage_rollup_ins() FROM PUBLIC, agent_app, agent_runtime;
+REVOKE ALL ON FUNCTION public.usage_rollup_upd() FROM PUBLIC, agent_app, agent_runtime;
+REVOKE ALL ON FUNCTION public.usage_rollup_del() FROM PUBLIC, agent_app, agent_runtime;
 
 DROP TRIGGER IF EXISTS usage_event_rollup_ins ON public.usage_event;
 CREATE TRIGGER usage_event_rollup_ins AFTER INSERT ON public.usage_event

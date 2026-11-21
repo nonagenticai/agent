@@ -5,9 +5,10 @@ use serde_json::Value;
 use sqlx::PgPool;
 use uuid::Uuid;
 
-use crate::common::{self, get, insert_tenant, insert_user, person, send};
+use crate::common::{self, get, insert_tenant, insert_user, person, send, sqlstate};
 use crate::redis_env as r;
 use agent_api::conversations::store::begin_job;
+use agent_api::tenancy::begin_scoped;
 use agent_api::usage::{self, LlmUsage, MeteringConfig, UsageEvent};
 
 async fn insert_job(db: &PgPool, tenant: Uuid, key: &str, label: &str) -> Uuid {
@@ -690,4 +691,101 @@ async fn rollup_reconciles_owner_update_and_delete() {
         rollup_row(db, f.tenant, f.returns, "callers:telegram").await,
         None
     );
+}
+
+/// 0253: the rollup carries both RLS scopes for `agent_app`, and `usage_daily` reads it through the
+/// same policies (`security_invoker`). The trigger functions are not directly callable by the runtime
+/// roles, so a caller cannot desync billing totals without a ledger row.
+#[tokio::test]
+async fn rollup_is_tenant_and_job_scoped_and_not_directly_writable() {
+    let f = fixture(common::env().await).await;
+    let other = Uuid::new_v4();
+    insert_tenant(&f.e.owner, other, &format!("Rollup Co {other}")).await;
+    let oj = insert_job(&f.e.owner, other, "returns_agent", "Other returns").await;
+    seed(
+        &f.e.owner,
+        turn(f.tenant, f.returns, "callers:web_chat", "local_gpu", 100),
+    )
+    .await;
+    seed(
+        &f.e.owner,
+        turn(f.tenant, f.billing, "callers:web_chat", "local_gpu", 200),
+    )
+    .await;
+    seed(
+        &f.e.owner,
+        turn(other, oj, "callers:web_chat", "local_gpu", 500),
+    )
+    .await;
+
+    async fn jobs(conn: &mut sqlx::PgConnection, rel: &str) -> Vec<Option<Uuid>> {
+        let sql = match rel {
+            "usage_rollup_daily" => "SELECT DISTINCT job_id FROM usage_rollup_daily",
+            "usage_daily" => "SELECT DISTINCT job_id FROM usage_daily",
+            other => panic!("unexpected relation {other}"),
+        };
+        let mut seen: Vec<Option<Uuid>> = sqlx::query_scalar(sql).fetch_all(conn).await.unwrap();
+        seen.sort();
+        seen
+    }
+
+    // Tenant scope on the table and the view: this tenant's two jobs, never the fixture's other tenant.
+    let mut want = vec![Some(f.returns), Some(f.billing)];
+    want.sort();
+    let mut tx = begin_scoped(&f.e.state.db, f.tenant).await.unwrap();
+    for rel in ["usage_rollup_daily", "usage_daily"] {
+        assert_eq!(jobs(&mut *tx, rel).await, want, "{rel}");
+    }
+    let tokens: i64 =
+        sqlx::query_scalar("SELECT coalesce(sum(tokens_in), 0)::bigint FROM usage_daily")
+            .fetch_one(&mut *tx)
+            .await
+            .unwrap();
+    assert_eq!(tokens, 300);
+    let err = sqlx::query(
+        "INSERT INTO usage_rollup_daily (tenant_id, day) VALUES (app_current_tenant(), CURRENT_DATE)",
+    )
+    .execute(&mut *tx)
+    .await
+    .unwrap_err();
+    assert_eq!(sqlstate(&err).as_deref(), Some("42501"), "{err}");
+    drop(tx);
+
+    // Job scope: only that job's row.
+    let mut tx = begin_scoped(&f.e.state.db, f.tenant).await.unwrap();
+    sqlx::query("SELECT set_config('app.current_job', $1, true)")
+        .bind(f.returns.to_string())
+        .execute(&mut *tx)
+        .await
+        .unwrap();
+    for rel in ["usage_rollup_daily", "usage_daily"] {
+        assert_eq!(jobs(&mut *tx, rel).await, vec![Some(f.returns)], "{rel}");
+    }
+    drop(tx);
+
+    // The other tenant sees only its own job.
+    let mut tx = begin_scoped(&f.e.state.db, other).await.unwrap();
+    for rel in ["usage_rollup_daily", "usage_daily"] {
+        assert_eq!(jobs(&mut *tx, rel).await, vec![Some(oj)], "{rel}");
+    }
+    drop(tx);
+
+    // No direct EXECUTE for the runtime roles on the trigger functions.
+    for role in ["agent_app", "agent_runtime"] {
+        for func in [
+            "public.usage_rollup_add(uuid, date, uuid, text, text, text, text, text, text, text, bigint, bigint, bigint, bigint, bigint, integer)",
+            "public.usage_rollup_ins()",
+            "public.usage_rollup_upd()",
+            "public.usage_rollup_del()",
+        ] {
+            let can: bool =
+                sqlx::query_scalar("SELECT has_function_privilege($1::name, $2, 'EXECUTE')")
+                    .bind(role)
+                    .bind(func)
+                    .fetch_one(&f.e.owner)
+                    .await
+                    .unwrap();
+            assert!(!can, "{role} can execute {func}");
+        }
+    }
 }
