@@ -1,5 +1,6 @@
 //! `tenantUsage` (`UsageReport`, web `types/tenant.ts`): the tenant's metered usage over the last 7, 30 or 90 UTC
-//! days (today included), from `usage_event` (0064) under the tenant's RLS, plus knowledge work from
+//! days (today included), from the `usage_rollup_daily` materialisation of `usage_event` (0064, 0253) under the
+//! tenant's RLS, plus knowledge work from
 //! `operation_call`, `source_run` and `knowledge_upload`. No currency (billing is K52's).
 //!
 //! - A **turn** is one qualifier call (`use = 'qualify'`): the runtime qualifies every drained customer or staff turn

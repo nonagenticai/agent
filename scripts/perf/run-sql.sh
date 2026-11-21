@@ -83,6 +83,11 @@ PGPASSWORD="$AGENT_DEV_POSTGRES_PASSWORD" psql "$URL" -v ON_ERROR_STOP=1 -q -v t
   -f scripts/perf/seed.sql
 PGPASSWORD="$AGENT_DEV_POSTGRES_PASSWORD" psql "$URL" -v ON_ERROR_STOP=1 -q -c "ANALYZE;"
 
+echo "[perf] 0253 backfill on the seeded ledger (timed; asserted)"
+BACKFILL="$OUT/backfill-$STAMP.txt"
+PGPASSWORD="$AGENT_DEV_POSTGRES_PASSWORD" psql "$URL" -v ON_ERROR_STOP=1 \
+  -f scripts/perf/backfill.sql | tee "$BACKFILL"
+
 echo "[perf] resetting pg_stat_statements"
 PGPASSWORD="$AGENT_DEV_POSTGRES_PASSWORD" psql "$URL" -v ON_ERROR_STOP=1 -q \
   -c "SELECT pg_stat_statements_reset();" >/dev/null

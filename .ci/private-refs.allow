@@ -31,6 +31,7 @@ web/src/lib/connectors/ops.ts:\.internal                             # client-si
 web/src/routes/admin/knowledge/stores/ModelCard.svelte:\.internal    # TS property `embedding.internal`
 
 # ── test fixtures asserting a private target is refused ─────────────────────────────────────
+crates/agent-api/src/channels/webchat.rs:100\.(70\.1\.2|64\.0\.1|127\.255\.254)  # client_ip/trusted_proxy tests: the CGNAT trusted-proxy branch must name CGNAT peers
 crates/agent-api/tests/b3/foundations.rs:100\.|\.internal|\.svc\.cluster\.local
 crates/agent-api/tests/b3/llm_providers.rs:100\.|\.internal
 crates/agent-api/tests/b3/sources.rs:100\.|\.internal
