@@ -734,7 +734,7 @@ async fn rollup_is_tenant_and_job_scoped_and_not_directly_writable() {
     want.sort();
     let mut tx = begin_scoped(&f.e.state.db, f.tenant).await.unwrap();
     for rel in ["usage_rollup_daily", "usage_daily"] {
-        assert_eq!(jobs(&mut *tx, rel).await, want, "{rel}");
+        assert_eq!(jobs(&mut tx, rel).await, want, "{rel}");
     }
     let tokens: i64 =
         sqlx::query_scalar("SELECT coalesce(sum(tokens_in), 0)::bigint FROM usage_daily")
@@ -759,14 +759,14 @@ async fn rollup_is_tenant_and_job_scoped_and_not_directly_writable() {
         .await
         .unwrap();
     for rel in ["usage_rollup_daily", "usage_daily"] {
-        assert_eq!(jobs(&mut *tx, rel).await, vec![Some(f.returns)], "{rel}");
+        assert_eq!(jobs(&mut tx, rel).await, vec![Some(f.returns)], "{rel}");
     }
     drop(tx);
 
     // The other tenant sees only its own job.
     let mut tx = begin_scoped(&f.e.state.db, other).await.unwrap();
     for rel in ["usage_rollup_daily", "usage_daily"] {
-        assert_eq!(jobs(&mut *tx, rel).await, vec![Some(oj)], "{rel}");
+        assert_eq!(jobs(&mut tx, rel).await, vec![Some(oj)], "{rel}");
     }
     drop(tx);
 
