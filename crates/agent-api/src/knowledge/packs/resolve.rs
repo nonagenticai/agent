@@ -494,24 +494,39 @@ async fn write_cache(
         sqlx::query_as("SELECT pack_key, version FROM platform_pack ORDER BY pack_key, version")
             .fetch_all(&mut *c)
             .await?;
-    for (key, version) in rows {
+    // One UPDATE for the whole listing: the per-row loop was a round trip per cached pack, and
+    // `warm_draft` reaches this on the chat path when it refreshes cold pins.
+    let mut keys = Vec::with_capacity(rows.len());
+    let mut versions = Vec::with_capacity(rows.len());
+    let mut states: Vec<Option<&str>> = Vec::with_capacity(rows.len());
+    let mut excluded: Vec<Option<String>> = Vec::with_capacity(rows.len());
+    for (key, version) in &rows {
+        keys.push(key.as_str());
+        versions.push(*version);
         // Without the owner listing (no owner configured, or its plane/listing failed) the cached `state` stays as
         // the last owner listing left it: a retired or draft pin keeps its real reason instead of collapsing to
         // "unavailable". A row the owner never classified keeps its NULL (→ unavailable unless listed + leaves).
-        let state: Option<&str> = owner.map(|o| {
+        states.push(owner.map(|o| {
             o.iter()
-                .find(|p| p.key == key && p.version == version)
+                .find(|p| p.key == *key && p.version == *version)
                 .map_or("missing", owner_state)
-        });
+        }));
+        excluded.push(excluded_by(key, exclusions));
+    }
+    if !rows.is_empty() {
         sqlx::query(
-            "UPDATE platform_pack SET state = CASE WHEN $5 THEN $3 ELSE state END, excluded_by = $4 \
-              WHERE pack_key = $1 AND version = $2 \
-                AND (($5 AND state IS DISTINCT FROM $3) OR excluded_by IS DISTINCT FROM $4)",
+            "UPDATE platform_pack p SET state = CASE WHEN $5 THEN v.state ELSE p.state END, \
+                    excluded_by = v.excluded_by \
+               FROM UNNEST($1::text[], $2::int[], $3::text[], $4::text[]) \
+                    AS v(pack_key, version, state, excluded_by) \
+              WHERE p.pack_key = v.pack_key AND p.version = v.version \
+                AND (($5 AND p.state IS DISTINCT FROM v.state) \
+                     OR p.excluded_by IS DISTINCT FROM v.excluded_by)",
         )
-        .bind(&key)
-        .bind(version)
-        .bind(state)
-        .bind(excluded_by(&key, exclusions))
+        .bind(keys.as_slice())
+        .bind(versions.as_slice())
+        .bind(states.as_slice())
+        .bind(excluded.as_slice())
         .bind(owner.is_some())
         .execute(&mut *c)
         .await?;
@@ -616,42 +631,52 @@ pub async fn snapshot(
         return Ok(());
     }
     let prior = newest_release(&mut *c, job.id, release_id).await?;
+    let mut pins = Vec::with_capacity(all.len());
+    let mut keys = Vec::with_capacity(all.len());
+    let mut versions = Vec::with_capacity(all.len());
     for pin in &all {
         let Some(p) = kinds::parse_pin(pin) else {
             return Err(ApiError::Internal(anyhow::anyhow!(
                 "a knowledge pack pin is malformed: {pin}"
             )));
         };
-        let n = sqlx::query(
+        pins.push(pin.as_str());
+        keys.push(p.key);
+        versions.push(p.version);
+    }
+    // Every pin's cached leaves in one statement; pins with none copy their prior release in the second.
+    sqlx::query(
+        "INSERT INTO release_pack_leaf (tenant_id, job_id, release_id, pin, leaf_id, embed_model) \
+         SELECT $1, $2, $3, u.pin, l.leaf_id, l.embed_model \
+           FROM UNNEST($4::text[], $5::text[], $6::int[]) AS u(pin, pack_key, version) \
+           JOIN platform_pack_leaf l ON l.pack_key = u.pack_key AND l.version = u.version",
+    )
+    .bind(tenant)
+    .bind(job.id)
+    .bind(release_id)
+    .bind(pins.as_slice())
+    .bind(keys.as_slice())
+    .bind(versions.as_slice())
+    .execute(&mut *c)
+    .await?;
+    if let Some(prev) = &prior {
+        sqlx::query(
             "INSERT INTO release_pack_leaf (tenant_id, job_id, release_id, pin, leaf_id, embed_model) \
-             SELECT $1, $2, $3, $4, leaf_id, embed_model FROM platform_pack_leaf \
-              WHERE pack_key = $5 AND version = $6",
+             SELECT $1, $2, $3, u.pin, l.leaf_id, l.embed_model \
+               FROM UNNEST($4::text[]) AS u(pin) \
+               JOIN release_pack_leaf l ON l.tenant_id = $1 AND l.job_id = $2 AND l.release_id = $5 \
+                    AND l.pin = u.pin \
+              WHERE NOT EXISTS (SELECT 1 FROM release_pack_leaf x \
+                                 WHERE x.tenant_id = $1 AND x.job_id = $2 AND x.release_id = $3 \
+                                   AND x.pin = u.pin)",
         )
         .bind(tenant)
         .bind(job.id)
         .bind(release_id)
-        .bind(pin)
-        .bind(&p.key)
-        .bind(p.version)
+        .bind(pins.as_slice())
+        .bind(prev)
         .execute(&mut *c)
-        .await?
-        .rows_affected();
-        if n == 0
-            && let Some(prev) = &prior
-        {
-            sqlx::query(
-                "INSERT INTO release_pack_leaf (tenant_id, job_id, release_id, pin, leaf_id, embed_model) \
-                 SELECT $1, $2, $3, $4, leaf_id, embed_model FROM release_pack_leaf \
-                  WHERE job_id = $2 AND release_id = $5 AND pin = $4",
-            )
-            .bind(tenant)
-            .bind(job.id)
-            .bind(release_id)
-            .bind(pin)
-            .bind(prev)
-            .execute(&mut *c)
-            .await?;
-        }
+        .await?;
     }
     Ok(())
 }

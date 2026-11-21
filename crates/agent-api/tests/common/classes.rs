@@ -147,6 +147,8 @@ pub const CLASSES: &[(&str, Class)] = &[
     // 0064 (B4 T3): usage ledger and metering outbox
     ("usage_event", Class::Tenant),
     ("metering_outbox", Class::Tenant),
+    // 0253: the daily usage rollup behind the usage_daily view
+    ("usage_rollup_daily", Class::Tenant),
     // 0067 (B12 / B4 T16b): CSAT
     ("case_csat", Class::Tenant),
     // 0120, 0121 (B12 §2): channel bindings and provider conversation refs

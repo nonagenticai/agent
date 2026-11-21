@@ -283,6 +283,8 @@ async fn send_chat_message(
             "Messages are at most 2,000 characters.".into(),
         ));
     }
+    // The transaction is the tenant/job scope: `j.begin` sets the RLS GUCs, so this single read
+    // is not "just a SELECT" — a bare pool connection sees no rows and answers 404.
     let conv = {
         let mut tx = j.begin(&st.db).await?;
         let conv = store::conversation_or_404(&mut tx, &id).await?;

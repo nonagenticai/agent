@@ -11,7 +11,8 @@
 //! nothing for a runtime reply.
 //!
 //! The wait reads the stored reply, not the `chat` frame: frames are lossy by design (the message is stored first),
-//! a row is not. It ends at the first agent line after the customer's message (with the CSAT prompt the daemon
+//! a row is not. A frame wakes the wait; it never supplies the outcome, and a missed frame is covered by a
+//! fallback read. It ends at the first agent line after the customer's message (with the CSAT prompt the daemon
 //! stored in the same transaction appended), a handover item opened for the conversation, or staff control; after
 //! [`REPLY_WAIT`] it is 503 `unavailable` (the reply, when it comes, is in the conversation's history).
 //!
@@ -36,11 +37,12 @@ use std::time::Duration;
 use futures_util::StreamExt;
 use futures_util::stream::{self, BoxStream};
 use sqlx::PgConnection;
+use tokio::sync::broadcast;
 use uuid::Uuid;
 
 use super::interaction::ROLE as INTERACTION_ROLE;
 use crate::audit::Actor;
-use crate::conversations::{handover, ownership, state as conv_state, store};
+use crate::conversations::{handover, hub, ownership, state as conv_state, store};
 use crate::error::{ApiError, ApiResult};
 use crate::interaction::{
     BackendError, BackendEvent, ConversationRef, InteractionBackend, InteractionRequest, Message,
@@ -53,8 +55,11 @@ use crate::turn::{self, AuthorRole, Inbound};
 pub const REPLY_WAIT: Duration = Duration::from_secs(100);
 const _: () = assert!(REPLY_WAIT.as_secs() < crate::channels::core::INBOUND_TIMEOUT.as_secs());
 
-/// How often the wait re-reads the conversation.
+/// How often the wait re-reads the conversation when no frame wakes it.
 const POLL: Duration = Duration::from_millis(200);
+
+/// The fallback read interval of the push wait: frames are lossy, the stored row is not.
+const WAIT_FALLBACK: Duration = Duration::from_secs(1);
 
 /// How long a new message waits for the previous turn's lock before it is 409 `conversation_busy`.
 const BUSY_WAIT: Duration = Duration::from_secs(2);
@@ -166,18 +171,88 @@ impl RuntimeBackend {
         message_id: Uuid,
     ) -> ApiResult<Outcome> {
         let until = tokio::time::Instant::now() + REPLY_WAIT;
+        // The frame is only a wake-up; the stored row is the outcome. Subscribe to the local hub
+        // BEFORE the first read, then acquire the process's one Pub/Sub bridge for this job: the
+        // bridge republishes the job's chat frames into the hub. This replaces a new Redis Pub/Sub
+        // connection per wait; a missed frame (a dropped link, a full broadcast buffer) is covered
+        // by WAIT_FALLBACK, exactly as before.
+        let mut frames = self.st.events.subscribe();
+        let mut _hold = None;
+        let mut down = None;
+        let mut push = false;
+        if let Some(bridge) = self.st.sse.as_ref() {
+            match bridge
+                .acquire(scope.tenant, scope.job_id, &scope.job_key)
+                .await
+            {
+                Ok(sub) => {
+                    down = Some(sub.reset());
+                    _hold = Some(sub);
+                    push = true;
+                }
+                Err(e) => tracing::warn!(
+                    error = %format!("{e:#}"),
+                    "reply_wait_bridge_unavailable"
+                ),
+            }
+        }
+        // A frame only wakes the wait when it names this conversation (and this tenant/job): every
+        // waiter in the job reads the same hub broadcast, and one reply must not make all of them
+        // read the row.
+        let mut check = true;
         loop {
-            if let Some(o) = self
-                .outcome(scope, conversation_id, (at_ms, message_id), message_id)
-                .await?
+            if check
+                && let Some(o) = self
+                    .outcome(scope, conversation_id, (at_ms, message_id), message_id)
+                    .await?
             {
                 return Ok(o);
             }
-            if tokio::time::Instant::now() >= until {
+            check = true;
+            let now = tokio::time::Instant::now();
+            if now >= until {
                 tracing::warn!(conversation = %conversation_id, "runtime_reply_timeout");
                 return Err(turn::unavailable());
             }
-            tokio::time::sleep(POLL).await;
+            // Without a subscription this is the old poll; with one, the interval only covers a
+            // missed frame, so it can be longer.
+            let wait = (until - now).min(if push { WAIT_FALLBACK } else { POLL });
+            if push {
+                let closed = tokio::select! {
+                    _ = tokio::time::sleep(wait) => false,
+                    _ = async {
+                        match down.as_mut() {
+                            Some(r) => { let _ = r.changed().await; }
+                            None => std::future::pending::<()>().await,
+                        }
+                    } => true,
+                    frame = frames.recv() => match frame {
+                        Ok(f) => {
+                            check = hub::matches(
+                                &f,
+                                scope.tenant,
+                                scope.job_id,
+                                Some(conversation_id),
+                            );
+                            false
+                        }
+                        Err(broadcast::error::RecvError::Lagged(_)) => {
+                            // The waiter fell behind the hub: re-read the row, do not sleep past it.
+                            check = true;
+                            false
+                        }
+                        Err(broadcast::error::RecvError::Closed) => true,
+                    },
+                };
+                if closed {
+                    // A dropped link (or a closed hub) falls back to the interval read.
+                    push = false;
+                    _hold = None;
+                    down = None;
+                }
+            } else {
+                tokio::time::sleep(wait).await;
+            }
         }
     }
 
@@ -192,29 +267,28 @@ impl RuntimeBackend {
     ) -> ApiResult<Option<Outcome>> {
         let (at_ms, after_id) = after;
         let mut tx = store::begin_job(&self.st.db, scope.tenant, scope.job_id).await?;
-        let lines: Vec<Line> = sqlx::query_as(
-            "SELECT message_id, text, case_id FROM conversation_message \
-              WHERE conversation_id = $1 AND role = 'agent' AND author IS DISTINCT FROM $4 AND (at_ms, message_id) > ($2, $3) \
-              ORDER BY at_ms, message_id LIMIT 1",
+        // One statement, not two: the customer message's case_id rides the same primary-key lookup.
+        // SW-6: the agent never stores a CSAT prompt with its reply (it arms the request; the prompt follows the
+        // customer's acknowledgement), so the reply is the first line alone.
+        let line: Option<Line> = sqlx::query_as(
+            "SELECT m.message_id, m.text, COALESCE(m.case_id, c.case_id) AS case_id \
+               FROM conversation_message m \
+               LEFT JOIN conversation_message c ON c.message_id = $4 \
+              WHERE m.conversation_id = $1 AND m.role = 'agent' \
+                AND m.author IS DISTINCT FROM $5 AND (m.at_ms, m.message_id) > ($2, $3) \
+              ORDER BY m.at_ms, m.message_id LIMIT 1",
         )
         .bind(conversation_id)
         .bind(at_ms)
         .bind(after_id)
+        .bind(message_id)
         .bind(crate::runtime::task_relay::AUTHOR)
-        .fetch_all(&mut *tx)
+        .fetch_optional(&mut *tx)
         .await?;
-        let out = if let Some(first) = lines.first() {
-            let linked: Option<Option<String>> = sqlx::query_scalar(
-                "SELECT case_id FROM conversation_message WHERE message_id = $1",
-            )
-            .bind(message_id)
-            .fetch_optional(&mut *tx)
-            .await?;
-            // SW-6: the agent never stores a CSAT prompt with its reply (it arms the request; the prompt follows the
-            // customer's acknowledgement), so the reply is the first line alone
+        let out = if let Some(first) = line {
             Some(Outcome::Replied {
                 message_id: first.message_id,
-                case_id: first.case_id.clone().or(linked.flatten()),
+                case_id: first.case_id.clone(),
                 text: first.text.clone(),
             })
         } else if ownership::silenced(&ownership::read(&mut tx, conversation_id).await?.owner) {
@@ -740,5 +814,49 @@ impl InteractionBackend for RuntimeBackend {
         req: InteractionRequest,
     ) -> BoxStream<'static, Result<BackendEvent, BackendError>> {
         runtime_stream(self.st.clone(), req)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn frame(tenant: Uuid, job_id: Uuid, conversation: &'static str) -> hub::Frame {
+        hub::Frame {
+            tenant,
+            job_id,
+            conversation_id: Some(conversation.to_string()),
+            event: "message",
+            data: serde_json::json!({}),
+        }
+    }
+
+    #[test]
+    fn a_frame_only_wakes_its_conversation_job_and_tenant() {
+        let (tenant, job) = (Uuid::new_v4(), Uuid::new_v4());
+        assert!(hub::matches(
+            &frame(tenant, job, "c-1"),
+            tenant,
+            job,
+            Some("c-1")
+        ));
+        assert!(!hub::matches(
+            &frame(tenant, job, "c-2"),
+            tenant,
+            job,
+            Some("c-1")
+        ));
+        assert!(!hub::matches(
+            &frame(tenant, Uuid::new_v4(), "c-1"),
+            tenant,
+            job,
+            Some("c-1")
+        ));
+        assert!(!hub::matches(
+            &frame(Uuid::new_v4(), job, "c-1"),
+            tenant,
+            job,
+            Some("c-1")
+        ));
     }
 }
