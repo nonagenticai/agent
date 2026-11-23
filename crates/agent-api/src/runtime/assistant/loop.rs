@@ -319,20 +319,25 @@ pub async fn chat(m: &Model, body: &Value) -> (Result<Reply, &'static str>, LlmU
         ..LlmUsage::default()
     };
     let body = request_body(&m.provider_id, body);
-    let mut call = m
-        .http
-        .post(format!("{}/chat/completions", m.url))
-        .json(&*body);
-    if !m.token.is_empty() {
-        call = call.bearer_auth(&m.token);
-    }
-    if let Some(t) = m.effective_tenant {
-        call = call.header(
-            crate::providers::llm::EFFECTIVE_TENANT_HEADER,
-            t.to_string(),
-        );
-    }
-    let sent = crate::observability::upstream_http("llm", "assistant".into(), call.send()).await;
+    // A shed or transiently failed call (the router's 503 queue_rejected, its 502 for an upstream 429/5xx) is
+    // retried: the request is rebuilt per attempt, and every attempt reaches the upstream metric.
+    let sent = crate::providers::llm::send_with_transient_retry(|| {
+        let mut call = m
+            .http
+            .post(format!("{}/chat/completions", m.url))
+            .json(&*body);
+        if !m.token.is_empty() {
+            call = call.bearer_auth(&m.token);
+        }
+        if let Some(t) = m.effective_tenant {
+            call = call.header(
+                crate::providers::llm::EFFECTIVE_TENANT_HEADER,
+                t.to_string(),
+            );
+        }
+        crate::observability::upstream_http("llm", "assistant".into(), call.send())
+    })
+    .await;
     let out = match sent {
         Err(_) => Err("unreachable"),
         Ok(r) if !r.status().is_success() => {
@@ -652,6 +657,49 @@ mod tests {
         }
     }
 
+    /// A fake chat-completions upstream that answers each call with the next status in `statuses` (the last one
+    /// repeats), counts the calls, and carries a normal answer on a 2xx.
+    async fn upstream_scripted(
+        statuses: Vec<u16>,
+    ) -> (String, std::sync::Arc<std::sync::atomic::AtomicUsize>) {
+        use std::sync::atomic::{AtomicUsize, Ordering};
+
+        use axum::response::IntoResponse;
+
+        let calls = std::sync::Arc::new(AtomicUsize::new(0));
+        let counted = calls.clone();
+        let app = axum::Router::new().route(
+            "/v1/chat/completions",
+            axum::routing::post(move || {
+                let calls = counted.clone();
+                let statuses = statuses.clone();
+                async move {
+                    let n = calls.fetch_add(1, Ordering::SeqCst);
+                    let status = statuses
+                        .get(n)
+                        .copied()
+                        .unwrap_or_else(|| *statuses.last().unwrap());
+                    if (200..300).contains(&status) {
+                        axum::Json(
+                            json!({"choices": [{"message": {"content": "ok"}, "finish_reason": "stop"}]}),
+                        )
+                        .into_response()
+                    } else {
+                        (
+                            axum::http::StatusCode::from_u16(status).unwrap(),
+                            axum::Json(json!({"error": "shed"})),
+                        )
+                            .into_response()
+                    }
+                }
+            }),
+        );
+        let l = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let addr = l.local_addr().unwrap();
+        tokio::spawn(async move { axum::serve(l, app).await.unwrap() });
+        (format!("http://{addr}/v1"), calls)
+    }
+
     #[tokio::test]
     async fn chat_sends_the_effective_tenant_only_when_set() {
         let (url, seen) = upstream().await;
@@ -662,6 +710,42 @@ mod tests {
         let byo = test_model(&url, "0199f0c2-tenant-provider", None);
         assert!(chat(&byo, &b).await.0.is_ok());
         assert_eq!(*seen.lock().unwrap(), vec![Some(tenant.to_string()), None]);
+    }
+
+    #[tokio::test]
+    async fn chat_retries_a_shed_call_and_answers() {
+        use std::sync::atomic::Ordering;
+
+        let (url, calls) = upstream_scripted(vec![503, 200]).await;
+        let b = body("m", &SystemMessage::default(), "{}", &[], &[]);
+        let m = test_model(&url, "0199f0c2-tenant-provider", None);
+        let (out, _) = chat(&m, &b).await;
+        assert_eq!(out.unwrap().content, "ok");
+        assert_eq!(calls.load(Ordering::SeqCst), 2);
+    }
+
+    #[tokio::test]
+    async fn chat_gives_up_after_three_shed_calls() {
+        use std::sync::atomic::Ordering;
+
+        let (url, calls) = upstream_scripted(vec![503]).await;
+        let b = body("m", &SystemMessage::default(), "{}", &[], &[]);
+        let m = test_model(&url, "0199f0c2-tenant-provider", None);
+        let (out, _) = chat(&m, &b).await;
+        assert_eq!(out.unwrap_err(), "status");
+        assert_eq!(calls.load(Ordering::SeqCst), 3);
+    }
+
+    #[tokio::test]
+    async fn chat_does_not_retry_a_client_error() {
+        use std::sync::atomic::Ordering;
+
+        let (url, calls) = upstream_scripted(vec![400]).await;
+        let b = body("m", &SystemMessage::default(), "{}", &[], &[]);
+        let m = test_model(&url, "0199f0c2-tenant-provider", None);
+        let (out, _) = chat(&m, &b).await;
+        assert_eq!(out.unwrap_err(), "status");
+        assert_eq!(calls.load(Ordering::SeqCst), 1);
     }
 
     // Guards `model_in`'s internal arm (`platform_client(LLM_TIMEOUT, r.effective_tenant, r.actor)`): the platform

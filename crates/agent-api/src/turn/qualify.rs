@@ -638,6 +638,32 @@ fn is_null_answer(content: &str) -> bool {
     })
 }
 
+/// One qualifier POST. A shed or transiently failed call is retried; the 401 renewal in [`extract`] stays
+/// outside (a refusal is not transient). Every attempt carries the same body and identity headers.
+async fn send(
+    m: &Model,
+    payload: &Value,
+    token: &str,
+) -> Result<reqwest::Response, reqwest::Error> {
+    crate::providers::llm::send_with_transient_retry(|| async {
+        let mut call = m
+            .http
+            .post(format!("{}/chat/completions", m.url))
+            .json(payload);
+        if !token.is_empty() {
+            call = call.bearer_auth(token);
+        }
+        if let Some(t) = m.effective_tenant {
+            call = call.header(
+                crate::providers::llm::EFFECTIVE_TENANT_HEADER,
+                t.to_string(),
+            );
+        }
+        crate::observability::upstream_http("llm", "qualify".into(), call.send()).await
+    })
+    .await
+}
+
 /// One qualifier call. The usage is returned whether or not the answer was usable (the call happened); `Err` only
 /// when the model could not be reached at all.
 pub async fn extract(
@@ -669,23 +695,7 @@ pub async fn extract(
             b
         }
     };
-    let send = |token: &str| {
-        let mut call = m
-            .http
-            .post(format!("{}/chat/completions", m.url))
-            .json(&payload);
-        if !token.is_empty() {
-            call = call.bearer_auth(token);
-        }
-        if let Some(t) = m.effective_tenant {
-            call = call.header(
-                crate::providers::llm::EFFECTIVE_TENANT_HEADER,
-                t.to_string(),
-            );
-        }
-        crate::observability::upstream_http("llm", "qualify".into(), call.send())
-    };
-    let mut sent = send(&m.token).await;
+    let mut sent = send(m, &payload, &m.token).await;
     // The router refused the tenant's cached bundle token (rotated, revoked, expired early): drop it, mint once,
     // resend once. A second 401, a failed mint, or any other key (platform, BYO) takes the error path below.
     if let (Some(renew), Ok(r)) = (&m.renew, &sent)
@@ -693,7 +703,7 @@ pub async fn extract(
     {
         tracing::warn!(tenant = %renew.tenant(), "qualify_tenant_token_refused");
         if let Some(fresh) = renew.fresh().await {
-            sent = send(&fresh).await;
+            sent = send(m, &payload, &fresh).await;
         }
     }
     let failed = |what: &'static str| {
