@@ -377,7 +377,7 @@ fn transient(status: reqwest::StatusCode) -> bool {
 
 /// The backoff before retry `attempt` (250 ms, then 500 ms).
 fn backoff(attempt: u32) -> Duration {
-    Duration::from_millis(u64::from(250_u64 << (attempt - 1)))
+    Duration::from_millis(250_u64 << (attempt - 1))
 }
 
 /// The server's `Retry-After` in whole seconds, capped at [`RETRY_AFTER_CAP`].
