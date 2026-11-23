@@ -700,6 +700,41 @@ mod tests {
         (format!("http://{addr}/v1"), calls)
     }
 
+    /// A fake upstream that sheds the first call with `503 Retry-After: <secs>` and answers the second.
+    async fn upstream_retry_after(secs: u32) -> String {
+        use std::sync::atomic::{AtomicUsize, Ordering};
+
+        use axum::response::IntoResponse;
+
+        let calls = std::sync::Arc::new(AtomicUsize::new(0));
+        let counted = calls.clone();
+        let app = axum::Router::new().route(
+            "/v1/chat/completions",
+            axum::routing::post(move || {
+                let calls = counted.clone();
+                async move {
+                    if calls.fetch_add(1, Ordering::SeqCst) == 0 {
+                        (
+                            axum::http::StatusCode::SERVICE_UNAVAILABLE,
+                            [(axum::http::header::RETRY_AFTER, secs.to_string())],
+                            axum::Json(json!({"error": "shed"})),
+                        )
+                            .into_response()
+                    } else {
+                        axum::Json(
+                            json!({"choices": [{"message": {"content": "ok"}, "finish_reason": "stop"}]}),
+                        )
+                        .into_response()
+                    }
+                }
+            }),
+        );
+        let l = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let addr = l.local_addr().unwrap();
+        tokio::spawn(async move { axum::serve(l, app).await.unwrap() });
+        format!("http://{addr}/v1")
+    }
+
     #[tokio::test]
     async fn chat_sends_the_effective_tenant_only_when_set() {
         let (url, seen) = upstream().await;
@@ -722,6 +757,44 @@ mod tests {
         let (out, _) = chat(&m, &b).await;
         assert_eq!(out.unwrap().content, "ok");
         assert_eq!(calls.load(Ordering::SeqCst), 2);
+    }
+
+    #[tokio::test]
+    async fn chat_retries_every_transient_status() {
+        use std::sync::atomic::Ordering;
+
+        for status in [429_u16, 500, 502, 504] {
+            let (url, calls) = upstream_scripted(vec![status, 200]).await;
+            let b = body("m", &SystemMessage::default(), "{}", &[], &[]);
+            let m = test_model(&url, "0199f0c2-tenant-provider", None);
+            let (out, _) = chat(&m, &b).await;
+            assert!(out.is_ok(), "{status} must be retried");
+            assert_eq!(
+                calls.load(Ordering::SeqCst),
+                2,
+                "{status} must be retried once"
+            );
+        }
+    }
+
+    #[tokio::test]
+    async fn a_retry_after_header_is_honoured_and_capped() {
+        // The server asks for 30 s; the helper waits up to 2 s, not the server's number and not the default.
+        let url = upstream_retry_after(30).await;
+        let b = body("m", &SystemMessage::default(), "{}", &[], &[]);
+        let m = test_model(&url, "0199f0c2-tenant-provider", None);
+        let started = std::time::Instant::now();
+        let (out, _) = chat(&m, &b).await;
+        assert!(out.is_ok());
+        let waited = started.elapsed();
+        assert!(
+            waited >= std::time::Duration::from_millis(1500),
+            "the header is honoured, not the 250 ms default: {waited:?}"
+        );
+        assert!(
+            waited < std::time::Duration::from_secs(10),
+            "capped at 2 s, not the server's 30: {waited:?}"
+        );
     }
 
     #[tokio::test]
