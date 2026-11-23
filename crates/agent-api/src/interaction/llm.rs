@@ -186,12 +186,31 @@ async fn step(mut phase: Phase) -> Option<(Result<BackendEvent, BackendError>, P
     loop {
         match phase {
             Phase::Connect(call) => {
-                let sent = crate::observability::upstream_http(
-                    "inference_router",
-                    "chat_completions".into(),
-                    (*call).send(),
-                )
-                .await;
+                // Retry only the FIRST byte: a shed 503 or an upstream 429/5xx before anything
+                // was read is safe to replay (the router books no generation it never started),
+                // while a read timeout or a reset after the first byte may already have been
+                // served and paid for. `try_clone` is what makes a per-attempt request possible;
+                // a non-cloneable body (never produced here — `.json()` is bytes) sends once.
+                let sent = if (*call).try_clone().is_some() {
+                    crate::providers::llm::send_with_transient_retry(|| {
+                        let request = (*call)
+                            .try_clone()
+                            .expect("a cloneable request stays cloneable");
+                        crate::observability::upstream_http(
+                            "inference_router",
+                            "chat_completions".into(),
+                            request.send(),
+                        )
+                    })
+                    .await
+                } else {
+                    crate::observability::upstream_http(
+                        "inference_router",
+                        "chat_completions".into(),
+                        (*call).send(),
+                    )
+                    .await
+                };
                 match sent {
                     Err(e) => {
                         tracing::warn!(error = %e, "interaction_llm_unreachable");
@@ -505,6 +524,140 @@ mod tests {
             json!({"role": "user", "content": "hi"})
         );
         assert_eq!(body["messages"].as_array().unwrap().len(), 4);
+    }
+
+    /// An upstream that answers the given statuses in order, then 200 + [`SSE`]; counts requests.
+    async fn upstream_sequence(
+        statuses: Vec<StatusCode>,
+    ) -> (String, Arc<std::sync::atomic::AtomicUsize>) {
+        use std::collections::VecDeque;
+        use std::sync::atomic::{AtomicUsize, Ordering};
+
+        let requests = Arc::new(AtomicUsize::new(0));
+        let plan = Arc::new(Mutex::new(VecDeque::from(statuses)));
+        let counter = requests.clone();
+        let app = Router::new().route(
+            "/v1/chat/completions",
+            post(move |_body: axum::Json<Value>| {
+                let counter = counter.clone();
+                let plan = plan.clone();
+                async move {
+                    counter.fetch_add(1, Ordering::SeqCst);
+                    let status = plan
+                        .lock()
+                        .expect("status plan")
+                        .pop_front()
+                        .unwrap_or(StatusCode::OK);
+                    (status, [("content-type", "text/event-stream")], SSE).into_response()
+                }
+            }),
+        );
+        let l = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let addr = l.local_addr().unwrap();
+        tokio::spawn(async move { axum::serve(l, app).await.unwrap() });
+        (format!("http://{addr}/v1"), requests)
+    }
+
+    #[tokio::test]
+    async fn a_pre_first_byte_503_is_retried_and_the_stream_still_arrives() {
+        let (url, requests) = upstream_sequence(vec![StatusCode::SERVICE_UNAVAILABLE]).await;
+        let r = collect(llm(&url).respond(req())).await.unwrap();
+        assert_eq!(r.text, "Hello");
+        assert_eq!(
+            requests.load(std::sync::atomic::Ordering::SeqCst),
+            2,
+            "one shed attempt and one served attempt"
+        );
+    }
+
+    #[tokio::test]
+    async fn a_client_error_is_never_retried() {
+        let (url, requests) = upstream_sequence(vec![StatusCode::BAD_REQUEST]).await;
+        let events: Vec<_> = llm(&url).respond(req()).collect().await;
+        assert!(
+            matches!(events.as_slice(), [Err(BackendError::Upstream(m))] if m == "status 400"),
+            "{events:?}"
+        );
+        assert_eq!(
+            requests.load(std::sync::atomic::Ordering::SeqCst),
+            1,
+            "a 4xx is the request's own fault"
+        );
+    }
+
+    #[tokio::test]
+    async fn a_stream_cut_after_the_first_byte_is_never_re_requested() {
+        use std::sync::atomic::{AtomicUsize, Ordering};
+
+        let requests = Arc::new(AtomicUsize::new(0));
+        let counter = requests.clone();
+        let app = Router::new().route(
+            "/v1/chat/completions",
+            post(move |_body: axum::Json<Value>| {
+                let counter = counter.clone();
+                async move {
+                    counter.fetch_add(1, Ordering::SeqCst);
+                    // A delay per step: hyper must flush the headers and the first chunk before
+                    // the cut, so the client sees a cut STREAM, not an unreachable endpoint.
+                    let body = axum::body::Body::from_stream(futures_util::stream::unfold(
+                        0u8,
+                        |step| async move {
+                            match step {
+                                0 => {
+                                    tokio::time::sleep(std::time::Duration::from_millis(50)).await;
+                                    Some((
+                                        Ok::<_, std::io::Error>(axum::body::Bytes::from_static(
+                                            b"data: {\"choices\":[{\"delta\":{\"content\":\"Hi\"}}]}\n\n",
+                                        )),
+                                        1,
+                                    ))
+                                }
+                                1 => {
+                                    tokio::time::sleep(std::time::Duration::from_millis(50)).await;
+                                    Some((
+                                        Err(std::io::Error::new(
+                                            std::io::ErrorKind::ConnectionReset,
+                                            "cut mid-stream",
+                                        )),
+                                        2,
+                                    ))
+                                }
+                                _ => None,
+                            }
+                        },
+                    ));
+                    (
+                        StatusCode::OK,
+                        [("content-type", "text/event-stream")],
+                        body,
+                    )
+                        .into_response()
+                }
+            }),
+        );
+        let l = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let addr = l.local_addr().unwrap();
+        tokio::spawn(async move { axum::serve(l, app).await.unwrap() });
+
+        let events: Vec<_> = llm(&format!("http://{addr}/v1"))
+            .respond(req())
+            .collect()
+            .await;
+        assert!(
+            events
+                .iter()
+                .any(|e| matches!(e, Ok(BackendEvent::Delta(d)) if d == "Hi")),
+            "{events:?}"
+        );
+        assert!(
+            matches!(events.last(), Some(Err(BackendError::Upstream(_)))),
+            "the cut is reported, never retried: {events:?}"
+        );
+        assert_eq!(
+            requests.load(Ordering::SeqCst),
+            1,
+            "the request was already delivered and may have been billed"
+        );
     }
 
     #[tokio::test]

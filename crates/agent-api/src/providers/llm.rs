@@ -380,17 +380,27 @@ fn backoff(attempt: u32) -> Duration {
     Duration::from_millis(250_u64 << (attempt - 1))
 }
 
-/// The server's `Retry-After` in whole seconds, capped at [`RETRY_AFTER_CAP`].
+/// The server's `Retry-After`, capped at [`RETRY_AFTER_CAP`]. See [`parse_retry_after`].
 fn retry_after(response: &reqwest::Response) -> Option<Duration> {
-    let seconds: u64 = response
-        .headers()
-        .get(reqwest::header::RETRY_AFTER)?
-        .to_str()
-        .ok()?
-        .trim()
-        .parse()
-        .ok()?;
-    Some(Duration::from_secs(seconds).min(RETRY_AFTER_CAP))
+    parse_retry_after(
+        response
+            .headers()
+            .get(reqwest::header::RETRY_AFTER)?
+            .to_str()
+            .ok()?,
+    )
+}
+
+/// A `Retry-After` value — delay-seconds or an HTTP-date — capped at [`RETRY_AFTER_CAP`].
+fn parse_retry_after(value: &str) -> Option<Duration> {
+    let value = value.trim();
+    if let Ok(seconds) = value.parse::<u64>() {
+        return Some(Duration::from_secs(seconds).min(RETRY_AFTER_CAP));
+    }
+    // IMF-fixdate (`Sun, 06 Nov 1994 08:49:37 GMT`); a date in the past is "now".
+    let when = chrono::DateTime::parse_from_rfc2822(value).ok()?;
+    let wait = when.with_timezone(&chrono::Utc) - chrono::Utc::now();
+    Some(Duration::from_secs(wait.num_seconds().max(0) as u64).min(RETRY_AFTER_CAP))
 }
 
 /// One stored provider. Not `Debug`: it carries the sealed key.
@@ -1134,6 +1144,23 @@ pub async fn probe_internal(st: &AppState) -> ProbeResult {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_retry_after_delay_is_seconds_capped() {
+        assert_eq!(parse_retry_after("2"), Some(Duration::from_secs(2)));
+        assert_eq!(parse_retry_after(" 30 "), Some(RETRY_AFTER_CAP));
+        assert_eq!(parse_retry_after("-1"), None);
+        assert_eq!(parse_retry_after("soon"), None);
+    }
+
+    #[test]
+    fn a_retry_after_http_date_is_converted_and_capped() {
+        let when = chrono::Utc::now() + chrono::Duration::seconds(60);
+        // Any future date is capped to the same two seconds.
+        assert_eq!(parse_retry_after(&when.to_rfc2822()), Some(RETRY_AFTER_CAP));
+        let past = chrono::Utc::now() - chrono::Duration::seconds(60);
+        assert_eq!(parse_retry_after(&past.to_rfc2822()), Some(Duration::ZERO));
+    }
 
     /// agent's service account (`SERVICE_ACTOR_ID`) in these tests.
     const SERVICE_ACTOR: Uuid = Uuid::from_u128(0x0195_f48b_d000_7000_8000_0000_0000_00aa);
