@@ -161,11 +161,19 @@ pub struct Reply {
     pub message: Value,
     pub content: String,
     pub tool_calls: Vec<ToolCall>,
+    /// `choices[0].finish_reason` of the answer (`"stop"`, `"length"`, `"tool_calls"`; `None` when absent). A
+    /// `"length"` answer is cut off at the token budget: [`chat`] fails it, never delivering a partial answer.
+    pub finish_reason: Option<String>,
 }
 
 /// The reply in a chat-completions answer; `None` when it has no message.
 pub fn parse_reply(v: &Value) -> Option<Reply> {
-    let msg = v.get("choices")?.get(0)?.get("message")?;
+    let choice = v.get("choices")?.get(0)?;
+    let msg = choice.get("message")?;
+    let finish_reason = choice
+        .get("finish_reason")
+        .and_then(Value::as_str)
+        .map(str::to_owned);
     let content = msg
         .get("content")
         .and_then(Value::as_str)
@@ -217,6 +225,7 @@ pub fn parse_reply(v: &Value) -> Option<Reply> {
         message,
         content,
         tool_calls,
+        finish_reason,
     })
 }
 
@@ -290,7 +299,8 @@ pub fn request_body<'a>(provider_id: &str, body: &'a Value) -> Cow<'a, Value> {
 }
 
 /// One model call. The usage is returned whether or not the answer was usable (the call happened); `Err` carries a
-/// code (`unreachable`, `status`, `body`, `answer`), never text.
+/// code (`unreachable`, `status`, `body`, `answer`, `truncated`), never text. `truncated` is an answer cut off at the
+/// token budget (`finish_reason == "length"`): its content is dropped, never served as a complete answer.
 pub async fn chat(m: &Model, body: &Value) -> (Result<Reply, &'static str>, LlmUsage) {
     let started = Instant::now();
     let mut usage = LlmUsage {
@@ -325,7 +335,13 @@ pub async fn chat(m: &Model, body: &Value) -> (Result<Reply, &'static str>, LlmU
             Ok(v) => {
                 usage.tokens_in = v["usage"]["prompt_tokens"].as_i64().unwrap_or(0);
                 usage.tokens_out = v["usage"]["completion_tokens"].as_i64().unwrap_or(0);
-                parse_reply(&v).ok_or("answer")
+                match parse_reply(&v) {
+                    // an answer cut off at the token budget is no answer: the customer must never get the
+                    // partial text as if it were complete
+                    Some(r) if r.finish_reason.as_deref() == Some("length") => Err("truncated"),
+                    Some(r) => Ok(r),
+                    None => Err("answer"),
+                }
             }
         },
     };
@@ -423,6 +439,46 @@ mod tests {
     }
 
     #[test]
+    fn replies_carry_their_finish_reason() {
+        let r = parse_reply(&json!({"choices": [{"message": {"content": "All"},
+            "finish_reason": "length"}]}))
+        .unwrap();
+        assert_eq!(r.finish_reason.as_deref(), Some("length"));
+        let r = parse_reply(&json!({"choices": [{"message": {"content": "All"},
+            "finish_reason": "stop"}]}))
+        .unwrap();
+        assert_eq!(r.finish_reason.as_deref(), Some("stop"));
+        let r = parse_reply(&json!({"choices": [{"message": {"content": "All"}}]})).unwrap();
+        assert_eq!(r.finish_reason, None);
+        // a null/non-string reason is no reason, never a panic
+        let r = parse_reply(&json!({"choices": [{"message": {"content": "All"},
+            "finish_reason": null}]}))
+        .unwrap();
+        assert_eq!(r.finish_reason, None);
+    }
+
+    #[tokio::test]
+    async fn chat_fails_a_reply_cut_at_the_token_budget() {
+        // Mutation: returning the reply whatever its finish_reason fails the first assertion; failing every reply
+        // with a finish_reason fails the `stop` one.
+        let b = body("m", &SystemMessage::default(), "{}", &[], &[]);
+        let len = test_model(
+            &upstream_with(Some("length")).await,
+            "0199f0c2-tenant-provider",
+            None,
+        );
+        assert_eq!(chat(&len, &b).await.0, Err("truncated"));
+        let stop = test_model(
+            &upstream_with(Some("stop")).await,
+            "0199f0c2-tenant-provider",
+            None,
+        );
+        assert!(chat(&stop, &b).await.0.is_ok());
+        let bare = test_model(&upstream_with(None).await, "0199f0c2-tenant-provider", None);
+        assert!(chat(&bare, &b).await.0.is_ok());
+    }
+
+    #[test]
     fn the_body_has_one_system_message_first_and_tools_only_when_offered() {
         let history = vec![json!({"role": "assistant", "content": "x"})];
         let b = body("m", &SystemMessage::default(), "{}", &history, &[]);
@@ -517,6 +573,25 @@ mod tests {
         let addr = l.local_addr().unwrap();
         tokio::spawn(async move { axum::serve(l, app).await.unwrap() });
         (format!("http://{addr}/v1"), seen)
+    }
+
+    /// A fake chat-completions upstream whose answer carries `finish_reason` as given (`None`: no such field);
+    /// returns its base URL.
+    async fn upstream_with(finish_reason: Option<&'static str>) -> String {
+        let app = axum::Router::new().route(
+            "/v1/chat/completions",
+            axum::routing::post(move || async move {
+                let mut choice = json!({"message": {"content": "partial answer"}});
+                if let Some(f) = finish_reason {
+                    choice["finish_reason"] = json!(f);
+                }
+                axum::Json(json!({"choices": [choice]}))
+            }),
+        );
+        let l = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let addr = l.local_addr().unwrap();
+        tokio::spawn(async move { axum::serve(l, app).await.unwrap() });
+        format!("http://{addr}/v1")
     }
 
     fn test_model(url: &str, provider_id: &str, effective_tenant: Option<Uuid>) -> Model {
