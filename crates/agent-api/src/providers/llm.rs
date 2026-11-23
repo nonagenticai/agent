@@ -20,6 +20,7 @@
 //!   A tenant-entered host is called only through `netguard::pinned_client`; a provider failure is `ok: false`,
 //!   never a 5xx. The detail names the status, the model count, the time and which token was sent, never the URL,
 //!   the token, an upstream body or an error text.
+use std::future::Future;
 use std::time::{Duration, Instant};
 
 use chrono::{DateTime, Utc};
@@ -320,6 +321,76 @@ pub fn platform_client(
         .timeout(timeout)
         .default_headers(headers)
         .build()?)
+}
+
+/// Attempts [`send_with_transient_retry`] makes: the first try plus two retries.
+pub const TRANSIENT_ATTEMPTS: u32 = 3;
+/// The longest a server's `Retry-After` may make a retry wait.
+const RETRY_AFTER_CAP: Duration = Duration::from_secs(2);
+
+/// Send a chat call, retrying a transient failure: HTTP 429/500/502/503/504, or a connection that never opened.
+///
+/// The inference router sheds a full provider as `503 queue_rejected` and reports an upstream 429/5xx as `502`,
+/// so without this a load blip fails the whole turn. A **read timeout is never retried**: the request may already
+/// have been served (and paid for), and a second attempt would buy the same answer twice.
+///
+/// `send` builds a fresh request on every attempt, so each attempt carries the same body, bearer and identity
+/// headers, and the caller records each attempt on its own upstream metric.
+pub async fn send_with_transient_retry<F, Fut>(
+    mut send: F,
+) -> Result<reqwest::Response, reqwest::Error>
+where
+    F: FnMut() -> Fut,
+    Fut: Future<Output = Result<reqwest::Response, reqwest::Error>>,
+{
+    let mut attempt = 1;
+    loop {
+        match send().await {
+            Ok(response) if attempt >= TRANSIENT_ATTEMPTS || !transient(response.status()) => {
+                return Ok(response);
+            }
+            Ok(response) => {
+                let wait = retry_after(&response).unwrap_or_else(|| backoff(attempt));
+                tracing::warn!(
+                    status = response.status().as_u16(),
+                    attempt,
+                    "llm_transient_retry"
+                );
+                tokio::time::sleep(wait).await;
+            }
+            Err(error)
+                if attempt < TRANSIENT_ATTEMPTS && error.is_connect() && !error.is_timeout() =>
+            {
+                tracing::warn!(attempt, "llm_connect_retry");
+                tokio::time::sleep(backoff(attempt)).await;
+            }
+            Err(error) => return Err(error),
+        }
+        attempt += 1;
+    }
+}
+
+/// Whether `status` is one a retry may turn into a success.
+fn transient(status: reqwest::StatusCode) -> bool {
+    matches!(status.as_u16(), 429 | 500 | 502 | 503 | 504)
+}
+
+/// The backoff before retry `attempt` (250 ms, then 500 ms).
+fn backoff(attempt: u32) -> Duration {
+    Duration::from_millis(250_u64 << (attempt - 1))
+}
+
+/// The server's `Retry-After` in whole seconds, capped at [`RETRY_AFTER_CAP`].
+fn retry_after(response: &reqwest::Response) -> Option<Duration> {
+    let seconds: u64 = response
+        .headers()
+        .get(reqwest::header::RETRY_AFTER)?
+        .to_str()
+        .ok()?
+        .trim()
+        .parse()
+        .ok()?;
+    Some(Duration::from_secs(seconds).min(RETRY_AFTER_CAP))
 }
 
 /// One stored provider. Not `Debug`: it carries the sealed key.

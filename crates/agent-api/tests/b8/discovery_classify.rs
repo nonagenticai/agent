@@ -416,7 +416,11 @@ async fn cluster_failure_still_finishes() {
         worker::run(&x.e.state.db, &clf, &at(&x.f, &id)).await,
         Outcome::Classified
     );
-    assert_eq!(chat.calls.load(Ordering::SeqCst), 1);
+    assert_eq!(
+        chat.calls.load(Ordering::SeqCst),
+        usize::try_from(agent_api::providers::llm::TRANSIENT_ATTEMPTS).unwrap(),
+        "a 500 is retried before the classifier finishes without clusters"
+    );
     assert_eq!(status(&x.e, &id).await, "classified");
     let n: i64 = sqlx::query_scalar("SELECT count(*) FROM discovery_cluster WHERE import_id = $1")
         .bind(&id)

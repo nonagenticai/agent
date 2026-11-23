@@ -970,7 +970,11 @@ async fn a_failing_chat_model_escalates_instead_of_the_template() {
     let run = w.answer(&d).await;
     let out = &run.outcome.output;
     assert_eq!(run.outcome.outcome_code, None, "{:?}", run.outcome.detail);
-    assert_eq!(llm.bodies.lock().unwrap().len(), 1, "the model was called");
+    assert_eq!(
+        llm.bodies.lock().unwrap().len(),
+        usize::try_from(agent_api::providers::llm::TRANSIENT_ATTEMPTS).unwrap(),
+        "the model was called, and its transient 500 was retried before escalating"
+    );
     assert_eq!(out["synthesis"], "failed");
     assert_eq!(out["grounded"], false);
     assert_eq!(out["answer"], "");

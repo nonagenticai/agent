@@ -273,6 +273,22 @@ pub fn parse_items(content: &str) -> Result<Vec<DraftItem>, DraftError> {
     Ok(out)
 }
 
+/// The items of one chat-completions document, refused when the answer was cut off at the token
+/// budget. The live model spends reasoning tokens on every call and those count against
+/// `max_tokens`, so `finish_reason: "length"` is a real answer shape: its content is a prefix of a
+/// JSON document, and parsing it would report a malformed draft instead of a truncated one.
+fn items_from_response(v: &Value) -> Result<Vec<DraftItem>, DraftError> {
+    if v["choices"][0]["finish_reason"].as_str() == Some("length") {
+        return Err(DraftError::Malformed(
+            "the drafting answer was cut off at max_tokens (finish_reason=length)".into(),
+        ));
+    }
+    let content = v["choices"][0]["message"]["content"]
+        .as_str()
+        .unwrap_or_default();
+    parse_items(content)
+}
+
 // ---- the OpenAI-compatible drafter -------------------------------------------------------------------------------
 
 /// Which provider a run drafts with, snapshotted at start (a tenant run: `funding = tenant_byo`). Never the key.
@@ -494,17 +510,23 @@ impl OpenAiDrafter {
             funding: self.funding.clone(),
             ..LlmUsage::default()
         };
-        let mut req = self
-            .http
-            .post(format!("{}/chat/completions", self.url))
-            .json(&self.body(call, input, sample));
-        if !self.token.is_empty() {
-            req = req.bearer_auth(&self.token);
-        }
+        let payload = self.body(call, input, sample);
         let op = format!("generator.{}", call.use_label());
-        let r = crate::observability::upstream_http("llm", op, req.send())
-            .await
-            .map_err(|_| DraftError::Unreachable("unreachable"))?;
+        // A shed or transiently failed call (the router's 503 queue_rejected, its 502 for an
+        // upstream 429/5xx) is retried: the request is rebuilt per attempt and every attempt
+        // reaches the upstream metric.
+        let r = crate::providers::llm::send_with_transient_retry(|| {
+            let mut req = self
+                .http
+                .post(format!("{}/chat/completions", self.url))
+                .json(&payload);
+            if !self.token.is_empty() {
+                req = req.bearer_auth(&self.token);
+            }
+            crate::observability::upstream_http("llm", op.clone(), req.send())
+        })
+        .await
+        .map_err(|_| DraftError::Unreachable("unreachable"))?;
         if !r.status().is_success() {
             tracing::warn!(
                 status = r.status().as_u16(),
@@ -520,10 +542,7 @@ impl OpenAiDrafter {
         usage.tokens_in = v["usage"]["prompt_tokens"].as_i64().unwrap_or(0);
         usage.tokens_out = v["usage"]["completion_tokens"].as_i64().unwrap_or(0);
         usage.latency_ms = i64::try_from(started.elapsed().as_millis()).unwrap_or(i64::MAX);
-        let content = v["choices"][0]["message"]["content"]
-            .as_str()
-            .unwrap_or_default();
-        match parse_items(content) {
+        match items_from_response(&v) {
             Ok(items) => Ok((items, usage)),
             Err(e) => {
                 // the call happened: say what it spent, though nothing is stored for a malformed step
@@ -641,6 +660,25 @@ mod tests {
             platform_funding("https://api.openai.com/v1"),
             "platform_external"
         );
+    }
+
+    #[test]
+    fn a_truncated_answer_is_refused_before_it_is_parsed() {
+        let truncated = json!({"choices": [{
+            "message": {"content": "{\"items\": [{\"kind\": \"activity\""},
+            "finish_reason": "length"
+        }]});
+        match items_from_response(&truncated) {
+            Err(DraftError::Malformed(why)) => assert!(why.contains("length"), "{why}"),
+            other => panic!("{other:?}"),
+        }
+        let good = json!({"choices": [{
+            "message": {"content": "{\"items\": [{\"kind\": \"activity\", \"title\": \"Track order\"}]}"},
+            "finish_reason": "stop"
+        }]});
+        let items = items_from_response(&good).expect("items");
+        assert_eq!(items.len(), 1);
+        assert_eq!(items[0].title, "Track order");
     }
 
     #[test]

@@ -161,11 +161,26 @@ pub struct Reply {
     pub message: Value,
     pub content: String,
     pub tool_calls: Vec<ToolCall>,
+    /// `choices[0].finish_reason` of the answer (`"stop"`, `"length"`, `"tool_calls"`; `None` when absent). A
+    /// `"length"` answer is cut off at the token budget: [`chat`] fails it, never delivering a partial answer.
+    pub finish_reason: Option<String>,
 }
 
-/// The reply in a chat-completions answer; `None` when it has no message.
-pub fn parse_reply(v: &Value) -> Option<Reply> {
-    let msg = v.get("choices")?.get(0)?.get("message")?;
+/// The reply in a chat-completions answer.
+///
+/// `Err("answer")` when it has no message; `Err("bad_arguments")` when a tool call's arguments are not a JSON
+/// object. The second is a refusal, not an empty object: running a tool with fabricated arguments is worse than
+/// failing the turn.
+pub fn parse_reply(v: &Value) -> Result<Reply, &'static str> {
+    let choice = v
+        .get("choices")
+        .and_then(|choices| choices.get(0))
+        .ok_or("answer")?;
+    let msg = choice.get("message").ok_or("answer")?;
+    let finish_reason = choice
+        .get("finish_reason")
+        .and_then(Value::as_str)
+        .map(str::to_owned);
     let content = msg
         .get("content")
         .and_then(Value::as_str)
@@ -185,11 +200,13 @@ pub fn parse_reply(v: &Value) -> Option<Reply> {
             .unwrap_or_default()
             .to_owned();
         let arguments = match f.and_then(|f| f.get("arguments")) {
+            Some(Value::String(s)) if s.trim().is_empty() => Map::new(),
             Some(Value::String(s)) => {
-                serde_json::from_str::<Map<String, Value>>(s).unwrap_or_default()
+                serde_json::from_str::<Map<String, Value>>(s).map_err(|_| "bad_arguments")?
             }
             Some(Value::Object(m)) => m.clone(),
-            _ => Map::new(),
+            Some(Value::Null) | None => Map::new(),
+            Some(_) => return Err("bad_arguments"),
         };
         let id = c
             .get("id")
@@ -213,10 +230,11 @@ pub fn parse_reply(v: &Value) -> Option<Reply> {
     if !calls.is_empty() {
         message["tool_calls"] = Value::Array(calls);
     }
-    Some(Reply {
+    Ok(Reply {
         message,
         content,
         tool_calls,
+        finish_reason,
     })
 }
 
@@ -290,7 +308,8 @@ pub fn request_body<'a>(provider_id: &str, body: &'a Value) -> Cow<'a, Value> {
 }
 
 /// One model call. The usage is returned whether or not the answer was usable (the call happened); `Err` carries a
-/// code (`unreachable`, `status`, `body`, `answer`), never text.
+/// code (`unreachable`, `status`, `body`, `answer`, `truncated`), never text. `truncated` is an answer cut off at the
+/// token budget (`finish_reason == "length"`): its content is dropped, never served as a complete answer.
 pub async fn chat(m: &Model, body: &Value) -> (Result<Reply, &'static str>, LlmUsage) {
     let started = Instant::now();
     let mut usage = LlmUsage {
@@ -300,20 +319,25 @@ pub async fn chat(m: &Model, body: &Value) -> (Result<Reply, &'static str>, LlmU
         ..LlmUsage::default()
     };
     let body = request_body(&m.provider_id, body);
-    let mut call = m
-        .http
-        .post(format!("{}/chat/completions", m.url))
-        .json(&*body);
-    if !m.token.is_empty() {
-        call = call.bearer_auth(&m.token);
-    }
-    if let Some(t) = m.effective_tenant {
-        call = call.header(
-            crate::providers::llm::EFFECTIVE_TENANT_HEADER,
-            t.to_string(),
-        );
-    }
-    let sent = crate::observability::upstream_http("llm", "assistant".into(), call.send()).await;
+    // A shed or transiently failed call (the router's 503 queue_rejected, its 502 for an upstream 429/5xx) is
+    // retried: the request is rebuilt per attempt, and every attempt reaches the upstream metric.
+    let sent = crate::providers::llm::send_with_transient_retry(|| {
+        let mut call = m
+            .http
+            .post(format!("{}/chat/completions", m.url))
+            .json(&*body);
+        if !m.token.is_empty() {
+            call = call.bearer_auth(&m.token);
+        }
+        if let Some(t) = m.effective_tenant {
+            call = call.header(
+                crate::providers::llm::EFFECTIVE_TENANT_HEADER,
+                t.to_string(),
+            );
+        }
+        crate::observability::upstream_http("llm", "assistant".into(), call.send())
+    })
+    .await;
     let out = match sent {
         Err(_) => Err("unreachable"),
         Ok(r) if !r.status().is_success() => {
@@ -325,7 +349,13 @@ pub async fn chat(m: &Model, body: &Value) -> (Result<Reply, &'static str>, LlmU
             Ok(v) => {
                 usage.tokens_in = v["usage"]["prompt_tokens"].as_i64().unwrap_or(0);
                 usage.tokens_out = v["usage"]["completion_tokens"].as_i64().unwrap_or(0);
-                parse_reply(&v).ok_or("answer")
+                match parse_reply(&v) {
+                    // an answer cut off at the token budget is no answer: the customer must never get the
+                    // partial text as if it were complete
+                    Ok(r) if r.finish_reason.as_deref() == Some("length") => Err("truncated"),
+                    Ok(r) => Ok(r),
+                    Err(code) => Err(code),
+                }
             }
         },
     };
@@ -405,9 +435,9 @@ mod tests {
     fn replies_parse_tool_calls_and_keep_their_ids() {
         let v = json!({"choices": [{"message": {"role": "assistant", "content": null, "tool_calls": [
             {"id": "c1", "type": "function", "function": {"name": "order_read", "arguments": "{\"order_id\": \"ORD-1\"}"}},
-            {"type": "function", "function": {"name": "x", "arguments": "not json"}}
+            {"type": "function", "function": {"name": "x", "arguments": "{}"}}
         ]}}]});
-        let r = parse_reply(&v).unwrap();
+        let r = parse_reply(&v).expect("a well-formed reply");
         assert_eq!(r.tool_calls.len(), 2);
         assert_eq!(r.tool_calls[0].id, "c1");
         assert_eq!(r.tool_calls[0].arguments["order_id"], "ORD-1");
@@ -419,7 +449,84 @@ mod tests {
         assert!(done.tool_calls.is_empty());
         assert_eq!(done.content, "All set.");
         assert!(done.message.get("tool_calls").is_none());
-        assert!(parse_reply(&json!({"choices": []})).is_none());
+        assert!(parse_reply(&json!({"choices": []})).is_err());
+    }
+
+    #[test]
+    fn a_tool_call_with_unreadable_arguments_is_refused_not_emptied() {
+        // Mutation: returning the reply with `{}` for the first case, or accepting a non-object, fails here.
+        let v = json!({"choices": [{"message": {"tool_calls": [
+            {"type": "function", "function": {"name": "order_read", "arguments": "{\"order_id\":"}}
+        ]}}]});
+        assert_eq!(
+            parse_reply(&v),
+            Err("bad_arguments"),
+            "a partial argument string must fail the turn, never run with fabricated arguments"
+        );
+        let v = json!({"choices": [{"message": {"tool_calls": [
+            {"type": "function", "function": {"name": "x", "arguments": [1, 2]}}
+        ]}}]});
+        assert_eq!(parse_reply(&v), Err("bad_arguments"));
+    }
+
+    #[test]
+    fn empty_and_object_tool_arguments_are_accepted() {
+        for arguments in [json!("  "), json!({}), json!(null)] {
+            let v = json!({"choices": [{"message": {"tool_calls": [
+                {"type": "function", "function": {"name": "x", "arguments": arguments}}
+            ]}}]});
+            let r = parse_reply(&v).expect("empty arguments mean none");
+            assert!(r.tool_calls[0].arguments.is_empty(), "{arguments}");
+        }
+        let v = json!({"choices": [{"message": {"tool_calls": [
+            {"type": "function", "function": {"name": "x", "arguments": {"a": 1}}}
+        ]}}]});
+        let r = parse_reply(&v).expect("an arguments object is accepted");
+        assert_eq!(r.tool_calls[0].arguments["a"], 1);
+        let v = json!({"choices": [{"message": {"tool_calls": [
+            {"type": "function", "function": {"name": "x"}}
+        ]}}]});
+        assert!(parse_reply(&v).unwrap().tool_calls[0].arguments.is_empty());
+    }
+
+    #[test]
+    fn replies_carry_their_finish_reason() {
+        let r = parse_reply(&json!({"choices": [{"message": {"content": "All"},
+            "finish_reason": "length"}]}))
+        .unwrap();
+        assert_eq!(r.finish_reason.as_deref(), Some("length"));
+        let r = parse_reply(&json!({"choices": [{"message": {"content": "All"},
+            "finish_reason": "stop"}]}))
+        .unwrap();
+        assert_eq!(r.finish_reason.as_deref(), Some("stop"));
+        let r = parse_reply(&json!({"choices": [{"message": {"content": "All"}}]})).unwrap();
+        assert_eq!(r.finish_reason, None);
+        // a null/non-string reason is no reason, never a panic
+        let r = parse_reply(&json!({"choices": [{"message": {"content": "All"},
+            "finish_reason": null}]}))
+        .unwrap();
+        assert_eq!(r.finish_reason, None);
+    }
+
+    #[tokio::test]
+    async fn chat_fails_a_reply_cut_at_the_token_budget() {
+        // Mutation: returning the reply whatever its finish_reason fails the first assertion; failing every reply
+        // with a finish_reason fails the `stop` one.
+        let b = body("m", &SystemMessage::default(), "{}", &[], &[]);
+        let len = test_model(
+            &upstream_with(Some("length")).await,
+            "0199f0c2-tenant-provider",
+            None,
+        );
+        assert_eq!(chat(&len, &b).await.0, Err("truncated"));
+        let stop = test_model(
+            &upstream_with(Some("stop")).await,
+            "0199f0c2-tenant-provider",
+            None,
+        );
+        assert!(chat(&stop, &b).await.0.is_ok());
+        let bare = test_model(&upstream_with(None).await, "0199f0c2-tenant-provider", None);
+        assert!(chat(&bare, &b).await.0.is_ok());
     }
 
     #[test]
@@ -519,6 +626,25 @@ mod tests {
         (format!("http://{addr}/v1"), seen)
     }
 
+    /// A fake chat-completions upstream whose answer carries `finish_reason` as given (`None`: no such field);
+    /// returns its base URL.
+    async fn upstream_with(finish_reason: Option<&'static str>) -> String {
+        let app = axum::Router::new().route(
+            "/v1/chat/completions",
+            axum::routing::post(move || async move {
+                let mut choice = json!({"message": {"content": "partial answer"}});
+                if let Some(f) = finish_reason {
+                    choice["finish_reason"] = json!(f);
+                }
+                axum::Json(json!({"choices": [choice]}))
+            }),
+        );
+        let l = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let addr = l.local_addr().unwrap();
+        tokio::spawn(async move { axum::serve(l, app).await.unwrap() });
+        format!("http://{addr}/v1")
+    }
+
     fn test_model(url: &str, provider_id: &str, effective_tenant: Option<Uuid>) -> Model {
         Model {
             http: reqwest::Client::new(),
@@ -531,6 +657,84 @@ mod tests {
         }
     }
 
+    /// A fake chat-completions upstream that answers each call with the next status in `statuses` (the last one
+    /// repeats), counts the calls, and carries a normal answer on a 2xx.
+    async fn upstream_scripted(
+        statuses: Vec<u16>,
+    ) -> (String, std::sync::Arc<std::sync::atomic::AtomicUsize>) {
+        use std::sync::atomic::{AtomicUsize, Ordering};
+
+        use axum::response::IntoResponse;
+
+        let calls = std::sync::Arc::new(AtomicUsize::new(0));
+        let counted = calls.clone();
+        let app = axum::Router::new().route(
+            "/v1/chat/completions",
+            axum::routing::post(move || {
+                let calls = counted.clone();
+                let statuses = statuses.clone();
+                async move {
+                    let n = calls.fetch_add(1, Ordering::SeqCst);
+                    let status = statuses
+                        .get(n)
+                        .copied()
+                        .unwrap_or_else(|| *statuses.last().unwrap());
+                    if (200..300).contains(&status) {
+                        axum::Json(
+                            json!({"choices": [{"message": {"content": "ok"}, "finish_reason": "stop"}]}),
+                        )
+                        .into_response()
+                    } else {
+                        (
+                            axum::http::StatusCode::from_u16(status).unwrap(),
+                            axum::Json(json!({"error": "shed"})),
+                        )
+                            .into_response()
+                    }
+                }
+            }),
+        );
+        let l = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let addr = l.local_addr().unwrap();
+        tokio::spawn(async move { axum::serve(l, app).await.unwrap() });
+        (format!("http://{addr}/v1"), calls)
+    }
+
+    /// A fake upstream that sheds the first call with `503 Retry-After: <secs>` and answers the second.
+    async fn upstream_retry_after(secs: u32) -> String {
+        use std::sync::atomic::{AtomicUsize, Ordering};
+
+        use axum::response::IntoResponse;
+
+        let calls = std::sync::Arc::new(AtomicUsize::new(0));
+        let counted = calls.clone();
+        let app = axum::Router::new().route(
+            "/v1/chat/completions",
+            axum::routing::post(move || {
+                let calls = counted.clone();
+                async move {
+                    if calls.fetch_add(1, Ordering::SeqCst) == 0 {
+                        (
+                            axum::http::StatusCode::SERVICE_UNAVAILABLE,
+                            [(axum::http::header::RETRY_AFTER, secs.to_string())],
+                            axum::Json(json!({"error": "shed"})),
+                        )
+                            .into_response()
+                    } else {
+                        axum::Json(
+                            json!({"choices": [{"message": {"content": "ok"}, "finish_reason": "stop"}]}),
+                        )
+                        .into_response()
+                    }
+                }
+            }),
+        );
+        let l = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let addr = l.local_addr().unwrap();
+        tokio::spawn(async move { axum::serve(l, app).await.unwrap() });
+        format!("http://{addr}/v1")
+    }
+
     #[tokio::test]
     async fn chat_sends_the_effective_tenant_only_when_set() {
         let (url, seen) = upstream().await;
@@ -541,6 +745,80 @@ mod tests {
         let byo = test_model(&url, "0199f0c2-tenant-provider", None);
         assert!(chat(&byo, &b).await.0.is_ok());
         assert_eq!(*seen.lock().unwrap(), vec![Some(tenant.to_string()), None]);
+    }
+
+    #[tokio::test]
+    async fn chat_retries_a_shed_call_and_answers() {
+        use std::sync::atomic::Ordering;
+
+        let (url, calls) = upstream_scripted(vec![503, 200]).await;
+        let b = body("m", &SystemMessage::default(), "{}", &[], &[]);
+        let m = test_model(&url, "0199f0c2-tenant-provider", None);
+        let (out, _) = chat(&m, &b).await;
+        assert_eq!(out.unwrap().content, "ok");
+        assert_eq!(calls.load(Ordering::SeqCst), 2);
+    }
+
+    #[tokio::test]
+    async fn chat_retries_every_transient_status() {
+        use std::sync::atomic::Ordering;
+
+        for status in [429_u16, 500, 502, 504] {
+            let (url, calls) = upstream_scripted(vec![status, 200]).await;
+            let b = body("m", &SystemMessage::default(), "{}", &[], &[]);
+            let m = test_model(&url, "0199f0c2-tenant-provider", None);
+            let (out, _) = chat(&m, &b).await;
+            assert!(out.is_ok(), "{status} must be retried");
+            assert_eq!(
+                calls.load(Ordering::SeqCst),
+                2,
+                "{status} must be retried once"
+            );
+        }
+    }
+
+    #[tokio::test]
+    async fn a_retry_after_header_is_honoured_and_capped() {
+        // The server asks for 30 s; the helper waits up to 2 s, not the server's number and not the default.
+        let url = upstream_retry_after(30).await;
+        let b = body("m", &SystemMessage::default(), "{}", &[], &[]);
+        let m = test_model(&url, "0199f0c2-tenant-provider", None);
+        let started = std::time::Instant::now();
+        let (out, _) = chat(&m, &b).await;
+        assert!(out.is_ok());
+        let waited = started.elapsed();
+        assert!(
+            waited >= std::time::Duration::from_millis(1500),
+            "the header is honoured, not the 250 ms default: {waited:?}"
+        );
+        assert!(
+            waited < std::time::Duration::from_secs(10),
+            "capped at 2 s, not the server's 30: {waited:?}"
+        );
+    }
+
+    #[tokio::test]
+    async fn chat_gives_up_after_three_shed_calls() {
+        use std::sync::atomic::Ordering;
+
+        let (url, calls) = upstream_scripted(vec![503]).await;
+        let b = body("m", &SystemMessage::default(), "{}", &[], &[]);
+        let m = test_model(&url, "0199f0c2-tenant-provider", None);
+        let (out, _) = chat(&m, &b).await;
+        assert_eq!(out.unwrap_err(), "status");
+        assert_eq!(calls.load(Ordering::SeqCst), 3);
+    }
+
+    #[tokio::test]
+    async fn chat_does_not_retry_a_client_error() {
+        use std::sync::atomic::Ordering;
+
+        let (url, calls) = upstream_scripted(vec![400]).await;
+        let b = body("m", &SystemMessage::default(), "{}", &[], &[]);
+        let m = test_model(&url, "0199f0c2-tenant-provider", None);
+        let (out, _) = chat(&m, &b).await;
+        assert_eq!(out.unwrap_err(), "status");
+        assert_eq!(calls.load(Ordering::SeqCst), 1);
     }
 
     // Guards `model_in`'s internal arm (`platform_client(LLM_TIMEOUT, r.effective_tenant, r.actor)`): the platform
