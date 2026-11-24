@@ -43,7 +43,12 @@ const MAX_TOKENS: u64 = 2048;
 /// The platform's own model (Qwen3 on the pgx vLLM) answers the extraction with thinking off: the JSON is ~50
 /// tokens, but its default thinking spent up to ~1,500 reasoning tokens per turn (~29 s on a follow-up turn, live
 /// acceptance 2026-10-22), all counted against [`MAX_TOKENS`].
-const INTERNAL_MAX_TOKENS: u64 = 512;
+///
+/// 1024, not 512: on the current pgx model `enable_thinking: false` does not fully suppress the reasoning
+/// channel (measured 2026-11-23: ~130 reasoning tokens on every call) and reasoning counts against this cap.
+/// A cap is a ceiling, not a spend — the model still stops at EOS — so the headroom costs nothing and a
+/// truncated extraction stops being possible.
+const INTERNAL_MAX_TOKENS: u64 = 1024;
 
 /// The `provider_id` of the platform's own model (a binding with no provider record).
 pub const INTERNAL_PROVIDER: &str = "internal";
