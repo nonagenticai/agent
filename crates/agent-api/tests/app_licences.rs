@@ -33,6 +33,8 @@ struct Smoke {
     accept_all: bool,
     /// `(path, bearer)` of every request, in order.
     seen: Vec<(String, String)>,
+    /// `(X-App-Id, X-Project-Id, X-Effective-Tenant-Id)` of every router smoke, in order.
+    router_headers: Vec<(Option<String>, Option<String>, Option<String>)>,
 }
 
 type SmokeState = Arc<Mutex<Smoke>>;
@@ -46,6 +48,14 @@ async fn answer(s: &SmokeState, path: &str, h: &HeaderMap) -> StatusCode {
         .to_string();
     let mut g = s.lock().unwrap();
     g.seen.push((path.to_string(), bearer.clone()));
+    if path == "/chat/completions" {
+        let get = |name: &str| h.get(name).and_then(|v| v.to_str().ok()).map(str::to_owned);
+        g.router_headers.push((
+            get("x-app-id"),
+            get("x-project-id"),
+            get("x-effective-tenant-id"),
+        ));
+    }
     if g.accept_all || (bearer == GOOD && !g.refuse_good) {
         StatusCode::OK
     } else {
@@ -358,6 +368,17 @@ async fn provisioning_ensures_the_bundle_mints_smokes_and_records_status_only() 
         assert_ne!(pair[0].1, GOOD);
         assert_eq!(pair[1].1, GOOD);
         assert_eq!(pair[0].0, pair[1].0);
+    }
+    // The router smoke carries the caller identity so billing can attribute it. Measured
+    // 2026-11-26: the seven svc-agent-api rows were this call with no X-App-Id / X-Project-Id.
+    let headers = f.smoke.lock().unwrap().router_headers.clone();
+    let project = agent_api::providers::llm::tenant_level_project_id(f.tenant).to_string();
+    let tenant = f.tenant.to_string();
+    assert_eq!(headers.len(), 2, "{headers:?}");
+    for (app, seen_project, effective) in &headers {
+        assert_eq!(app.as_deref(), Some("agent"));
+        assert_eq!(seen_project.as_deref(), Some(project.as_str()));
+        assert_eq!(effective.as_deref(), Some(tenant.as_str()));
     }
 }
 
