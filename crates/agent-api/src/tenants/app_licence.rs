@@ -589,7 +589,7 @@ async fn smoke_request(
     bearer: &str,
     tenant: Uuid,
 ) -> Result<u16, ProvisionError> {
-    let req = match app {
+    let mut req = match app {
         App::InferenceRouter => st.http.post(url.clone()).json(&serde_json::json!({
             "model": st.cfg.internal_providers.llm_model,
             "messages": [{"role": "user", "content": "ping"}],
@@ -597,17 +597,27 @@ async fn smoke_request(
         })),
         App::StrataRag | App::StrataIngest | App::Mcp | App::Conveyor => st.http.get(url.clone()),
     };
-    let res = req
+    req = req
         .bearer_auth(bearer)
-        .header("x-tenant-id", tenant.to_string())
-        .send()
-        .await
-        .map_err(|e| {
-            ProvisionError::retry(
-                "app_smoke_unreachable",
-                format!("{}: smoke call failed: {}", app.key(), e.without_url()),
-            )
-        })?;
+        .header("x-tenant-id", tenant.to_string());
+    if matches!(app, App::InferenceRouter) {
+        // The router bills this call to the tenant, and needs the caller identity to attribute it:
+        // without X-App-Id / X-Project-Id the smoke is an unattributed service call (measured
+        // 2026-11-26: the BillingProjectAttributionCoverageRegressed rows). The negative control
+        // carries them too; the licence gate refuses it before they are read.
+        for (k, v) in crate::providers::llm::router_identity_headers(
+            tenant,
+            st.cfg.internal_providers.service_actor_id,
+        ) {
+            req = req.header(k, v);
+        }
+    }
+    let res = req.send().await.map_err(|e| {
+        ProvisionError::retry(
+            "app_smoke_unreachable",
+            format!("{}: smoke call failed: {}", app.key(), e.without_url()),
+        )
+    })?;
     Ok(res.status().as_u16())
 }
 
